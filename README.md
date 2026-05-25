@@ -78,34 +78,26 @@ ViewPrimitives automatically adds two helpers to all views:
 |-----------|-------------|------|
 | Button | Clickable element with 6 variants and 4 sizes | [docs](docs/components/button.md) |
 | Alert | Informational banner with title and description slots | [docs](docs/components/alert.md) |
-| Accordion | Collapsible sections via native `<details>`, no JS | [docs](docs/components/accordion.md) |
+| Accordion | Collapsible sections via native `<details>`, optional exclusive mode | [docs](docs/components/accordion.md) |
+| Badge | Small status label with variants | [docs](docs/components/badge.md) |
+| Avatar | User avatar with image and initials fallback | [docs](docs/components/avatar.md) |
+| Card | Container with header, content, and footer slots | [docs](docs/components/card.md) |
+| Separator | Horizontal or vertical divider | [docs](docs/components/separator.md) |
+| Label | Accessible form label | [docs](docs/components/label.md) |
+| Skeleton | Loading placeholder with pulse animation | [docs](docs/components/skeleton.md) |
+| Progress | Progress bar with value prop | [docs](docs/components/progress.md) |
+| Aspect Ratio | Constrains child content to a given aspect ratio | [docs](docs/components/aspect_ratio.md) |
+| Spinner | Animated loading indicator | [docs](docs/components/spinner.md) |
+| KBD | Keyboard shortcut key display | [docs](docs/components/kbd.md) |
+| Rating | Read-only star rating display | [docs](docs/components/rating.md) |
+| Indicator | Status dot or count badge overlaid on an element | [docs](docs/components/indicator.md) |
+| List Group | Bordered list with optional links and active state | [docs](docs/components/list_group.md) |
+| Banner | Styled announcement strip with variants | [docs](docs/components/banner.md) |
+| Button Group | Visually joined row of buttons | [docs](docs/components/button_group.md) |
 
 ### Coming soon
 
-| Component | Description |
-|-----------|-------------|
-| Badge | Small status label with variants |
-| Avatar | User avatar with image and initials fallback |
-| Card | Container with header, content, and footer slots |
-| Separator | Horizontal or vertical divider |
-| Label | Accessible form label |
-| Skeleton | Loading placeholder with pulse animation |
-| Progress | Progress bar with value prop |
-| Tabs | Tab bar with content panels |
-| Input | Styled text input |
-| Textarea | Styled multi-line input |
-| Checkbox | Accessible checkbox with label |
-| Select | Native styled select element |
-| Switch | Toggle on/off control |
-| Breadcrumb | Navigational breadcrumb with separator |
-| Pagination | Page number links with prev/next |
-| Dialog | Modal dialog with overlay and action slots |
-| Alert Dialog | Blocking confirmation dialog |
-| Sheet | Slide-in panel from any edge |
-| Popover | Floating panel anchored to a trigger |
-| Tooltip | Short contextual label on hover |
-| Dropdown Menu | Trigger-anchored menu with items and sub-menus |
-| Sonner | Stacked toast notifications |
+See [ROADMAP.md](ROADMAP.md) for the full planned component list organised by phase.
 
 See [ROADMAP.md](ROADMAP.md) for the full list organised by release phase.
 

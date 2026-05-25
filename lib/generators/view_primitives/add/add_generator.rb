@@ -11,7 +11,11 @@ module ViewPrimitives
 
       argument :components, type: :array
 
-      SUPPORTED_COMPONENTS = %w[button alert accordion].freeze
+      SUPPORTED_COMPONENTS = %w[
+        button alert accordion
+        badge avatar card separator label skeleton progress aspect_ratio
+        spinner kbd rating indicator list_group banner button_group
+      ].freeze
 
       def copy_components
         components.each do |component|
@@ -56,6 +60,93 @@ module ViewPrimitives
         end
 
         copy_file "accordion/accordion_controller.js", "#{dir}/accordion_controller.js"
+      end
+
+      def copy_badge
+        template "badge/badge_component.rb.tt",
+          "app/components/ui/badge_component.rb"
+      end
+
+      def copy_avatar
+        template "avatar/avatar_component.rb.tt",
+          "app/components/ui/avatar_component.rb"
+      end
+
+      def copy_card
+        template "card/card_component.rb.tt",
+          "app/components/ui/card_component.rb"
+        template "card/card_header_component.rb.tt",
+          "app/components/ui/card_header_component.rb"
+        template "card/card_title_component.rb.tt",
+          "app/components/ui/card_title_component.rb"
+        template "card/card_description_component.rb.tt",
+          "app/components/ui/card_description_component.rb"
+        template "card/card_content_component.rb.tt",
+          "app/components/ui/card_content_component.rb"
+        template "card/card_footer_component.rb.tt",
+          "app/components/ui/card_footer_component.rb"
+      end
+
+      def copy_separator
+        template "separator/separator_component.rb.tt",
+          "app/components/ui/separator_component.rb"
+      end
+
+      def copy_label
+        template "label/label_component.rb.tt",
+          "app/components/ui/label_component.rb"
+      end
+
+      def copy_skeleton
+        template "skeleton/skeleton_component.rb.tt",
+          "app/components/ui/skeleton_component.rb"
+      end
+
+      def copy_progress
+        template "progress/progress_component.rb.tt",
+          "app/components/ui/progress_component.rb"
+      end
+
+      def copy_aspect_ratio
+        template "aspect_ratio/aspect_ratio_component.rb.tt",
+          "app/components/ui/aspect_ratio_component.rb"
+      end
+
+      def copy_spinner
+        template "spinner/spinner_component.rb.tt",
+          "app/components/ui/spinner_component.rb"
+      end
+
+      def copy_kbd
+        template "kbd/kbd_component.rb.tt",
+          "app/components/ui/kbd_component.rb"
+      end
+
+      def copy_rating
+        template "rating/rating_component.rb.tt",
+          "app/components/ui/rating_component.rb"
+      end
+
+      def copy_indicator
+        template "indicator/indicator_component.rb.tt",
+          "app/components/ui/indicator_component.rb"
+      end
+
+      def copy_list_group
+        template "list_group/list_group_component.rb.tt",
+          "app/components/ui/list_group_component.rb"
+        template "list_group/list_group_item_component.rb.tt",
+          "app/components/ui/list_group_item_component.rb"
+      end
+
+      def copy_banner
+        template "banner/banner_component.rb.tt",
+          "app/components/ui/banner_component.rb"
+      end
+
+      def copy_button_group
+        template "button_group/button_group_component.rb.tt",
+          "app/components/ui/button_group_component.rb"
       end
     end
   end

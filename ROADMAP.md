@@ -21,14 +21,21 @@ Legend: JS = requires JavaScript | Status: done / planned
 
 | Component | Description | JS needed | Status |
 |-----------|-------------|-----------|--------|
-| Badge | Small status label with variants | No | planned |
-| Avatar | User avatar with image fallback and initials | No | planned |
-| Card | Container with header, content, and footer slots | No | planned |
-| Separator | Horizontal or vertical divider line | No | planned |
-| Label | Accessible form label | No | planned |
-| Skeleton | Loading placeholder with pulse animation | No | planned |
-| Progress | Progress bar with value prop | No | planned |
-| Aspect Ratio | Constrains child content to a given aspect ratio | No | planned |
+| Badge | Small status label with variants | No | done |
+| Avatar | User avatar with image fallback and initials | No | done |
+| Card | Container with header, content, and footer slots | No | done |
+| Separator | Horizontal or vertical divider line | No | done |
+| Label | Accessible form label | No | done |
+| Skeleton | Loading placeholder with pulse animation | No | done |
+| Progress | Progress bar with value prop | No | done |
+| Aspect Ratio | Constrains child content to a given aspect ratio | No | done |
+| Spinner | Animated loading spinner | No | done |
+| KBD | Keyboard shortcut key display (e.g. `Ctrl+K`) | No | done |
+| Rating | Star rating display | No | done |
+| Indicator | Status dot overlaid on another element (online, count, etc.) | No | done |
+| List Group | Bordered list of items with optional actions or links | No | done |
+| Banner | Dismissible announcement strip (top of page or sticky) | No | done |
+| Button Group | Visually joined row of buttons sharing a border | No | done |
 
 ## Phase 3 — Forms
 
@@ -43,6 +50,11 @@ Legend: JS = requires JavaScript | Status: done / planned
 | Toggle | Single pressable toggle button | No | planned |
 | Toggle Group | Group of related toggles (single or multiple selection) | No | planned |
 | Form | Wrapper that wires labels, inputs, and error messages together | No | planned |
+| File Input | Styled file upload input | No | planned |
+| Search Input | Input with built-in search icon and clear button | No | planned |
+| Number Input | Input with increment/decrement controls | No | planned |
+| Range | Styled range slider | No | planned |
+| Floating Label | Input with a floating placeholder label | No | planned |
 
 ## Phase 4 — Navigation
 
@@ -52,6 +64,11 @@ Legend: JS = requires JavaScript | Status: done / planned
 | Breadcrumb | Navigational breadcrumb with separator | No | planned |
 | Pagination | Page number links with prev/next controls | No | planned |
 | Navigation Menu | Top-level navigation with optional dropdown flyouts | Optional | planned |
+| Navbar | Responsive top navigation bar with branding and links | Optional | planned |
+| Footer | Page footer with columns, links, and copyright | No | planned |
+| Bottom Navigation | Mobile-style tab bar fixed to the bottom of the screen | No | planned |
+| Mega Menu | Full-width dropdown panel with grouped links and images | Yes | planned |
+| Stepper | Multi-step progress indicator for wizards and flows | No | planned |
 
 ## Phase 5 — Overlays
 
@@ -81,6 +98,7 @@ Legend: JS = requires JavaScript | Status: done / planned
 |-----------|-------------|-----------|--------|
 | Calendar | Date picker calendar grid | Yes | planned |
 | Date Picker | Input that opens a Calendar popover | Yes | planned |
+| Timepicker | Input for selecting a time value | Yes | planned |
 | Carousel | Scrollable item carousel with prev/next controls | Yes | planned |
 | Data Table | Sortable, filterable table with pagination | Yes | planned |
 | Sidebar | Collapsible application sidebar with nav groups | Yes | planned |
@@ -88,6 +106,11 @@ Legend: JS = requires JavaScript | Status: done / planned
 | Collapsible | Single collapsible section (simpler than Accordion) | No | planned |
 | Resizable | Drag-to-resize panel layout | Yes | planned |
 | Scroll Area | Custom scrollbar container | No | planned |
+| Gallery | Responsive image grid with optional lightbox | Yes | planned |
+| Chat Bubble | Styled message bubble for chat or comment threads | No | planned |
+| Speed Dial | Floating action button that expands into sub-actions | Yes | planned |
+| Device Mockup | Phone or browser frame for marketing screenshots | No | planned |
+| QR Code | QR code display from a given value | No | planned |
 
 ## Phase 8 — Advanced
 
@@ -96,3 +119,4 @@ Legend: JS = requires JavaScript | Status: done / planned
 | Chart | Wrapper for charting (line, bar, pie) via a JS adapter | Yes | planned |
 | Sonner (Toast) | Stacked toast notifications | Yes | planned |
 | Timeline | Vertical timeline with event items | No | planned |
+| WYSIWYG | Rich text editor wrapper (e.g. Trix or Quill adapter) | Yes | planned |
