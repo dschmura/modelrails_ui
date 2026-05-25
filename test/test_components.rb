@@ -47,6 +47,7 @@ load_tt "progress/progress_component.rb.tt"
 load_tt "aspect_ratio/aspect_ratio_component.rb.tt"
 
 # Load Phase 2 — new
+load_tt "rating_input/rating_input_component.rb.tt"
 load_tt "spinner/spinner_component.rb.tt"
 load_tt "kbd/kbd_component.rb.tt"
 load_tt "rating/rating_component.rb.tt"
@@ -374,6 +375,84 @@ class TestProgressComponent < Minitest::Test
     c = UI::ProgressComponent.new(value: 3, max: 10)
 
     assert_in_delta 30.0, c.instance_variable_get(:@pct)
+  end
+end
+
+class TestRatingInputComponent < Minitest::Test
+  def test_value_stored
+    c = UI::RatingInputComponent.new(value: 3)
+
+    assert_equal 3, c.instance_variable_get(:@value)
+  end
+
+  def test_value_clamped_above_max
+    c = UI::RatingInputComponent.new(value: 10, max: 5)
+
+    assert_equal 5, c.instance_variable_get(:@value)
+  end
+
+  def test_value_clamped_below_zero
+    c = UI::RatingInputComponent.new(value: -1)
+
+    assert_equal 0, c.instance_variable_get(:@value)
+  end
+
+  def test_value_is_integer
+    c = UI::RatingInputComponent.new(value: 3.9)
+
+    assert_equal 3, c.instance_variable_get(:@value)
+  end
+
+  def test_default_max
+    c = UI::RatingInputComponent.new
+
+    assert_equal 5, c.instance_variable_get(:@max)
+  end
+
+  def test_name_stored
+    c = UI::RatingInputComponent.new(name: "review[rating]")
+
+    assert_equal "review[rating]", c.instance_variable_get(:@name)
+  end
+
+  def test_name_nil_by_default
+    c = UI::RatingInputComponent.new
+
+    assert_nil c.instance_variable_get(:@name)
+  end
+
+  def test_url_stored
+    c = UI::RatingInputComponent.new(url: "/posts/1/rate")
+
+    assert_equal "/posts/1/rate", c.instance_variable_get(:@url)
+  end
+
+  def test_url_nil_by_default
+    c = UI::RatingInputComponent.new
+
+    assert_nil c.instance_variable_get(:@url)
+  end
+
+  def test_controller_data_always_includes_value
+    c = UI::RatingInputComponent.new(value: 4)
+    data = c.send(:controller_data)
+
+    assert_equal "rating", data[:controller]
+    assert_equal 4, data[:rating_value_value]
+  end
+
+  def test_controller_data_excludes_url_when_nil
+    c = UI::RatingInputComponent.new
+    data = c.send(:controller_data)
+
+    refute data.key?(:rating_url_value)
+  end
+
+  def test_controller_data_includes_url_when_set
+    c = UI::RatingInputComponent.new(url: "/rate")
+    data = c.send(:controller_data)
+
+    assert_equal "/rate", data[:rating_url_value]
   end
 end
 

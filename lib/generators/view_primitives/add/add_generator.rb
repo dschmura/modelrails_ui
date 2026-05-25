@@ -14,7 +14,7 @@ module ViewPrimitives
       SUPPORTED_COMPONENTS = %w[
         button alert accordion
         badge avatar card separator label skeleton progress aspect_ratio
-        spinner kbd rating indicator list_group banner button_group
+        spinner kbd rating rating_input indicator list_group banner button_group
       ].freeze
 
       def copy_components
@@ -50,16 +50,24 @@ module ViewPrimitives
       end
 
       def copy_accordion_controller
+        copy_js_controller "accordion/accordion_controller.js", "accordion"
+      end
+
+      def copy_rating_controller
+        copy_js_controller "rating_input/rating_controller.js", "rating"
+      end
+
+      def copy_js_controller(source, name)
         dir = js_controllers_dir
 
         unless dir
           say "  Could not detect a JS controllers directory.", :yellow
-          say "  Manually copy accordion_controller.js to your controllers folder", :cyan
-          say "  and register it: application.register('accordion', AccordionController)\n", :cyan
+          say "  Manually copy #{name}_controller.js to your controllers folder", :cyan
+          say "  and register it: application.register('#{name}', #{name.capitalize}Controller)\n", :cyan
           return
         end
 
-        copy_file "accordion/accordion_controller.js", "#{dir}/accordion_controller.js"
+        copy_file source, "#{dir}/#{name}_controller.js"
       end
 
       def copy_badge
@@ -125,6 +133,12 @@ module ViewPrimitives
       def copy_rating
         template "rating/rating_component.rb.tt",
           "app/components/ui/rating_component.rb"
+      end
+
+      def copy_rating_input
+        template "rating_input/rating_input_component.rb.tt",
+          "app/components/ui/rating_input_component.rb"
+        copy_rating_controller
       end
 
       def copy_indicator

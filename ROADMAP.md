@@ -31,7 +31,8 @@ Legend: JS = requires JavaScript | Status: done / planned
 | Aspect Ratio | Constrains child content to a given aspect ratio | No | done |
 | Spinner | Animated loading spinner | No | done |
 | KBD | Keyboard shortcut key display (e.g. `Ctrl+K`) | No | done |
-| Rating | Star rating display | No | done |
+| Rating | Read-only star rating display | No | done |
+| Rating Input | Interactive star rating — click to select, submits via form or AJAX | Yes | done |
 | Indicator | Status dot overlaid on another element (online, count, etc.) | No | done |
 | List Group | Bordered list of items with optional actions or links | No | done |
 | Banner | Dismissible announcement strip (top of page or sticky) | No | done |

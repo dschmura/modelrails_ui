@@ -90,6 +90,7 @@ ViewPrimitives automatically adds two helpers to all views:
 | Spinner | Animated loading indicator | [docs](docs/components/spinner.md) |
 | KBD | Keyboard shortcut key display | [docs](docs/components/kbd.md) |
 | Rating | Read-only star rating display | [docs](docs/components/rating.md) |
+| Rating Input | Interactive star rating — form or AJAX submission | [docs](docs/components/rating_input.md) |
 | Indicator | Status dot or count badge overlaid on an element | [docs](docs/components/indicator.md) |
 | List Group | Bordered list with optional links and active state | [docs](docs/components/list_group.md) |
 | Banner | Styled announcement strip with variants | [docs](docs/components/banner.md) |

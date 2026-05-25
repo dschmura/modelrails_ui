@@ -6,7 +6,7 @@ class TestGeneratorComponents < Minitest::Test
   PHASE1 = %w[button alert accordion].freeze
   PHASE2 = %w[
     badge avatar card separator label skeleton progress aspect_ratio
-    spinner kbd rating indicator list_group banner button_group
+    spinner kbd rating rating_input indicator list_group banner button_group
   ].freeze
   ALL_COMPONENTS = (PHASE1 + PHASE2).freeze
 
@@ -91,5 +91,11 @@ class TestGeneratorComponents < Minitest::Test
 
     assert_operator files.size, :>=, 2,
       "list_group should have list_group_component and list_group_item_component templates"
+  end
+
+  def test_rating_input_has_js_controller
+    js_file = File.join(TEMPLATE_ROOT, "rating_input", "rating_controller.js")
+
+    assert_path_exists js_file, "rating_input should include rating_controller.js"
   end
 end
