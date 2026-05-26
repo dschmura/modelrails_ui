@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative "../components"
 require_relative "../detector"
 
 module ViewPrimitives
@@ -11,244 +12,86 @@ module ViewPrimitives
 
       argument :components, type: :array
 
-      SUPPORTED_COMPONENTS = %w[
-        button alert accordion
-        badge avatar card separator label skeleton progress aspect_ratio
-        spinner kbd rating rating_input indicator list_group banner button_group
-        input textarea checkbox radio_group select switch toggle toggle_group form_field
-        breadcrumb pagination stepper bottom_nav footer tabs navbar
-      ].freeze
-
       def copy_components
-        components.each do |component|
-          if SUPPORTED_COMPONENTS.include?(component)
-            send(:"copy_#{component}")
+        @copied = []
+        @unknown = []
+
+        components.each do |name|
+          if Components.supported.include?(name)
+            copy_component(name)
+            @copied << name
           else
-            say "  Unknown component: #{component}. Supported: #{SUPPORTED_COMPONENTS.join(", ")}", :red
+            @unknown << name
+            say "  Unknown component: #{name}. Supported: #{Components.supported.join(", ")}", :red
           end
         end
       end
 
+      def report_summary
+        say "" if @copied&.any? || @unknown&.any?
+        say "  Copied: #{@copied.join(", ")}", :green if @copied&.any?
+        return if @unknown.blank?
+
+        say "  Failed: #{@unknown.join(", ")} (unknown)", :red
+        say "  Run `rails g view_primitives:list` to see all available components.", :cyan
+        abort
+      end
+
+      def template(source, *args, **options, &block)
+        destination = args.first || options[:to]
+        warn_overwrite(destination) if destination
+        super
+      end
+
+      def copy_file(source, *args, **options)
+        destination = args.first || options[:to]
+        warn_overwrite(destination) if destination
+        super
+      end
+
       private
 
-      def copy_button
-        template "button/button_component.rb.tt",
-          "app/components/ui/button_component.rb"
+      def copy_component(name)
+        dir = File.join(source_root, name)
+        Dir.each_child(dir).sort.each { |file| copy_template_file(name, file) }
+        copy_extra_stimulus(name)
       end
 
-      def copy_alert
-        template "alert/alert_component.rb.tt",
-          "app/components/ui/alert_component.rb"
+      def copy_template_file(component, file)
+        source = "#{component}/#{file}"
+
+        case file
+        when /\.rb\.tt\z/
+          template source, "app/components/ui/#{file.delete_suffix(".tt")}"
+        when /\.html\.erb\z/
+          copy_file source, "app/components/ui/#{file}"
+        when /_controller\.js\z/
+          copy_js_controller source, file.delete_suffix("_controller.js")
+        end
       end
 
-      def copy_accordion
-        template "accordion/accordion_component.rb.tt",
-          "app/components/ui/accordion_component.rb"
-        template "accordion/accordion_item_component.rb.tt",
-          "app/components/ui/accordion_item_component.rb"
-        copy_file "accordion/accordion_component.html.erb",
-          "app/components/ui/accordion_component.html.erb"
-        copy_accordion_controller
+      def copy_extra_stimulus(name)
+        config = Components::EXTRA_STIMULUS[name]
+        copy_js_controller(config[:source], config[:name]) if config
       end
 
-      def copy_accordion_controller
-        copy_js_controller "accordion/accordion_controller.js", "accordion"
-      end
-
-      def copy_rating_controller
-        copy_js_controller "rating_input/rating_controller.js", "rating"
-      end
-
-      def copy_js_controller(source, name)
+      def copy_js_controller(source, stimulus_name)
         dir = js_controllers_dir
-
         unless dir
           say "  Could not detect a JS controllers directory.", :yellow
-          say "  Manually copy #{name}_controller.js to your controllers folder", :cyan
-          say "  and register it: application.register('#{name}', #{name.capitalize}Controller)\n", :cyan
+          say "  Copy #{source} manually and register Stimulus `#{stimulus_name}`.", :cyan
           return
         end
 
-        copy_file source, "#{dir}/#{name}_controller.js"
+        dest = "#{dir}/#{stimulus_name}_controller.js"
+        copy_file source, dest
+        say "  Stimulus `#{stimulus_name}` → #{dest}", :green
       end
 
-      def copy_badge
-        template "badge/badge_component.rb.tt",
-          "app/components/ui/badge_component.rb"
-      end
+      def warn_overwrite(destination)
+        return unless File.exist?(File.join(destination_root, destination))
 
-      def copy_avatar
-        template "avatar/avatar_component.rb.tt",
-          "app/components/ui/avatar_component.rb"
-      end
-
-      def copy_card
-        template "card/card_component.rb.tt",
-          "app/components/ui/card_component.rb"
-        template "card/card_header_component.rb.tt",
-          "app/components/ui/card_header_component.rb"
-        template "card/card_title_component.rb.tt",
-          "app/components/ui/card_title_component.rb"
-        template "card/card_description_component.rb.tt",
-          "app/components/ui/card_description_component.rb"
-        template "card/card_content_component.rb.tt",
-          "app/components/ui/card_content_component.rb"
-        template "card/card_footer_component.rb.tt",
-          "app/components/ui/card_footer_component.rb"
-      end
-
-      def copy_separator
-        template "separator/separator_component.rb.tt",
-          "app/components/ui/separator_component.rb"
-      end
-
-      def copy_label
-        template "label/label_component.rb.tt",
-          "app/components/ui/label_component.rb"
-      end
-
-      def copy_skeleton
-        template "skeleton/skeleton_component.rb.tt",
-          "app/components/ui/skeleton_component.rb"
-      end
-
-      def copy_progress
-        template "progress/progress_component.rb.tt",
-          "app/components/ui/progress_component.rb"
-      end
-
-      def copy_aspect_ratio
-        template "aspect_ratio/aspect_ratio_component.rb.tt",
-          "app/components/ui/aspect_ratio_component.rb"
-      end
-
-      def copy_spinner
-        template "spinner/spinner_component.rb.tt",
-          "app/components/ui/spinner_component.rb"
-      end
-
-      def copy_kbd
-        template "kbd/kbd_component.rb.tt",
-          "app/components/ui/kbd_component.rb"
-      end
-
-      def copy_rating
-        template "rating/rating_component.rb.tt",
-          "app/components/ui/rating_component.rb"
-      end
-
-      def copy_rating_input
-        template "rating_input/rating_input_component.rb.tt",
-          "app/components/ui/rating_input_component.rb"
-        copy_rating_controller
-      end
-
-      def copy_indicator
-        template "indicator/indicator_component.rb.tt",
-          "app/components/ui/indicator_component.rb"
-      end
-
-      def copy_list_group
-        template "list_group/list_group_component.rb.tt",
-          "app/components/ui/list_group_component.rb"
-        template "list_group/list_group_item_component.rb.tt",
-          "app/components/ui/list_group_item_component.rb"
-      end
-
-      def copy_banner
-        template "banner/banner_component.rb.tt",
-          "app/components/ui/banner_component.rb"
-      end
-
-      def copy_button_group
-        template "button_group/button_group_component.rb.tt",
-          "app/components/ui/button_group_component.rb"
-      end
-
-      def copy_input
-        template "input/input_component.rb.tt",
-          "app/components/ui/input_component.rb"
-      end
-
-      def copy_textarea
-        template "textarea/textarea_component.rb.tt",
-          "app/components/ui/textarea_component.rb"
-      end
-
-      def copy_checkbox
-        template "checkbox/checkbox_component.rb.tt",
-          "app/components/ui/checkbox_component.rb"
-      end
-
-      def copy_radio_group
-        template "radio_group/radio_group_component.rb.tt",
-          "app/components/ui/radio_group_component.rb"
-      end
-
-      def copy_select
-        template "select/select_component.rb.tt",
-          "app/components/ui/select_component.rb"
-      end
-
-      def copy_switch
-        template "switch/switch_component.rb.tt",
-          "app/components/ui/switch_component.rb"
-      end
-
-      def copy_toggle
-        template "toggle/toggle_component.rb.tt",
-          "app/components/ui/toggle_component.rb"
-      end
-
-      def copy_toggle_group
-        template "toggle_group/toggle_group_component.rb.tt",
-          "app/components/ui/toggle_group_component.rb"
-      end
-
-      def copy_form_field
-        template "form_field/form_field_component.rb.tt",
-          "app/components/ui/form_field_component.rb"
-      end
-
-      def copy_breadcrumb
-        template "breadcrumb/breadcrumb_component.rb.tt",
-          "app/components/ui/breadcrumb_component.rb"
-      end
-
-      def copy_pagination
-        template "pagination/pagination_component.rb.tt",
-          "app/components/ui/pagination_component.rb"
-      end
-
-      def copy_stepper
-        template "stepper/stepper_component.rb.tt",
-          "app/components/ui/stepper_component.rb"
-      end
-
-      def copy_bottom_nav
-        template "bottom_nav/bottom_nav_component.rb.tt",
-          "app/components/ui/bottom_nav_component.rb"
-      end
-
-      def copy_footer
-        template "footer/footer_component.rb.tt",
-          "app/components/ui/footer_component.rb"
-      end
-
-      def copy_tabs
-        template "tabs/tabs_component.rb.tt",
-          "app/components/ui/tabs_component.rb"
-        template "tabs/tabs_item_component.rb.tt",
-          "app/components/ui/tabs_item_component.rb"
-        copy_file "tabs/tabs_component.html.erb",
-          "app/components/ui/tabs_component.html.erb"
-        copy_js_controller "tabs/tabs_controller.js", "tabs"
-      end
-
-      def copy_navbar
-        template "navbar/navbar_component.rb.tt",
-          "app/components/ui/navbar_component.rb"
-        copy_js_controller "navbar/navbar_controller.js", "navbar"
+        say "  #{destination} already exists — overwriting.", :yellow
       end
     end
   end

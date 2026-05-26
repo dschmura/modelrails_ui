@@ -10,32 +10,26 @@ class TestGeneratorComponents < Minitest::Test
   ].freeze
   PHASE3 = %w[input textarea checkbox radio_group select switch toggle toggle_group form_field].freeze
   PHASE4 = %w[breadcrumb pagination stepper bottom_nav footer tabs navbar].freeze
-  ALL_COMPONENTS = (PHASE1 + PHASE2 + PHASE3 + PHASE4).freeze
+  PHASE5 = %w[dialog alert_dialog sheet drawer popover tooltip hover_card].freeze
+  ALL_COMPONENTS = (PHASE1 + PHASE2 + PHASE3 + PHASE4 + PHASE5).freeze
 
   TEMPLATE_ROOT = File.expand_path("../lib/generators/view_primitives/add/templates", __dir__)
 
-  def generator_source
-    @generator_source ||= File.read(
-      File.expand_path("../lib/generators/view_primitives/add/add_generator.rb", __dir__)
-    )
+  def supported_components
+    @supported_components ||= ViewPrimitives::Generators::Components.supported
   end
-
-  # --- SUPPORTED_COMPONENTS list -----------------------------------------
 
   def test_all_components_are_in_supported_list
     ALL_COMPONENTS.each do |component|
-      assert_match(/\b#{Regexp.escape(component)}\b/, generator_source,
-        "#{component} missing from SUPPORTED_COMPONENTS")
+      assert_includes supported_components, component,
+        "#{component} missing from template directories"
     end
   end
 
-  # --- copy_* methods -------------------------------------------------------
+  def test_supported_has_no_extra_directories
+    extras = supported_components - ALL_COMPONENTS
 
-  def test_all_components_have_a_copy_method
-    ALL_COMPONENTS.each do |component|
-      assert_match(/def copy_#{Regexp.escape(component)}\b/, generator_source,
-        "copy_#{component} method missing from AddGenerator")
-    end
+    assert_empty extras, "Unexpected template directories: #{extras.join(", ")}"
   end
 
   # --- template directories and files --------------------------------------
@@ -121,5 +115,20 @@ class TestGeneratorComponents < Minitest::Test
   def test_navbar_has_js_controller
     assert_path_exists File.join(TEMPLATE_ROOT, "navbar", "navbar_controller.js"),
       "navbar should include navbar_controller.js"
+  end
+
+  def test_dialog_has_js_controller
+    assert_path_exists File.join(TEMPLATE_ROOT, "dialog", "dialog_controller.js"),
+      "dialog should include dialog_controller.js"
+  end
+
+  def test_sheet_has_js_controller
+    assert_path_exists File.join(TEMPLATE_ROOT, "sheet", "sheet_controller.js"),
+      "sheet should include sheet_controller.js"
+  end
+
+  def test_popover_has_js_controller
+    assert_path_exists File.join(TEMPLATE_ROOT, "popover", "popover_controller.js"),
+      "popover should include popover_controller.js"
   end
 end

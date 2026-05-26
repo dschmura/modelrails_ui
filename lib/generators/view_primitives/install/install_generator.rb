@@ -9,6 +9,14 @@ module ViewPrimitives
 
       source_root File.expand_path("templates", __dir__)
 
+      def verify_ui_inflection
+        return if "ui/button".camelize == "UI::ButtonComponent"
+
+        say "\n  Warning: ActiveSupport inflection for `UI` is not configured.", :yellow
+        say "  ViewPrimitives expects `ui/button` to resolve to `UI::ButtonComponent`.", :yellow
+        say "  The gem registers this automatically — restart the Rails server if you just installed.\n", :yellow
+      end
+
       def create_application_component
         target = "app/components/application_component.rb"
 
@@ -30,7 +38,8 @@ module ViewPrimitives
           say "\n  Could not detect a Tailwind CSS entry point.", :yellow
           say "  Add this line to your main CSS file:\n"
           say "    @import \"./view_primitives\";\n"
-          say "  Common locations: app/assets/tailwind/application.css, app/javascript/application.css\n", :cyan
+          say "  Common locations: app/assets/tailwind/application.css, " \
+              "app/assets/stylesheets/application.tailwind.css, app/javascript/application.css\n", :cyan
           return
         end
 

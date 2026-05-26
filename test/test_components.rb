@@ -12,6 +12,8 @@ module ViewComponent
     def self.renders_many(name, *) = nil
     def self.renders_one(name, *) = nil
     def initialize(*args, **kwargs, &block) = nil
+
+    def content = ""
   end
 end
 
@@ -164,6 +166,48 @@ class TestButtonComponent < Minitest::Test
     c = UI::ButtonComponent.new(class: "w-full")
 
     assert_includes c.send(:component_classes), "w-full"
+  end
+
+  def test_call_sets_type_button_by_default
+    c = UI::ButtonComponent.new("Save")
+    captured = {}
+
+    c.define_singleton_method(:content_tag) do |_tag, _body, **attrs|
+      captured.replace(attrs)
+      ""
+    end
+
+    c.call
+
+    assert_equal "button", captured[:type]
+  end
+
+  def test_call_preserves_explicit_type
+    c = UI::ButtonComponent.new("Submit", type: "submit")
+    captured = {}
+
+    c.define_singleton_method(:content_tag) do |_tag, _body, **attrs|
+      captured.replace(attrs)
+      ""
+    end
+
+    c.call
+
+    assert_equal "submit", captured[:type]
+  end
+
+  def test_call_does_not_set_type_on_link
+    c = UI::ButtonComponent.new("Home", href: "/")
+    captured = {}
+
+    c.define_singleton_method(:content_tag) do |_tag, _body, **attrs|
+      captured.replace(attrs)
+      ""
+    end
+
+    c.call
+
+    refute captured.key?(:type)
   end
 end
 

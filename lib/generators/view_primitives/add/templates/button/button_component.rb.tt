@@ -44,7 +44,10 @@ module UI
 
     def call
       body = content.presence || @label
-      content_tag(@tag || :button, body, **@html_attrs.merge(class: component_classes))
+      tag = @tag || :button
+      attrs = @html_attrs.merge(class: component_classes)
+      attrs[:type] ||= "button" if tag == :button && !attrs.key?(:type)
+      content_tag(tag, body, **attrs)
     end
 
     private

@@ -3,19 +3,18 @@
 module ViewPrimitives
   class Railtie < Rails::Railtie
     initializer "view_primitives.inflections" do
-      ActiveSupport::Inflector.inflections(:en) do |inflect|
-        inflect.acronym "UI"
-      end
+      ActiveSupport::Inflector.inflections(:en) { |inflect| inflect.acronym "UI" }
     end
 
     generators do
-      require "generators/view_primitives/install/install_generator"
-      require "generators/view_primitives/add/add_generator"
+      %w[install add list].each do |gen|
+        require "generators/view_primitives/#{gen}/#{gen}_generator"
+      end
     end
 
     initializer "view_primitives.component_helper" do
-      ActiveSupport.on_load(:action_view) do
-        include ViewPrimitives::ComponentHelper
+      %i[action_view action_mailer].each do |hook|
+        ActiveSupport.on_load(hook) { include ViewPrimitives::ComponentHelper }
       end
     end
   end
