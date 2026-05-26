@@ -45,4 +45,27 @@ class TestComponentHelper < Minitest::Test
   def test_component_not_found_error_is_a_view_primitives_error
     assert_operator ViewPrimitives::ComponentNotFoundError, :<, ViewPrimitives::Error
   end
+
+  def test_ui_accepts_symbol
+    error = assert_raises(ViewPrimitives::ComponentNotFoundError) do
+      ui(:missing_thing)
+    end
+
+    assert_match "UI::MissingThingComponent", error.message
+  end
+
+  def test_component_accepts_symbol
+    error = assert_raises(ViewPrimitives::ComponentNotFoundError) do
+      component(:nonexistent)
+    end
+
+    assert_match "NonexistentComponent", error.message
+  end
+
+  def test_ui_symbol_and_string_resolve_same_class
+    symbol_error = assert_raises(ViewPrimitives::ComponentNotFoundError) { ui(:ghost) }
+    string_error = assert_raises(ViewPrimitives::ComponentNotFoundError) { ui("ghost") }
+
+    assert_equal symbol_error.message, string_error.message
+  end
 end

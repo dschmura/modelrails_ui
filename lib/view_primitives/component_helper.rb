@@ -14,10 +14,12 @@ module ViewPrimitives
       render(resolve_component(name).new(*, **), &)
     end
 
-    # Shortcut for components in the Ui:: namespace.
+    # Shortcut for components in the UI:: namespace.
+    # Accepts a String or Symbol.
     #
     #   <%= ui "button", variant: :default do %>Click<% end %>
-    #   <%= ui "accordion_item", title: "FAQ" do %>Answer<% end %>
+    #   <%= ui :button, variant: :default do %>Click<% end %>
+    #   <%= ui :accordion_item, title: "FAQ" do %>Answer<% end %>
     #
     def ui(name, *, **, &)
       component("ui/#{name}", *, **, &)
