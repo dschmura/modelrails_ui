@@ -89,11 +89,11 @@ Legend: JS = requires JavaScript | Status: done / planned
 
 | Component | Description | JS needed | Status |
 |-----------|-------------|-----------|--------|
-| Dropdown Menu | Trigger-anchored menu with items, sub-menus, and separators | Yes | planned |
-| Context Menu | Right-click context menu | Yes | planned |
-| Menubar | Horizontal application-style menu bar | Yes | planned |
-| Command | Command palette / search interface | Yes | planned |
-| Combobox | Autocomplete select with search | Yes | planned |
+| Dropdown Menu | Trigger-anchored menu with items, sub-menus, and separators | Yes | done |
+| Context Menu | Right-click context menu | Yes | done |
+| Menubar | Horizontal application-style menu bar | Yes | done |
+| Command | Command palette / search interface | Yes | done |
+| Combobox | Autocomplete select with search | Yes | done |
 
 ## Phase 7 — Complex
 

@@ -11,7 +11,8 @@ class TestGeneratorComponents < Minitest::Test
   PHASE3 = %w[input textarea checkbox radio_group select switch toggle toggle_group form_field].freeze
   PHASE4 = %w[breadcrumb pagination stepper bottom_nav footer tabs navbar].freeze
   PHASE5 = %w[dialog alert_dialog sheet drawer popover tooltip hover_card].freeze
-  ALL_COMPONENTS = (PHASE1 + PHASE2 + PHASE3 + PHASE4 + PHASE5).freeze
+  PHASE6 = %w[dropdown_menu context_menu menubar command combobox].freeze
+  ALL_COMPONENTS = (PHASE1 + PHASE2 + PHASE3 + PHASE4 + PHASE5 + PHASE6).freeze
 
   TEMPLATE_ROOT = File.expand_path("../lib/generators/view_primitives/add/templates", __dir__)
 
@@ -130,5 +131,37 @@ class TestGeneratorComponents < Minitest::Test
   def test_popover_has_js_controller
     assert_path_exists File.join(TEMPLATE_ROOT, "popover", "popover_controller.js"),
       "popover should include popover_controller.js"
+  end
+
+  def test_dropdown_menu_has_js_controller
+    assert_path_exists File.join(TEMPLATE_ROOT, "dropdown_menu", "dropdown_controller.js"),
+      "dropdown_menu should include dropdown_controller.js"
+  end
+
+  def test_context_menu_has_js_controller
+    assert_path_exists File.join(TEMPLATE_ROOT, "context_menu", "context_menu_controller.js"),
+      "context_menu should include context_menu_controller.js"
+  end
+
+  def test_menubar_copies_two_rb_tt_files
+    files = Dir[File.join(TEMPLATE_ROOT, "menubar", "*.rb.tt")]
+
+    assert_operator files.size, :>=, 2,
+      "menubar should have menubar_component and menubar_menu_component templates"
+  end
+
+  def test_menubar_has_js_controller
+    assert_path_exists File.join(TEMPLATE_ROOT, "menubar", "menubar_controller.js"),
+      "menubar should include menubar_controller.js"
+  end
+
+  def test_command_has_js_controller
+    assert_path_exists File.join(TEMPLATE_ROOT, "command", "command_controller.js"),
+      "command should include command_controller.js"
+  end
+
+  def test_combobox_has_js_controller
+    assert_path_exists File.join(TEMPLATE_ROOT, "combobox", "combobox_controller.js"),
+      "combobox should include combobox_controller.js"
   end
 end

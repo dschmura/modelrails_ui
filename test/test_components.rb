@@ -59,6 +59,14 @@ load_tt "toggle/toggle_component.rb.tt"
 load_tt "toggle_group/toggle_group_component.rb.tt"
 load_tt "form_field/form_field_component.rb.tt"
 
+# Load Phase 6
+load_tt "dropdown_menu/dropdown_menu_component.rb.tt"
+load_tt "context_menu/context_menu_component.rb.tt"
+load_tt "menubar/menubar_component.rb.tt"
+load_tt "menubar/menubar_menu_component.rb.tt"
+load_tt "command/command_component.rb.tt"
+load_tt "combobox/combobox_component.rb.tt"
+
 # Load Phase 5
 load_tt "dialog/dialog_component.rb.tt"
 load_tt "alert_dialog/alert_dialog_component.rb.tt"
@@ -1443,5 +1451,132 @@ class TestHoverCardComponent < Minitest::Test
     c = UI::HoverCardComponent.new(class: "w-80")
 
     assert_equal "w-80", c.instance_variable_get(:@extra_class)
+  end
+end
+
+# ---------------------------------------------------------------------------
+# Phase 6 — Menus
+# ---------------------------------------------------------------------------
+
+class TestDropdownMenuComponent < Minitest::Test
+  def test_default_align
+    c = UI::DropdownMenuComponent.new
+
+    assert_equal :start, c.instance_variable_get(:@align)
+  end
+
+  def test_custom_align
+    c = UI::DropdownMenuComponent.new(align: :end)
+
+    assert_equal :end, c.instance_variable_get(:@align)
+  end
+
+  def test_item_constant_defined
+    assert_kind_of String, UI::DropdownMenuComponent::ITEM
+  end
+
+  def test_separator_constant_defined
+    assert_kind_of String, UI::DropdownMenuComponent::SEPARATOR
+  end
+
+  def test_class_extracted
+    c = UI::DropdownMenuComponent.new(class: "w-48")
+
+    assert_equal "w-48", c.instance_variable_get(:@extra_class)
+  end
+end
+
+class TestContextMenuComponent < Minitest::Test
+  def test_panel_constant_defined
+    assert_includes UI::ContextMenuComponent::PANEL, "fixed"
+  end
+
+  def test_class_extracted
+    c = UI::ContextMenuComponent.new(class: "h-40")
+
+    assert_equal "h-40", c.instance_variable_get(:@extra_class)
+  end
+end
+
+class TestMenubarComponent < Minitest::Test
+  def test_bar_constant_defined
+    assert_kind_of String, UI::MenubarComponent::BAR
+  end
+
+  def test_class_extracted
+    c = UI::MenubarComponent.new(class: "w-full")
+
+    assert_equal "w-full", c.instance_variable_get(:@extra_class)
+  end
+end
+
+class TestMenubarMenuComponent < Minitest::Test
+  def test_label_stored
+    c = UI::MenubarMenuComponent.new(label: "File")
+
+    assert_equal "File", c.instance_variable_get(:@label)
+  end
+
+  def test_trigger_constant_defined
+    assert_kind_of String, UI::MenubarMenuComponent::TRIGGER
+  end
+
+  def test_panel_constant_defined
+    assert_kind_of String, UI::MenubarMenuComponent::PANEL
+  end
+end
+
+class TestCommandComponent < Minitest::Test
+  def test_item_constant_defined
+    assert_kind_of String, UI::CommandComponent::ITEM
+  end
+
+  def test_group_constant_defined
+    assert_kind_of String, UI::CommandComponent::GROUP
+  end
+
+  def test_class_extracted
+    c = UI::CommandComponent.new(class: "max-w-sm")
+
+    assert_equal "max-w-sm", c.instance_variable_get(:@extra_class)
+  end
+end
+
+class TestComboboxComponent < Minitest::Test
+  def test_name_stored
+    c = UI::ComboboxComponent.new(name: "country")
+
+    assert_equal "country", c.instance_variable_get(:@name)
+  end
+
+  def test_default_placeholder
+    c = UI::ComboboxComponent.new(name: "x")
+
+    assert_equal "Select...", c.instance_variable_get(:@placeholder)
+  end
+
+  def test_custom_placeholder
+    c = UI::ComboboxComponent.new(name: "x", placeholder: "Pick one...")
+
+    assert_equal "Pick one...", c.instance_variable_get(:@placeholder)
+  end
+
+  def test_value_coerced_to_string
+    c = UI::ComboboxComponent.new(name: "x", value: 42)
+
+    assert_equal "42", c.instance_variable_get(:@value)
+  end
+
+  def test_nil_value_default
+    c = UI::ComboboxComponent.new(name: "x")
+
+    assert_nil c.instance_variable_get(:@value)
+  end
+
+  def test_options_stored
+    opts = [{value: "a", label: "Alpha"}]
+    c = UI::ComboboxComponent.new(name: "x", options: opts)
+
+    assert_equal opts, c.instance_variable_get(:@options)
   end
 end

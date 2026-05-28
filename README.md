@@ -2,6 +2,8 @@
 
 A [shadcn/ui](https://ui.shadcn.com)-inspired component library for Rails built on [ViewComponent](https://viewcomponent.org).
 
+> **Acknowledgements** — The visual design, CSS class choices, and component structure of ViewPrimitives are heavily inspired by [shadcn/ui](https://ui.shadcn.com) and its Svelte port [shadcn-svelte](https://www.shadcn-svelte.com). We are grateful to [@shadcn](https://github.com/shadcn) and all contributors for their outstanding open-source work. ViewPrimitives is an independent Rails adaptation and is not affiliated with or endorsed by the shadcn/ui project.
+
 Components are **copied into your app** via a generator — not imported from a package. Tailwind classes live in your own files, so any Tailwind setup works out of the box: `tailwindcss-rails`, `cssbundling-rails`, Vite, esbuild — no configuration required.
 
 ## Requirements
@@ -122,6 +124,11 @@ ViewPrimitives adds the `ui` helper to views and mailers:
 | Popover | Floating panel anchored to a trigger | — |
 | Tooltip | Hover label — CSS-only, no JS | — |
 | Hover Card | Rich hover preview card — CSS-only, no JS | — |
+| Dropdown Menu | Trigger-anchored menu with items and separators | `dropdown` |
+| Context Menu | Right-click context menu positioned at cursor | `context-menu` |
+| Menubar | Horizontal application-style menu bar | `menubar` |
+| Command | Modal command palette with live search filtering | `command` |
+| Combobox | Autocomplete select with live search | `combobox` |
 
 ### Coming soon
 
