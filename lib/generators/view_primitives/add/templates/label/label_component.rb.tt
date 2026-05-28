@@ -3,7 +3,8 @@
 module UI
   class LabelComponent < ApplicationComponent
     BASE = "flex items-center gap-2 text-sm leading-none font-medium select-none " \
-           "peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+           "group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 " \
+           "peer-disabled:cursor-not-allowed peer-disabled:opacity-50"
 
     def initialize(text = nil, for: nil, **html_attrs)
       @text = text || html_attrs.delete(:label)

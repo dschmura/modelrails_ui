@@ -2,7 +2,7 @@
 
 module UI
   class CardTitleComponent < ApplicationComponent
-    BASE = "leading-none font-semibold tracking-tight"
+    BASE = "leading-none font-semibold"
 
     def initialize(title = nil, **html_attrs)
       @title = title || html_attrs.delete(:label) || html_attrs.delete(:title)

@@ -8,21 +8,23 @@ module UI
     DIALOG  = "fixed left-[50%] top-[50%] z-50 w-full max-w-lg translate-x-[-50%] translate-y-[-50%] " \
               "overflow-hidden rounded-lg border bg-background shadow-lg"
     SEARCH  = "flex h-10 w-full items-center gap-2 border-b px-3"
-    LIST    = "max-h-[300px] overflow-y-auto overflow-x-hidden"
+    LIST    = "max-h-[300px] scroll-py-1 overflow-x-hidden overflow-y-auto"
     EMPTY   = "py-6 text-center text-sm text-muted-foreground"
 
     # Wrap each group of items in a div with this class.
-    GROUP_WRAPPER = "overflow-hidden p-1"
+    GROUP_WRAPPER = "overflow-hidden p-1 text-foreground"
     # Apply to the heading element (p/span) inside a group wrapper.
     GROUP         = "px-2 py-1.5 text-xs font-medium text-muted-foreground"
     # Apply to each actionable item button/link.
-    ITEM          = "relative flex w-full cursor-pointer select-none items-center gap-2 rounded-sm " \
-                    "px-2 py-1.5 text-sm outline-none transition-colors " \
-                    "hover:bg-accent hover:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0"
+    ITEM          = "relative flex w-full cursor-default select-none items-center gap-2 rounded-sm " \
+                    "px-2 py-1.5 text-sm outline-none " \
+                    "hover:bg-accent hover:text-accent-foreground " \
+                    "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 " \
+                    "[&_svg:not([class*='text-'])]:text-muted-foreground"
     # Place inside an ITEM as the last child to show a keyboard shortcut on the right.
     SHORTCUT      = "ml-auto text-xs tracking-widest text-muted-foreground"
     # Horizontal rule between groups (use a plain <hr> tag).
-    SEPARATOR     = "-mx-1 my-1 h-px bg-border"
+    SEPARATOR     = "-mx-1 h-px bg-border"
 
     def initialize(**html_attrs)
       @extra_class = html_attrs.delete(:class)

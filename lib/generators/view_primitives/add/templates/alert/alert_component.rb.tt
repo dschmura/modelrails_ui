@@ -2,13 +2,13 @@
 
 module UI
   class AlertComponent < ApplicationComponent
-    OUTER_CLASSES = "[&>svg]:text-current relative w-full rounded-lg border px-4 py-3 text-sm " \
-                    "grid has-[>svg]:grid-cols-[calc(var(--spacing)*4)_1fr] grid-cols-[0_1fr] " \
-                    "has-[>svg]:[&>div]:col-start-2 [&>svg]:row-start-1 [&>svg]:row-span-2"
+    OUTER_CLASSES = "relative grid w-full grid-cols-[0_1fr] items-start gap-y-0.5 rounded-lg border " \
+                    "px-4 py-3 text-sm has-[>svg]:grid-cols-[calc(var(--spacing)*4)_1fr] " \
+                    "has-[>svg]:gap-x-3 [&>svg]:size-4 [&>svg]:translate-y-0.5 [&>svg]:text-current"
 
     VARIANTS = {
       default: "bg-card text-card-foreground",
-      destructive: "text-destructive [&>svg]:text-current *:data-[slot=alert-description]:text-destructive/80"
+      destructive: "bg-card text-destructive [&>svg]:text-current *:data-[slot=alert-description]:text-destructive/90"
     }.freeze
 
     renders_one :alert_title, "UI::AlertComponent::TitleComponent"
@@ -25,6 +25,7 @@ module UI
 
     def call
       content_tag(:div, safe_join([resolved_title, resolved_description].compact),
+        role: "alert",
         class: cn(OUTER_CLASSES, VARIANTS.fetch(@variant, VARIANTS[:default])))
     end
 
@@ -37,7 +38,7 @@ module UI
     end
 
     class DescriptionComponent < ApplicationComponent
-      CLASSES = "col-start-2 grid justify-items-start gap-1 text-sm [&_p]:leading-relaxed"
+      CLASSES = "col-start-2 grid justify-items-start gap-1 text-sm text-muted-foreground [&_p]:leading-relaxed"
 
       def call
         content_tag(:div, content, class: CLASSES, data: { slot: "alert-description" })

@@ -5,10 +5,10 @@ module UI
     renders_one :trigger
     renders_one :footer
 
-    OVERLAY = "fixed inset-0 z-50 bg-black/80"
-    PANEL   = "fixed left-[50%] top-[50%] z-50 w-full max-w-lg " \
-              "translate-x-[-50%] translate-y-[-50%] " \
-              "rounded-lg border bg-background p-6 shadow-lg"
+    OVERLAY = "fixed inset-0 z-50 bg-black/50"
+    PANEL   = "fixed left-[50%] top-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] " \
+              "translate-x-[-50%] translate-y-[-50%] gap-4 " \
+              "rounded-lg border bg-background p-6 shadow-lg outline-none sm:max-w-lg"
 
     def initialize(title: nil, description: nil, **html_attrs)
       @title       = title

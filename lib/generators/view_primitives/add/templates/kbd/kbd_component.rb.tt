@@ -2,8 +2,9 @@
 
 module UI
   class KbdComponent < ApplicationComponent
-    BASE = "inline-flex items-center justify-center rounded border border-b-2 border-border " \
-           "bg-muted px-1.5 py-0.5 font-mono text-xs font-medium text-muted-foreground"
+    BASE = "pointer-events-none inline-flex h-5 w-fit min-w-5 items-center justify-center gap-1 " \
+           "rounded-sm bg-muted px-1 font-sans text-xs font-medium text-muted-foreground select-none " \
+           "[&_svg:not([class*='size-'])]:size-3"
 
     def initialize(key = nil, **html_attrs)
       @key = key || html_attrs.delete(:label)

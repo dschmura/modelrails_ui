@@ -15,7 +15,7 @@ module UI
 
     def call
       content_tag(:nav, "aria-label": "Breadcrumb", **@html_attrs) do
-        content_tag(:ol, class: cn("flex flex-wrap items-center gap-1.5 text-sm break-words", @extra_class)) do
+        content_tag(:ol, class: cn("flex flex-wrap items-center gap-1.5 text-sm break-words text-muted-foreground sm:gap-2.5", @extra_class)) do
           safe_join(@items.each_with_index.map { |item, i| crumb(item, i == @items.size - 1) })
         end
       end

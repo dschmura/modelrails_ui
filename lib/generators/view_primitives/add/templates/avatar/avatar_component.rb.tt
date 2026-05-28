@@ -3,9 +3,9 @@
 module UI
   class AvatarComponent < ApplicationComponent
     SIZES = { sm: "size-6", default: "size-8", lg: "size-12" }.freeze
-    BASE = "relative flex shrink-0 overflow-hidden rounded-full"
+    BASE = "relative flex shrink-0 overflow-hidden rounded-full select-none"
     IMAGE = "aspect-square size-full object-cover"
-    FALLBACK = "flex size-full items-center justify-center rounded-full bg-muted text-muted-foreground text-sm font-medium"
+    FALLBACK = "flex size-full items-center justify-center rounded-full bg-muted text-sm text-muted-foreground"
 
     def initialize(src: nil, alt: "", fallback: nil, size: :default, **html_attrs)
       @src = src

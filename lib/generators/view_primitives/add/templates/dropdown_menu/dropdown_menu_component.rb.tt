@@ -12,11 +12,13 @@ module UI
       end:   "top-full right-0 mt-1",
     }.freeze
 
-    ITEM      = "relative flex w-full cursor-pointer select-none items-center gap-2 rounded-sm " \
-                "px-2 py-1.5 text-sm outline-none transition-colors " \
-                "hover:bg-accent hover:text-accent-foreground [&_svg]:size-4"
-    SEPARATOR = "-mx-1 my-1 h-px bg-muted"
-    LABEL_CLS = "px-2 py-1.5 text-xs font-semibold text-muted-foreground"
+    ITEM      = "relative flex w-full cursor-default select-none items-center gap-2 rounded-sm " \
+                "px-2 py-1.5 text-sm outline-none " \
+                "hover:bg-accent hover:text-accent-foreground " \
+                "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 " \
+                "[&_svg:not([class*='text-'])]:text-muted-foreground"
+    SEPARATOR = "-mx-1 my-1 h-px bg-border"
+    LABEL_CLS = "px-2 py-1.5 text-sm font-medium"
 
     def initialize(align: :start, **html_attrs)
       @align       = align.to_sym

@@ -2,8 +2,8 @@
 
 module UI
   class ProgressComponent < ApplicationComponent
-    TRACK = "bg-secondary relative h-2 w-full overflow-hidden rounded-full"
-    BAR = "bg-primary h-full transition-all"
+    TRACK = "relative h-2 w-full overflow-hidden rounded-full bg-primary/20"
+    BAR = "h-full w-full flex-1 bg-primary transition-all"
 
     def initialize(value: 0, max: 100, **html_attrs)
       @value = value
