@@ -12,7 +12,8 @@ class TestGeneratorComponents < Minitest::Test
   PHASE4 = %w[breadcrumb pagination stepper bottom_nav footer tabs navbar].freeze
   PHASE5 = %w[dialog alert_dialog sheet drawer popover tooltip hover_card].freeze
   PHASE6 = %w[dropdown_menu context_menu menubar command combobox].freeze
-  ALL_COMPONENTS = (PHASE1 + PHASE2 + PHASE3 + PHASE4 + PHASE5 + PHASE6).freeze
+  PHASE9 = %w[image figure picture video audio iframe].freeze
+  ALL_COMPONENTS = (PHASE1 + PHASE2 + PHASE3 + PHASE4 + PHASE5 + PHASE6 + PHASE9).freeze
 
   TEMPLATE_ROOT = File.expand_path("../lib/generators/view_primitives/add/templates", __dir__)
 
@@ -163,5 +164,40 @@ class TestGeneratorComponents < Minitest::Test
   def test_combobox_has_js_controller
     assert_path_exists File.join(TEMPLATE_ROOT, "combobox", "combobox_controller.js"),
       "combobox should include combobox_controller.js"
+  end
+
+  # --- Phase 9 — Media & semantic HTML ------------------------------------
+
+  def test_picture_has_nested_source_template
+    source = File.read(File.join(TEMPLATE_ROOT, "picture", "picture_component.rb.tt"))
+
+    assert_includes source, "SourceComponent",
+      "picture_component should define a nested SourceComponent"
+  end
+
+  def test_video_has_nested_source_and_track
+    source = File.read(File.join(TEMPLATE_ROOT, "video", "video_component.rb.tt"))
+
+    assert_includes source, "SourceComponent"
+    assert_includes source, "TrackComponent"
+  end
+
+  def test_audio_has_nested_source_template
+    source = File.read(File.join(TEMPLATE_ROOT, "audio", "audio_component.rb.tt"))
+
+    assert_includes source, "SourceComponent",
+      "audio_component should define a nested SourceComponent"
+  end
+
+  def test_image_enforces_lazy_loading_default
+    source = File.read(File.join(TEMPLATE_ROOT, "image", "image_component.rb.tt"))
+
+    assert_includes source, "loading: :lazy"
+  end
+
+  def test_iframe_requires_title
+    source = File.read(File.join(TEMPLATE_ROOT, "iframe", "iframe_component.rb.tt"))
+
+    assert_includes source, "title:"
   end
 end

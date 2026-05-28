@@ -130,11 +130,11 @@ Native elements where a component prevents structural mistakes and encodes MDN-s
 
 | Component | Description | JS needed | Status |
 |-----------|-------------|-----------|--------|
-| Picture | `<picture>` + `<source>` (`media`, `srcset`, `sizes`, `type`) + fallback `<img>`; art direction & modern formats (AVIF/WebP) | No | planned |
-| Video | `<video>` + `<source>`; `poster`, `controls`, `preload`, `playsinline`; optional `<track>` for captions/subtitles | Optional | planned |
-| Figure | `<figure>` + `<figcaption>`; slot for image/video/picture child | No | planned |
-| Image | Standalone responsive `<img>` with `srcset` / `sizes` when `<picture>` is overkill | No | planned |
-| Audio | `<audio>` + `<source>`; `controls`, `preload`; optional transcript link | No | planned |
-| Iframe | Sandboxed embed wrapper; required `title`, optional `loading="lazy"` | No | planned |
-| Track | `<track>` helper (VTT captions/subtitles/chapters) for Video | No | planned |
+| Picture | `<picture>` + `<source>` (`media`, `srcset`, `sizes`, `type`) + fallback `<img>`; art direction & modern formats (AVIF/WebP) | No | done |
+| Video | `<video>` + `<source>`; `poster`, `controls`, `preload`, `playsinline`; `<track>` for captions/subtitles (nested component) | No | done |
+| Figure | `<figure>` + `<figcaption>`; slot for image/video/picture child | No | done |
+| Image | Standalone responsive `<img>` with `srcset` / `sizes` when `<picture>` is overkill | No | done |
+| Audio | `<audio>` + `<source>`; `controls`, `preload`; optional transcript link | No | done |
+| Iframe | Sandboxed embed wrapper; required `title`, optional `loading="lazy"` | No | done |
+| Track | `<track>` helper — nested inside VideoComponent (no standalone generator) | No | done |
 | Map / Area | Image map + clickable regions (rare; low priority) | No | planned |

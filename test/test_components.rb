@@ -97,6 +97,14 @@ load_tt "list_group/list_group_item_component.rb.tt"
 load_tt "banner/banner_component.rb.tt"
 load_tt "button_group/button_group_component.rb.tt"
 
+# Load Phase 9
+load_tt "image/image_component.rb.tt"
+load_tt "figure/figure_component.rb.tt"
+load_tt "picture/picture_component.rb.tt"
+load_tt "video/video_component.rb.tt"
+load_tt "audio/audio_component.rb.tt"
+load_tt "iframe/iframe_component.rb.tt"
+
 # ---------------------------------------------------------------------------
 
 class TestButtonComponent < Minitest::Test
@@ -1578,5 +1586,206 @@ class TestComboboxComponent < Minitest::Test
     c = UI::ComboboxComponent.new(name: "x", options: opts)
 
     assert_equal opts, c.instance_variable_get(:@options)
+  end
+end
+
+# ---------------------------------------------------------------------------
+# Phase 9 — Media & semantic HTML
+# ---------------------------------------------------------------------------
+
+class TestImageComponent < Minitest::Test
+  def test_base_class_present
+    assert_includes UI::ImageComponent::BASE, "max-w-full"
+  end
+
+  def test_required_src_and_alt
+    c = UI::ImageComponent.new(src: "photo.jpg", alt: "A photo")
+
+    assert_equal "photo.jpg", c.instance_variable_get(:@src)
+    assert_equal "A photo", c.instance_variable_get(:@alt)
+  end
+
+  def test_default_lazy_loading
+    c = UI::ImageComponent.new(src: "photo.jpg", alt: "Photo")
+
+    assert_equal :lazy, c.instance_variable_get(:@loading)
+  end
+
+  def test_eager_loading_accepted
+    c = UI::ImageComponent.new(src: "photo.jpg", alt: "Photo", loading: :eager)
+
+    assert_equal :eager, c.instance_variable_get(:@loading)
+  end
+
+  def test_invalid_loading_falls_back_to_lazy
+    c = UI::ImageComponent.new(src: "photo.jpg", alt: "Photo", loading: :instant)
+
+    assert_equal :lazy, c.instance_variable_get(:@loading)
+  end
+
+  def test_optional_srcset_stored
+    c = UI::ImageComponent.new(src: "photo.jpg", alt: "Photo", srcset: "photo-2x.jpg 2x")
+
+    assert_equal "photo-2x.jpg 2x", c.instance_variable_get(:@srcset)
+  end
+
+  def test_nil_srcset_by_default
+    c = UI::ImageComponent.new(src: "photo.jpg", alt: "Photo")
+
+    assert_nil c.instance_variable_get(:@srcset)
+  end
+end
+
+class TestFigureComponent < Minitest::Test
+  def test_caption_class_constant
+    assert_includes UI::FigureComponent::CAPTION, "text-muted-foreground"
+  end
+
+  def test_caption_stored
+    c = UI::FigureComponent.new(caption: "A sunset")
+
+    assert_equal "A sunset", c.instance_variable_get(:@caption)
+  end
+
+  def test_nil_caption_by_default
+    c = UI::FigureComponent.new
+
+    assert_nil c.instance_variable_get(:@caption)
+  end
+end
+
+class TestPictureComponent < Minitest::Test
+  def test_required_src_and_alt
+    c = UI::PictureComponent.new(src: "fallback.jpg", alt: "Photo")
+
+    assert_equal "fallback.jpg", c.instance_variable_get(:@src)
+    assert_equal "Photo", c.instance_variable_get(:@alt)
+  end
+
+  def test_default_lazy_loading
+    c = UI::PictureComponent.new(src: "f.jpg", alt: "Photo")
+
+    assert_equal :lazy, c.instance_variable_get(:@loading)
+  end
+
+  def test_source_component_stores_srcset
+    s = UI::PictureComponent::SourceComponent.new(srcset: "photo.avif", type: "image/avif")
+
+    assert_equal "photo.avif", s.instance_variable_get(:@srcset)
+    assert_equal "image/avif", s.instance_variable_get(:@type)
+  end
+
+  def test_source_optional_media
+    s = UI::PictureComponent::SourceComponent.new(srcset: "wide.jpg", media: "(min-width: 800px)")
+
+    assert_equal "(min-width: 800px)", s.instance_variable_get(:@media)
+  end
+end
+
+class TestVideoComponent < Minitest::Test
+  def test_base_class_present
+    assert_includes UI::VideoComponent::BASE, "max-w-full"
+  end
+
+  def test_controls_on_by_default
+    c = UI::VideoComponent.new
+
+    assert c.instance_variable_get(:@controls)
+  end
+
+  def test_playsinline_on_by_default
+    c = UI::VideoComponent.new
+
+    assert c.instance_variable_get(:@playsinline)
+  end
+
+  def test_autoplay_false_by_default
+    c = UI::VideoComponent.new
+
+    refute c.instance_variable_get(:@autoplay)
+  end
+
+  def test_source_component_stores_src_and_type
+    s = UI::VideoComponent::SourceComponent.new(src: "video.mp4", type: "video/mp4")
+
+    assert_equal "video.mp4", s.instance_variable_get(:@src)
+    assert_equal "video/mp4", s.instance_variable_get(:@type)
+  end
+
+  def test_track_component_defaults_to_subtitles
+    t = UI::VideoComponent::TrackComponent.new(src: "subs.vtt")
+
+    assert_equal :subtitles, t.instance_variable_get(:@kind)
+  end
+
+  def test_track_component_stores_label_and_srclang
+    t = UI::VideoComponent::TrackComponent.new(src: "subs.vtt", label: "English", srclang: "en")
+
+    assert_equal "English", t.instance_variable_get(:@label)
+    assert_equal "en", t.instance_variable_get(:@srclang)
+  end
+
+  def test_track_invalid_kind_falls_back_to_subtitles
+    t = UI::VideoComponent::TrackComponent.new(src: "subs.vtt", kind: :bogus)
+
+    assert_equal :subtitles, t.instance_variable_get(:@kind)
+  end
+end
+
+class TestAudioComponent < Minitest::Test
+  def test_controls_on_by_default
+    c = UI::AudioComponent.new
+
+    assert c.instance_variable_get(:@controls)
+  end
+
+  def test_autoplay_false_by_default
+    c = UI::AudioComponent.new
+
+    refute c.instance_variable_get(:@autoplay)
+  end
+
+  def test_source_component_stores_src_and_type
+    s = UI::AudioComponent::SourceComponent.new(src: "audio.mp3", type: "audio/mpeg")
+
+    assert_equal "audio.mp3", s.instance_variable_get(:@src)
+    assert_equal "audio/mpeg", s.instance_variable_get(:@type)
+  end
+end
+
+class TestIframeComponent < Minitest::Test
+  def test_base_class_present
+    assert_includes UI::IframeComponent::BASE, "w-full"
+  end
+
+  def test_required_src_and_title
+    c = UI::IframeComponent.new(src: "https://example.com", title: "Example")
+
+    assert_equal "https://example.com", c.instance_variable_get(:@src)
+    assert_equal "Example", c.instance_variable_get(:@title)
+  end
+
+  def test_default_lazy_loading
+    c = UI::IframeComponent.new(src: "https://example.com", title: "Example")
+
+    assert_equal :lazy, c.instance_variable_get(:@loading)
+  end
+
+  def test_sandbox_true_by_default
+    c = UI::IframeComponent.new(src: "https://example.com", title: "Example")
+
+    assert c.instance_variable_get(:@sandbox)
+  end
+
+  def test_nil_aspect_by_default
+    c = UI::IframeComponent.new(src: "https://example.com", title: "Example")
+
+    assert_nil c.instance_variable_get(:@aspect)
+  end
+
+  def test_aspect_ratio_stored
+    c = UI::IframeComponent.new(src: "https://example.com", title: "Example", aspect: "16/9")
+
+    assert_equal "16/9", c.instance_variable_get(:@aspect)
   end
 end
