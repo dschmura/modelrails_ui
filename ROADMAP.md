@@ -66,11 +66,11 @@ Legend: JS = requires JavaScript | Status: done / planned
 | Tabs | Tab bar with content panels (array API + slot API via Stimulus) | Yes | done |
 | Breadcrumb | Navigational breadcrumb with separator | No | done |
 | Pagination | Page number links with prev/next controls | No | done |
-| Navigation Menu | Top-level navigation with optional dropdown flyouts | Optional | planned |
+| Navigation Menu | Top-level navigation with optional dropdown flyouts | Optional | done |
 | Navbar | Responsive top navigation bar with branding and links | Yes | done |
 | Footer | Page footer with columns, links, and copyright | No | done |
 | Bottom Navigation | Mobile-style tab bar fixed to the bottom of the screen | No | done |
-| Mega Menu | Full-width dropdown panel with grouped links and images | Yes | planned |
+| Mega Menu | Full-width dropdown panel with grouped links and images | Yes | done |
 | Stepper | Multi-step progress indicator for wizards and flows | No | done |
 
 ## Phase 5 — Overlays

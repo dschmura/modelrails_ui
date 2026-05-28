@@ -90,6 +90,8 @@ load_tt "footer/footer_component.rb.tt"
 load_tt "tabs/tabs_component.rb.tt"
 load_tt "tabs/tabs_item_component.rb.tt"
 load_tt "navbar/navbar_component.rb.tt"
+load_tt "navigation_menu/navigation_menu_component.rb.tt"
+load_tt "mega_menu/mega_menu_component.rb.tt"
 
 # Load Phase 2 — new
 load_tt "rating_input/rating_input_component.rb.tt"
@@ -1902,5 +1904,56 @@ class TestFloatingLabelComponent < Minitest::Test
     c = UI::FloatingLabelComponent.new(label: "Email", id: "my-email", name: "email")
 
     assert_equal "my-email", c.instance_variable_get(:@id)
+  end
+end
+
+class TestNavigationMenuComponent < Minitest::Test
+  def test_item_stores_label_and_href
+    item = UI::NavigationMenuComponent::ItemComponent.new(label: "Docs", href: "/docs")
+
+    assert_equal "Docs", item.instance_variable_get(:@label)
+    assert_equal "/docs", item.instance_variable_get(:@href)
+  end
+
+  def test_item_active_defaults_to_false
+    item = UI::NavigationMenuComponent::ItemComponent.new(label: "Home")
+
+    refute item.instance_variable_get(:@active)
+  end
+
+  def test_item_without_href_has_nil_href
+    item = UI::NavigationMenuComponent::ItemComponent.new(label: "Products")
+
+    assert_nil item.instance_variable_get(:@href)
+  end
+end
+
+class TestMegaMenuComponent < Minitest::Test
+  def test_label_stored
+    c = UI::MegaMenuComponent.new(label: "Solutions")
+
+    assert_equal "Solutions", c.instance_variable_get(:@label)
+  end
+
+  def test_cols_nil_by_default
+    c = UI::MegaMenuComponent.new(label: "Menu")
+
+    assert_nil c.instance_variable_get(:@cols)
+  end
+
+  def test_cols_stored
+    c = UI::MegaMenuComponent.new(label: "Menu", cols: 3)
+
+    assert_equal 3, c.instance_variable_get(:@cols)
+  end
+
+  def test_column_heading_and_items
+    col = UI::MegaMenuComponent::ColumnComponent.new(
+      heading: "Products",
+      items: [{title: "Analytics", href: "/analytics"}]
+    )
+
+    assert_equal "Products", col.instance_variable_get(:@heading)
+    assert_equal 1, col.instance_variable_get(:@items).size
   end
 end

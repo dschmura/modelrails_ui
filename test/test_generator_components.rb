@@ -10,7 +10,7 @@ class TestGeneratorComponents < Minitest::Test
   ].freeze
   PHASE3 = %w[input textarea checkbox radio_group select switch toggle toggle_group form_field
     file_input search_input number_input range floating_label].freeze
-  PHASE4 = %w[breadcrumb pagination stepper bottom_nav footer tabs navbar].freeze
+  PHASE4 = %w[breadcrumb pagination stepper bottom_nav footer tabs navbar navigation_menu mega_menu].freeze
   PHASE5 = %w[dialog alert_dialog sheet drawer popover tooltip hover_card].freeze
   PHASE6 = %w[dropdown_menu context_menu menubar command combobox].freeze
   PHASE9 = %w[image figure picture video audio iframe].freeze
@@ -233,5 +233,29 @@ class TestGeneratorComponents < Minitest::Test
 
     assert_includes source, "peer"
     assert_includes source, "label:"
+  end
+
+  # --- Phase 4 additions -----------------------------------------------------
+
+  def test_navigation_menu_has_js_controller
+    assert_path_exists File.join(TEMPLATE_ROOT, "navigation_menu", "navigation_menu_controller.js"),
+      "navigation_menu should include navigation_menu_controller.js"
+  end
+
+  def test_navigation_menu_has_nested_item_component
+    source = File.read(File.join(TEMPLATE_ROOT, "navigation_menu", "navigation_menu_component.rb.tt"))
+
+    assert_includes source, "ItemComponent"
+  end
+
+  def test_mega_menu_has_js_controller
+    assert_path_exists File.join(TEMPLATE_ROOT, "mega_menu", "mega_menu_controller.js"),
+      "mega_menu should include mega_menu_controller.js"
+  end
+
+  def test_mega_menu_has_nested_column_component
+    source = File.read(File.join(TEMPLATE_ROOT, "mega_menu", "mega_menu_component.rb.tt"))
+
+    assert_includes source, "ColumnComponent"
   end
 end
