@@ -120,7 +120,7 @@ Legend: JS = requires JavaScript | Status: done / planned
 | Component | Description | JS needed | Status |
 |-----------|-------------|-----------|--------|
 | Chart | Wrapper for charting (line, bar, pie) via a JS adapter | Yes | planned |
-| Sonner (Toast) | Stacked toast notifications | Yes | planned |
+| Sonner (Toast) | Stacked toast notifications | Yes | done |
 | Timeline | Vertical timeline with event items | No | done |
 | WYSIWYG | Rich text editor wrapper (e.g. Trix or Quill adapter) | Yes | planned |
 

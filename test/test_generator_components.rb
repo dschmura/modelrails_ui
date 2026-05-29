@@ -18,7 +18,7 @@ class TestGeneratorComponents < Minitest::Test
     speed_dial gallery carousel input_otp sidebar resizable calendar
     date_picker timepicker data_table
   ].freeze
-  PHASE8 = %w[timeline].freeze
+  PHASE8 = %w[timeline toaster].freeze
   PHASE9 = %w[image figure picture video audio iframe].freeze
   ALL_COMPONENTS = (PHASE1 + PHASE2 + PHASE3 + PHASE4 + PHASE5 + PHASE6 + PHASE7 + PHASE8 + PHASE9).freeze
 
@@ -459,5 +459,31 @@ class TestGeneratorComponents < Minitest::Test
     assert_includes source, "title:"
     assert_includes source, "date:"
     assert_includes source, "description:"
+  end
+
+  def test_toaster_has_toasts_slot_and_variants
+    source = File.read(File.join(TEMPLATE_ROOT, "toaster", "toaster_component.rb.tt"))
+
+    assert_includes source, "renders_many :toasts"
+    assert_includes source, ":success"
+    assert_includes source, ":destructive"
+    assert_includes source, ":warning"
+    assert_includes source, ":info"
+  end
+
+  def test_toaster_item_accepts_message_title_duration
+    source = File.read(File.join(TEMPLATE_ROOT, "toaster", "toaster_component.rb.tt"))
+
+    assert_includes source, "message:"
+    assert_includes source, "title:"
+    assert_includes source, "duration:"
+  end
+
+  def test_toaster_controller_handles_add_and_dismiss
+    js = File.read(File.join(TEMPLATE_ROOT, "toaster", "toaster_controller.js"))
+
+    assert_includes js, "add("
+    assert_includes js, "dismiss("
+    assert_includes js, "toaster:add"
   end
 end
