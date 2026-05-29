@@ -1,0 +1,82 @@
+# frozen_string_literal: true
+
+module UI
+  class GalleryComponent < ApplicationComponent
+    # Responsive image grid with optional lightbox on click.
+    #
+    # Usage:
+    #   ui "gallery", cols: 3 do |g|
+    #     g.with_image(src: "/img/a.jpg", alt: "Photo A")
+    #     g.with_image(src: "/img/b.jpg", alt: "Photo B", caption: "The coast")
+    #   end
+
+    GRID_BASE = "grid gap-2"
+
+    ITEM_CLS  = "group relative cursor-zoom-in overflow-hidden rounded-md"
+    IMG_CLS   = "h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+    CAP_CLS   = "absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 px-3 py-2 " \
+                "text-sm text-white opacity-0 transition-opacity group-hover:opacity-100"
+
+    # Lightbox overlay
+    OVERLAY_CLS = "fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+    LIGHTBOX_IMG = "max-h-[90vh] max-w-[90vw] rounded-md object-contain"
+
+    renders_many :images, "UI::GalleryComponent::ImageComponent"
+
+    # cols:      number of grid columns (1–6, default: 3)
+    # lightbox:  enable click-to-enlarge (default: true)
+    # aspect:    Tailwind aspect-ratio class applied to each cell, e.g. "aspect-square"
+    def initialize(cols: 3, lightbox: true, aspect: "aspect-square", **html_attrs)
+      @cols        = cols.to_i.clamp(1, 6)
+      @lightbox    = lightbox
+      @aspect      = aspect
+      @extra_class = html_attrs.delete(:class)
+      @html_attrs  = html_attrs
+    end
+
+    def call
+      grid_cls = cn(GRID_BASE, "grid-cols-#{@cols}", @extra_class)
+
+      attrs = { class: grid_cls }
+      if @lightbox
+        attrs[:data] = { controller: "gallery",
+                         action: "click@document->gallery#closeOnClickOutside keydown.escape@document->gallery#close" }
+      end
+      attrs.merge!(@html_attrs)
+
+      content_tag(:div, **attrs) do
+        safe_join(images.map { |img| wrap_image(img) })
+      end
+    end
+
+    private
+
+    def wrap_image(img)
+      cell_attrs = { class: cn(ITEM_CLS, @aspect) }
+      if @lightbox
+        cell_attrs[:data] = { action: "click->gallery#open",
+                               gallery_src_param: img.instance_variable_get(:@src),
+                               gallery_alt_param: img.instance_variable_get(:@alt) }
+      end
+      content_tag(:figure, **cell_attrs) do
+        concat img
+        cap = img.instance_variable_get(:@caption)
+        concat content_tag(:figcaption, cap, class: CAP_CLS) if cap
+      end
+    end
+
+    class ImageComponent < ApplicationComponent
+      def initialize(src:, alt: "", caption: nil, **html_attrs)
+        @src     = src
+        @alt     = alt
+        @caption = caption
+        @html_attrs = html_attrs
+      end
+
+      def call
+        tag.img(src: @src, alt: @alt, class: GalleryComponent::IMG_CLS,
+          loading: "lazy", **@html_attrs)
+      end
+    end
+  end
+end

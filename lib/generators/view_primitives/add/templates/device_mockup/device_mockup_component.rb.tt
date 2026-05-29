@@ -50,11 +50,11 @@ module UI
 
     def browser_bar(cfg)
       content_tag(:div, class: cfg[:bar]) do
-        concat content_tag(:div, class: cfg[:dots]) do
+        concat(content_tag(:div, class: cfg[:dots]) {
           %w[bg-red-400 bg-yellow-400 bg-green-400].each do |color|
             concat content_tag(:div, nil, class: "size-3 rounded-full #{color}")
           end
-        end
+        })
         if @url
           concat content_tag(:div, @url,
             class: "ml-4 flex-1 truncate rounded-md bg-background px-3 py-1 text-xs text-muted-foreground")

@@ -1,0 +1,91 @@
+# frozen_string_literal: true
+
+module UI
+  class ResizableComponent < ApplicationComponent
+    # Drag-to-resize panel layout — two panels separated by a draggable handle.
+    #
+    # Usage:
+    #   ui "resizable", direction: :horizontal do |r|
+    #     r.with_panel(min: 20, default: 30) { left_content }
+    #     r.with_panel { right_content }
+    #   end
+
+    WRAPPER_CLS = "flex overflow-hidden rounded-lg border border-border"
+
+    PANEL_CLS   = "overflow-auto"
+
+    HANDLE_CLS  = "group relative flex items-center justify-center " \
+                  "bg-border transition-colors hover:bg-ring/30 focus-visible:outline-none " \
+                  "focus-visible:ring-[3px] focus-visible:ring-ring/50 " \
+                  "data-[direction=horizontal]:w-px data-[direction=horizontal]:cursor-col-resize " \
+                  "data-[direction=vertical]:h-px data-[direction=vertical]:cursor-row-resize"
+
+    HANDLE_GRIP = "z-10 flex h-4 w-3 items-center justify-center rounded-sm border border-border bg-border"
+
+    renders_many :panels, "UI::ResizableComponent::PanelComponent"
+
+    # direction: :horizontal (default) | :vertical
+    def initialize(direction: :horizontal, **html_attrs)
+      @direction   = direction.to_sym
+      @extra_class = html_attrs.delete(:class)
+      @html_attrs  = html_attrs
+    end
+
+    def call
+      is_row = @direction == :horizontal
+      flex_dir = is_row ? "flex-row" : "flex-col"
+
+      content_tag(:div,
+        class: cn(WRAPPER_CLS, flex_dir, @extra_class),
+        data: {
+          controller: "resizable",
+          resizable_direction_value: @direction
+        },
+        **@html_attrs) do
+        panels.each_with_index do |panel, i|
+          concat panel
+          concat handle unless i == panels.size - 1
+        end
+      end
+    end
+
+    private
+
+    def handle
+      content_tag(:div,
+        class: HANDLE_CLS,
+        "data-direction": @direction,
+        tabindex: "0",
+        role: "separator",
+        "aria-orientation": @direction == :horizontal ? "vertical" : "horizontal",
+        data: {
+          resizable_target: "handle",
+          action: "mousedown->resizable#startDrag touchstart->resizable#startDrag"
+        }) do
+        content_tag(:div, nil, class: HANDLE_GRIP)
+      end
+    end
+
+    class PanelComponent < ApplicationComponent
+      def initialize(min: 10, max: 90, default: nil, **html_attrs)
+        @min     = min
+        @max     = max
+        @default = default
+        @html_attrs = html_attrs
+      end
+
+      def call
+        style = @default ? "flex: 0 0 #{@default}%" : "flex: 1"
+        content_tag(:div, content,
+          class: ResizableComponent::PANEL_CLS,
+          style: style,
+          data: {
+            resizable_target: "panel",
+            resizable_min_param: @min,
+            resizable_max_param: @max
+          },
+          **@html_attrs)
+      end
+    end
+  end
+end

@@ -99,19 +99,19 @@ Legend: JS = requires JavaScript | Status: done / planned
 
 | Component | Description | JS needed | Status |
 |-----------|-------------|-----------|--------|
-| Calendar | Date picker calendar grid | Yes | planned |
-| Date Picker | Input that opens a Calendar popover | Yes | planned |
-| Timepicker | Input for selecting a time value | Yes | planned |
-| Carousel | Scrollable item carousel with prev/next controls | Yes | planned |
-| Data Table | Sortable, filterable table with pagination | Yes | planned |
-| Sidebar | Collapsible application sidebar with nav groups | Yes | planned |
-| Input OTP | One-time-password digit input group | Yes | planned |
+| Calendar | Date picker calendar grid | Yes | done |
+| Date Picker | Input that opens a Calendar popover | Yes | done |
+| Timepicker | Input for selecting a time value | Yes | done |
+| Carousel | Scrollable item carousel with prev/next controls | Yes | done |
+| Data Table | Sortable, filterable table with pagination | Yes | done |
+| Sidebar | Collapsible application sidebar with nav groups | Yes | done |
+| Input OTP | One-time-password digit input group | Yes | done |
 | Collapsible | Single collapsible section (simpler than Accordion) | No | done |
-| Resizable | Drag-to-resize panel layout | Yes | planned |
+| Resizable | Drag-to-resize panel layout | Yes | done |
 | Scroll Area | Custom scrollbar container | No | done |
-| Gallery | Responsive image grid with optional lightbox | Yes | planned |
+| Gallery | Responsive image grid with optional lightbox | Yes | done |
 | Chat Bubble | Styled message bubble for chat or comment threads | No | done |
-| Speed Dial | Floating action button that expands into sub-actions | Yes | planned |
+| Speed Dial | Floating action button that expands into sub-actions | Yes | done |
 | Device Mockup | Phone or browser frame for marketing screenshots | No | done |
 | QR Code | QR code display from a given value | No | done |
 

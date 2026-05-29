@@ -13,7 +13,11 @@ class TestGeneratorComponents < Minitest::Test
   PHASE4 = %w[breadcrumb pagination stepper bottom_nav footer tabs navbar navigation_menu mega_menu].freeze
   PHASE5 = %w[dialog alert_dialog sheet drawer popover tooltip hover_card].freeze
   PHASE6 = %w[dropdown_menu context_menu menubar command combobox].freeze
-  PHASE7 = %w[collapsible scroll_area chat_bubble device_mockup qr_code].freeze
+  PHASE7 = %w[
+    collapsible scroll_area chat_bubble device_mockup qr_code
+    speed_dial gallery carousel input_otp sidebar resizable calendar
+    date_picker timepicker data_table
+  ].freeze
   PHASE9 = %w[image figure picture video audio iframe].freeze
   ALL_COMPONENTS = (PHASE1 + PHASE2 + PHASE3 + PHASE4 + PHASE5 + PHASE6 + PHASE7 + PHASE9).freeze
 
@@ -293,5 +297,148 @@ class TestGeneratorComponents < Minitest::Test
 
     assert_includes source, "src:"
     assert_includes source, "content"
+  end
+
+  # --- Phase 7 (JS) ----------------------------------------------------------
+
+  def test_speed_dial_has_actions_slot_and_controller
+    source = File.read(File.join(TEMPLATE_ROOT, "speed_dial", "speed_dial_component.rb.tt"))
+
+    assert_includes source, "renders_many :actions"
+    assert_includes source, "speed-dial"
+  end
+
+  def test_speed_dial_controller_has_toggle
+    js = File.read(File.join(TEMPLATE_ROOT, "speed_dial", "speed_dial_controller.js"))
+
+    assert_includes js, "toggle()"
+  end
+
+  def test_gallery_has_lightbox_and_controller
+    source = File.read(File.join(TEMPLATE_ROOT, "gallery", "gallery_component.rb.tt"))
+
+    assert_includes source, "gallery"
+  end
+
+  def test_gallery_controller_has_open_close
+    js = File.read(File.join(TEMPLATE_ROOT, "gallery", "gallery_controller.js"))
+
+    assert_includes js, "open("
+    assert_includes js, "close("
+  end
+
+  def test_carousel_has_slides_and_controller
+    source = File.read(File.join(TEMPLATE_ROOT, "carousel", "carousel_component.rb.tt"))
+
+    assert_includes source, "renders_many :slides"
+    assert_includes source, "carousel"
+  end
+
+  def test_carousel_controller_has_prev_next
+    js = File.read(File.join(TEMPLATE_ROOT, "carousel", "carousel_controller.js"))
+
+    assert_includes js, "prev("
+    assert_includes js, "next("
+  end
+
+  def test_input_otp_accepts_length
+    source = File.read(File.join(TEMPLATE_ROOT, "input_otp", "input_otp_component.rb.tt"))
+
+    assert_includes source, "length:"
+    assert_includes source, "input_otp"
+  end
+
+  def test_input_otp_controller_auto_advances
+    js = File.read(File.join(TEMPLATE_ROOT, "input_otp", "input_otp_controller.js"))
+
+    assert_includes js, "focus"
+  end
+
+  def test_sidebar_has_group_and_item_components
+    source = File.read(File.join(TEMPLATE_ROOT, "sidebar", "sidebar_component.rb.tt"))
+
+    assert_includes source, "GroupComponent"
+    assert_includes source, "ItemComponent"
+    assert_includes source, "collapsed"
+  end
+
+  def test_sidebar_controller_has_toggle
+    js = File.read(File.join(TEMPLATE_ROOT, "sidebar", "sidebar_controller.js"))
+
+    assert_includes js, "toggle()"
+  end
+
+  def test_resizable_has_panel_component
+    source = File.read(File.join(TEMPLATE_ROOT, "resizable", "resizable_component.rb.tt"))
+
+    assert_includes source, "PanelComponent"
+    assert_includes source, "renders_many :panels"
+  end
+
+  def test_resizable_controller_handles_drag
+    js = File.read(File.join(TEMPLATE_ROOT, "resizable", "resizable_controller.js"))
+
+    assert_includes js, "startDrag"
+    assert_includes js, "mousemove"
+  end
+
+  def test_calendar_renders_month_grid
+    source = File.read(File.join(TEMPLATE_ROOT, "calendar", "calendar_component.rb.tt"))
+
+    assert_includes source, "beginning_of_month"
+    assert_includes source, "DAYS_OF_WEEK"
+    assert_includes source, "calendar"
+  end
+
+  def test_calendar_controller_has_select_and_nav
+    js = File.read(File.join(TEMPLATE_ROOT, "calendar", "calendar_controller.js"))
+
+    assert_includes js, "selectDay"
+    assert_includes js, "prevMonth"
+    assert_includes js, "nextMonth"
+  end
+
+  def test_date_picker_embeds_calendar
+    source = File.read(File.join(TEMPLATE_ROOT, "date_picker", "date_picker_component.rb.tt"))
+
+    assert_includes source, "CalendarComponent"
+    assert_includes source, "date-picker"
+  end
+
+  def test_date_picker_controller_opens_closes
+    js = File.read(File.join(TEMPLATE_ROOT, "date_picker", "date_picker_controller.js"))
+
+    assert_includes js, "open()"
+    assert_includes js, "close()"
+    assert_includes js, "dateSelected"
+  end
+
+  def test_timepicker_supports_h12_and_h24
+    source = File.read(File.join(TEMPLATE_ROOT, "timepicker", "timepicker_component.rb.tt"))
+
+    assert_includes source, ":h12"
+    assert_includes source, ":h24"
+    assert_includes source, "timepicker"
+  end
+
+  def test_timepicker_controller_commits_time
+    js = File.read(File.join(TEMPLATE_ROOT, "timepicker", "timepicker_controller.js"))
+
+    assert_includes js, "timepicker:change"
+  end
+
+  def test_data_table_accepts_columns_and_rows
+    source = File.read(File.join(TEMPLATE_ROOT, "data_table", "data_table_component.rb.tt"))
+
+    assert_includes source, "columns:"
+    assert_includes source, "rows:"
+    assert_includes source, "data-table"
+  end
+
+  def test_data_table_controller_supports_sort_and_filter
+    js = File.read(File.join(TEMPLATE_ROOT, "data_table", "data_table_controller.js"))
+
+    assert_includes js, "filter()"
+    assert_includes js, "sort("
   end
 end

@@ -1,0 +1,133 @@
+# frozen_string_literal: true
+
+module UI
+  class SidebarComponent < ApplicationComponent
+    # Collapsible application sidebar with nav groups.
+    #
+    # Usage:
+    #   ui "sidebar" do |s|
+    #     s.with_group(label: "Main") do
+    #       s.with_item(label: "Dashboard", href: "/", icon: :home, active: true)
+    #       s.with_item(label: "Settings",  href: "/settings", icon: :cog)
+    #     end
+    #   end
+
+    RAIL_CLS   = "group peer fixed inset-y-0 left-0 z-30 flex h-full flex-col " \
+                 "border-r border-border bg-background transition-[width] duration-300 " \
+                 "data-[collapsed=true]:w-16 data-[collapsed=false]:w-64"
+
+    HEADER_CLS = "flex h-14 items-center justify-between border-b border-border px-4"
+
+    TOGGLE_CLS = "inline-flex size-8 items-center justify-center rounded-md " \
+                 "text-muted-foreground hover:bg-accent hover:text-accent-foreground " \
+                 "focus-visible:ring-[3px] focus-visible:ring-ring/50 outline-none transition"
+
+    NAV_CLS    = "flex-1 overflow-y-auto px-2 py-3"
+
+    GROUP_LABEL = "mb-1 px-3 text-xs font-medium uppercase tracking-wide text-muted-foreground " \
+                  "transition-opacity group-data-[collapsed=true]:opacity-0 group-data-[collapsed=true]:h-0 " \
+                  "group-data-[collapsed=true]:overflow-hidden group-data-[collapsed=true]:mb-0"
+
+    ITEM_CLS   = "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors " \
+                 "hover:bg-accent hover:text-accent-foreground " \
+                 "aria-[current]:bg-accent aria-[current]:text-accent-foreground " \
+                 "focus-visible:ring-[3px] focus-visible:ring-ring/50 outline-none"
+
+    ITEM_LABEL = "transition-[opacity,width] group-data-[collapsed=true]:w-0 " \
+                 "group-data-[collapsed=true]:opacity-0 group-data-[collapsed=true]:overflow-hidden " \
+                 "whitespace-nowrap"
+
+    renders_many :groups, "UI::SidebarComponent::GroupComponent"
+    renders_many :items,  "UI::SidebarComponent::ItemComponent"
+
+    # brand:     text shown in the header
+    # collapsed: initial collapsed state (default: false)
+    def initialize(brand: nil, collapsed: false, **html_attrs)
+      @brand     = brand
+      @collapsed = collapsed
+      @extra_class = html_attrs.delete(:class)
+      @html_attrs  = html_attrs
+    end
+
+    def call
+      content_tag(:aside,
+        class: cn(RAIL_CLS, @extra_class),
+        "data-collapsed": @collapsed.to_s,
+        data: { controller: "sidebar" },
+        **@html_attrs) do
+        concat header
+        concat nav_body
+      end
+    end
+
+    private
+
+    def header
+      content_tag(:div, class: HEADER_CLS) do
+        concat content_tag(:span, @brand,
+          class: "truncate font-semibold group-data-[collapsed=true]:hidden") if @brand
+        concat toggle_btn
+      end
+    end
+
+    def toggle_btn
+      content_tag(:button, type: "button",
+        class: TOGGLE_CLS,
+        "aria-label": "Toggle sidebar",
+        data: { action: "click->sidebar#toggle" }) do
+        chevron_icon
+      end
+    end
+
+    def nav_body
+      content_tag(:nav, class: NAV_CLS) do
+        concat safe_join(groups) if groups.any?
+        concat safe_join(items)  if items.any?
+        concat content if content?
+      end
+    end
+
+    def chevron_icon
+      content_tag(:svg,
+        content_tag(:path, nil, d: "m15 18-6-6 6-6", "stroke-linecap": "round", "stroke-linejoin": "round"),
+        xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 24 24",
+        fill: "none", stroke: "currentColor", "stroke-width": "2",
+        class: "size-4 transition-transform group-data-[collapsed=true]:rotate-180",
+        "aria-hidden": "true")
+    end
+
+    class GroupComponent < ApplicationComponent
+      renders_many :items, "UI::SidebarComponent::ItemComponent"
+
+      def initialize(label: nil, **html_attrs)
+        @label = label
+        @html_attrs = html_attrs
+      end
+
+      def call
+        content_tag(:div, class: "mb-4", **@html_attrs) do
+          concat content_tag(:p, @label, class: SidebarComponent::GROUP_LABEL) if @label
+          concat safe_join(items)
+          concat content if content?
+        end
+      end
+    end
+
+    class ItemComponent < ApplicationComponent
+      def initialize(label:, href: "#", active: false, **html_attrs)
+        @label  = label
+        @href   = href
+        @active = active
+        @html_attrs = html_attrs
+      end
+
+      def call
+        content_tag(:a, @label,
+          href: @href,
+          class: SidebarComponent::ITEM_CLS,
+          "aria-current": (@active ? "page" : nil),
+          **@html_attrs)
+      end
+    end
+  end
+end

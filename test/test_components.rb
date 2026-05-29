@@ -97,6 +97,16 @@ load_tt "scroll_area/scroll_area_component.rb.tt"
 load_tt "chat_bubble/chat_bubble_component.rb.tt"
 load_tt "device_mockup/device_mockup_component.rb.tt"
 load_tt "qr_code/qr_code_component.rb.tt"
+load_tt "speed_dial/speed_dial_component.rb.tt"
+load_tt "gallery/gallery_component.rb.tt"
+load_tt "carousel/carousel_component.rb.tt"
+load_tt "input_otp/input_otp_component.rb.tt"
+load_tt "sidebar/sidebar_component.rb.tt"
+load_tt "resizable/resizable_component.rb.tt"
+load_tt "calendar/calendar_component.rb.tt"
+load_tt "date_picker/date_picker_component.rb.tt"
+load_tt "timepicker/timepicker_component.rb.tt"
+load_tt "data_table/data_table_component.rb.tt"
 
 # Load Phase 2 — new
 load_tt "rating_input/rating_input_component.rb.tt"
@@ -2066,5 +2076,222 @@ class TestQrCodeComponent < Minitest::Test
     c = UI::QrCodeComponent.new
 
     assert_equal "QR code", c.instance_variable_get(:@alt)
+  end
+end
+
+class TestSpeedDialComponent < Minitest::Test
+  def test_position_defaults_to_bottom_right
+    c = UI::SpeedDialComponent.new
+
+    assert_equal :bottom_right, c.instance_variable_get(:@position)
+  end
+
+  def test_position_stored
+    c = UI::SpeedDialComponent.new(position: :bottom_left)
+
+    assert_equal :bottom_left, c.instance_variable_get(:@position)
+  end
+end
+
+class TestGalleryComponent < Minitest::Test
+  def test_cols_default
+    c = UI::GalleryComponent.new
+
+    assert_equal 3, c.instance_variable_get(:@cols)
+  end
+
+  def test_cols_stored
+    c = UI::GalleryComponent.new(cols: 4)
+
+    assert_equal 4, c.instance_variable_get(:@cols)
+  end
+end
+
+class TestCarouselComponent < Minitest::Test
+  def test_loop_defaults_to_true
+    c = UI::CarouselComponent.new
+
+    assert c.instance_variable_get(:@loop)
+  end
+
+  def test_autoplay_defaults_to_zero
+    c = UI::CarouselComponent.new
+
+    assert_equal 0, c.instance_variable_get(:@autoplay)
+  end
+
+  def test_autoplay_stored
+    c = UI::CarouselComponent.new(autoplay: 3000)
+
+    assert_equal 3000, c.instance_variable_get(:@autoplay)
+  end
+end
+
+class TestInputOtpComponent < Minitest::Test
+  def test_length_defaults_to_6
+    c = UI::InputOtpComponent.new
+
+    assert_equal 6, c.instance_variable_get(:@length)
+  end
+
+  def test_length_stored
+    c = UI::InputOtpComponent.new(length: 4)
+
+    assert_equal 4, c.instance_variable_get(:@length)
+  end
+
+  def test_name_defaults_to_otp
+    c = UI::InputOtpComponent.new
+
+    assert_equal "otp", c.instance_variable_get(:@name)
+  end
+end
+
+class TestSidebarComponent < Minitest::Test
+  def test_collapsed_defaults_to_false
+    c = UI::SidebarComponent.new
+
+    refute c.instance_variable_get(:@collapsed)
+  end
+
+  def test_brand_nil_by_default
+    c = UI::SidebarComponent.new
+
+    assert_nil c.instance_variable_get(:@brand)
+  end
+
+  def test_brand_stored
+    c = UI::SidebarComponent.new(brand: "Acme")
+
+    assert_equal "Acme", c.instance_variable_get(:@brand)
+  end
+end
+
+class TestResizableComponent < Minitest::Test
+  def test_direction_defaults_to_horizontal
+    c = UI::ResizableComponent.new
+
+    assert_equal :horizontal, c.instance_variable_get(:@direction)
+  end
+
+  def test_direction_stored
+    c = UI::ResizableComponent.new(direction: :vertical)
+
+    assert_equal :vertical, c.instance_variable_get(:@direction)
+  end
+end
+
+class TestCalendarComponent < Minitest::Test
+  def test_selected_nil_by_default
+    c = UI::CalendarComponent.new
+
+    assert_nil c.instance_variable_get(:@selected)
+  end
+
+  def test_selected_stored
+    d = Date.new(2025, 6, 15)
+    c = UI::CalendarComponent.new(selected: d)
+
+    assert_equal d, c.instance_variable_get(:@selected)
+  end
+
+  def test_month_defaults_to_beginning_of_current_month
+    c = UI::CalendarComponent.new
+
+    assert_equal Date.today.beginning_of_month, c.instance_variable_get(:@month)
+  end
+
+  def test_name_nil_by_default
+    c = UI::CalendarComponent.new
+
+    assert_nil c.instance_variable_get(:@name)
+  end
+end
+
+class TestDatePickerComponent < Minitest::Test
+  def test_value_nil_by_default
+    c = UI::DatePickerComponent.new
+
+    assert_nil c.instance_variable_get(:@value)
+  end
+
+  def test_value_stored
+    d = Date.new(2025, 1, 1)
+    c = UI::DatePickerComponent.new(value: d)
+
+    assert_equal d, c.instance_variable_get(:@value)
+  end
+
+  def test_placeholder_default
+    c = UI::DatePickerComponent.new
+
+    assert_equal "Pick a date", c.instance_variable_get(:@placeholder)
+  end
+
+  def test_name_nil_by_default
+    c = UI::DatePickerComponent.new
+
+    assert_nil c.instance_variable_get(:@name)
+  end
+end
+
+class TestTimepickerComponent < Minitest::Test
+  def test_format_defaults_to_h24
+    c = UI::TimepickerComponent.new
+
+    assert_equal :h24, c.instance_variable_get(:@format)
+  end
+
+  def test_format_stored
+    c = UI::TimepickerComponent.new(format: :h12)
+
+    assert_equal :h12, c.instance_variable_get(:@format)
+  end
+
+  def test_step_defaults_to_1
+    c = UI::TimepickerComponent.new
+
+    assert_equal 1, c.instance_variable_get(:@step)
+  end
+
+  def test_step_clamped_to_60
+    c = UI::TimepickerComponent.new(step: 999)
+
+    assert_equal 60, c.instance_variable_get(:@step)
+  end
+
+  def test_value_nil_by_default
+    c = UI::TimepickerComponent.new
+
+    assert_nil c.instance_variable_get(:@value)
+  end
+end
+
+class TestDataTableComponent < Minitest::Test
+  def test_columns_and_rows_stored
+    cols = [{key: :name, label: "Name"}]
+    rows = [{name: "Alice"}]
+    c = UI::DataTableComponent.new(columns: cols, rows: rows)
+
+    assert_equal cols, c.instance_variable_get(:@columns)
+    assert_equal rows, c.instance_variable_get(:@rows)
+  end
+
+  def test_per_page_defaults_to_10
+    c = UI::DataTableComponent.new(columns: [], rows: [])
+
+    assert_equal 10, c.instance_variable_get(:@per_page)
+  end
+
+  def test_per_page_stored
+    c = UI::DataTableComponent.new(columns: [], rows: [], per_page: 25)
+
+    assert_equal 25, c.instance_variable_get(:@per_page)
+  end
+
+  def test_caption_nil_by_default
+    c = UI::DataTableComponent.new(columns: [], rows: [])
+
+    assert_nil c.instance_variable_get(:@caption)
   end
 end
