@@ -80,7 +80,6 @@ module UI
     def day_grid
       today = Date.today
       first = @month.beginning_of_month
-      last  = @month.end_of_month
       start = first - first.wday
       days  = (start..(start + 41)).to_a
 

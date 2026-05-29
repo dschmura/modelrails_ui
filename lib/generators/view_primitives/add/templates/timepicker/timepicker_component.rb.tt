@@ -90,7 +90,6 @@ module UI
     end
 
     def hour_column(val)
-      max = @format == :h12 ? 12 : 23
       content_tag(:div, class: COL_CLS) do
         concat spin_btn("▲", "click->timepicker#hourUp")
         concat tag.input(type: "text", inputmode: "numeric", class: NUM_CLS,
