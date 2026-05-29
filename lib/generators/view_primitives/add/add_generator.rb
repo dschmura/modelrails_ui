@@ -37,6 +37,18 @@ module ViewPrimitives
         abort
       end
 
+      def report_setup_notes
+        @copied&.each do |name|
+          note = Components::SETUP_NOTES[name]
+          next unless note
+
+          say ""
+          say "  ── Setup required for #{name} ──────────────────────────", :yellow
+          note.each_line { |line| say "  #{line.chomp}", :cyan }
+          say ""
+        end
+      end
+
       def template(source, *args, **options, &block)
         destination = args.first || options[:to]
         warn_overwrite(destination) if destination

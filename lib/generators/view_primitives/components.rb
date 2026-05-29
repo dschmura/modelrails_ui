@@ -10,6 +10,22 @@ module ViewPrimitives
         "alert_dialog" => {source: "dialog/dialog_controller.js", name: "dialog"}
       }.freeze
 
+      # Post-install instructions for components that require external dependencies.
+      SETUP_NOTES = {
+        "chart" => <<~TEXT
+          Chart requires Chart.js. Add it to your importmap:
+
+            # config/importmap.rb
+            pin "chart.js", to: "https://esm.sh/chart.js@4"
+
+          Then use the component:
+
+            ui :chart, type: :bar,
+              labels: ["Jan", "Feb", "Mar"],
+              datasets: [{ label: "Revenue", data: [100, 200, 150] }]
+        TEXT
+      }.freeze
+
       def self.supported
         @supported ||= Dir.children(TEMPLATE_ROOT).sort.freeze
       end

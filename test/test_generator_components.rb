@@ -18,7 +18,7 @@ class TestGeneratorComponents < Minitest::Test
     speed_dial gallery carousel input_otp sidebar resizable calendar
     date_picker timepicker data_table
   ].freeze
-  PHASE8 = %w[timeline toaster].freeze
+  PHASE8 = %w[timeline toaster chart].freeze
   PHASE9 = %w[image figure picture video audio iframe].freeze
   ALL_COMPONENTS = (PHASE1 + PHASE2 + PHASE3 + PHASE4 + PHASE5 + PHASE6 + PHASE7 + PHASE8 + PHASE9).freeze
 
@@ -485,5 +485,41 @@ class TestGeneratorComponents < Minitest::Test
     assert_includes js, "add("
     assert_includes js, "dismiss("
     assert_includes js, "toaster:add"
+  end
+
+  def test_chart_renders_canvas_with_type_and_config
+    source = File.read(File.join(TEMPLATE_ROOT, "chart", "chart_component.rb.tt"))
+
+    assert_includes source, "datasets:"
+    assert_includes source, "chart_type_value"
+    assert_includes source, "chart_config_value"
+    assert_includes source, "tag.canvas"
+  end
+
+  def test_chart_validates_type
+    source = File.read(File.join(TEMPLATE_ROOT, "chart", "chart_component.rb.tt"))
+
+    assert_includes source, "TYPES"
+    assert_includes source, "bar"
+    assert_includes source, "line"
+    assert_includes source, "pie"
+  end
+
+  def test_chart_controller_uses_chartjs_adapter
+    js = File.read(File.join(TEMPLATE_ROOT, "chart", "chart_controller.js"))
+
+    assert_includes js, "import { Chart"
+    assert_includes js, "connect("
+    assert_includes js, "disconnect("
+    assert_includes js, "destroy"
+  end
+
+  def test_chart_has_setup_note
+    components_rb = File.read(File.expand_path("../lib/generators/view_primitives/components.rb", __dir__))
+
+    assert_includes components_rb, "SETUP_NOTES"
+    assert_includes components_rb, '"chart"'
+    assert_includes components_rb, "chart.js"
+    assert_includes components_rb, "importmap"
   end
 end
