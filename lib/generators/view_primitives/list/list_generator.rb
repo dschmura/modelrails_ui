@@ -12,7 +12,7 @@ module ViewPrimitives
         say "COMPONENT          STATUS"
         say "-" * 32
 
-        Components::SUPPORTED.each do |component|
+        Components.supported.each do |component|
           status = Components.installed?(component, destination_root) ? "installed" : "—"
           color = (status == "installed") ? :green : :cyan
           say format("%-18s %s", component, status), color
