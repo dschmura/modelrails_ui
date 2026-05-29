@@ -15,7 +15,7 @@ module UI
                "focus-visible:ring-[3px] focus-visible:ring-ring/50 outline-none transition " \
                "aria-expanded:border-ring"
     ICON_CLS = "size-4 shrink-0 text-muted-foreground"
-    POPOVER  = "absolute left-0 top-full z-50 mt-1 hidden rounded-lg border border-border " \
+    POPOVER  = "absolute left-0 top-full z-50 mt-1 hidden w-max rounded-lg border border-border " \
                "bg-popover p-0 shadow-md data-[open=true]:block"
 
     def initialize(value: nil, name: nil, placeholder: "Pick a date", min: nil, max: nil, **html_attrs)

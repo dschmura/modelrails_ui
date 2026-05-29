@@ -20,11 +20,14 @@ module UI
 
     # length:    number of OTP digits (default: 6)
     # name:      form field name (individual cells get name[0], name[1], …)
-    # separator: character(s) inserted after this many digits, e.g. {3 => "-"}
+    # separator: position (Integer) or Hash { position => char }, e.g. 3 or { 3 => "-" }
     def initialize(length: 6, name: "otp", separator: nil, **html_attrs)
       @length    = length.to_i
       @name      = name
-      @separator = separator # Hash { position => char }, e.g. { 3 => "-" }
+      @separator = case separator
+      when Integer then { separator => "-" }
+      when Hash    then separator
+      end
       @extra_class = html_attrs.delete(:class)
       @html_attrs  = html_attrs
     end
@@ -35,7 +38,7 @@ module UI
         data: { controller: "input-otp" },
         **@html_attrs) do
         @length.times do |i|
-          sep = @separator.is_a?(Hash) ? @separator[i] : nil
+          sep = @separator&.fetch(i, nil)
           concat content_tag(:span, sep, class: SEPARATOR_CLS) if sep
           concat digit_input(i)
         end
