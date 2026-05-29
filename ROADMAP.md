@@ -121,7 +121,7 @@ Legend: JS = requires JavaScript | Status: done / planned
 |-----------|-------------|-----------|--------|
 | Chart | Wrapper for charting (line, bar, pie) via a JS adapter | Yes | planned |
 | Sonner (Toast) | Stacked toast notifications | Yes | planned |
-| Timeline | Vertical timeline with event items | No | planned |
+| Timeline | Vertical timeline with event items | No | done |
 | WYSIWYG | Rich text editor wrapper (e.g. Trix or Quill adapter) | Yes | planned |
 
 ## Phase 9 — Media & semantic HTML

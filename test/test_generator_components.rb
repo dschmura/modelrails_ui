@@ -18,8 +18,9 @@ class TestGeneratorComponents < Minitest::Test
     speed_dial gallery carousel input_otp sidebar resizable calendar
     date_picker timepicker data_table
   ].freeze
+  PHASE8 = %w[timeline].freeze
   PHASE9 = %w[image figure picture video audio iframe].freeze
-  ALL_COMPONENTS = (PHASE1 + PHASE2 + PHASE3 + PHASE4 + PHASE5 + PHASE6 + PHASE7 + PHASE9).freeze
+  ALL_COMPONENTS = (PHASE1 + PHASE2 + PHASE3 + PHASE4 + PHASE5 + PHASE6 + PHASE7 + PHASE8 + PHASE9).freeze
 
   TEMPLATE_ROOT = File.expand_path("../lib/generators/view_primitives/add/templates", __dir__)
 
@@ -440,5 +441,23 @@ class TestGeneratorComponents < Minitest::Test
 
     assert_includes js, "filter()"
     assert_includes js, "sort("
+  end
+
+  def test_timeline_has_items_slot_and_variants
+    source = File.read(File.join(TEMPLATE_ROOT, "timeline", "timeline_component.rb.tt"))
+
+    assert_includes source, "renders_many :items"
+    assert_includes source, "VARIANTS"
+    assert_includes source, ":success"
+    assert_includes source, ":destructive"
+    assert_includes source, ":warning"
+  end
+
+  def test_timeline_item_accepts_date_title_description
+    source = File.read(File.join(TEMPLATE_ROOT, "timeline", "timeline_component.rb.tt"))
+
+    assert_includes source, "title:"
+    assert_includes source, "date:"
+    assert_includes source, "description:"
   end
 end
