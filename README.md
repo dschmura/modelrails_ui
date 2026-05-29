@@ -101,65 +101,65 @@ ViewPrimitives adds the `ui` helper to views and mailers:
 | List Group | Bordered list with optional links and active state | [docs](docs/components/list_group.md) |
 | Banner | Styled announcement strip with variants | [docs](docs/components/banner.md) |
 | Button Group | Visually joined row of buttons | [docs](docs/components/button_group.md) |
-| Input | Styled text input with ring/border | — |
-| Textarea | Styled multi-line input | — |
-| Checkbox | Accessible checkbox with optional label | — |
-| Radio Group | Group of radio inputs | — |
-| Select | Native styled select element | — |
-| Switch | CSS-only on/off toggle | — |
-| Toggle | Single pressable toggle button | — |
-| Toggle Group | Group of related toggles (single or multiple) | — |
-| Form Field | Label + input + hint + error layout wrapper | — |
-| File Input | Styled file upload input | — |
-| Search Input | Text input with built-in search icon and clear button | — |
-| Number Input | Text input with increment/decrement controls | — |
-| Range | Styled range slider | — |
-| Floating Label | Input with floating placeholder label | — |
-| Breadcrumb | Navigational breadcrumb trail with separator | — |
-| Pagination | Page number links with prev/next and ellipsis | — |
-| Stepper | Multi-step progress indicator (horizontal + vertical) | — |
-| Tabs | Tab bar with content panels (array API + slot API) | — |
-| Navbar | Responsive top navigation bar with hamburger menu | — |
-| Navigation Menu | Top-level navigation with optional dropdown flyouts | — |
-| Bottom Nav | Mobile-style tab bar fixed to the bottom | — |
-| Footer | Page footer with columns, links, and copyright | — |
-| Mega Menu | Full-width dropdown panel with grouped links and images | — |
-| Dialog | Modal dialog with trigger, title, description, footer slots | — |
-| Alert Dialog | Blocking confirmation dialog | — |
-| Sheet | Slide-in panel from any edge (left/right/top/bottom) | — |
-| Drawer | Bottom sheet with drag handle — mobile drawer pattern | — |
-| Popover | Floating panel anchored to a trigger | — |
-| Tooltip | Hover label — CSS-only, no JS | — |
-| Hover Card | Rich hover preview card — CSS-only, no JS | — |
-| Dropdown Menu | Trigger-anchored menu with items and separators | — |
-| Context Menu | Right-click context menu positioned at cursor | — |
-| Menubar | Horizontal application-style menu bar | — |
-| Command | Modal command palette with live search filtering | — |
-| Combobox | Autocomplete select with live search | — |
-| Calendar | Date picker calendar grid | — |
-| Date Picker | Input that opens a Calendar popover | — |
-| Timepicker | Input for selecting a time value | — |
-| Carousel | Scrollable item carousel with prev/next controls | — |
-| Data Table | Sortable, filterable table with pagination | — |
-| Sidebar | Collapsible application sidebar with nav groups | — |
-| Input OTP | One-time-password digit input group | — |
-| Collapsible | Single collapsible section (simpler than Accordion) | — |
-| Resizable | Drag-to-resize panel layout | — |
-| Scroll Area | Custom scrollbar container | — |
-| Gallery | Responsive image grid with optional lightbox | — |
-| Chat Bubble | Styled message bubble for chat or comment threads | — |
-| Speed Dial | Floating action button that expands into sub-actions | — |
-| Device Mockup | Phone or browser frame for marketing screenshots | — |
-| QR Code | QR code display from a given value | — |
-| Timeline | Vertical timeline with event items | — |
-| Toaster | Stacked toast notifications (Sonner-style) | — |
-| Chart | Chart.js adapter — bar, line, pie, doughnut, radar, polar area | — |
-| Picture | `<picture>` + `<source>` for art direction and modern formats (AVIF/WebP) | — |
-| Video | `<video>` + `<source>` with poster, controls, and caption tracks | — |
-| Figure | `<figure>` + `<figcaption>` wrapper for media content | — |
-| Image | Responsive `<img>` with `srcset` / `sizes` | — |
-| Audio | `<audio>` + `<source>` with optional transcript link | — |
-| Iframe | Sandboxed embed wrapper with required `title` and lazy loading | — |
+| Input | Styled text input with ring/border | [docs](docs/components/input.md) |
+| Textarea | Styled multi-line input | [docs](docs/components/textarea.md) |
+| Checkbox | Accessible checkbox with optional label | [docs](docs/components/checkbox.md) |
+| Radio Group | Group of radio inputs | [docs](docs/components/radio_group.md) |
+| Select | Native styled select element | [docs](docs/components/select.md) |
+| Switch | CSS-only on/off toggle | [docs](docs/components/switch.md) |
+| Toggle | Single pressable toggle button | [docs](docs/components/toggle.md) |
+| Toggle Group | Group of related toggles (single or multiple) | [docs](docs/components/toggle_group.md) |
+| Form Field | Label + input + hint + error layout wrapper | [docs](docs/components/form_field.md) |
+| File Input | Styled file upload input | [docs](docs/components/file_input.md) |
+| Search Input | Text input with built-in search icon and clear button | [docs](docs/components/search_input.md) |
+| Number Input | Text input with increment/decrement controls | [docs](docs/components/number_input.md) |
+| Range | Styled range slider | [docs](docs/components/range.md) |
+| Floating Label | Input with floating placeholder label | [docs](docs/components/floating_label.md) |
+| Breadcrumb | Navigational breadcrumb trail with separator | [docs](docs/components/breadcrumb.md) |
+| Pagination | Page number links with prev/next and ellipsis | [docs](docs/components/pagination.md) |
+| Stepper | Multi-step progress indicator (horizontal + vertical) | [docs](docs/components/stepper.md) |
+| Tabs | Tab bar with content panels (array API + slot API) | [docs](docs/components/tabs.md) |
+| Navbar | Responsive top navigation bar with hamburger menu | [docs](docs/components/navbar.md) |
+| Navigation Menu | Top-level navigation with optional dropdown flyouts | [docs](docs/components/navigation_menu.md) |
+| Bottom Nav | Mobile-style tab bar fixed to the bottom | [docs](docs/components/bottom_nav.md) |
+| Footer | Page footer with columns, links, and copyright | [docs](docs/components/footer.md) |
+| Mega Menu | Full-width dropdown panel with grouped links and images | [docs](docs/components/mega_menu.md) |
+| Dialog | Modal dialog with trigger, title, description, footer slots | [docs](docs/components/dialog.md) |
+| Alert Dialog | Blocking confirmation dialog | [docs](docs/components/alert_dialog.md) |
+| Sheet | Slide-in panel from any edge (left/right/top/bottom) | [docs](docs/components/sheet.md) |
+| Drawer | Bottom sheet with drag handle — mobile drawer pattern | [docs](docs/components/drawer.md) |
+| Popover | Floating panel anchored to a trigger | [docs](docs/components/popover.md) |
+| Tooltip | Hover label — CSS-only, no JS | [docs](docs/components/tooltip.md) |
+| Hover Card | Rich hover preview card — CSS-only, no JS | [docs](docs/components/hover_card.md) |
+| Dropdown Menu | Trigger-anchored menu with items and separators | [docs](docs/components/dropdown_menu.md) |
+| Context Menu | Right-click context menu positioned at cursor | [docs](docs/components/context_menu.md) |
+| Menubar | Horizontal application-style menu bar | [docs](docs/components/menubar.md) |
+| Command | Modal command palette with live search filtering | [docs](docs/components/command.md) |
+| Combobox | Autocomplete select with live search | [docs](docs/components/combobox.md) |
+| Calendar | Date picker calendar grid | [docs](docs/components/calendar.md) |
+| Date Picker | Input that opens a Calendar popover | [docs](docs/components/date_picker.md) |
+| Timepicker | Input for selecting a time value | [docs](docs/components/timepicker.md) |
+| Carousel | Scrollable item carousel with prev/next controls | [docs](docs/components/carousel.md) |
+| Data Table | Sortable, filterable table with pagination | [docs](docs/components/data_table.md) |
+| Sidebar | Collapsible application sidebar with nav groups | [docs](docs/components/sidebar.md) |
+| Input OTP | One-time-password digit input group | [docs](docs/components/input_otp.md) |
+| Collapsible | Single collapsible section (simpler than Accordion) | [docs](docs/components/collapsible.md) |
+| Resizable | Drag-to-resize panel layout | [docs](docs/components/resizable.md) |
+| Scroll Area | Custom scrollbar container | [docs](docs/components/scroll_area.md) |
+| Gallery | Responsive image grid with optional lightbox | [docs](docs/components/gallery.md) |
+| Chat Bubble | Styled message bubble for chat or comment threads | [docs](docs/components/chat_bubble.md) |
+| Speed Dial | Floating action button that expands into sub-actions | [docs](docs/components/speed_dial.md) |
+| Device Mockup | Phone or browser frame for marketing screenshots | [docs](docs/components/device_mockup.md) |
+| QR Code | QR code display from a given value | [docs](docs/components/qr_code.md) |
+| Timeline | Vertical timeline with event items | [docs](docs/components/timeline.md) |
+| Toaster | Stacked toast notifications (Sonner-style) | [docs](docs/components/toaster.md) |
+| Chart | Chart.js adapter — bar, line, pie, doughnut, radar, polar area | [docs](docs/components/chart.md) |
+| Picture | `<picture>` + `<source>` for art direction and modern formats (AVIF/WebP) | [docs](docs/components/picture.md) |
+| Video | `<video>` + `<source>` with poster, controls, and caption tracks | [docs](docs/components/video.md) |
+| Figure | `<figure>` + `<figcaption>` wrapper for media content | [docs](docs/components/figure.md) |
+| Image | Responsive `<img>` with `srcset` / `sizes` | [docs](docs/components/image.md) |
+| Audio | `<audio>` + `<source>` with optional transcript link | [docs](docs/components/audio.md) |
+| Iframe | Sandboxed embed wrapper with required `title` and lazy loading | [docs](docs/components/iframe.md) |
 
 ### Coming soon
 
