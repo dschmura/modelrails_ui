@@ -1,5 +1,8 @@
 # ViewPrimitives
 
+[![Gem Version](https://badge.fury.io/rb/view_primitives.svg)](https://badge.fury.io/rb/view_primitives)
+[![Build Status](https://github.com/alec-c4/view_primitives/actions/workflows/main.yml/badge.svg)](https://github.com/alec-c4/view_primitives/actions)
+
 A [shadcn/ui](https://ui.shadcn.com)-inspired component library for Rails built on [ViewComponent](https://viewcomponent.org).
 
 > **Acknowledgements** — The visual design, CSS class choices, and component structure of ViewPrimitives are heavily inspired by [shadcn/ui](https://ui.shadcn.com) and its Svelte port [shadcn-svelte](https://www.shadcn-svelte.com). We are grateful to [@shadcn](https://github.com/shadcn) and all contributors for their outstanding open-source work. ViewPrimitives is an independent Rails adaptation and is not affiliated with or endorsed by the shadcn/ui project.
