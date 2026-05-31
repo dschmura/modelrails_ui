@@ -42,7 +42,7 @@ broken / kept-app-native) and **`CHANGELOG.md`** for the fork changes.
 ```ruby
 # Gemfile — scaffolding tool, not shipped to production
 group :development do
-  gem "modelrails_ui", git: "https://github.com/dschmura/modelrails_ui.git", tag: "v0.1.0.modelrails.1"
+  gem "modelrails_ui", git: "https://github.com/dschmura/modelrails_ui.git", tag: "v0.1.0"
 end
 ```
 

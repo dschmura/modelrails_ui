@@ -7,47 +7,49 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.1.0.modelrails.2]
+## [0.1.0] - 2026-05-31
 
-### Fixed
-- Install generator now **skips the token CSS when the host app already defines the design
-  tokens** (i.e. it IS the token source, like modelrails_base) — prevents duplicating the
-  `@theme`/`.btn-*` system. Detected via `--color-surface`/`--color-interactive` in the entry.
-- Robust `@import "tailwindcss"` anchor (matches with or without the trailing semicolon), so the
-  `@import` injection no longer silently no-ops on real Tailwind v4 entries.
+First release of **modelrails_ui** — a hardened fork of view_primitives 0.1.0 (see the upstream
+baseline entry below), re-themed and extended to meet modelrails_base standards: WCAG 2.2 AAA,
+I18n, OKLCH semantic tokens, and form_builder integration. All upstream components are included.
+See `MODELRAILS_STATUS.md` for the per-component maturity record.
 
-## [0.1.0.modelrails.1] - modelrails_base hardening fork
-
-Hardened to meet modelrails_base standards (WCAG 2.2 AAA, I18n, the app's OKLCH semantic
-tokens, form_builder integration). See `MODELRAILS_STATUS.md` for the solid / pre-release /
-broken / kept-app-native breakdown.
-
-### Fixed
-- `add` generator: `source_root` called as an instance method (only defined at class level).
-- `add` generator: `template`/`copy_file` overrides were public, so Thor auto-invoked them
-  with no args — wrapped in `no_commands`.
+### Added
+- Self-contained install: generates an `ApplicationComponent` with an inlined `cn` helper and a
+  `UI` inflection initializer, so adopting apps carry **no runtime dependency** on the gem.
+- Ships the full AAA OKLCH design system via the install generator (tokens, `@theme inline`,
+  class-based dark mode, `.btn-*`/`.bg-hue-*`); the installer skips it when the host already owns
+  the tokens.
+- Gem-side WCAG 2.2 AAA contrast test (`test/test_aaa_contrast.rb`): OKLCH→luminance contrast for
+  the core token pairs, asserted ≥ 7:1 in light and dark.
 
 ### Changed
 - All component templates re-themed from shadcn tokens to AAA semantic tokens
   (`surface*`, `interactive*`, `danger*`, `text-*`, `border*`); `dark:` variants dropped
-  (tokens auto-flip via `.dark`). NOTE: components now expect the host app to define these
-  tokens (see MODELRAILS_STATUS.md → Token portability).
-- `Input` / `Textarea` / `FileInput`: first-class `required`/`invalid`/`describedby` → ARIA
-  params; styling matches the app's form-field constants; dual-mode (form-builder + standalone).
-  `FileInput` gained ARIA wiring the app's plain file_field lacked.
-- `Dialog`: rewritten onto the native `<dialog>` + `showModal` pattern (focus-trap/restore,
-  native Escape, `::backdrop`) adopted from the app's superior modal; ships the app's
-  `modal_controller.js`; added `wrapper:` (embed-only) and `body_id:` options.
-- `Button`: rewritten to the app's `.btn-*` taxonomy (primary/secondary/danger + text family).
-- `Avatar`: app `AVATAR_SIZES`, rounded-full, hue-tinted initials, role=img/aria-hidden semantics.
+  (tokens auto-flip via `.dark`).
+- `Input` / `Textarea` / `FileInput`: first-class `required`/`invalid`/`describedby` → ARIA;
+  styling matches the app's form-field constants; dual-mode (form-builder + standalone).
+- `Dialog`: rewritten onto the native `<dialog>` + `showModal` pattern (focus trap/restore,
+  native Escape, `::backdrop`); ships `modal_controller.js`; adds `wrapper:` and `body_id:`.
+- `Button`: app `.btn-*` taxonomy (primary/secondary/danger + text family).
+- `Avatar`: app `AVATAR_SIZES`, rounded-full, hue-tinted initials, role=img/aria-hidden.
+
+### Fixed
+- `add` generator: `source_root` instance-method bug; public `template`/`copy_file` wrapped in
+  `no_commands`.
+- Install generator: skips token CSS when the host already owns the tokens; robust
+  `@import "tailwindcss"` anchor (with or without the trailing semicolon).
 
 ### Known issues
 - Templates that don't generate: `form_field`, `qr_code` (SyntaxError), `input_otp` (undefined helper).
 - `embed` calls `CGI.parse` without `require "cgi"` (breaks on Ruby 4.0).
-- Gem's own test suite has ~18 tests asserting pre-hardening behavior (see MODELRAILS_STATUS.md).
+
+---
+
+_The entry below is from the upstream view_primitives project, retained for provenance._
 
 
-## [0.1.0] - 2026-05-30
+## view_primitives 0.1.0 (upstream baseline) - 2026-05-30
 
 ### Added
 
