@@ -145,7 +145,7 @@ class TestButtonComponent < Minitest::Test
   def test_default_variant
     c = UI::ButtonComponent.new
 
-    assert_equal :default, c.instance_variable_get(:@variant)
+    assert_equal :primary, c.instance_variable_get(:@variant)
   end
 
   def test_variant_stored_as_symbol
@@ -180,24 +180,25 @@ class TestButtonComponent < Minitest::Test
     assert c.instance_variable_get(:@html_attrs)[:disabled]
   end
 
-  def test_component_classes_default
+  def test_component_classes_primary
     c = UI::ButtonComponent.new
     classes = c.send(:component_classes)
 
-    assert_includes classes, "bg-primary"
-    assert_includes classes, "h-9"
+    assert_includes classes, "bg-interactive"
+    assert_includes classes, "min-h-[var(--form-input-height)]"
   end
 
-  def test_component_classes_destructive_variant
-    c = UI::ButtonComponent.new(variant: :destructive)
+  def test_component_classes_danger_variant
+    c = UI::ButtonComponent.new(variant: :danger)
 
-    assert_includes c.send(:component_classes), "bg-destructive"
+    assert_includes c.send(:component_classes), "bg-danger"
   end
 
-  def test_component_classes_small_size
-    c = UI::ButtonComponent.new(size: :sm)
+  def test_component_classes_text_variant
+    c = UI::ButtonComponent.new(variant: :text_interactive)
 
-    assert_includes c.send(:component_classes), "h-8"
+    assert_includes c.send(:component_classes), "underline"
+    assert_includes c.send(:component_classes), "text-interactive"
   end
 
   def test_extra_class_appended
@@ -352,43 +353,27 @@ class TestAvatarComponent < Minitest::Test
   def test_default_size
     c = UI::AvatarComponent.new
 
-    assert_equal :default, c.instance_variable_get(:@size)
+    assert_equal :md, c.instance_variable_get(:@size)
   end
 
-  def test_initials_two_words
-    c = UI::AvatarComponent.new
+  # Hardened: the caller supplies ready initials (e.g. user.initials); the
+  # component renders @fallback verbatim and no longer derives initials.
+  def test_fallback_rendered_verbatim
+    c = UI::AvatarComponent.new(fallback: "JD")
 
-    assert_equal "AB", c.send(:initials, "Alice Brown")
+    assert_equal "JD", c.instance_variable_get(:@fallback)
   end
 
-  def test_initials_single_word
-    c = UI::AvatarComponent.new
+  def test_hue_stored
+    c = UI::AvatarComponent.new(fallback: "JD", hue: 280)
 
-    assert_equal "A", c.send(:initials, "Alice")
+    assert_equal 280, c.instance_variable_get(:@hue)
   end
 
-  def test_initials_more_than_two_words
-    c = UI::AvatarComponent.new
+  def test_aria_label_stored
+    c = UI::AvatarComponent.new(fallback: "JD", aria_label: "Jane Doe")
 
-    assert_equal "AB", c.send(:initials, "Alice Brown Clark")
-  end
-
-  def test_initials_empty_string
-    c = UI::AvatarComponent.new
-
-    assert_equal "", c.send(:initials, "")
-  end
-
-  def test_initials_nil
-    c = UI::AvatarComponent.new
-
-    assert_equal "", c.send(:initials, nil)
-  end
-
-  def test_initials_upcased
-    c = UI::AvatarComponent.new
-
-    assert_equal "AB", c.send(:initials, "alice brown")
+    assert_equal "Jane Doe", c.instance_variable_get(:@aria_label)
   end
 end
 
@@ -1297,25 +1282,24 @@ class TestDialogComponent < Minitest::Test
   end
 
   def test_description_stored
-    c = UI::DialogComponent.new(description: "Make changes here.")
+    c = UI::DialogComponent.new(title: "Edit Profile", description: "Make changes here.")
 
     assert_equal "Make changes here.", c.instance_variable_get(:@description)
   end
 
-  def test_nil_title_default
-    c = UI::DialogComponent.new
-
-    assert_nil c.instance_variable_get(:@title)
+  # Hardened: title is required (it is the dialog's accessible name via aria-labelledby).
+  def test_title_required
+    assert_raises(ArgumentError) { UI::DialogComponent.new }
   end
 
   def test_nil_description_default
-    c = UI::DialogComponent.new
+    c = UI::DialogComponent.new(title: "Edit Profile")
 
     assert_nil c.instance_variable_get(:@description)
   end
 
   def test_class_extracted
-    c = UI::DialogComponent.new(class: "max-w-sm")
+    c = UI::DialogComponent.new(title: "Edit Profile", class: "max-w-sm")
 
     assert_equal "max-w-sm", c.instance_variable_get(:@extra_class)
   end
@@ -1660,7 +1644,7 @@ end
 
 class TestFigureComponent < Minitest::Test
   def test_caption_class_constant
-    assert_includes UI::FigureComponent::CAPTION, "text-muted-foreground"
+    assert_includes UI::FigureComponent::CAPTION, "text-text-muted"
   end
 
   def test_caption_stored

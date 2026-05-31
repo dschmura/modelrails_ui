@@ -4,6 +4,7 @@ $LOAD_PATH.unshift File.expand_path("../lib", __dir__)
 require "modelrails_ui"
 
 require "date"
+require "securerandom" # DialogComponent generates an id via SecureRandom.hex
 require "active_support/core_ext/object/blank"
 require "active_support/core_ext/date/calculations"
 require "active_support/inflector"
