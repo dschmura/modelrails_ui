@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.0.modelrails.2]
+
+### Fixed
+- Install generator now **skips the token CSS when the host app already defines the design
+  tokens** (i.e. it IS the token source, like modelrails_base) — prevents duplicating the
+  `@theme`/`.btn-*` system. Detected via `--color-surface`/`--color-interactive` in the entry.
+- Robust `@import "tailwindcss"` anchor (matches with or without the trailing semicolon), so the
+  `@import` injection no longer silently no-ops on real Tailwind v4 entries.
+
 ## [0.1.0.modelrails.1] - modelrails_base hardening fork
 
 Hardened to meet modelrails_base standards (WCAG 2.2 AAA, I18n, the app's OKLCH semantic

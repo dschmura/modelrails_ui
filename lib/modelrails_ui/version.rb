@@ -2,5 +2,5 @@
 
 module ModelrailsUi
   # modelrails_base hardening fork (based on upstream 0.1.0). See MODELRAILS_STATUS.md.
-  VERSION = "0.1.0.modelrails.1"
+  VERSION = "0.1.0.modelrails.2"
 end

@@ -39,16 +39,24 @@ module ModelrailsUi
       end
 
       def create_css_variables
+        if host_defines_design_tokens?
+          say "  Host already defines modelrails_ui design tokens — skipping the token CSS " \
+              "(your app owns the tokens; avoids duplicating @theme/.btn-*).", :yellow
+          return
+        end
+
         copy_file "modelrails_ui.css", css_dest_path
       end
 
       def inject_css_import
+        return if host_defines_design_tokens? # host owns the tokens; nothing to import
+
         entry = tailwind_entry_path
 
         unless entry
           say "\n  Could not detect a Tailwind CSS entry point.", :yellow
           say "  Add this line to your main CSS file:\n"
-          say "    @import \"./modelrails_ui\";\n"
+          say "    @import \"#{css_import_path || "./modelrails_ui"}\";\n"
           say "  Common locations: app/assets/tailwind/application.css, " \
               "app/assets/stylesheets/application.tailwind.css, app/javascript/application.css\n", :cyan
           return
@@ -62,14 +70,26 @@ module ModelrailsUi
         end
 
         import_line = "@import \"#{css_import_path}\";\n"
+        # Match `@import "tailwindcss";` or `'tailwindcss'`, with or without the semicolon.
+        anchor = /@import\s+["']tailwindcss["'];?[ \t]*\n/
 
-        if entry_content.include?('@import "tailwindcss"')
-          inject_into_file entry, import_line, after: "@import \"tailwindcss\"\n"
-        elsif entry_content.include?("@import 'tailwindcss'")
-          inject_into_file entry, import_line, after: "@import 'tailwindcss'\n"
+        if entry_content.match?(anchor)
+          inject_into_file entry, import_line, after: anchor
         else
           append_to_file entry, "\n#{import_line}"
         end
+      end
+
+      private
+
+      # True when the host app already defines the modelrails_ui semantic tokens
+      # (i.e. it IS the token source, like modelrails_base). In that case the gem
+      # must not ship/import its own copy — that would duplicate the design system.
+      def host_defines_design_tokens?
+        entry = tailwind_entry_path
+        return false unless entry
+
+        File.read(File.join(destination_root, entry)).match?(/--color-(surface|interactive)\b/)
       end
     end
   end
