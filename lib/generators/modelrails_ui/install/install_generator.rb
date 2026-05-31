@@ -21,9 +21,20 @@ module ModelrailsUi
         target = "app/components/application_component.rb"
 
         if File.exist?(File.join(destination_root, target))
-          say "  ApplicationComponent already exists. Add `include ModelrailsUi::ClassHelper` manually.", :yellow
+          say "  ApplicationComponent already exists — ensure it defines a private " \
+              "`cn(*classes)` helper (flatten + compact + join). See the generated template.", :yellow
         else
           template "application_component.rb.tt", target
+        end
+      end
+
+      def create_inflection_initializer
+        target = "config/initializers/modelrails_ui_inflections.rb"
+
+        if File.exist?(File.join(destination_root, target))
+          say "  #{target} already exists — skipping.", :yellow
+        else
+          copy_file "inflections.rb", target
         end
       end
 
