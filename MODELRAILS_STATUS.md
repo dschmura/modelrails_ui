@@ -9,6 +9,13 @@ Guiding rule: *when the app's implementation is superior, adopt ours into the ge
 Quality gate = the **host app's own specs** (parity gates). Current: **820 app specs green**
 (components + form_builder a11y + requests + helpers + views).
 
+**AAA is now gem-verified:** `test/test_aaa_contrast.rb` resolves the core semantic token pairs
+to their Tailwind v4 OKLCH values (primary=sky, neutral=slate) and computes contrast
+(OKLCH to OKLab to linear sRGB to relative luminance), asserting >= 7:1 for text-heading,
+text-body, and text-on-interactive on their surfaces in BOTH light and dark. Math validated
+against anchors (white/black = 21:1; interactive+white ~ 7.56:1). A token remap that breaks AAA
+now fails the build.
+
 ---
 
 ## ✅ SOLID — production-grade, hardened at source, parity-proven, adopted
