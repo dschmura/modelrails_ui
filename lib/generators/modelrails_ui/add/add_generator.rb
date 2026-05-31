@@ -3,7 +3,7 @@
 require_relative "../components"
 require_relative "../detector"
 
-module ViewPrimitives
+module ModelrailsUi
   module Generators
     class AddGenerator < Rails::Generators::Base
       include Detector
@@ -33,7 +33,7 @@ module ViewPrimitives
         return if @unknown.blank?
 
         say "  Failed: #{@unknown.join(", ")} (unknown)", :red
-        say "  Run `rails g view_primitives:list` to see all available components.", :cyan
+        say "  Run `rails g modelrails_ui:list` to see all available components.", :cyan
         abort
       end
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module ViewPrimitives
+module ModelrailsUi
   module ClassHelper
     private
 

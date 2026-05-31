@@ -1,20 +1,20 @@
 # frozen_string_literal: true
 
-module ViewPrimitives
+module ModelrailsUi
   class Railtie < Rails::Railtie
-    initializer "view_primitives.inflections" do
+    initializer "modelrails_ui.inflections" do
       ActiveSupport::Inflector.inflections(:en) { |inflect| inflect.acronym "UI" }
     end
 
     generators do
       %w[install add list].each do |gen|
-        require "generators/view_primitives/#{gen}/#{gen}_generator"
+        require "generators/modelrails_ui/#{gen}/#{gen}_generator"
       end
     end
 
-    initializer "view_primitives.component_helper" do
+    initializer "modelrails_ui.component_helper" do
       %i[action_view action_mailer].each do |hook|
-        ActiveSupport.on_load(hook) { include ViewPrimitives::ComponentHelper }
+        ActiveSupport.on_load(hook) { include ModelrailsUi::ComponentHelper }
       end
     end
   end

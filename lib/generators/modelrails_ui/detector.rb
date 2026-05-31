@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module ViewPrimitives
+module ModelrailsUi
   module Generators
     module Detector
       TAILWIND_ENTRIES = [
@@ -24,12 +24,12 @@ module ViewPrimitives
 
       def tailwind_entry_path = tailwind_entry&.fetch(:path)
       def css_dest_dir = tailwind_entry&.fetch(:stylesheets) || "app/assets/stylesheets"
-      def css_dest_path = "#{css_dest_dir}/view_primitives.css"
+      def css_dest_path = "#{css_dest_dir}/modelrails_ui.css"
 
       def css_import_path
         return unless tailwind_entry_path
 
-        Pathname.new("#{css_dest_dir}/view_primitives")
+        Pathname.new("#{css_dest_dir}/modelrails_ui")
           .relative_path_from(Pathname.new(File.dirname(tailwind_entry_path))).to_s
       end
 

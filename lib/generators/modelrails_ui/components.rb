@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module ViewPrimitives
+module ModelrailsUi
   module Generators
     module Components
       TEMPLATE_ROOT = File.expand_path("add/templates", __dir__)

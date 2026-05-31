@@ -7,7 +7,7 @@ require "test_helper"
 # ---------------------------------------------------------------------------
 module ViewComponent
   class Base
-    include ViewPrimitives::ClassHelper
+    include ModelrailsUi::ClassHelper
 
     def self.renders_many(name, *) = nil
     def self.renders_one(name, *) = nil
@@ -20,7 +20,7 @@ end
 class ApplicationComponent < ViewComponent::Base; end
 
 TEMPLATE_ROOT = File.expand_path(
-  "../lib/generators/view_primitives/add/templates", __dir__
+  "../lib/generators/modelrails_ui/add/templates", __dir__
 )
 
 def load_tt(*parts)

@@ -22,10 +22,10 @@ class TestGeneratorComponents < Minitest::Test
   PHASE9 = %w[image figure picture video audio iframe map_area embed].freeze
   ALL_COMPONENTS = (PHASE1 + PHASE2 + PHASE3 + PHASE4 + PHASE5 + PHASE6 + PHASE7 + PHASE8 + PHASE9).freeze
 
-  TEMPLATE_ROOT = File.expand_path("../lib/generators/view_primitives/add/templates", __dir__)
+  TEMPLATE_ROOT = File.expand_path("../lib/generators/modelrails_ui/add/templates", __dir__)
 
   def supported_components
-    @supported_components ||= ViewPrimitives::Generators::Components.supported
+    @supported_components ||= ModelrailsUi::Generators::Components.supported
   end
 
   def test_all_components_are_in_supported_list
@@ -517,7 +517,7 @@ class TestGeneratorComponents < Minitest::Test
   end
 
   def test_chart_has_setup_note
-    components_rb = File.read(File.expand_path("../lib/generators/view_primitives/components.rb", __dir__))
+    components_rb = File.read(File.expand_path("../lib/generators/modelrails_ui/components.rb", __dir__))
 
     assert_includes components_rb, "SETUP_NOTES"
     assert_includes components_rb, '"chart"'
@@ -563,7 +563,7 @@ class TestGeneratorComponents < Minitest::Test
   end
 
   def test_wysiwyg_has_setup_note
-    components_rb = File.read(File.expand_path("../lib/generators/view_primitives/components.rb", __dir__))
+    components_rb = File.read(File.expand_path("../lib/generators/modelrails_ui/components.rb", __dir__))
 
     assert_includes components_rb, '"wysiwyg"'
     assert_includes components_rb, "actiontext"

@@ -1,23 +1,23 @@
 # frozen_string_literal: true
 
-require_relative "lib/view_primitives/version"
+require_relative "lib/modelrails_ui/version"
 
 Gem::Specification.new do |spec|
-  spec.name = "view_primitives"
-  spec.version = ViewPrimitives::VERSION
+  spec.name = "modelrails_ui"
+  spec.version = ModelrailsUi::VERSION
   spec.authors = ["Alexey Poimtsev"]
   spec.email = ["alexey.poimtsev@gmail.com"]
 
   spec.summary = "Primitive view components and helpers for Rails applications"
   spec.description = "Provides a set of primitive view components and helpers for building " \
                      "UI in Rails applications with minimal overhead."
-  spec.homepage = "https://github.com/alec-c4/view_primitives"
+  spec.homepage = "https://github.com/dschmura/modelrails_ui"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 3.2.0"
 
   spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = "https://github.com/alec-c4/view_primitives"
-  spec.metadata["changelog_uri"] = "https://github.com/alec-c4/view_primitives/blob/main/CHANGELOG.md"
+  spec.metadata["source_code_uri"] = "https://github.com/dschmura/modelrails_ui"
+  spec.metadata["changelog_uri"] = "https://github.com/dschmura/modelrails_ui/blob/main/CHANGELOG.md"
   spec.metadata["rubygems_mfa_required"] = "true"
 
   spec.files = Dir.chdir(__dir__) do

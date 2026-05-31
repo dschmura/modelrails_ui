@@ -2,13 +2,13 @@
 
 require_relative "../components"
 
-module ViewPrimitives
+module ModelrailsUi
   module Generators
     class ListGenerator < Rails::Generators::Base
-      desc "List available ViewPrimitives components and whether they are installed"
+      desc "List available ModelrailsUi components and whether they are installed"
 
       def list_components
-        say "\nViewPrimitives components:\n\n", :bold
+        say "\nModelrailsUi components:\n\n", :bold
         say "COMPONENT          STATUS"
         say "-" * 32
 
@@ -18,7 +18,7 @@ module ViewPrimitives
           say format("%-18s %s", component, status), color
         end
 
-        say "\nInstall: rails g view_primitives:add <name>\n", :cyan
+        say "\nInstall: rails g modelrails_ui:add <name>\n", :cyan
       end
     end
   end

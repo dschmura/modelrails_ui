@@ -1,4 +1,4 @@
-/* view_primitives (modelrails_base fork) — self-contained AAA OKLCH design system.
+/* modelrails_ui (modelrails_base fork) — self-contained AAA OKLCH design system.
    Import after `@import "tailwindcss";`. Defines primitives, semantic tokens,
    @theme inline utility registration, class-based dark mode, and component classes
    (.btn-*, .bg-hue-*, etc.). Extracted from modelrails_base. */

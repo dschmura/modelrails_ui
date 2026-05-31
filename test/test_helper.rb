@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 $LOAD_PATH.unshift File.expand_path("../lib", __dir__)
-require "view_primitives"
+require "modelrails_ui"
 
 require "date"
 require "active_support/core_ext/object/blank"

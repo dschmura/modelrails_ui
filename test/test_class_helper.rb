@@ -3,7 +3,7 @@
 require "test_helper"
 
 class ClassHelperConsumer
-  include ViewPrimitives::ClassHelper
+  include ModelrailsUi::ClassHelper
 
   def call_cn(*args)
     cn(*args)

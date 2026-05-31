@@ -2,7 +2,7 @@
 
 require_relative "../detector"
 
-module ViewPrimitives
+module ModelrailsUi
   module Generators
     class InstallGenerator < Rails::Generators::Base
       include Detector
@@ -13,7 +13,7 @@ module ViewPrimitives
         return if "ui/button".camelize == "UI::ButtonComponent"
 
         say "\n  Warning: ActiveSupport inflection for `UI` is not configured.", :yellow
-        say "  ViewPrimitives expects `ui/button` to resolve to `UI::ButtonComponent`.", :yellow
+        say "  ModelrailsUi expects `ui/button` to resolve to `UI::ButtonComponent`.", :yellow
         say "  The gem registers this automatically — restart the Rails server if you just installed.\n", :yellow
       end
 
@@ -21,14 +21,14 @@ module ViewPrimitives
         target = "app/components/application_component.rb"
 
         if File.exist?(File.join(destination_root, target))
-          say "  ApplicationComponent already exists. Add `include ViewPrimitives::ClassHelper` manually.", :yellow
+          say "  ApplicationComponent already exists. Add `include ModelrailsUi::ClassHelper` manually.", :yellow
         else
           template "application_component.rb.tt", target
         end
       end
 
       def create_css_variables
-        copy_file "view_primitives.css", css_dest_path
+        copy_file "modelrails_ui.css", css_dest_path
       end
 
       def inject_css_import
@@ -37,7 +37,7 @@ module ViewPrimitives
         unless entry
           say "\n  Could not detect a Tailwind CSS entry point.", :yellow
           say "  Add this line to your main CSS file:\n"
-          say "    @import \"./view_primitives\";\n"
+          say "    @import \"./modelrails_ui\";\n"
           say "  Common locations: app/assets/tailwind/application.css, " \
               "app/assets/stylesheets/application.tailwind.css, app/javascript/application.css\n", :cyan
           return
@@ -45,8 +45,8 @@ module ViewPrimitives
 
         entry_content = File.read(File.join(destination_root, entry))
 
-        if entry_content.include?("view_primitives")
-          say "  #{entry} already imports view_primitives — skipping.", :yellow
+        if entry_content.include?("modelrails_ui")
+          say "  #{entry} already imports modelrails_ui — skipping.", :yellow
           return
         end
 
