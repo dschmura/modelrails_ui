@@ -7,7 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.1.0] - 2026-05-31
+## [0.2.0] - 2026-05-30
+
+### Added
+- Lookbook living documentation. `rails g modelrails_ui:lookbook` installs a dev-only preview
+  layout (loads the host's compiled Tailwind + importmap so previews render styled and
+  interactive), a config initializer, and `ViewComponent::Preview` classes for the six solid
+  components (button, input, textarea, file_input, dialog, avatar). Mount `Lookbook::Engine` and
+  visit `/lookbook` for a navigable, shareable component explorer.
+
+## [0.1.0] - 2026-05-30
 
 First release of **modelrails_ui** — a hardened fork of view_primitives 0.1.0 (see the upstream
 baseline entry below), re-themed and extended to meet modelrails_base standards: WCAG 2.2 AAA,

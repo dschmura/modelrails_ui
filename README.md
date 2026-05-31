@@ -42,7 +42,7 @@ broken / kept-app-native) and **`CHANGELOG.md`** for the fork changes.
 ```ruby
 # Gemfile — scaffolding tool, not shipped to production
 group :development do
-  gem "modelrails_ui", git: "https://github.com/dschmura/modelrails_ui.git", tag: "v0.1.0"
+  gem "modelrails_ui", git: "https://github.com/dschmura/modelrails_ui.git", tag: "v0.2.0"
 end
 ```
 
@@ -75,6 +75,21 @@ adoption is zero-churn (this is how modelrails_base adopts it):
 - **Buttons:** use the component for new code; existing `.btn-*` CSS keeps working.
 
 `rails g modelrails_ui:list` shows available + installed components.
+
+## Living documentation (Lookbook)
+
+For a navigable, shareable component explorer — live, styled, interactive previews developers can
+poke at:
+
+```bash
+rails g modelrails_ui:lookbook   # preview layout + initializer + ViewComponent::Preview classes
+```
+
+Then add `gem "lookbook"` to your `:development` group, mount it in `config/routes.rb`
+(`mount Lookbook::Engine, at: "/lookbook" if Rails.env.development?`), and visit `/lookbook`.
+The generated preview layout loads your app's compiled Tailwind and importmap, so previews render
+with real tokens and working Stimulus (the dialog actually opens). Previews land in
+`spec/components/previews/ui/` — edit or extend them freely. Dev-only; nothing ships to production.
 
 ## Testing & accessibility
 
