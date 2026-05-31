@@ -5,25 +5,25 @@ module UI
     # Full-width dropdown panel anchored to a trigger button.
     # Columns are rendered via with_column blocks.
 
-    TRIGGER_CLS = "inline-flex h-9 items-center justify-center gap-1.5 rounded-md bg-background " \
+    TRIGGER_CLS = "inline-flex h-9 items-center justify-center gap-1.5 rounded-md bg-surface-raised " \
                   "px-4 py-2 text-sm font-medium transition-[color,box-shadow] outline-none " \
-                  "hover:bg-accent hover:text-accent-foreground " \
-                  "focus-visible:ring-[3px] focus-visible:ring-ring/50 " \
-                  "data-[state=open]:bg-accent/50 data-[state=open]:text-accent-foreground"
+                  "hover:bg-surface-sunken hover:text-text-heading " \
+                  "focus-visible:ring-[3px] focus-visible:ring-interactive-focus " \
+                  "data-[state=open]:bg-surface-sunken/50 data-[state=open]:text-text-heading"
 
     PANEL_CLS = "absolute left-0 top-full z-50 mt-1.5 w-full overflow-hidden rounded-md border " \
-                "bg-popover text-popover-foreground shadow-lg"
+                "bg-surface-overlay text-text-body shadow-lg"
 
     INNER_CLS = "container mx-auto grid gap-6 p-6"
 
-    COLUMN_HEADING = "mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground"
+    COLUMN_HEADING = "mb-2 text-xs font-semibold uppercase tracking-wide text-text-muted"
 
     ITEM_CLS = "group flex items-start gap-3 rounded-sm p-2 text-sm transition-colors outline-none " \
-               "hover:bg-accent hover:text-accent-foreground " \
-               "focus-visible:ring-[3px] focus-visible:ring-ring/50"
+               "hover:bg-surface-sunken hover:text-text-heading " \
+               "focus-visible:ring-[3px] focus-visible:ring-interactive-focus"
 
     ITEM_TITLE = "font-medium leading-none"
-    ITEM_DESC  = "mt-1 text-xs text-muted-foreground group-hover:text-accent-foreground/70"
+    ITEM_DESC  = "mt-1 text-xs text-text-muted group-hover:text-text-heading/70"
 
     CHEVRON_PATH = "m6 9 6 6 6-6"
 

@@ -7,8 +7,8 @@ module UI
                     "has-[>svg]:gap-x-3 [&>svg]:size-4 [&>svg]:translate-y-0.5 [&>svg]:text-current"
 
     VARIANTS = {
-      default: "bg-card text-card-foreground",
-      destructive: "bg-card text-destructive [&>svg]:text-current *:data-[slot=alert-description]:text-destructive/90"
+      default: "bg-surface-raised text-text-body",
+      destructive: "bg-surface-raised text-danger [&>svg]:text-current *:data-[slot=alert-description]:text-danger/90"
     }.freeze
 
     renders_one :alert_title, "UI::AlertComponent::TitleComponent"
@@ -38,7 +38,7 @@ module UI
     end
 
     class DescriptionComponent < ApplicationComponent
-      CLASSES = "col-start-2 grid justify-items-start gap-1 text-sm text-muted-foreground [&_p]:leading-relaxed"
+      CLASSES = "col-start-2 grid justify-items-start gap-1 text-sm text-text-muted [&_p]:leading-relaxed"
 
       def call
         content_tag(:div, content, class: CLASSES, data: { slot: "alert-description" })

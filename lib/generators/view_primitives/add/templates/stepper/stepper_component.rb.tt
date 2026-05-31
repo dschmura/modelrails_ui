@@ -52,7 +52,7 @@ module UI
         }
         concat content_tag(:div, class: "pb-6 pt-0.5 min-w-0") {
           concat content_tag(:p, step[:label], class: cn("text-sm font-medium", label_color(status)))
-          concat content_tag(:p, step[:description], class: "mt-0.5 text-xs text-muted-foreground") if step[:description]
+          concat content_tag(:p, step[:description], class: "mt-0.5 text-xs text-text-muted") if step[:description]
         }
       end
     end
@@ -62,15 +62,15 @@ module UI
       case status
       when :complete
         content_tag(:span, check_svg,
-          class: cn(base, "border-primary bg-primary text-primary-foreground"),
+          class: cn(base, "border-interactive bg-interactive text-text-on-interactive"),
           "aria-label": "Completed")
       when :current
         content_tag(:span, "●",
-          class: cn(base, "border-primary text-primary"),
+          class: cn(base, "border-interactive text-interactive"),
           "aria-current": "step")
       else
         content_tag(:span, "○",
-          class: cn(base, "border-muted-foreground text-muted-foreground"),
+          class: cn(base, "border-text-muted text-text-muted"),
           "aria-label": "Pending")
       end
     end
@@ -78,17 +78,17 @@ module UI
     def connector(direction, status)
       filled = status == :complete
       if direction == :horizontal
-        content_tag(:div, nil, class: cn("h-0.5 flex-1 mx-2", filled ? "bg-primary" : "bg-border"))
+        content_tag(:div, nil, class: cn("h-0.5 flex-1 mx-2", filled ? "bg-interactive" : "bg-border"))
       else
-        content_tag(:div, nil, class: cn("w-0.5 flex-1 my-1", filled ? "bg-primary" : "bg-border"))
+        content_tag(:div, nil, class: cn("w-0.5 flex-1 my-1", filled ? "bg-interactive" : "bg-border"))
       end
     end
 
     def label_color(status)
       case status
-      when :complete then "text-foreground"
-      when :current  then "text-primary"
-      else "text-muted-foreground"
+      when :complete then "text-text-heading"
+      when :current  then "text-interactive"
+      else "text-text-muted"
       end
     end
 

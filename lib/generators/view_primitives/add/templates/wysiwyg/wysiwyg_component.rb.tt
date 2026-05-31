@@ -30,7 +30,7 @@ module UI
 
     ADAPTERS = %w[trix quill].freeze
 
-    WRAPPER_CLS = "rounded-md border border-input bg-background shadow-xs"
+    WRAPPER_CLS = "rounded-md border border-border-strong bg-surface-raised shadow-xs"
 
     def initialize(name:, adapter: :trix, value: nil, placeholder: nil,
                    toolbar: true, height: 200, **html_attrs)

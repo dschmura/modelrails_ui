@@ -3,15 +3,15 @@
 module UI
   class SearchInputComponent < ApplicationComponent
     WRAPPER = "relative w-full"
-    ICON_WRAP = "pointer-events-none absolute inset-y-0 left-3 flex items-center text-muted-foreground"
+    ICON_WRAP = "pointer-events-none absolute inset-y-0 left-3 flex items-center text-text-muted"
     SEARCH_PATH = "m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
-    INPUT_BASE = "h-9 w-full min-w-0 rounded-md border border-input bg-transparent py-1 pl-9 pr-3 text-base shadow-xs " \
+    INPUT_BASE = "h-9 w-full min-w-0 rounded-md border border-border-strong bg-transparent py-1 pl-9 pr-3 text-base shadow-xs " \
                  "transition-[color,box-shadow] outline-none " \
-                 "placeholder:text-muted-foreground " \
-                 "focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 " \
-                 "aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 " \
+                 "placeholder:text-text-muted " \
+                 "focus-visible:border-border-focus focus-visible:ring-[3px] focus-visible:ring-interactive-focus " \
+                 "aria-invalid:border-danger-border aria-invalid:ring-danger  " \
                  "disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 " \
-                 "md:text-sm dark:bg-input/30"
+                 "md:text-sm "
 
     # placeholder: default "Search…"
     # name / id / value: passed through as html_attrs

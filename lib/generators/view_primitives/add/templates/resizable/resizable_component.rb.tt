@@ -15,8 +15,8 @@ module UI
     PANEL_CLS   = "overflow-auto"
 
     HANDLE_CLS  = "group relative flex items-center justify-center " \
-                  "bg-border transition-colors hover:bg-ring/30 focus-visible:outline-none " \
-                  "focus-visible:ring-[3px] focus-visible:ring-ring/50 " \
+                  "bg-border transition-colors hover:bg-interactive-focus focus-visible:outline-none " \
+                  "focus-visible:ring-[3px] focus-visible:ring-interactive-focus " \
                   "data-[direction=horizontal]:w-px data-[direction=horizontal]:cursor-col-resize " \
                   "data-[direction=vertical]:h-px data-[direction=vertical]:cursor-row-resize"
 

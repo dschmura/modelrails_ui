@@ -35,8 +35,8 @@ module UI
 
     def radio_input(item, id)
       attrs = { type: "radio", name: @name, value: item[:value], id: id,
-                class: "h-4 w-4 border border-primary text-primary accent-primary " \
-                       "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring " \
+                class: "h-4 w-4 border border-interactive text-interactive accent-interactive " \
+                       "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-interactive-focus " \
                        "disabled:cursor-not-allowed disabled:opacity-50" }
       attrs[:checked] = true if item[:checked]
       content_tag(:input, nil, **attrs)

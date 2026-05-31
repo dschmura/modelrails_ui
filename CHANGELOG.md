@@ -7,6 +7,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.0.modelrails.1] - modelrails_base hardening fork
+
+Hardened to meet modelrails_base standards (WCAG 2.2 AAA, I18n, the app's OKLCH semantic
+tokens, form_builder integration). See `MODELRAILS_STATUS.md` for the solid / pre-release /
+broken / kept-app-native breakdown.
+
+### Fixed
+- `add` generator: `source_root` called as an instance method (only defined at class level).
+- `add` generator: `template`/`copy_file` overrides were public, so Thor auto-invoked them
+  with no args — wrapped in `no_commands`.
+
+### Changed
+- All component templates re-themed from shadcn tokens to AAA semantic tokens
+  (`surface*`, `interactive*`, `danger*`, `text-*`, `border*`); `dark:` variants dropped
+  (tokens auto-flip via `.dark`). NOTE: components now expect the host app to define these
+  tokens (see MODELRAILS_STATUS.md → Token portability).
+- `Input` / `Textarea` / `FileInput`: first-class `required`/`invalid`/`describedby` → ARIA
+  params; styling matches the app's form-field constants; dual-mode (form-builder + standalone).
+  `FileInput` gained ARIA wiring the app's plain file_field lacked.
+- `Dialog`: rewritten onto the native `<dialog>` + `showModal` pattern (focus-trap/restore,
+  native Escape, `::backdrop`) adopted from the app's superior modal; ships the app's
+  `modal_controller.js`; added `wrapper:` (embed-only) and `body_id:` options.
+- `Button`: rewritten to the app's `.btn-*` taxonomy (primary/secondary/danger + text family).
+- `Avatar`: app `AVATAR_SIZES`, rounded-full, hue-tinted initials, role=img/aria-hidden semantics.
+
+### Known issues
+- Templates that don't generate: `form_field`, `qr_code` (SyntaxError), `input_otp` (undefined helper).
+- `embed` calls `CGI.parse` without `require "cgi"` (breaks on Ruby 4.0).
+- Gem's own test suite has ~18 tests asserting pre-hardening behavior (see MODELRAILS_STATUS.md).
+
+
 ## [0.1.0] - 2026-05-30
 
 ### Added

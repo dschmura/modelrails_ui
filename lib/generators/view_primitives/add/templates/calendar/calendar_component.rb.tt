@@ -9,20 +9,20 @@ module UI
     # name:       form field name for the hidden input (if used in a form)
     # min/max:    Date bounds for disabled days
 
-    CONTAINER  = "w-fit rounded-lg border border-border bg-popover p-4 text-sm shadow"
+    CONTAINER  = "w-fit rounded-lg border border-border bg-surface-overlay p-4 text-sm shadow"
     HEADER_CLS = "mb-3 flex items-center justify-between"
-    MONTH_CLS  = "font-medium text-foreground"
+    MONTH_CLS  = "font-medium text-text-heading"
     NAV_BTN    = "inline-flex size-7 items-center justify-center rounded-md " \
-                 "text-muted-foreground hover:bg-accent hover:text-accent-foreground " \
-                 "focus-visible:ring-[3px] focus-visible:ring-ring/50 outline-none transition"
+                 "text-text-muted hover:bg-surface-sunken hover:text-text-heading " \
+                 "focus-visible:ring-[3px] focus-visible:ring-interactive-focus outline-none transition"
     GRID_CLS   = "grid grid-cols-7 gap-px"
-    DOW_CLS    = "py-1.5 text-center text-xs text-muted-foreground font-medium"
+    DOW_CLS    = "py-1.5 text-center text-xs text-text-muted font-medium"
     DAY_BASE   = "h-9 w-9 rounded-md text-center text-sm transition-colors outline-none " \
-                 "focus-visible:ring-[3px] focus-visible:ring-ring/50"
-    DAY_NORMAL = "hover:bg-accent hover:text-accent-foreground"
-    DAY_TODAY  = "font-semibold text-foreground ring-1 ring-border"
-    DAY_SEL    = "bg-primary text-primary-foreground hover:bg-primary/90"
-    DAY_MUTED  = "text-muted-foreground/50"
+                 "focus-visible:ring-[3px] focus-visible:ring-interactive-focus"
+    DAY_NORMAL = "hover:bg-surface-sunken hover:text-text-heading"
+    DAY_TODAY  = "font-semibold text-text-heading ring-1 ring-border"
+    DAY_SEL    = "bg-interactive text-text-on-interactive hover:bg-interactive-hover"
+    DAY_MUTED  = "text-text-muted/50"
     DAY_DISABLED = "pointer-events-none opacity-30"
 
     DAYS_OF_WEEK = %w[Su Mo Tu We Th Fr Sa].freeze

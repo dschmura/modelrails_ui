@@ -5,20 +5,20 @@ module UI
     VARIANTS = {
       phone: {
         outer:  "relative mx-auto h-[600px] w-[300px] rounded-[2.5rem] border-[14px] " \
-                "border-foreground bg-foreground shadow-xl",
-        screen: "relative h-full w-full overflow-hidden rounded-[2rem] bg-white dark:bg-zinc-900",
-        notch:  "absolute left-1/2 top-0 z-10 h-6 w-28 -translate-x-1/2 rounded-b-2xl bg-foreground"
+                "border-text-heading bg-text-heading shadow-xl",
+        screen: "relative h-full w-full overflow-hidden rounded-[2rem] bg-white ",
+        notch:  "absolute left-1/2 top-0 z-10 h-6 w-28 -translate-x-1/2 rounded-b-2xl bg-text-heading"
       },
       browser: {
-        outer:  "relative mx-auto overflow-hidden rounded-xl border border-border bg-background shadow-xl",
-        bar:    "flex h-10 items-center gap-2 border-b border-border bg-muted px-4",
+        outer:  "relative mx-auto overflow-hidden rounded-xl border border-border bg-surface-raised shadow-xl",
+        bar:    "flex h-10 items-center gap-2 border-b border-border bg-surface-sunken px-4",
         dots:   "flex gap-1.5",
-        screen: "overflow-hidden bg-white dark:bg-zinc-900"
+        screen: "overflow-hidden bg-white "
       },
       tablet: {
         outer:  "relative mx-auto h-[500px] w-[700px] rounded-[1.75rem] border-[12px] " \
-                "border-foreground bg-foreground shadow-xl",
-        screen: "relative h-full w-full overflow-hidden rounded-[1.25rem] bg-white dark:bg-zinc-900",
+                "border-text-heading bg-text-heading shadow-xl",
+        screen: "relative h-full w-full overflow-hidden rounded-[1.25rem] bg-white ",
         notch:  nil
       }
     }.freeze
@@ -57,7 +57,7 @@ module UI
         })
         if @url
           concat content_tag(:div, @url,
-            class: "ml-4 flex-1 truncate rounded-md bg-background px-3 py-1 text-xs text-muted-foreground")
+            class: "ml-4 flex-1 truncate rounded-md bg-surface-raised px-3 py-1 text-xs text-text-muted")
         end
       end
     end

@@ -2,9 +2,9 @@
 
 module UI
   class NavbarComponent < ApplicationComponent
-    LINK_BASE  = "text-sm font-medium transition-colors hover:text-foreground"
-    LINK_IDLE  = "text-muted-foreground"
-    LINK_ACTIVE = "text-foreground"
+    LINK_BASE  = "text-sm font-medium transition-colors hover:text-text-heading"
+    LINK_IDLE  = "text-text-muted"
+    LINK_ACTIVE = "text-text-heading"
 
     # items: [{ label:, href:, active: (optional) }]
     # Block content is placed in the right action area (e.g. a Sign in button).
@@ -18,7 +18,7 @@ module UI
 
     def call
       content_tag(:nav,
-        class: cn("sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60", @extra_class),
+        class: cn("sticky top-0 z-50 w-full border-b bg-surface-raised/95 backdrop-blur supports-[backdrop-filter]:bg-surface-raised/60", @extra_class),
         data: { controller: "navbar" },
         **@html_attrs) do
         content_tag(:div, class: "container mx-auto flex h-14 items-center gap-4 px-4") do
@@ -38,7 +38,7 @@ module UI
 
       content_tag(:a, @brand,
         href: @brand_href,
-        class: "flex items-center font-semibold text-foreground mr-2")
+        class: "flex items-center font-semibold text-text-heading mr-2")
     end
 
     def desktop_menu
@@ -70,7 +70,7 @@ module UI
 
       content_tag(:button, nil,
         type: "button",
-        class: "md:hidden inline-flex items-center justify-center rounded-md p-2 text-muted-foreground hover:bg-accent hover:text-foreground",
+        class: "md:hidden inline-flex items-center justify-center rounded-md p-2 text-text-muted hover:bg-surface-sunken hover:text-text-heading",
         data: { action: "click->navbar#toggle", navbar_target: "toggle" },
         "aria-label": "Toggle menu") do
         hamburger_icon

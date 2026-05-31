@@ -2,7 +2,7 @@
 
 module UI
   class CardDescriptionComponent < ApplicationComponent
-    BASE = "text-muted-foreground text-sm"
+    BASE = "text-text-muted text-sm"
 
     def initialize(text = nil, **html_attrs)
       @text = text || html_attrs.delete(:label) || html_attrs.delete(:text)

@@ -38,7 +38,7 @@ module UI
           data: { action: "click->sheet#close" },
           "aria-hidden": "true")
         concat content_tag(:div,
-          class: cn("z-50 bg-background p-6 shadow-xl overflow-y-auto",
+          class: cn("z-50 bg-surface-raised p-6 shadow-xl overflow-y-auto",
                     SIDES.fetch(@side, SIDES[:right]),
                     @extra_class),
           role: "dialog",
@@ -58,7 +58,7 @@ module UI
 
       content_tag(:div, class: "mb-4 pr-6") do
         concat content_tag(:h2, @title, class: "text-lg font-semibold leading-none tracking-tight") if @title
-        concat content_tag(:p, @description, class: "mt-2 text-sm text-muted-foreground") if @description
+        concat content_tag(:p, @description, class: "mt-2 text-sm text-text-muted") if @description
       end
     end
 

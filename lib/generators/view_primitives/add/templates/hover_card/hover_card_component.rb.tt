@@ -4,8 +4,8 @@ module UI
   class HoverCardComponent < ApplicationComponent
     renders_one :trigger
 
-    CARD_BASE = "absolute z-50 w-64 rounded-lg border bg-popover p-4 text-sm " \
-                "text-popover-foreground shadow-md " \
+    CARD_BASE = "absolute z-50 w-64 rounded-lg border bg-surface-overlay p-4 text-sm " \
+                "text-text-body shadow-md " \
                 "opacity-0 group-hover:opacity-100 pointer-events-none " \
                 "transition-opacity duration-200"
 

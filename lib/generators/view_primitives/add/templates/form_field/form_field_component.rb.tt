@@ -37,15 +37,15 @@ module UI
     def label_text
       return @label unless @required
 
-      safe_join([@label, content_tag(:span, " *", class: "text-destructive")])
+      safe_join([@label, content_tag(:span, " *", class: "text-danger")])
     end
 
     def hint_tag
-      content_tag(:p, @hint, class: "text-xs text-muted-foreground")
+      content_tag(:p, @hint, class: "text-xs text-text-muted")
     end
 
     def error_tag
-      content_tag(:p, @error, class: "text-xs text-destructive", role: "alert")
+      content_tag(:p, @error, class: "text-xs text-danger", role: "alert")
     end
   end
 end

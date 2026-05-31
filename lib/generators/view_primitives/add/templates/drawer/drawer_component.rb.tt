@@ -6,7 +6,7 @@ module UI
     renders_one :footer
 
     OVERLAY = "fixed inset-0 z-50 bg-black/50"
-    PANEL   = "fixed inset-x-0 bottom-0 z-50 rounded-t-xl border-t bg-background shadow-xl overflow-y-auto"
+    PANEL   = "fixed inset-x-0 bottom-0 z-50 rounded-t-xl border-t bg-surface-raised shadow-xl overflow-y-auto"
 
     def initialize(title: nil, description: nil, **html_attrs)
       @title       = title
@@ -46,7 +46,7 @@ module UI
 
     def drag_handle
       content_tag(:div, class: "flex justify-center pt-3 pb-2") {
-        content_tag(:div, nil, class: "h-1.5 w-12 rounded-full bg-muted")
+        content_tag(:div, nil, class: "h-1.5 w-12 rounded-full bg-surface-sunken")
       }
     end
 
@@ -54,8 +54,8 @@ module UI
       return "" if @title.nil? && @description.nil?
 
       content_tag(:div, class: "px-4 pb-4") do
-        concat content_tag(:h2, @title, class: "text-lg font-semibold text-foreground") if @title
-        concat content_tag(:p, @description, class: "mt-1 text-sm text-muted-foreground") if @description
+        concat content_tag(:h2, @title, class: "text-lg font-semibold text-text-heading") if @title
+        concat content_tag(:p, @description, class: "mt-1 text-sm text-text-muted") if @description
       end
     end
   end

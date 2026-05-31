@@ -49,22 +49,28 @@ module ViewPrimitives
         end
       end
 
-      def template(source, *args, **options, &block)
-        destination = args.first || options[:to]
-        warn_overwrite(destination) if destination
-        super
-      end
+      # Wrapped in no_commands so Thor::Group does not treat these helper
+      # overrides as public generator tasks (which it would auto-invoke with
+      # no arguments, raising ArgumentError).
+      no_commands do
+        def template(source, *args, **options, &block)
+          destination = args.first || options[:to]
+          warn_overwrite(destination) if destination
+          super
+        end
 
-      def copy_file(source, *args, **options)
-        destination = args.first || options[:to]
-        warn_overwrite(destination) if destination
-        super
+        def copy_file(source, *args, **options)
+          destination = args.first || options[:to]
+          warn_overwrite(destination) if destination
+          super
+        end
       end
 
       private
 
       def copy_component(name)
-        dir = File.join(source_root, name)
+        # source_root is a class-level macro; reference it via the class.
+        dir = File.join(self.class.source_root, name)
         Dir.each_child(dir).sort.each { |file| copy_template_file(name, file) }
         copy_extra_stimulus(name)
       end

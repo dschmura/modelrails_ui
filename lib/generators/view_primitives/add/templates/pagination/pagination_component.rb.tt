@@ -3,9 +3,9 @@
 module UI
   class PaginationComponent < ApplicationComponent
     ITEM   = "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium " \
-             "transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring " \
-             "h-9 w-9 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground"
-    ACTIVE = "bg-primary text-primary-foreground shadow hover:bg-primary/90 border-transparent"
+             "transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-interactive-focus " \
+             "h-9 w-9 border border-border-strong bg-surface-raised shadow-sm hover:bg-surface-sunken hover:text-text-heading"
+    ACTIVE = "bg-interactive text-text-on-interactive shadow hover:bg-interactive-hover border-transparent"
     MUTED  = "cursor-not-allowed opacity-50 pointer-events-none"
 
     # url: callable — receives a page number, returns a path string
@@ -68,7 +68,7 @@ module UI
 
     def ellipsis_item
       content_tag(:li) do
-        content_tag(:span, "…", class: "flex h-9 w-9 items-center justify-center text-sm text-muted-foreground")
+        content_tag(:span, "…", class: "flex h-9 w-9 items-center justify-center text-sm text-text-muted")
       end
     end
 

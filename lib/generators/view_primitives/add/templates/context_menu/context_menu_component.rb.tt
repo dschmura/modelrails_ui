@@ -4,15 +4,15 @@ module UI
   class ContextMenuComponent < ApplicationComponent
     renders_one :menu
 
-    PANEL     = "fixed z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 " \
-               "text-popover-foreground shadow-md"
+    PANEL     = "fixed z-50 min-w-[8rem] overflow-hidden rounded-md border bg-surface-overlay p-1 " \
+               "text-text-body shadow-md"
     ITEM      = "relative flex w-full cursor-default select-none items-center gap-2 rounded-sm " \
                 "px-2 py-1.5 text-sm outline-none " \
-                "hover:bg-accent hover:text-accent-foreground " \
+                "hover:bg-surface-sunken hover:text-text-heading " \
                 "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 " \
-                "[&_svg:not([class*='text-'])]:text-muted-foreground"
+                "[&_svg:not([class*='text-'])]:text-text-muted"
     SEPARATOR = "-mx-1 my-1 h-px bg-border"
-    LABEL_CLS = "px-2 py-1.5 text-sm font-medium text-foreground"
+    LABEL_CLS = "px-2 py-1.5 text-sm font-medium text-text-heading"
 
     def initialize(**html_attrs)
       @extra_class = html_attrs.delete(:class)

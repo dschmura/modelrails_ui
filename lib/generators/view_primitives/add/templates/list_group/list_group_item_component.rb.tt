@@ -5,9 +5,9 @@ module UI
     BASE = "flex items-center justify-between px-4 py-3 text-sm"
 
     VARIANTS = {
-      default: "text-foreground hover:bg-muted",
-      active:  "bg-primary text-primary-foreground",
-      muted:   "text-muted-foreground hover:bg-muted"
+      default: "text-text-heading hover:bg-surface-sunken",
+      active:  "bg-interactive text-text-on-interactive",
+      muted:   "text-text-muted hover:bg-surface-sunken"
     }.freeze
 
     def initialize(label = nil, href: nil, active: false, variant: :default, **html_attrs)

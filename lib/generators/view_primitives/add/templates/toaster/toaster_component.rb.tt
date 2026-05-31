@@ -51,7 +51,7 @@ module UI
 
     class ToastComponent < ApplicationComponent
       VARIANTS = {
-        default: {border: "border-border", icon: nil, icon_color: "text-foreground"},
+        default: {border: "border-border", icon: nil, icon_color: "text-text-heading"},
         success: {
           border: "border-green-500/40",
           icon: "M9 12l2 2 4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0z",
@@ -63,9 +63,9 @@ module UI
           icon_color: "text-amber-500"
         },
         destructive: {
-          border: "border-destructive/40",
+          border: "border-danger-border/40",
           icon: "M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 1 1-18 0 9 9 0 0 1 18 0z",
-          icon_color: "text-destructive"
+          icon_color: "text-danger"
         },
         info: {
           border: "border-blue-500/40",
@@ -75,13 +75,13 @@ module UI
       }.freeze
 
       TOAST_CLS = "pointer-events-auto flex items-start gap-3 rounded-lg border " \
-                  "bg-background px-4 py-3 shadow-lg text-foreground " \
+                  "bg-surface-raised px-4 py-3 shadow-lg text-text-heading " \
                   "transition-all duration-300 translate-y-2 opacity-0 " \
                   "data-[open=true]:translate-y-0 data-[open=true]:opacity-100"
 
       CLOSE_CLS = "ml-auto -mr-1 -mt-0.5 shrink-0 inline-flex size-6 items-center justify-center " \
-                  "rounded-md text-muted-foreground hover:text-foreground hover:bg-accent " \
-                  "focus-visible:ring-[3px] focus-visible:ring-ring/50 outline-none transition"
+                  "rounded-md text-text-muted hover:text-text-heading hover:bg-surface-sunken " \
+                  "focus-visible:ring-[3px] focus-visible:ring-interactive-focus outline-none transition"
 
       # message:  toast body (required)
       # title:    optional bold heading
@@ -120,7 +120,7 @@ module UI
         content_tag(:div, class: "flex-1 min-w-0") do
           concat content_tag(:p, @title, class: "text-sm font-semibold leading-tight") if @title
           concat content_tag(:p, @message,
-            class: "text-sm leading-snug#{" text-muted-foreground mt-0.5" if @title}")
+            class: "text-sm leading-snug#{" text-text-muted mt-0.5" if @title}")
         end
       end
 

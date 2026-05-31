@@ -10,21 +10,21 @@ module UI
     # step:     minute step increment (default 1, common: 5, 15, 30)
 
     WRAPPER  = "relative inline-block"
-    TRIGGER  = "flex h-9 w-36 cursor-pointer items-center gap-2 rounded-md border border-input " \
-               "bg-background px-3 text-sm text-foreground shadow-xs " \
-               "focus-visible:ring-[3px] focus-visible:ring-ring/50 outline-none transition " \
-               "aria-expanded:border-ring"
-    ICON_CLS = "size-4 shrink-0 text-muted-foreground"
+    TRIGGER  = "flex h-9 w-36 cursor-pointer items-center gap-2 rounded-md border border-border-strong " \
+               "bg-surface-raised px-3 text-sm text-text-heading shadow-xs " \
+               "focus-visible:ring-[3px] focus-visible:ring-interactive-focus outline-none transition " \
+               "aria-expanded:border-border-focus"
+    ICON_CLS = "size-4 shrink-0 text-text-muted"
     POPOVER  = "absolute left-0 top-full z-50 mt-1 hidden w-max rounded-lg border border-border " \
-               "bg-popover p-3 shadow-md data-[open=true]:block"
+               "bg-surface-overlay p-3 shadow-md data-[open=true]:block"
     SPINNER_WRAP = "flex items-center justify-center gap-1"
     COL_CLS  = "flex flex-col items-center gap-1"
     SPIN_BTN = "inline-flex size-7 items-center justify-center rounded-md " \
-               "text-muted-foreground hover:bg-accent hover:text-accent-foreground " \
-               "focus-visible:ring-[3px] focus-visible:ring-ring/50 outline-none transition"
-    NUM_CLS  = "w-10 rounded-md border border-input bg-background px-1 py-0.5 text-center text-sm " \
-               "focus:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
-    SEP_CLS  = "text-lg font-medium text-foreground pb-1"
+               "text-text-muted hover:bg-surface-sunken hover:text-text-heading " \
+               "focus-visible:ring-[3px] focus-visible:ring-interactive-focus outline-none transition"
+    NUM_CLS  = "w-10 rounded-md border border-border-strong bg-surface-raised px-1 py-0.5 text-center text-sm " \
+               "focus:outline-none focus-visible:ring-[3px] focus-visible:ring-interactive-focus"
+    SEP_CLS  = "text-lg font-medium text-text-heading pb-1"
 
     def initialize(value: nil, name: nil, format: :h24, step: 1, **html_attrs)
       @value       = value
@@ -113,7 +113,7 @@ module UI
       content_tag(:div, class: COL_CLS) do
         concat spin_btn("▲", "click->timepicker#toggleAmPm")
         concat content_tag(:span, "AM",
-          class: "w-10 rounded-md border border-input bg-background px-1 py-0.5 text-center text-sm cursor-pointer select-none",
+          class: "w-10 rounded-md border border-border-strong bg-surface-raised px-1 py-0.5 text-center text-sm cursor-pointer select-none",
           data: { timepicker_target: "ampm", action: "click->timepicker#toggleAmPm" })
         concat spin_btn("▼", "click->timepicker#toggleAmPm")
       end

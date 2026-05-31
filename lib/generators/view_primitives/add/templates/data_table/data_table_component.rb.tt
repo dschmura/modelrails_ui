@@ -10,21 +10,21 @@ module UI
     # caption:  optional <caption> text
 
     WRAPPER    = "w-full overflow-auto rounded-lg border border-border"
-    TOOLBAR    = "flex items-center gap-3 border-b border-border bg-background px-4 py-3"
-    SEARCH_CLS = "flex h-8 flex-1 items-center gap-2 rounded-md border border-input bg-background " \
-                 "px-3 text-sm text-muted-foreground focus-within:border-ring focus-within:ring-[3px] " \
-                 "focus-within:ring-ring/50 transition"
-    SEARCH_INPUT = "w-full bg-transparent outline-none placeholder:text-muted-foreground text-foreground text-sm"
+    TOOLBAR    = "flex items-center gap-3 border-b border-border bg-surface-raised px-4 py-3"
+    SEARCH_CLS = "flex h-8 flex-1 items-center gap-2 rounded-md border border-border-strong bg-surface-raised " \
+                 "px-3 text-sm text-text-muted focus-within:border-border-focus focus-within:ring-[3px] " \
+                 "focus-within:ring-interactive-focus transition"
+    SEARCH_INPUT = "w-full bg-transparent outline-none placeholder:text-text-muted text-text-heading text-sm"
     TABLE_CLS  = "w-full caption-bottom text-sm"
-    THEAD_CLS  = "bg-muted/40"
-    TH_CLS     = "h-10 px-4 text-left align-middle font-medium text-muted-foreground whitespace-nowrap"
-    TH_SORT    = "cursor-pointer select-none hover:text-foreground transition-colors"
-    TR_CLS     = "border-t border-border transition-colors hover:bg-muted/30"
+    THEAD_CLS  = "bg-surface-sunken/40"
+    TH_CLS     = "h-10 px-4 text-left align-middle font-medium text-text-muted whitespace-nowrap"
+    TH_SORT    = "cursor-pointer select-none hover:text-text-heading transition-colors"
+    TR_CLS     = "border-t border-border transition-colors hover:bg-surface-sunken/30"
     TD_CLS     = "px-4 py-3 align-middle"
-    FOOTER_CLS = "flex items-center justify-between border-t border-border bg-background px-4 py-3 " \
-                 "text-sm text-muted-foreground"
+    FOOTER_CLS = "flex items-center justify-between border-t border-border bg-surface-raised px-4 py-3 " \
+                 "text-sm text-text-muted"
     PAGE_BTN   = "inline-flex h-8 w-8 items-center justify-center rounded-md border border-border " \
-                 "hover:bg-accent hover:text-accent-foreground disabled:pointer-events-none " \
+                 "hover:bg-surface-sunken hover:text-text-heading disabled:pointer-events-none " \
                  "disabled:opacity-40 transition"
     SORT_ASC   = "▲"
     SORT_DESC  = "▼"
@@ -76,7 +76,7 @@ module UI
 
     def table_element
       content_tag(:table, class: TABLE_CLS) do
-        concat content_tag(:caption, @caption, class: "mt-2 text-sm text-muted-foreground") if @caption
+        concat content_tag(:caption, @caption, class: "mt-2 text-sm text-text-muted") if @caption
         concat thead
         concat tbody
       end

@@ -4,7 +4,7 @@ module UI
   class AccordionItemComponent < ApplicationComponent
     SUMMARY_CLASSES = "flex flex-1 items-start justify-between gap-4 rounded-md py-4 text-left text-sm font-medium " \
                       "transition-all outline-none hover:underline cursor-pointer list-none " \
-                      "focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 " \
+                      "focus-visible:border-border-focus focus-visible:ring-[3px] focus-visible:ring-interactive-focus " \
                       "disabled:pointer-events-none disabled:opacity-50"
 
     def initialize(title:, open: false, **html_attrs)
@@ -40,7 +40,7 @@ module UI
           xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 24 24",
           fill: "none", stroke: "currentColor", stroke_width: "2",
           stroke_linecap: "round", stroke_linejoin: "round",
-          class: "pointer-events-none size-4 shrink-0 translate-y-0.5 text-muted-foreground transition-transform duration-200 group-open:rotate-180")
+          class: "pointer-events-none size-4 shrink-0 translate-y-0.5 text-text-muted transition-transform duration-200 group-open:rotate-180")
       ])
     end
   end

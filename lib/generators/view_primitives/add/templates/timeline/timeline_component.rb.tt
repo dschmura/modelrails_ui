@@ -30,17 +30,17 @@ module UI
     class ItemComponent < ApplicationComponent
       # variant: :default | :success | :warning | :destructive | :muted
       VARIANTS = {
-        default: "bg-primary",
+        default: "bg-interactive",
         success: "bg-green-500",
         warning: "bg-amber-500",
-        destructive: "bg-destructive",
-        muted: "bg-muted-foreground"
+        destructive: "bg-danger",
+        muted: "bg-text-muted"
       }.freeze
 
-      DOT_CLS = "absolute -left-1.5 mt-1.5 size-3 rounded-full ring-4 ring-background shrink-0"
-      DATE_CLS = "mb-0.5 text-xs font-normal text-muted-foreground"
-      TITLE_CLS = "text-sm font-medium text-foreground leading-snug"
-      DESC_CLS = "mt-1 text-sm text-muted-foreground"
+      DOT_CLS = "absolute -left-1.5 mt-1.5 size-3 rounded-full ring-4 ring-surface-raised shrink-0"
+      DATE_CLS = "mb-0.5 text-xs font-normal text-text-muted"
+      TITLE_CLS = "text-sm font-medium text-text-heading leading-snug"
+      DESC_CLS = "mt-1 text-sm text-text-muted"
 
       # date:        optional date/time string shown above the title
       # title:       event label (required)

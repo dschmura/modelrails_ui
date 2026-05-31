@@ -1,67 +1,1044 @@
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-}
+/* view_primitives (modelrails_base fork) — self-contained AAA OKLCH design system.
+   Import after `@import "tailwindcss";`. Defines primitives, semantic tokens,
+   @theme inline utility registration, class-based dark mode, and component classes
+   (.btn-*, .bg-hue-*, etc.). Extracted from modelrails_base. */
+
+
+/* Dark mode: class-based toggle via .dark on <html> instead of media query.
+   This allows a three-way user preference (light/dark/system). */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Design token layers */
+/* ---- tokens/_primitives.css ---- */
+/* ==========================================================================
+   Primitive Design Tokens — Tailwind Color Mappings
+   ==========================================================================
+   Maps primary, secondary, and neutral palettes to Tailwind's built-in
+   color scales. Each shade references a Tailwind CSS custom property
+   (e.g. var(--color-sky-700)) so the values are familiar and predictable.
+
+   To retheme: swap the Tailwind color family in each section.
+   For example, change all `--color-sky-*` references to `--color-purple-*`
+   to switch the primary palette from sky to purple.
+
+   For advanced single-hue theming with OKLCH, see docs/theming.md.
+   ========================================================================== */
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --radius: 0.625rem;
+  /* --- Primary Palette (default: sky) ---
+     Used for: buttons, links, focus rings, interactive elements.
+     To change: replace `sky` with any Tailwind color (e.g. purple, teal, blue). */
+  --primary-50:  var(--color-sky-50);
+  --primary-100: var(--color-sky-100);
+  --primary-200: var(--color-sky-200);
+  --primary-300: var(--color-sky-300);
+  --primary-400: var(--color-sky-400);
+  --primary-500: var(--color-sky-500);
+  --primary-600: var(--color-sky-600);
+  --primary-700: var(--color-sky-700);
+  --primary-800: var(--color-sky-800);
+  --primary-900: var(--color-sky-900);
+  --primary-950: var(--color-sky-950);
+
+  /* --- Secondary Palette (default: indigo) ---
+     Used for: accents, prose links, documentation highlights.
+     To change: replace `indigo` with any Tailwind color. */
+  --secondary-50:  var(--color-indigo-50);
+  --secondary-100: var(--color-indigo-100);
+  --secondary-200: var(--color-indigo-200);
+  --secondary-300: var(--color-indigo-300);
+  --secondary-400: var(--color-indigo-400);
+  --secondary-500: var(--color-indigo-500);
+  --secondary-600: var(--color-indigo-600);
+  --secondary-700: var(--color-indigo-700);
+  --secondary-800: var(--color-indigo-800);
+  --secondary-900: var(--color-indigo-900);
+  --secondary-950: var(--color-indigo-950);
+
+  /* --- Neutral Palette (default: slate) ---
+     Used for: text, surfaces, borders.
+     To change: replace `slate` with another neutral Tailwind color
+     (e.g. gray, zinc, stone, neutral). */
+  --neutral-50:  var(--color-slate-50);
+  --neutral-100: var(--color-slate-100);
+  --neutral-200: var(--color-slate-200);
+  --neutral-300: var(--color-slate-300);
+  --neutral-400: var(--color-slate-400);
+  --neutral-500: var(--color-slate-500);
+  --neutral-600: var(--color-slate-600);
+  --neutral-700: var(--color-slate-700);
+  --neutral-800: var(--color-slate-800);
+  --neutral-900: var(--color-slate-900);
+  --neutral-950: var(--color-slate-950);
+}
+
+/* ---- tokens/_semantic.css ---- */
+/* ==========================================================================
+   Semantic Design Tokens — Role-Based Color Aliases
+   ==========================================================================
+   These tokens define what colors are FOR, not what they ARE.
+   Dark mode is handled here: .dark remaps semantic tokens to dark primitives.
+   Views never need dark: prefixes for token-backed colors.
+   ========================================================================== */
+
+:root {
+  /* --- Surfaces --- */
+  --color-surface:         var(--neutral-50);
+  --color-surface-raised:  oklch(100% 0 0);  /* white */
+  --color-surface-overlay: oklch(100% 0 0);  /* white — distinct role for modals/dropdowns */
+  --color-surface-sunken:  var(--neutral-100);
+
+  /* --- Text --- */
+  --color-text-heading:        var(--neutral-900);
+  --color-text-body:           var(--neutral-700);
+  --color-text-muted:          var(--neutral-700); /* AAA 7:1 on white surface — same darkness as body; visual hierarchy is now via font-size/weight, not lightness */
+  --color-text-on-interactive: oklch(100% 0 0);  /* white */
+
+  /* --- Interactive (buttons, links, focus rings) ---
+   *
+   * NOTE on choosing between `interactive` and `interactive-hover`:
+   *
+   * - `text-interactive` (primary-800) is the NORMAL-state interactive
+   *   token. It measures 7.56:1 on `bg-surface` (the default page
+   *   background) — AAA-compliant.
+   *
+   * - `text-interactive-hover` (primary-900) is the HOVER-state token.
+   *   It's calibrated darker on purpose: it measures 8.22:1 on
+   *   `bg-surface-sunken` (the standard hover-state background),
+   *   while `text-interactive` only measures 6.79:1 on the same
+   *   sunken surface — failing AAA 7:1 by 0.21 ratio points.
+   *
+   * Practical rule:
+   *   - `hover:text-interactive`        + `hover:bg-surface-sunken` → ❌ FAILS AAA
+   *   - `hover:text-interactive-hover`  + `hover:bg-surface-sunken` → ✓ PASSES
+   *   - `hover:text-text-heading`       + `hover:bg-surface-sunken` → ✓ PASSES (~21:1)
+   *
+   * If you find yourself writing `hover:text-interactive`, use
+   * `hover:text-interactive-hover` (the explicit hover tier) or
+   * `hover:text-text-heading` (always-safe high-contrast fallback).
+   * See Path AA hotfix history at `c718482` and `e56dad7` for the
+   * incident this rule is encoded from.
+   */
+  --color-interactive:       var(--primary-800);  /* was primary-700 (5.93:1) — now 7.56:1 AAA */
+  --color-interactive-hover: var(--primary-900);
+  --color-interactive-focus: var(--primary-800);
+  --color-interactive-subtle: var(--primary-50);
+
+  /* --- Accent (secondary highlights, prose links) --- */
+  --color-accent:       var(--secondary-700);
+  --color-accent-hover: var(--secondary-800);
+
+  /* --- Borders --- */
+  --color-border:        var(--neutral-200);
+  --color-border-strong: var(--neutral-300);
+  --color-border-focus:  var(--primary-800);
+
+  /* --- Toast (inverted overlay pill) --- */
+  --color-surface-toast: oklch(20.5% 0.016 265.755 / 90%);  /* neutral-900 @ 90% */
+  --color-text-on-toast: oklch(100% 0 0);                     /* white */
+
+  /* --- Toast positioning --- */
+  --toast-pill-top: 5rem;
+  --toast-card-bottom: 1rem;
+  --toast-z: 100;
+
+  /* --- Modal --- */
+  --modal-backdrop: oklch(20.5% 0.016 265.755 / 50%);
+  --modal-animation-duration: 200ms;
+
+  /* Transitions — durations for UI state changes. Used with
+     motion-safe:transition-* utilities so users with
+     prefers-reduced-motion get instant state changes. */
+  --transition-default: 150ms;
+  --transition-fast: 75ms;
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
+  /* --- Surfaces --- */
+  --color-surface:         var(--neutral-900);
+  --color-surface-raised:  var(--neutral-800);
+  --color-surface-overlay: var(--neutral-800);
+  --color-surface-sunken:  var(--neutral-950);
+
+  /* --- Text --- */
+  --color-text-heading:        var(--neutral-100);
+  --color-text-body:           var(--neutral-300);
+  --color-text-muted:          var(--neutral-300); /* AAA 7:1 on dark surface — same as body; visual hierarchy via font-size/weight, not lightness (matches light-mode policy) */
+  --color-text-on-interactive: var(--neutral-900);  /* dark text on light interactive bg */
+
+  /* --- Interactive --- */
+  --color-interactive:       var(--primary-300); /* was primary-400 (6.7:1 on slate-800) — primary-300 reaches AAA 7:1 */
+  --color-interactive-hover: var(--primary-200);
+  --color-interactive-focus: var(--primary-300);
+  --color-interactive-subtle: var(--primary-950);
+
+  /* --- Accent --- */
+  --color-accent:       var(--secondary-300);
+  --color-accent-hover: var(--secondary-200);
+
+  /* --- Borders --- */
+  --color-border:        var(--neutral-700);
+  --color-border-strong: var(--neutral-600);
+  --color-border-focus:  var(--primary-400);
+
+  /* --- Toast --- */
+  --color-surface-toast: oklch(96.8% 0.007 264.536 / 90%);   /* neutral-100 @ 90% */
+  --color-text-on-toast: var(--neutral-900);
 }
+
+/* ---- tokens/_signals.css ---- */
+/* ==========================================================================
+   Signal Tokens — Fixed Colors for Semantic Meaning
+   ==========================================================================
+   These do NOT shift with theming. Red = danger, green = success, etc.
+   Uses Tailwind 4's built-in OKLCH color values for consistency.
+   ========================================================================== */
+
+:root {
+  /* --- Danger (red) --- */
+  --color-danger:          oklch(44.4% 0.177 26.899);   /* ~red-800 (AAA 7:1 on red-50 + on white surface) */
+  --color-danger-strong:   var(--color-danger);          /* Aliased to --color-danger in light mode — the AAA warm red already reads as "true red," no divergence needed. Diverges in dark mode where AAA-readable reds (L≥0.808) look pinkish. Designed for small graphic accents (bell-style indicators, status pills on tinted surfaces) — NOT for general text content. NEVER pair `bg-danger-strong` with a text descendant: the dark fill compounds text-contrast risk. DO NOT extend this `-strong` pattern to other severities; only red has the high-lightness identity-shift problem (amber/green/sky stay recognizably themselves at AAA lightness). */
+  --color-danger-surface:  oklch(97.1% 0.013 17.38);    /* ~red-50 */
+  --color-danger-icon:     oklch(63.7% 0.237 25.331);   /* ~red-500 */
+  --color-danger-hover:    oklch(93.6% 0.032 17.717);   /* ~red-100 */
+  --color-danger-progress: oklch(70.4% 0.191 22.216);   /* ~red-400 */
+  --color-danger-border:   oklch(80.8% 0.114 19.571);   /* ~red-300 */
+
+  /* --- Warning (amber) --- */
+  --color-warning:          oklch(41.4% 0.112 45.904);   /* ~amber-900 (yellow hues need extra darkness for AAA — amber-800's L=47.3 still under 7:1 against amber-50 due to high relative luminance of yellow at fixed L) */
+  --color-warning-surface:  oklch(98.1% 0.029 95.724);   /* ~amber-50 */
+  --color-warning-icon:     oklch(76.6% 0.163 70.08);    /* ~amber-500 */
+  --color-warning-hover:    oklch(95.4% 0.064 86.375);   /* ~amber-100 */
+  --color-warning-border:   oklch(87.9% 0.125 85.859);   /* ~amber-300 */
+
+  /* --- Success (green) --- */
+  --color-success:          oklch(39.3% 0.095 152.535);  /* ~green-900 (AAA 7:1 on green-50; green-800 was borderline due to higher relative luminance of green at fixed L) */
+  --color-success-surface:  oklch(98.2% 0.018 155.826);  /* ~green-50 */
+  --color-success-icon:     oklch(72.3% 0.219 149.579);  /* ~green-500 */
+  --color-success-hover:    oklch(96.2% 0.044 156.743);  /* ~green-100 */
+  --color-success-progress: oklch(79.2% 0.209 151.711);  /* ~green-400 */
+  --color-success-border:   oklch(87.1% 0.15 154.449);   /* ~green-300 */
+
+  /* --- Info (sky) --- */
+  --color-info:          oklch(39.1% 0.09 240.876);   /* ~sky-900 (AAA 7:1 on sky-50 + on white surface) */
+  --color-info-surface:  oklch(97.7% 0.013 236.62);   /* ~sky-50 */
+  --color-info-icon:     oklch(71.4% 0.168 237.674);  /* ~sky-500 */
+  --color-info-hover:    oklch(95.1% 0.026 236.824);  /* ~sky-100 */
+  --color-info-progress: oklch(79.6% 0.15 235.169);   /* ~sky-400 */
+  --color-info-border:   oklch(86.2% 0.084 237.323);  /* ~sky-300 */
+}
+
+.dark {
+  /* --- Danger (red) --- */
+  --color-danger:          oklch(80.8% 0.16 22);        /* L=0.808 preserves AAA 7:1 on slate-950; hue 22 leans toward light-mode danger's warm-red character (light is hue 26.9) without re-entering the coral zone */
+  --color-danger-strong:   oklch(65% 0.22 25);          /* Fire-engine red for graphics + opt-in elements. L=0.65 sits below the AAA text threshold (~4-5:1 on slate-950, AA only) — DO NOT use for general text content. Designed for the avatar bell + similar graphic indicators where 1.4.11 (3:1) is the applicable spec. */
+  --color-danger-surface:  oklch(25.8% 0.092 26.042);   /* ~red-950 */
+  --color-danger-icon:     oklch(80.8% 0.16 22);        /* matches --color-danger for AAA + warm-red character — keep both in sync */
+  --color-danger-hover:    oklch(29.6% 0.093 25.166);   /* ~red-900 */
+  --color-danger-progress: oklch(63.7% 0.237 25.331);   /* ~red-500 */
+  --color-danger-border:   oklch(44.4% 0.177 26.899);   /* ~red-700 */
+
+  /* --- Warning (amber) --- */
+  --color-warning:          oklch(82.7% 0.174 78.604);   /* ~amber-400 */
+  --color-warning-surface:  oklch(27.9% 0.077 45.635);   /* ~amber-950 */
+  --color-warning-icon:     oklch(82.7% 0.174 78.604);   /* ~amber-400 */
+  --color-warning-hover:    oklch(31.1% 0.091 50.601);   /* ~amber-900 */
+  --color-warning-border:   oklch(55.4% 0.163 48.998);   /* ~amber-700 */
+
+  /* --- Success (green) --- */
+  --color-success:          oklch(79.2% 0.209 151.711);  /* ~green-400 */
+  --color-success-surface:  oklch(26.2% 0.065 152.934);  /* ~green-950 */
+  --color-success-icon:     oklch(79.2% 0.209 151.711);  /* ~green-400 */
+  --color-success-hover:    oklch(29.3% 0.094 153.051);  /* ~green-900 */
+  --color-success-progress: oklch(72.3% 0.219 149.579);  /* ~green-500 */
+  --color-success-border:   oklch(46.2% 0.141 148.96);   /* ~green-700 */
+
+  /* --- Info (sky) --- */
+  --color-info:          oklch(79.6% 0.15 235.169);   /* ~sky-400 */
+  --color-info-surface:  oklch(24.4% 0.063 264.052);  /* ~sky-950 */
+  --color-info-icon:     oklch(79.6% 0.15 235.169);   /* ~sky-400 */
+  --color-info-hover:    oklch(28.3% 0.088 260.031);  /* ~sky-900 */
+  --color-info-progress: oklch(71.4% 0.168 237.674);  /* ~sky-500 */
+  --color-info-border:   oklch(45.1% 0.146 256.823);  /* ~sky-700 */
+}
+
+/* ---- tokens/_spacing.css ---- */
+/* ==========================================================================
+   Semantic Spacing Tokens — CSS-var-only (NOT registered in @theme)
+   ==========================================================================
+   These tokens encode reusable composition rules for the design system.
+   They are intentionally NOT registered as Tailwind utilities.
+
+   POLICY:
+   - Consume these only inside @layer components rules in application.css.
+   - Templates should never reference them directly (no `mt-section-gap` etc.).
+   - For one-off spacing in templates, use Tailwind utilities directly (mt-3, gap-3).
+
+   PREFERRED PRIMITIVE SPACING SCALE (convention — see docs/design-system.md):
+   When choosing a Tailwind spacing utility, prefer this 9-step subset of the
+   default scale for visual rhythm:
+       0    → 0
+       1    →  4px
+       2    →  8px
+       3    → 12px
+       4    → 16px
+       6    → 24px
+       8    → 32px
+       12   → 48px
+       16   → 64px
+   The full Tailwind default scale (0.5, 1.5, 2.5, etc.) remains available
+   for cases where the rhythm requires intermediate values; reach for those
+   only when the preferred steps would compromise the layout.
+   ========================================================================== */
+
+:root {
+  /* Reusable composition tokens — consumed only inside components. */
+  --space-section-gap: 2rem;          /* 32px — vertical gap between top-level page sections */
+  --space-row-padding: 0.75rem;       /* 12px — internal vertical padding on list-row items */
+  --space-action-group-gap: 0.75rem;  /* 12px — gap between trailing action buttons */
+
+  /* Form input height — 44px matches WCAG 2.2 AAA touch-target minimum.
+     Used by `.btn-touch-target` and any form input rule so buttons and
+     inputs visually align. */
+  --form-input-height: 2.75rem;       /* 44px */
+}
+
+
+/* Register semantic tokens as Tailwind utilities via @theme inline.
+   "inline" is required because these reference CSS custom properties
+   that change under .dark — Tailwind needs to inline the var() references. */
+@theme inline {
+  /* Surfaces */
+  --color-surface: var(--color-surface);
+  --color-surface-raised: var(--color-surface-raised);
+  --color-surface-overlay: var(--color-surface-overlay);
+  --color-surface-sunken: var(--color-surface-sunken);
+
+  /* Text */
+  --color-text-heading: var(--color-text-heading);
+  --color-text-body: var(--color-text-body);
+  --color-text-muted: var(--color-text-muted);
+  --color-text-on-interactive: var(--color-text-on-interactive);
+
+  /* Interactive */
+  --color-interactive: var(--color-interactive);
+  --color-interactive-hover: var(--color-interactive-hover);
+  --color-interactive-focus: var(--color-interactive-focus);
+  --color-interactive-subtle: var(--color-interactive-subtle);
+
+  /* Accent */
+  --color-accent: var(--color-accent);
+  --color-accent-hover: var(--color-accent-hover);
+
+  /* Borders */
+  --color-border: var(--color-border);
+  --color-border-strong: var(--color-border-strong);
+  --color-border-focus: var(--color-border-focus);
+
+  /* Signals — Danger */
+  --color-danger: var(--color-danger);
+  --color-danger-strong: var(--color-danger-strong);
+  --color-danger-surface: var(--color-danger-surface);
+  --color-danger-icon: var(--color-danger-icon);
+  --color-danger-hover: var(--color-danger-hover);
+  --color-danger-progress: var(--color-danger-progress);
+  --color-danger-border: var(--color-danger-border);
+
+  /* Signals — Warning */
+  --color-warning: var(--color-warning);
+  --color-warning-surface: var(--color-warning-surface);
+  --color-warning-icon: var(--color-warning-icon);
+  --color-warning-hover: var(--color-warning-hover);
+  --color-warning-border: var(--color-warning-border);
+
+  /* Signals — Success */
+  --color-success: var(--color-success);
+  --color-success-surface: var(--color-success-surface);
+  --color-success-icon: var(--color-success-icon);
+  --color-success-hover: var(--color-success-hover);
+  --color-success-progress: var(--color-success-progress);
+  --color-success-border: var(--color-success-border);
+
+  /* Signals — Info */
+  --color-info: var(--color-info);
+  --color-info-surface: var(--color-info-surface);
+  --color-info-icon: var(--color-info-icon);
+  --color-info-hover: var(--color-info-hover);
+  --color-info-progress: var(--color-info-progress);
+  --color-info-border: var(--color-info-border);
+
+  /* Toast pill */
+  --color-surface-toast: var(--color-surface-toast);
+  --color-text-on-toast: var(--color-text-on-toast);
+
+  /* Toast positioning */
+  --toast-pill-top: var(--toast-pill-top);
+  --toast-card-bottom: var(--toast-card-bottom);
+  --toast-z: var(--toast-z);
+
+  /* Modal */
+  --modal-backdrop: var(--modal-backdrop);
+  --modal-animation-duration: var(--modal-animation-duration);
+}
+
+/* ==========================================================================
+   Layout utilities
+   ==========================================================================
+   These wrap recurring layout primitives so templates can express intent
+   directly. Currently: narrow page-level container (max-w-2xl) suited for
+   settings, account, and form-centric flows. A wider variant
+   (.page-container-wide, max-w-4xl/6xl) can be added when a page needs it
+   — don't override max-width inline; introduce the named variant instead.
+   ========================================================================== */
+
+@layer utilities {
+  .page-container {
+    @apply max-w-2xl mx-auto px-4;
+  }
+}
+
+/* ==========================================================================
+   Component utilities
+   ==========================================================================
+   Encapsulate recurring view patterns. These are NOT theme tokens — they
+   are composition rules for repeated structural and interactive patterns.
+
+   Naming policy:
+   - .btn-text* are a color-variant family of one base text-button style.
+     They share .btn-touch-target sizing/centering when used as buttons.
+   - .action-group is a flex container with consistent inline gap; will
+     grow constraints (flex-wrap, flex-row-reverse, etc.) over time.
+   ========================================================================== */
+
+@layer components {
+  /* Touch-target sizing for interactive buttons.
+     44x44 minimum matches WCAG 2.2 AAA target size + --form-input-height,
+     so buttons paired with form inputs visually align. */
+  .btn-touch-target {
+    @apply inline-flex items-center justify-center px-2;
+    min-height: var(--form-input-height);
+    min-width: var(--form-input-height);
+  }
+
+  /* Base text-only button styling.
+     Color, font-size, and weight stay in the template — this rule only
+     handles cross-cutting concerns (focus ring base, hover behavior,
+     rounded corners, semantic underline). */
+  .btn-text {
+    @apply font-medium underline rounded;
+    @apply focus-visible:outline-none focus-visible:ring-2;
+    @apply hover:no-underline;
+  }
+
+  /* Color variants of .btn-text. Apply alongside .btn-text. */
+  .btn-text-danger {
+    @apply text-danger focus-visible:ring-danger;
+  }
+
+  .btn-text-interactive {
+    @apply text-interactive focus-visible:ring-interactive-focus;
+  }
+
+  /* Inline flex container for trailing button groups (Resend / Cancel,
+     Edit / Delete, etc.). Consumes --space-action-group-gap so spacing
+     stays consistent across the app. */
+  .action-group {
+    @apply inline-flex items-center;
+    gap: var(--space-action-group-gap);
+  }
+
+  /* Solid filled button family. Three variants share base shape (sizing,
+     focus ring scaffold, cursor); each diverges only on color/contrast.
+     Pair with --form-input-height so buttons align with form inputs.
+
+     Usage:
+       <button class="btn-primary">Save</button>
+       <%= button_to "Delete", url, class: "btn-danger" %>
+       <%= link_to "Cancel", path, class: "btn-secondary" %>
+
+     Variant choice:
+       .btn-primary   — main CTA (workspace creates, form submits)
+       .btn-secondary — neutral action (cancel, dismiss)
+       .btn-danger    — destructive action (delete, revoke)
+
+     For text-only buttons (no fill), use .btn-text + .btn-text-* (above). */
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-4 rounded-md font-medium cursor-pointer;
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-2;
+    @apply bg-interactive hover:bg-interactive-hover text-text-on-interactive;
+    @apply focus:ring-interactive-focus;
+    min-height: var(--form-input-height);
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center px-4 rounded-md font-medium cursor-pointer;
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-2;
+    @apply border border-border text-text-body hover:bg-surface-sunken;
+    @apply focus:ring-interactive-focus;
+    min-height: var(--form-input-height);
+  }
+
+  .btn-danger {
+    @apply inline-flex items-center justify-center px-4 rounded-md font-medium cursor-pointer;
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-2;
+    @apply bg-danger hover:bg-danger/90 text-text-on-interactive;
+    @apply focus:ring-danger;
+    min-height: var(--form-input-height);
+  }
+
+  /* Base styling for <select> and <input type="time"|"text"|...> form
+     controls. Absorbs the repeated `min-h-[44px] px-3 rounded-md bg-surface
+     text-text-body border border-border-strong focus:outline-none focus:ring-2
+     focus:ring-interactive-focus` chain that appeared on 6+ inputs across
+     the preferences page (panel review — Steve Schoger + Adam Wathan). The
+     min-height variable keeps controls visually aligned with .btn-* siblings
+     at the 44px AAA-target line; `py-2` gives consistent optical sizing for
+     browser-default vertical padding that doesn't always match the 44px box. */
+  .form-input {
+    @apply px-3 py-2 rounded-md cursor-pointer;
+    @apply bg-surface text-text-body border border-border-strong;
+    @apply focus:outline-none focus:ring-2 focus:ring-interactive-focus;
+    min-height: var(--form-input-height);
+  }
+}
+
+/* ==========================================================================
+   OKLCH Hue-based Background Utilities
+   Used with style="--hue: <value>" to apply dynamic colors without full
+   inline background-color declarations (CSP-safer).
+   bg-hue-initials: L=0.35, C=0.20 — AAA contrast with white text
+   bg-hue-interactive: L=0.40, C=0.15 — accent/dot color for workspace branding
+   ========================================================================== */
+
+.bg-hue-initials {
+  background-color: oklch(0.35 0.2 var(--hue, 210));
+}
+
+.bg-hue-interactive {
+  background-color: oklch(0.40 0.15 var(--hue, 210));
+}
+
+/* ==========================================================================
+   Dialog / Modal Backdrop
+   ========================================================================== */
+
+dialog::backdrop {
+  background: var(--modal-backdrop);
+  opacity: 0;
+  transition: opacity var(--modal-animation-duration) ease-out,
+              overlay var(--modal-animation-duration) ease-out allow-discrete,
+              display var(--modal-animation-duration) ease-out allow-discrete;
+}
+
+dialog[open]::backdrop {
+  opacity: 1;
+}
+
+@starting-style {
+  dialog[open]::backdrop {
+    opacity: 0;
+  }
+}
+
+/* ==========================================================================
+   Workspace Branding Override
+   ==========================================================================
+   When a workspace has a primary_color, two OKLCH literals are set on
+   <main>: --ws-primary-light (L=0.40, hits 7:1 AAA on white surface) and
+   --ws-primary-dark (L=0.78, hits 7:1 AAA on slate-800 surface). This is
+   the two-variable scheme that replaces the v1 single-variable +
+   color-mix(... toward white) approach — the old shape produced flaky
+   AAA contrast in CI's Playwright/axe renderer because OKLCH color-mix
+   resolution lifted the dark-mode brand color to L≈58 (6.2:1 ratio),
+   failing AAA 7:1 every hue. Direct OKLCH literals are deterministic
+   across renderers. See project_flaky_tests_followup.md §2 for the
+   investigation that led here. */
+
+[data-workspace-branded] {
+  --color-interactive: var(--ws-primary-light);
+  --color-interactive-hover: color-mix(in oklch, var(--ws-primary-light) 80%, black);
+  --color-interactive-focus: var(--ws-primary-light);
+  --color-interactive-subtle: color-mix(in oklch, var(--ws-primary-light) 10%, white);
+}
+
+.dark [data-workspace-branded] {
+  --color-interactive: var(--ws-primary-dark);
+  --color-interactive-hover: color-mix(in oklch, var(--ws-primary-dark) 85%, white);
+  --color-interactive-focus: var(--ws-primary-dark);
+  --color-interactive-subtle: color-mix(in oklch, var(--ws-primary-dark) 15%, black);
+}
+
+/* Personal workspace context — solo users spend most of their time
+   here, so it deserves an intentional treatment rather than the
+   "unstyled org" defaults. The desaturated slate ramp (sourced from
+   our existing --neutral-* primitives) is AAA-verified and matches
+   the spec's "deliberate desaturated slate/zinc" guidance. */
+[data-workspace-kind="personal"] {
+  --color-interactive: var(--neutral-700);
+  --color-interactive-hover: var(--neutral-900);
+  --color-interactive-focus: var(--neutral-700);
+  --color-interactive-subtle: var(--neutral-100);
+  --color-accent: var(--neutral-600);
+}
+
+.dark [data-workspace-kind="personal"] {
+  --color-interactive: var(--neutral-300);
+  --color-interactive-hover: var(--neutral-100);
+  --color-interactive-focus: var(--neutral-300);
+  --color-interactive-subtle: var(--neutral-800);
+  --color-accent: var(--neutral-400);
+}
+
+/* Markdowndocs gem views — required so Tailwind scans the gem's templates.
+   Symlink created by: ln -sf $(bundle show markdowndocs)/app/views vendor/markdowndocs_views */
+
+/* ==========================================================================
+   Prose Styles (documentation pages rendered by Markdowndocs)
+   The gem wraps rendered markdown in <div class="prose prose-indigo">.
+   Tailwind 4 resets all element styles, so we define them here.
+   ========================================================================== */
+
+.prose {
+  @apply text-text-body leading-relaxed;
+}
+
+.prose p {
+  @apply text-base mb-4;
+}
+
+.prose h1 {
+  @apply text-4xl font-bold text-text-heading mb-6 mt-8;
+}
+
+.prose h1:first-child {
+  @apply mt-0;
+}
+
+.prose h2 {
+  @apply text-3xl font-semibold text-text-heading mb-4 mt-10 pb-2 border-b border-border;
+}
+
+.prose h3 {
+  @apply text-2xl font-semibold text-text-heading mb-3 mt-8;
+}
+
+.prose h4 {
+  @apply text-xl font-semibold text-text-heading mb-2 mt-6;
+}
+
+.prose h5 {
+  @apply text-lg font-semibold text-text-heading mb-2 mt-4;
+}
+
+.prose h6 {
+  @apply text-base font-semibold text-text-heading mb-2 mt-4;
+}
+
+.prose a {
+  @apply text-accent underline transition-colors duration-150;
+  text-decoration-color: color-mix(in oklch, var(--color-accent) 50%, transparent);
+}
+
+.prose a:hover {
+  @apply text-accent-hover;
+  text-decoration-color: var(--color-accent);
+}
+
+.prose strong {
+  @apply font-semibold text-text-heading;
+}
+
+.prose em {
+  @apply italic;
+}
+
+.prose del, .prose s, .prose strike {
+  @apply line-through text-text-muted;
+}
+
+.prose ul {
+  @apply list-disc list-outside ml-6 mb-4;
+}
+
+.prose ol {
+  @apply list-decimal list-outside ml-6 mb-4;
+}
+
+.prose ul li,
+.prose ol li {
+  @apply mb-2 text-base;
+}
+
+.prose li > ul,
+.prose li > ol {
+  @apply mt-2 mb-0;
+}
+
+.prose blockquote {
+  @apply pl-4 py-2 my-6 italic text-text-muted bg-surface-sunken rounded-md;
+  border-left: 4px solid var(--color-accent);
+}
+
+.prose code {
+  @apply px-1.5 py-0.5 bg-surface-sunken text-text-heading text-sm font-mono rounded-md;
+}
+
+.prose pre code {
+  @apply p-0 bg-transparent text-sm leading-relaxed block;
+}
+
+.prose pre {
+  @apply mb-6 p-4 bg-surface border border-border rounded-lg overflow-x-auto;
+}
+
+.prose table {
+  @apply w-full mb-6;
+  border-collapse: collapse;
+}
+
+.prose table th {
+  @apply bg-surface-sunken border border-border-strong px-4 py-2 text-left font-semibold text-text-heading;
+}
+
+.prose table td {
+  @apply border border-border-strong px-4 py-2;
+}
+
+.prose img {
+  @apply max-w-full h-auto rounded-lg shadow-sm my-6;
+}
+
+.prose hr {
+  @apply my-8 border-border-strong;
+}
+
+.prose input[type="checkbox"] {
+  @apply mr-2 rounded-md;
+}
+
+.prose input[type="checkbox"]:disabled {
+  @apply opacity-60;
+}
+
+/* ==========================================================================
+   Syntax Highlighting (Rouge / GitHub Theme)
+   Used by Markdowndocs for fenced code blocks.
+
+   Uses custom properties so colors switch automatically in dark mode,
+   and neutral tones follow the app's primitive palette (slate → zinc etc.).
+   ========================================================================== */
+
+:root {
+  /* All foreground syntax tokens land at L* ≤ ~38% to clear WCAG 2.2 AAA
+     (7:1) against the light surface background. Hue/chroma preserved from
+     the Tailwind reference palette — only lightness is tightened. */
+  --syntax-comment:    var(--neutral-700);                 /* tighten for AAA */
+  --syntax-comment-alt: var(--neutral-700);
+  --syntax-keyword:    oklch(38% 0.155 313.029);   /* ~purple-800 */
+  --syntax-string:     oklch(38% 0.154 150.069);   /* ~green-800 */
+  --syntax-number:     oklch(38% 0.153 232.652);   /* ~blue-800 */
+  --syntax-error:      oklch(38% 0.213 27.518);    /* ~red-800 */
+  --syntax-error-bg:   oklch(97.1% 0.013 17.38);   /* ~red-50 (background, unchanged) */
+  --syntax-type:       oklch(38% 0.18 27.325);     /* ~red-800 (chroma slightly reduced for gamut at L* 38) */
+  --syntax-operator:   var(--neutral-700);
+  --syntax-name:       oklch(38% 0.136 202.677);   /* ~cyan-800 */
+  --syntax-builtin:    oklch(38% 0.158 313.556);   /* ~purple-800 */
+  --syntax-function:   oklch(38% 0.153 232.652);   /* ~blue-800 */
+  --syntax-escape:     oklch(38% 0.174 38.402);    /* ~orange-800 */
+  --syntax-tag:        oklch(38% 0.154 150.069);   /* ~green-800 */
+  --syntax-heading:    var(--neutral-900);
+  --syntax-namespace:  var(--neutral-800);
+  --syntax-insert-bg:  oklch(98.2% 0.018 155.826);   /* ~green-50 */
+  --syntax-whitespace: var(--neutral-300);
+  --syntax-prompt:     var(--neutral-500);
+}
+
+.dark {
+  /* All foreground syntax tokens land at L* ≥ ~85% to clear WCAG 2.2 AAA
+     (7:1) against the dark surface background. Chroma reduced slightly at
+     the higher L* to stay within sRGB gamut. */
+  --syntax-comment:    var(--neutral-300);                 /* tighten for AAA */
+  --syntax-comment-alt: var(--neutral-300);
+  --syntax-keyword:    oklch(85% 0.13 310.872);   /* ~purple-300 */
+  --syntax-string:     oklch(85% 0.13 151.711);   /* ~green-300 */
+  --syntax-number:     oklch(85% 0.12 235.169);   /* ~blue-300 */
+  --syntax-error:      oklch(85% 0.13 22.216);    /* ~red-300 */
+  --syntax-error-bg:   transparent;
+  --syntax-type:       oklch(85% 0.13 22.216);    /* ~red-300 */
+  --syntax-operator:   var(--neutral-300);
+  --syntax-name:       oklch(85% 0.12 211.53);    /* ~cyan-300 */
+  --syntax-builtin:    oklch(85% 0.13 310.872);   /* ~purple-300 */
+  --syntax-function:   oklch(85% 0.12 235.169);   /* ~blue-300 */
+  --syntax-escape:     oklch(85% 0.13 55.613);    /* ~orange-300 */
+  --syntax-tag:        oklch(85% 0.13 151.711);   /* ~green-300 */
+  --syntax-heading:    var(--neutral-100);
+  --syntax-namespace:  var(--neutral-100);
+  --syntax-insert-bg:  transparent;
+  --syntax-whitespace: var(--neutral-600);
+  --syntax-prompt:     var(--neutral-300);
+}
+
+.highlight {
+  @apply bg-surface rounded-lg p-4 overflow-x-auto text-sm;
+}
+
+.highlight .hll {
+  @apply bg-warning-surface;
+}
+
+/* Comments */
+.highlight .c,
+.highlight .cm,
+.highlight .c1,
+.highlight .cs {
+  color: var(--syntax-comment);
+  font-style: italic;
+}
+
+.highlight .cp {
+  color: var(--syntax-comment-alt);
+  font-weight: 700;
+}
+
+/* Errors */
+.highlight .err {
+  color: var(--syntax-error);
+  background-color: var(--syntax-error-bg);
+}
+
+/* Keywords */
+.highlight .k,
+.highlight .kc,
+.highlight .kd,
+.highlight .kn,
+.highlight .kp,
+.highlight .kr,
+.highlight .ow {
+  color: var(--syntax-keyword);
+  font-weight: 600;
+}
+
+.highlight .kt {
+  color: var(--syntax-type);
+  font-weight: 600;
+}
+
+/* Operators */
+.highlight .o {
+  color: var(--syntax-operator);
+}
+
+/* Generic styles */
+.highlight .gd {
+  color: var(--syntax-error);
+  background-color: var(--syntax-error-bg);
+}
+
+.highlight .ge {
+  font-style: italic;
+}
+
+.highlight .gr,
+.highlight .gt {
+  color: var(--syntax-error);
+}
+
+.highlight .gh {
+  color: var(--syntax-heading);
+  font-weight: 700;
+}
+
+.highlight .gi {
+  color: var(--syntax-string);
+  background-color: var(--syntax-insert-bg);
+}
+
+.highlight .go,
+.highlight .gp {
+  color: var(--syntax-prompt);
+}
+
+.highlight .gp {
+  font-weight: 700;
+}
+
+.highlight .gs {
+  font-weight: 700;
+}
+
+.highlight .gu {
+  color: var(--syntax-operator);
+  font-weight: 700;
+}
+
+/* Numbers */
+.highlight .m,
+.highlight .mf,
+.highlight .mh,
+.highlight .mi,
+.highlight .mo,
+.highlight .il {
+  color: var(--syntax-number);
+}
+
+/* Strings */
+.highlight .s,
+.highlight .sb,
+.highlight .sc,
+.highlight .s2,
+.highlight .sh,
+.highlight .si,
+.highlight .sx,
+.highlight .s1 {
+  color: var(--syntax-string);
+}
+
+.highlight .sd {
+  color: var(--syntax-string);
+  font-style: italic;
+}
+
+.highlight .se,
+.highlight .sr {
+  color: var(--syntax-escape);
+}
+
+.highlight .ss {
+  color: var(--syntax-name);
+}
+
+/* Names */
+.highlight .na,
+.highlight .no,
+.highlight .nd,
+.highlight .ni,
+.highlight .nl,
+.highlight .nv,
+.highlight .vc,
+.highlight .vg,
+.highlight .vi {
+  color: var(--syntax-name);
+}
+
+.highlight .nb,
+.highlight .bp {
+  color: var(--syntax-builtin);
+}
+
+.highlight .nc,
+.highlight .nf {
+  color: var(--syntax-function);
+}
+
+.highlight .nc {
+  font-weight: 600;
+}
+
+.highlight .ne {
+  color: var(--syntax-error);
+  font-weight: 700;
+}
+
+.highlight .nn {
+  color: var(--syntax-namespace);
+}
+
+.highlight .nt {
+  color: var(--syntax-tag);
+}
+
+/* Whitespace */
+.highlight .w {
+  color: var(--syntax-whitespace);
+}
+
+/* ==========================================================================
+   Biscuit Cookie Consent Banner — Theme Overrides
+   Override gem CSS tokens to match site theme.
+   ========================================================================== */
+
+.biscuit-banner {
+  --biscuit-bg: var(--color-surface-raised);
+  --biscuit-color: var(--color-text-body);
+  --biscuit-muted: var(--color-text-muted);
+  --biscuit-accent: var(--color-interactive);
+  --biscuit-accent-hover: var(--color-interactive-hover);
+  --biscuit-border: var(--color-border);
+  --biscuit-shadow-bottom: 0 -4px 16px rgba(0, 0, 0, 0.08);
+  --biscuit-radius: 0.5rem;
+  --biscuit-padding: 1.25rem 1.5rem;
+}
+
+.dark .biscuit-banner {
+  --biscuit-shadow-bottom: 0 -4px 16px rgba(0, 0, 0, 0.3);
+  --biscuit-accent: var(--color-interactive);
+}
+
+.dark .biscuit-btn--primary {
+  color: var(--color-text-on-interactive);
+}
+
+.dark .biscuit-btn--secondary:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.dark .biscuit-manage-link {
+  color: var(--color-text-muted);
+}
+
+.biscuit-btn {
+  min-height: 44px;
+}
+
+.biscuit-btn:focus-visible {
+  outline: 2px solid var(--color-interactive-focus);
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
+   Accessibility-simulation filters (shared/_a11y_sim, development only).
+   Classes only ever applied to <body> by the a11y-sim Stimulus controller,
+   which is itself only rendered in Rails.env.development?. These rules are
+   effectively dead code in production.
+   ========================================================================== */
+
+body.a11y-sim-blur         { filter: blur(2.5px); }
+body.a11y-sim-grayscale    { filter: grayscale(1); }
+body.a11y-sim-deuteranopia { filter: url(#a11y-sim-deuteranopia); }
+body.a11y-sim-low_contrast { filter: contrast(0.5); }
+body.a11y-sim-cataract     { filter: blur(1.5px) contrast(0.8) brightness(1.1); }
+
+/* ==========================================================================
+   Override Biscuit's post-consent floating "Manage cookies" button.
+   We render our own footer-integrated link instead. The gem's button
+   remains in the DOM (footer_controller dispatches clicks to it).
+   ========================================================================== */
+
+.biscuit-manage-link {
+  display: none !important;
+}
+
+/* ==========================================================================
+   Animations
+   ==========================================================================
+   Tailwind v4 generates `animate-*` utilities from `--animate-*` theme
+   variables. We use a non-inline @theme block here because animation
+   values are static (no var() references that swap under .dark).
+   ========================================================================== */
+
+/* Attention pulse for danger-severity notification bells.
+   2s scale cycle (1 → 1.15 → 1) — communicates "active signal" via
+   motion rather than the previous opacity fade (which read as a
+   broken/loading state). Uses standalone `scale` CSS property so it
+   composes cleanly with the bell's standalone `rotate: -20deg`.
+   Wrapped via `motion-safe:` in the partial — suppressed under
+   prefers-reduced-motion. */
+@theme {
+  --animate-pulse-danger: pulse-danger 2s ease-in-out infinite;
+}
+
+@keyframes pulse-danger {
+  0%, 100% { scale: 1; }
+  50%      { scale: 1.15; }
+}
+

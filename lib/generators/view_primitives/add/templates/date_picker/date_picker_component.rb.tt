@@ -10,13 +10,13 @@ module UI
     # min/max:     Date bounds passed to the calendar
 
     WRAPPER  = "relative inline-block"
-    TRIGGER  = "flex h-9 w-48 cursor-pointer items-center gap-2 rounded-md border border-input " \
-               "bg-background px-3 text-sm text-foreground shadow-xs " \
-               "focus-visible:ring-[3px] focus-visible:ring-ring/50 outline-none transition " \
-               "aria-expanded:border-ring"
-    ICON_CLS = "size-4 shrink-0 text-muted-foreground"
+    TRIGGER  = "flex h-9 w-48 cursor-pointer items-center gap-2 rounded-md border border-border-strong " \
+               "bg-surface-raised px-3 text-sm text-text-heading shadow-xs " \
+               "focus-visible:ring-[3px] focus-visible:ring-interactive-focus outline-none transition " \
+               "aria-expanded:border-border-focus"
+    ICON_CLS = "size-4 shrink-0 text-text-muted"
     POPOVER  = "absolute left-0 top-full z-50 mt-1 hidden w-max rounded-lg border border-border " \
-               "bg-popover p-0 shadow-md data-[open=true]:block"
+               "bg-surface-overlay p-0 shadow-md data-[open=true]:block"
 
     def initialize(value: nil, name: nil, placeholder: "Pick a date", min: nil, max: nil, **html_attrs)
       @value       = value

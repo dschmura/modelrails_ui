@@ -2,29 +2,37 @@
 
 module UI
   class FileInputComponent < ApplicationComponent
-    BASE = "h-9 w-full min-w-0 cursor-pointer rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-xs " \
-           "transition-[color,box-shadow] outline-none " \
-           "file:mr-3 file:inline-flex file:h-7 file:cursor-pointer file:border-0 " \
-           "file:bg-transparent file:text-sm file:font-medium file:text-foreground " \
-           "placeholder:text-muted-foreground " \
-           "focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 " \
-           "aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 " \
-           "disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 " \
-           "md:text-sm dark:bg-input/30"
+    # Matches the host app's FILE_FIELD_CLASSES (state-independent). a11y params
+    # added so the builder can wire aria-invalid/describedby — closing the gap
+    # where the app's plain file_field skipped ARIA.
+    BASE = "block w-full text-sm text-text-body " \
+           "file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium " \
+           "file:bg-interactive file:text-text-on-interactive hover:file:bg-interactive-hover " \
+           "file:cursor-pointer file:min-h-[var(--form-input-height)]"
 
     # accept:   MIME types or extensions, e.g. "image/*" or ".pdf,.docx"
     # multiple: allow selecting multiple files
-    def initialize(accept: nil, multiple: false, **html_attrs)
-      @accept   = accept
+    # required/invalid/describedby: form + a11y wiring (see UI::InputComponent)
+    def initialize(accept: nil, multiple: false, required: false, invalid: false, describedby: nil, **html_attrs)
+      @accept = accept
       @multiple = multiple
+      @required = required
+      @invalid = invalid
+      @describedby = describedby
       @extra_class = html_attrs.delete(:class)
-      @html_attrs  = html_attrs
+      @html_attrs = html_attrs
     end
 
     def call
       attrs = { type: "file", class: cn(BASE, @extra_class) }
-      attrs[:accept]   = @accept if @accept
-      attrs[:multiple] = true    if @multiple
+      attrs[:accept] = @accept if @accept
+      attrs[:multiple] = true if @multiple
+      if @required
+        attrs[:required] = true
+        attrs["aria-required"] = "true"
+      end
+      attrs["aria-invalid"] = "true" if @invalid
+      attrs["aria-describedby"] = @describedby if @describedby.present?
       content_tag(:input, nil, **attrs, **@html_attrs)
     end
   end

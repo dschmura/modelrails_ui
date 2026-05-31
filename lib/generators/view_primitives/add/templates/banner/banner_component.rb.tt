@@ -5,10 +5,10 @@ module UI
     BASE = "flex items-center gap-3 rounded-lg border p-4 text-sm"
 
     VARIANTS = {
-      default:     "bg-background text-foreground",
+      default:     "bg-surface-raised text-text-heading",
       info:        "border-blue-200 bg-blue-50 text-blue-900",
       warning:     "border-yellow-200 bg-yellow-50 text-yellow-900",
-      destructive: "border-destructive/40 bg-destructive/10 text-destructive",
+      destructive: "border-danger-border/40 bg-danger/10 text-danger",
       success:     "border-green-200 bg-green-50 text-green-900"
     }.freeze
 

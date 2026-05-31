@@ -3,7 +3,7 @@
 module UI
   class TooltipComponent < ApplicationComponent
     BUBBLE_BASE = "absolute z-50 w-fit rounded-md px-3 py-1.5 text-xs text-balance " \
-                  "bg-foreground text-background " \
+                  "bg-text-heading text-surface-raised " \
                   "opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap " \
                   "transition-opacity duration-200"
 

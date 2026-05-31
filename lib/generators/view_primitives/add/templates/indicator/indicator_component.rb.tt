@@ -5,10 +5,10 @@ module UI
     DOT_BASE = "absolute flex items-center justify-center rounded-full text-[10px] font-medium leading-none"
 
     VARIANTS = {
-      default:     "bg-primary text-primary-foreground",
-      destructive: "bg-destructive text-white",
+      default:     "bg-interactive text-text-on-interactive",
+      destructive: "bg-danger text-white",
       success:     "bg-green-500 text-white",
-      warning:     "bg-yellow-500 text-foreground"
+      warning:     "bg-yellow-500 text-text-heading"
     }.freeze
 
     POSITIONS = {

@@ -127,8 +127,10 @@ class TestGeneratorComponents < Minitest::Test
   end
 
   def test_dialog_has_js_controller
-    assert_path_exists File.join(TEMPLATE_ROOT, "dialog", "dialog_controller.js"),
-      "dialog should include dialog_controller.js"
+    # modelrails fork: Dialog was rewritten onto the app's native-<dialog> modal,
+    # which ships modal_controller.js (the proven, focus-trapping controller).
+    assert_path_exists File.join(TEMPLATE_ROOT, "dialog", "modal_controller.js"),
+      "dialog should include modal_controller.js"
   end
 
   def test_sheet_has_js_controller

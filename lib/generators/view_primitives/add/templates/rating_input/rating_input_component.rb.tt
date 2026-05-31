@@ -45,8 +45,8 @@ module UI
         star_svg(filled),
         type: "button",
         class: cn(
-          "transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm",
-          filled ? "text-yellow-400" : "text-muted-foreground"
+          "transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-focus rounded-sm",
+          filled ? "text-yellow-400" : "text-text-muted"
         ),
         data: {
           rating_target: "star",
