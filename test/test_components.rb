@@ -149,9 +149,9 @@ class TestButtonComponent < Minitest::Test
   end
 
   def test_variant_stored_as_symbol
-    c = UI::ButtonComponent.new(variant: "destructive")
+    c = UI::ButtonComponent.new(variant: "danger")
 
-    assert_equal :destructive, c.instance_variable_get(:@variant)
+    assert_equal :danger, c.instance_variable_get(:@variant)
   end
 
   def test_default_size
@@ -247,6 +247,10 @@ class TestButtonComponent < Minitest::Test
     c.call
 
     refute captured.key?(:type)
+  end
+
+  def test_unknown_variant_raises
+    assert_raises(ArgumentError) { UI::ButtonComponent.new("Save", variant: :bogus) }
   end
 end
 
