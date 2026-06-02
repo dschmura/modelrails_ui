@@ -38,6 +38,16 @@ module ModelrailsUi
         end
       end
 
+      def create_ui_helper
+        target = "app/helpers/ui_helper.rb"
+
+        if File.exist?(File.join(destination_root, target))
+          say "  #{target} already exists — skipping.", :yellow
+        else
+          copy_file "ui_helper.rb", target
+        end
+      end
+
       def create_css_variables
         if host_defines_design_tokens?
           say "  Host already defines modelrails_ui design tokens — skipping the token CSS " \
