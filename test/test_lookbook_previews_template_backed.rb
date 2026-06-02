@@ -44,4 +44,28 @@ class TestLookbookPreviewsTemplateBacked < Minitest::Test
         "#{component} playground should remain an inline explorer")
     end
   end
+
+  DIALOG_SCENARIOS = %w[default large dont_no_title].freeze
+
+  def dialog_template(scenario)
+    File.read(File.join(PREVIEW_ROOT, "dialog_component_preview", "#{scenario}.html.erb"))
+  end
+
+  def test_dialog_scenarios_are_template_backed
+    src = File.read(File.join(PREVIEW_ROOT, "dialog_component_preview.rb"))
+    DIALOG_SCENARIOS.each do |scenario|
+      assert_path_exists File.join(PREVIEW_ROOT, "dialog_component_preview", "#{scenario}.html.erb")
+      assert_match(/def #{scenario}; end/, src, "dialog##{scenario} should be empty")
+    end
+  end
+
+  def test_dialog_scenarios_teach_shared_modal_and_stay_portable
+    DIALOG_SCENARIOS.each do |scenario|
+      src = dialog_template(scenario)
+      assert_includes src, 'render "shared/modal"', "#{scenario} should teach the shared/modal partial"
+      refute_includes src, "f.text_field", "#{scenario} must not use the app form builder"
+      refute_includes src, "shared/confirm_dialog", "#{scenario} must not use the app confirm partial"
+      refute_includes src, "avatar_for", "#{scenario} must not use the app avatar helper"
+    end
+  end
 end
