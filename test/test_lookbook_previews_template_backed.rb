@@ -35,7 +35,7 @@ class TestLookbookPreviewsTemplateBacked < Minitest::Test
       src = preview_rb(component)
 
       scenarios.each do |scenario|
-        assert_match(/def #{scenario}; end/, src, "#{component}##{scenario} should be empty")
+        assert_match(/def #{scenario}(; end|\n\s*end)/, src, "#{component}##{scenario} should be empty")
       end
     end
   end
@@ -57,7 +57,7 @@ class TestLookbookPreviewsTemplateBacked < Minitest::Test
     src = File.read(File.join(PREVIEW_ROOT, "dialog_component_preview.rb"))
     DIALOG_SCENARIOS.each do |scenario|
       assert_path_exists File.join(PREVIEW_ROOT, "dialog_component_preview", "#{scenario}.html.erb")
-      assert_match(/def #{scenario}; end/, src, "dialog##{scenario} should be empty")
+      assert_match(/def #{scenario}(; end|\n\s*end)/, src, "dialog##{scenario} should be empty")
     end
   end
 
