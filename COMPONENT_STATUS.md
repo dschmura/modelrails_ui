@@ -13,9 +13,9 @@ without extra verification.
 | Component | Tier | Render test | App-adopted (axe) | Notes |
 | --- | --- | --- | --- | --- |
 | button | proven | ✅ | ✅ | SP1 exemplar |
-| alert | hardened | ✅ | ⏳ | Wave 1 exemplar (app adoption in `feat/ui-alert-exemplar`) |
+| alert | proven | ✅ | ✅ | Wave 1 exemplar (gem #4 + app #222 merged) |
 | select | experimental | ❌ | ❌ | Wave 1 sub-wave 1 (native `<select>` target) |
-| checkbox | experimental | ❌ | ❌ | Wave 1 sub-wave 1 |
+| checkbox | hardened | ✅ | ⏳ | Wave 1 sub-wave 1 form-control pattern-setter |
 | radio_group | experimental | ❌ | ❌ | Wave 1 sub-wave 1 |
 | switch | experimental | ❌ | ❌ | Wave 1 sub-wave 1 (aria-checked sync bug) |
 | toggle | experimental | ❌ | ❌ | Wave 1 sub-wave 1 (sub-44px target) |
