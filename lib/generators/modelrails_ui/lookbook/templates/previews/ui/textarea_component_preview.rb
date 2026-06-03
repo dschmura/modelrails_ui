@@ -31,14 +31,11 @@ module UI
 
     # Multi-line input at rest — the baseline appearance.
     def default
-      ui :textarea, name: "demo_body", value: "Hello there.", rows: 4
     end
 
     # Error state: red border + `aria-invalid="true"`. In a real form the builder
     # sets both automatically when an ActiveModel error is present.
     def invalid
-      ui :textarea, name: "demo_body", invalid: true,
-        describedby: "demo-body-error", value: "too short"
     end
 
     # ## Don't — hand-rolled `<textarea>` tag
@@ -48,7 +45,6 @@ module UI
     # (`f.text_area :attr`) or, for standalone controls, `ui :textarea`.
     # @label Don't · raw <textarea> tag
     def dont_raw_textarea
-      ui :textarea, name: "demo_raw" # ✗ use f.text_area inside a form_with
     end
   end
 end

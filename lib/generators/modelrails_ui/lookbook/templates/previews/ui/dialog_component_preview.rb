@@ -39,18 +39,10 @@ module UI
     # The `with_trigger` slot renders inside the `modal` controller wrapper so
     # clicking the button calls `modal#open` automatically.
     def default
-      ui :dialog, title: "Confirm action", description: "This action cannot be undone." do |d|
-        d.with_trigger { tag.button("Open dialog", type: "button", class: "btn-primary") }
-        "Are you sure you want to proceed? All related data will be permanently removed."
-      end
     end
 
     # Pass `size: :lg` for wide content like forms or detail views.
     def large
-      ui :dialog, title: "Edit profile", description: "Update your display name and preferences.", size: :lg do |d|
-        d.with_trigger { tag.button("Open large dialog", type: "button", class: "btn-secondary") }
-        "Form fields would go here."
-      end
     end
 
     # ## Don't — dialog without a title
@@ -60,10 +52,6 @@ module UI
     # the modal is announced without context. Always pass a descriptive `title:`.
     # @label Don't · no title (breaks aria-labelledby)
     def dont_no_title
-      ui :dialog, title: "Untitled" do |d| # ✗ supply a meaningful title:
-        d.with_trigger { tag.button("Open", type: "button", class: "btn-secondary") }
-        "Body content."
-      end
     end
   end
 end

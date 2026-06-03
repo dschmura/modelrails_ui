@@ -28,27 +28,22 @@ module UI
 
     # The default, high-emphasis action. Aim for one primary per view.
     def primary
-      ui :button, "Save changes", variant: :primary
     end
 
     # Neutral / secondary action, usually paired beside a primary.
     def secondary
-      ui :button, "Cancel", variant: :secondary
     end
 
     # Destructive *styling*. For a real delete, drive it with `button_to` and this variant's class.
     def danger
-      ui :button, "Delete account", variant: :danger
     end
 
     # Low-emphasis inline action that reads like a link.
     def text_interactive
-      ui :button, "Learn more", variant: :text_interactive
     end
 
     # Button-styled link: pass `href:` and the component renders an `<a>`.
     def link
-      ui :button, "Go home", href: "/", variant: :primary
     end
 
     # Edit `label` and `variant` live to explore the component.
@@ -65,7 +60,6 @@ module UI
     # `ui :button, "★", variant: :secondary, "aria-label": "Add to favorites"`.
     # @label Don't · icon-only without a label
     def dont_icon_only_without_label
-      ui :button, "★", variant: :secondary # ✗ no accessible name
     end
   end
 end

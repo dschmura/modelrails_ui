@@ -82,10 +82,17 @@ module ModelrailsUi
         when /\.rb\.tt\z/
           template source, "app/components/ui/#{file.delete_suffix(".tt")}"
         when /\.html\.erb\z/
-          copy_file source, "app/components/ui/#{file}"
+          copy_file source, html_erb_destination(file)
         when /_controller\.js\z/
           copy_js_controller source, file.delete_suffix("_controller.js")
         end
+      end
+
+      # A leading-underscore .html.erb is a Rails view partial (e.g. _modal) →
+      # app/views/shared/. Everything else is a component sidecar template →
+      # app/components/ui/.
+      def html_erb_destination(file)
+        file.start_with?("_") ? "app/views/shared/#{file}" : "app/components/ui/#{file}"
       end
 
       def copy_extra_stimulus(name)

@@ -33,18 +33,15 @@ module UI
 
     # Generic file picker — no type restriction.
     def default
-      ui :file_input, name: "demo_file"
     end
 
     # Restricts the OS file picker to images; the browser enforces the `accept` hint.
     def images_only
-      ui :file_input, name: "demo_avatar", accept: "image/*"
     end
 
     # Allows selecting more than one file in a single pick. The field name should end
     # in `[]` when paired with a Rails controller that expects an array.
     def multiple
-      ui :file_input, name: "demo_docs[]", multiple: true
     end
 
     # ## Don't — hand-rolled `<input type="file">` tag
@@ -55,7 +52,6 @@ module UI
     # controls, `ui :file_input`.
     # @label Don't · raw <input type="file"> tag
     def dont_raw_file_input
-      ui :file_input, name: "demo_raw" # ✗ use f.file_field inside a form_with
     end
   end
 end

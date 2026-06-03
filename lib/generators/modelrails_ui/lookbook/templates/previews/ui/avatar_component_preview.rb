@@ -32,19 +32,16 @@ module UI
 
     # Photo avatar: pass `src:` with an image URL. The element renders as `<img>`.
     def image
-      ui :avatar, src: "https://i.pravatar.cc/128", size: :lg
     end
 
     # Initials avatar: pass `fallback:` with the initials string. Uses the default
     # interactive color token.
     def initials
-      ui :avatar, fallback: "JD", size: :md
     end
 
     # Custom hue: `hue:` accepts an OKLCH integer (0–360), tinting the background
     # with `--hue-initials`. Useful for workspace or org avatars.
     def custom_hue
-      ui :avatar, fallback: "JD", hue: 280
     end
 
     # Explore size and initials interactively.
@@ -62,7 +59,6 @@ module UI
     # For user avatars, prefer `avatar_for(user, size: :sm)` — it sets the label for you.
     # @label Don't · interactive avatar with no label
     def dont_interactive_no_label
-      ui :avatar, src: "https://i.pravatar.cc/128", size: :sm # ✗ wrap in a button? add aria_label:
     end
   end
 end

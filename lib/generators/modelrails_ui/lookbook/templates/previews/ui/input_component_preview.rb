@@ -32,19 +32,15 @@ module UI
 
     # Plain text input — the baseline appearance.
     def default
-      ui :input, type: "text", name: "demo_search", placeholder: "Search…"
     end
 
     # Email input with required styling; the browser also validates format on submit.
     def required
-      ui :input, type: "email", name: "demo_email", required: true, placeholder: "you@example.com"
     end
 
     # Error state: red border + `aria-invalid="true"`. In a real form the form builder
     # sets both automatically when an ActiveModel error is present.
     def invalid
-      ui :input, type: "email", name: "demo_email", invalid: true,
-        describedby: "demo-email-error", value: "not-an-email"
     end
 
     # ## Don't — hand-rolled `<input>` tag
@@ -54,7 +50,6 @@ module UI
     # builder (`f.text_field :attr`) or, for standalone controls, `ui :input`.
     # @label Don't · raw <input> tag
     def dont_raw_input
-      ui :input, type: "text", name: "demo_raw" # ✗ use f.text_field inside a form_with
     end
   end
 end
