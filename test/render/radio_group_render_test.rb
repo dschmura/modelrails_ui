@@ -78,6 +78,20 @@ class RadioGroupRenderTest < ViewComponent::TestCase
     assert_no_selector "div[role='radiogroup'][aria-describedby]"
   end
 
+  def test_caller_html_attrs_cannot_clobber_the_groups_a11y_contract
+    render_inline(
+      UI::RadioGroupComponent.new(
+        name: "plan", label: "Billing plan", items: PLAN_ITEMS, invalid: true,
+        role: "group", "aria-label": "Caller override", "aria-invalid": "false"
+      )
+    )
+
+    # Component wins: its role/aria-label/aria-invalid survive caller-supplied conflicts.
+    assert_selector "div[role='radiogroup'][aria-label='Billing plan'][aria-invalid='true']"
+    assert_no_selector "div[role='group']"
+    assert_no_selector "div[aria-label='Caller override']"
+  end
+
   # AAA semantic tokens (the design-token guarantee), not raw Tailwind:
   def test_inputs_use_semantic_aaa_tokens
     render_inline(UI::RadioGroupComponent.new(name: "plan", label: "Billing plan", items: PLAN_ITEMS))

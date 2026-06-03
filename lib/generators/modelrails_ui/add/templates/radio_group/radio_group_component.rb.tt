@@ -56,12 +56,19 @@ module UI
     private
 
     def group_attrs
-      attrs = { class: cn("grid gap-2", @extra_class), role: "radiogroup" }
+      # Component wins on its a11y contract: merge caller html_attrs FIRST, then
+      # apply role/aria as overrides so a caller can't clobber the group's
+      # accessible name, invalid state, or radiogroup role. Keys are stringified
+      # so the overrides land on the same key whether the caller passed `role:`
+      # or `"role"` (and likewise for the aria-* attributes).
+      attrs = { "class" => cn("grid gap-2", @extra_class) }
+      @html_attrs.each { |k, v| attrs[k.to_s] = v }
+      attrs["role"] = "radiogroup"
       attrs["aria-label"] = @label if @label.present?
       attrs["aria-labelledby"] = @labelledby if @labelledby.present?
       attrs["aria-invalid"] = "true" if @invalid
       attrs["aria-describedby"] = @describedby if @describedby.present?
-      attrs.merge(@html_attrs)
+      attrs
     end
 
     def radio_item(item)
@@ -85,7 +92,7 @@ module UI
     def radio_label(item, id)
       content_tag(:label, item[:label],
         for: id,
-        class: "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70")
+        class: "text-sm font-medium leading-none")
     end
   end
 end
