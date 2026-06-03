@@ -44,7 +44,7 @@ module UI
     # sets both automatically when an ActiveModel error is present.
     def invalid
       ui :input, type: "email", name: "demo_email", invalid: true,
-         describedby: "demo-email-error", value: "not-an-email"
+        describedby: "demo-email-error", value: "not-an-email"
     end
 
     # ## Don't — hand-rolled `<input>` tag
