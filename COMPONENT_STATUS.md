@@ -19,8 +19,8 @@ without extra verification.
 | radio_group | hardened | ✅ | ⏳ | Wave 1 sub-wave 1 (group aria-label; per-option ids; invalid on group) |
 | switch | hardened | ✅ | ⏳ | Wave 1 sub-wave 1 (aria-checked bug fixed; peer-sibling track; 44px target) |
 | toggle | hardened | ✅ | ⏳ | Wave 1 sub-wave 1 (fail-loud size guard; 44px sizes; sm≈default nit deferred) |
-| badge | experimental | ❌ | ❌ | Wave 1 sub-wave 2 |
-| data_table | experimental | ❌ | ❌ | Wave 1 sub-wave 2 (kbd sort, 44px) |
+| badge | hardened | ✅ | ⏳ | Wave 1 sub-wave 2 (fail-loud guard; destructive dark-AAA fix; href polymorphism) |
+| data_table | hardened | ✅ | ⏳ | Wave 1 sub-wave 2 (kbd-sortable headers + aria-sort; live region; 44px; i18n) |
 
 All other gem components: **experimental** (unverified) unless listed above.
 
