@@ -23,3 +23,10 @@ without extra verification.
 | data_table | experimental | ❌ | ❌ | Wave 1 sub-wave 2 (kbd sort, 44px) |
 
 All other gem components: **experimental** (unverified) unless listed above.
+
+**Sibling templates to copy:** `alert` is the canonical Wave 1 reference. Copy its render test
+(`test/render/alert_render_test.rb`), template-backed preview, and — for 0b — its preview-host
+axe-AAA system spec shape (`spec/system/ui/alert_component_spec.rb` in the app: visit the preview
+URL, scope axe to the component subtree by role, assert `axe_clean_in_both_themes?` with **no**
+color-contrast exclude). `button` predates the preview-host 0b convention (its 0b was proven via
+in-page adoption), so follow `alert` for the system-spec pattern, not `button`.
