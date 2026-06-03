@@ -22,6 +22,8 @@ end
 
 Rails.application.initialize! unless Rails.application.initialized?
 
+# ViewComponent 4 wires TestCase against the initialized app (hooks into ActionView);
+# this require MUST come after Rails.application.initialize! or the wiring is incomplete.
 require "view_component/test_case"
 require "minitest/autorun"
 

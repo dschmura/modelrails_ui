@@ -93,9 +93,41 @@ with real tokens and working Stimulus (the dialog actually opens). Previews land
 
 ## Testing & accessibility
 
-- The gem's suite (`rake test`) unit-tests component logic + template structure + **AAA contrast**.
-- Rendering/ARIA is verified by **integration specs in the consuming app** (a real view context),
-  where each adopted component is asserted for correct markup and ARIA.
+The gem's suite (`rake test`) runs two lanes:
+
+- **`test:structural`** — fast, no Rails: reads the `.rb.tt` templates as text and asserts
+  structure (`test/test_components.rb` and friends).
+- **`test:render`** — real rendering: boots a minimal Rails app + ViewComponent and renders
+  a component, asserting actual HTML/ARIA. AAA contrast is guaranteed by
+  `test/test_aaa_contrast.rb` (token ratios), so a render test that asserts a component
+  uses the semantic token classes inherits AAA.
+
+### Verifying components (render tests)
+
+To add a render test for a new component, create
+`test/render/<name>_render_test.rb`:
+
+```ruby
+# test/render/<name>_render_test.rb
+require "render_test_helper"
+load_component "<name>", "<name>_component.rb.tt"
+
+class <Name>RenderTest < ViewComponent::TestCase
+  def test_renders_with_aaa_tokens
+    render_inline(UI::<Name>Component.new(...))
+    assert_selector "..."             # tag + structure
+    assert_selector ".bg-interactive" # AAA semantic token actually rendered
+  end
+end
+```
+
+Replace `<name>` with the snake_case component name and `<Name>` with PascalCase
+(e.g. `button` / `Button`). This render lane is the verification basis for the
+component-hardening program
+(see `docs/design/2026-06-03-component-hardening-program-design.md`).
+
+Rendering/ARIA is also verified by **integration specs in the consuming app** (a real
+view context), where each adopted component is asserted for correct markup and ARIA.
 
 ## Known gaps
 
