@@ -86,10 +86,10 @@ module UI
       attrs[:value] = @value unless @value.nil?
       if @required
         attrs[:required] = true
-        attrs[:"aria-required"] = "true"
+        attrs["aria-required"] = "true"
       end
-      attrs[:"aria-invalid"] = "true" if @invalid
-      attrs[:"aria-describedby"] = @describedby if @describedby.present?
+      attrs["aria-invalid"] = "true" if @invalid
+      attrs["aria-describedby"] = @describedby if @describedby.present?
       attrs
     end
   end
