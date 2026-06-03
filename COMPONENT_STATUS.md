@@ -13,12 +13,12 @@ without extra verification.
 | Component | Tier | Render test | App-adopted (axe) | Notes |
 | --- | --- | --- | --- | --- |
 | button | proven | ✅ | ✅ | SP1 exemplar |
-| alert | hardened | ✅ | ⏳ | Wave 1 exemplar (app adoption in `feat/ui-alert-exemplar`) |
-| select | experimental | ❌ | ❌ | Wave 1 sub-wave 1 (native `<select>` target) |
-| checkbox | experimental | ❌ | ❌ | Wave 1 sub-wave 1 |
-| radio_group | experimental | ❌ | ❌ | Wave 1 sub-wave 1 |
-| switch | experimental | ❌ | ❌ | Wave 1 sub-wave 1 (aria-checked sync bug) |
-| toggle | experimental | ❌ | ❌ | Wave 1 sub-wave 1 (sub-44px target) |
+| alert | proven | ✅ | ✅ | Wave 1 exemplar (gem #4 + app #222 merged) |
+| select | hardened | ✅ | ⏳ | Wave 1 sub-wave 1 (native AAA select; id fallback; invalid/describedby) |
+| checkbox | hardened | ✅ | ⏳ | Wave 1 sub-wave 1 form-control pattern-setter |
+| radio_group | hardened | ✅ | ⏳ | Wave 1 sub-wave 1 (group aria-label; per-option ids; invalid on group) |
+| switch | hardened | ✅ | ⏳ | Wave 1 sub-wave 1 (aria-checked bug fixed; peer-sibling track; 44px target) |
+| toggle | hardened | ✅ | ⏳ | Wave 1 sub-wave 1 (fail-loud size guard; 44px sizes; sm≈default nit deferred) |
 | badge | experimental | ❌ | ❌ | Wave 1 sub-wave 2 |
 | data_table | experimental | ❌ | ❌ | Wave 1 sub-wave 2 (kbd sort, 44px) |
 
