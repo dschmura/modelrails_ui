@@ -38,7 +38,7 @@ module UI
     # sets both automatically when an ActiveModel error is present.
     def invalid
       ui :textarea, name: "demo_body", invalid: true,
-         describedby: "demo-body-error", value: "too short"
+        describedby: "demo-body-error", value: "too short"
     end
 
     # ## Don't — hand-rolled `<textarea>` tag
