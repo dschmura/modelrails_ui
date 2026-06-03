@@ -31,14 +31,17 @@ module UI
     include UIHelper
 
     # Plain text input — the baseline appearance.
-    def default; end
+    def default
+    end
 
     # Email input with required styling; the browser also validates format on submit.
-    def required; end
+    def required
+    end
 
     # Error state: red border + `aria-invalid="true"`. In a real form the form builder
     # sets both automatically when an ActiveModel error is present.
-    def invalid; end
+    def invalid
+    end
 
     # ## Don't — hand-rolled `<input>` tag
     #
@@ -46,6 +49,7 @@ module UI
     # and the automatic ARIA wiring the component provides. Always go through the form
     # builder (`f.text_field :attr`) or, for standalone controls, `ui :input`.
     # @label Don't · raw <input> tag
-    def dont_raw_input; end
+    def dont_raw_input
+    end
   end
 end

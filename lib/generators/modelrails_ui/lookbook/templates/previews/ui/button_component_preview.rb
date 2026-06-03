@@ -27,19 +27,24 @@ module UI
     include UIHelper
 
     # The default, high-emphasis action. Aim for one primary per view.
-    def primary; end
+    def primary
+    end
 
     # Neutral / secondary action, usually paired beside a primary.
-    def secondary; end
+    def secondary
+    end
 
     # Destructive *styling*. For a real delete, drive it with `button_to` and this variant's class.
-    def danger; end
+    def danger
+    end
 
     # Low-emphasis inline action that reads like a link.
-    def text_interactive; end
+    def text_interactive
+    end
 
     # Button-styled link: pass `href:` and the component renders an `<a>`.
-    def link; end
+    def link
+    end
 
     # Edit `label` and `variant` live to explore the component.
     # @param label text
@@ -54,6 +59,7 @@ module UI
     # Prefer visible text; if the design is truly icon-only, pass a label:
     # `ui :button, "★", variant: :secondary, "aria-label": "Add to favorites"`.
     # @label Don't · icon-only without a label
-    def dont_icon_only_without_label; end
+    def dont_icon_only_without_label
+    end
   end
 end

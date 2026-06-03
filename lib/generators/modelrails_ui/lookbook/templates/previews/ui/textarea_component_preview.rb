@@ -30,11 +30,13 @@ module UI
     include UIHelper
 
     # Multi-line input at rest — the baseline appearance.
-    def default; end
+    def default
+    end
 
     # Error state: red border + `aria-invalid="true"`. In a real form the builder
     # sets both automatically when an ActiveModel error is present.
-    def invalid; end
+    def invalid
+    end
 
     # ## Don't — hand-rolled `<textarea>` tag
     #
@@ -42,6 +44,7 @@ module UI
     # and the automatic ARIA wiring. Always go through the form builder
     # (`f.text_area :attr`) or, for standalone controls, `ui :textarea`.
     # @label Don't · raw <textarea> tag
-    def dont_raw_textarea; end
+    def dont_raw_textarea
+    end
   end
 end

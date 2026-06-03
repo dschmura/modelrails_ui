@@ -38,10 +38,12 @@ module UI
     # Standard dialog: trigger button, title, description, and body content.
     # The `with_trigger` slot renders inside the `modal` controller wrapper so
     # clicking the button calls `modal#open` automatically.
-    def default; end
+    def default
+    end
 
     # Pass `size: :lg` for wide content like forms or detail views.
-    def large; end
+    def large
+    end
 
     # ## Don't — dialog without a title
     #
@@ -49,6 +51,7 @@ module UI
     # giving screen-reader users the modal's accessible name when focus enters. Without it
     # the modal is announced without context. Always pass a descriptive `title:`.
     # @label Don't · no title (breaks aria-labelledby)
-    def dont_no_title; end
+    def dont_no_title
+    end
   end
 end

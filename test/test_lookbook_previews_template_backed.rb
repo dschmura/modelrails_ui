@@ -9,11 +9,11 @@ class TestLookbookPreviewsTemplateBacked < Minitest::Test
 
   # component => scenario methods that must be template-backed (playground excluded)
   PRIMITIVES = {
-    "button"     => %w[primary secondary danger text_interactive link dont_icon_only_without_label],
-    "input"      => %w[default required invalid dont_raw_input],
-    "textarea"   => %w[default invalid dont_raw_textarea],
+    "button" => %w[primary secondary danger text_interactive link dont_icon_only_without_label],
+    "input" => %w[default required invalid dont_raw_input],
+    "textarea" => %w[default invalid dont_raw_textarea],
     "file_input" => %w[default images_only multiple dont_raw_file_input],
-    "avatar"     => %w[image initials custom_hue dont_interactive_no_label]
+    "avatar" => %w[image initials custom_hue dont_interactive_no_label]
   }.freeze
 
   def preview_rb(component)
@@ -24,6 +24,7 @@ class TestLookbookPreviewsTemplateBacked < Minitest::Test
     PRIMITIVES.each do |component, scenarios|
       scenarios.each do |scenario|
         path = File.join(PREVIEW_ROOT, "#{component}_component_preview", "#{scenario}.html.erb")
+
         assert_path_exists path, "missing sibling template #{path}"
       end
     end
@@ -32,6 +33,7 @@ class TestLookbookPreviewsTemplateBacked < Minitest::Test
   def test_primitive_scenario_methods_are_empty
     PRIMITIVES.each do |component, scenarios|
       src = preview_rb(component)
+
       scenarios.each do |scenario|
         assert_match(/def #{scenario}; end/, src, "#{component}##{scenario} should be empty")
       end
@@ -62,6 +64,7 @@ class TestLookbookPreviewsTemplateBacked < Minitest::Test
   def test_dialog_scenarios_teach_shared_modal_and_stay_portable
     DIALOG_SCENARIOS.each do |scenario|
       src = dialog_template(scenario)
+
       assert_includes src, 'render "shared/modal"', "#{scenario} should teach the shared/modal partial"
       refute_includes src, "f.text_field", "#{scenario} must not use the app form builder"
       refute_includes src, "shared/confirm_dialog", "#{scenario} must not use the app confirm partial"
