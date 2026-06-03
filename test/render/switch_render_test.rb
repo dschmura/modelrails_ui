@@ -18,6 +18,18 @@ class SwitchRenderTest < ViewComponent::TestCase
     assert_no_selector "[aria-checked]"
   end
 
+  # STRUCTURAL CASCADE GUARD: the visual track/thumb react to the input via Tailwind
+  # `peer-*` utilities, which compile to the subsequent-sibling combinator
+  # (`.peer:checked ~ .x`). That only matches LATER SIBLINGS of the input — never
+  # descendants of a sibling. So a span MUST appear as a later sibling of the
+  # role=switch input, or peer-checked:/peer-focus-visible:/peer-disabled: silently
+  # no-op and the switch renders frozen OFF with no focus ring (the bug).
+  def test_track_thumb_are_later_siblings_of_the_peer_input
+    render_inline(UI::SwitchComponent.new(checked: true))
+
+    assert_selector "input[role='switch'][type='checkbox'] ~ span"
+  end
+
   def test_checked_sets_native_checked_on_the_input
     render_inline(UI::SwitchComponent.new(name: "notifications", checked: true))
 
@@ -68,6 +80,24 @@ class SwitchRenderTest < ViewComponent::TestCase
     render_inline(UI::SwitchComponent.new(name: "notifications"))
 
     assert_no_selector "input[aria-describedby]"
+  end
+
+  # An empty describedby must not leak aria-describedby="" (present? guard, matching
+  # the sibling components).
+  def test_describedby_blank_omits_aria_describedby
+    render_inline(UI::SwitchComponent.new(name: "notifications", describedby: ""))
+
+    assert_no_selector "input[aria-describedby]"
+  end
+
+  # Component attrs win over caller **html_attrs: a caller must not be able to clobber
+  # role="switch" or the aria-* the component sets (a11y guarantee, matching select).
+  def test_component_attrs_win_over_caller_html_attrs
+    render_inline(UI::SwitchComponent.new(name: "notifications", invalid: true, role: "checkbox"))
+
+    assert_selector "input[role='switch']"
+    assert_no_selector "input[role='checkbox']"
+    assert_selector "input[aria-invalid='true']"
   end
 
   def test_id_falls_back_when_no_id_or_name_given

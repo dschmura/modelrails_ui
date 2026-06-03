@@ -27,15 +27,22 @@ module UI
   # `checked:` (default `false`) sets the initial on/off; the native checkbox tracks
   # the rest. No variant axis, so no fail-loud guard is needed.
   class SwitchComponent < ApplicationComponent
-    # The track <label for=@id> is the click target: a transparent >=44px flex box
-    # (AAA 2.5.5) that centers the smaller visual track, so the hit area grows without
-    # enlarging the switch graphic. peer-* utilities reference the sr-only input peer.
+    # The OUTER <label for=@id> is the >=44px click target (AAA 2.5.5): a transparent
+    # flex box that centers the smaller visual switch, so the hit area grows without
+    # enlarging the graphic. The `for` association toggles the input regardless of DOM
+    # nesting. has-[:disabled]: is a cosmetic cursor nicety (the label is an ancestor,
+    # not a peer, so peer-* can't reach it — the real peer-disabled: hooks live on TRACK).
     TARGET  = "relative inline-flex min-h-11 min-w-11 shrink-0 cursor-pointer items-center justify-center " \
-              "peer-disabled:cursor-not-allowed peer-disabled:opacity-50"
-    TRACK   = "block h-[1.15rem] w-8 rounded-full border border-transparent shadow-xs " \
+              "has-[:disabled]:cursor-not-allowed"
+    # WRAPPER keeps the original switch size; the input + TRACK + THUMB are siblings
+    # inside it so the input is the `peer` and TRACK/THUMB are its LATER SIBLINGS —
+    # the only DOM order in which Tailwind peer-* (`.peer:checked ~ .x`) matches.
+    WRAPPER = "relative inline-flex h-[1.15rem] w-8 shrink-0"
+    TRACK   = "pointer-events-none absolute inset-0 rounded-full border border-transparent shadow-xs " \
               "transition-all bg-surface-sunken peer-checked:bg-interactive " \
-              "peer-focus-visible:border-border-focus peer-focus-visible:ring-[3px] peer-focus-visible:ring-interactive-focus"
-    THUMB   = "pointer-events-none absolute inset-y-0 left-[calc(50%-1rem+1px)] my-auto z-10 block size-4 rounded-full " \
+              "peer-focus-visible:border-border-focus peer-focus-visible:ring-[3px] peer-focus-visible:ring-interactive-focus " \
+              "peer-disabled:opacity-50"
+    THUMB   = "pointer-events-none absolute inset-y-0 left-px my-auto z-10 block size-4 rounded-full " \
               "bg-surface-raised ring-0 transition-transform " \
               "translate-x-0 peer-checked:translate-x-[calc(100%-2px)]"
 
@@ -44,7 +51,7 @@ module UI
       @checked = checked
       @invalid = invalid
       @describedby = describedby
-      @id = html_attrs[:id] || html_attrs[:name]&.gsub(/[\[\]]+/, "_") || "switch_#{object_id}"
+      @id = html_attrs[:id] || html_attrs[:name]&.gsub(/\W/, "_") || "switch_#{object_id}"
       @extra_class = html_attrs.delete(:class)
       @html_attrs = html_attrs
     end
@@ -59,21 +66,25 @@ module UI
     private
 
     def switch_widget
-      content_tag(:div, class: "relative inline-flex shrink-0") do
-        input_attrs = { type: "checkbox", id: @id, class: "peer sr-only", role: "switch" }
-        # No explicit aria-checked: the native checkbox `checked` conveys switch state
-        # under role=switch; a static aria-checked went stale on toggle (the bug we fixed).
-        # No JS needed; the app's 0b axe gate verifies.
-        input_attrs[:checked] = true if @checked
-        input_attrs["aria-invalid"] = "true" if @invalid
-        input_attrs["aria-describedby"] = @describedby if @describedby
-        input_attrs.merge!(@html_attrs)
-        concat content_tag(:input, nil, **input_attrs)
-        # The <label for=@id> is the >=44px click target; the visual track + thumb sit inside it.
-        concat content_tag(:label, for: @id, class: TARGET) {
+      # The OUTER <label for=@id> is the >=44px click target; the `for` association
+      # toggles the input regardless of nesting. The visual switch is the inner WRAPPER:
+      # input (the peer) followed by its LATER SIBLINGS, the track and thumb — the DOM
+      # order Tailwind peer-* requires (`.peer:checked ~ .x` is a sibling combinator).
+      content_tag(:label, for: @id, class: TARGET) do
+        content_tag(:span, nil, class: WRAPPER) do
+          # Component attrs (role/type/aria-*) are applied AFTER @html_attrs so the
+          # caller can't clobber the a11y contract (role="switch" and the aria-* we set).
+          input_attrs = @html_attrs.merge(type: "checkbox", id: @id, class: "peer sr-only", role: "switch")
+          # No explicit aria-checked: the native checkbox `checked` conveys switch state
+          # under role=switch; a static aria-checked went stale on toggle (the bug we fixed).
+          # No JS needed; the app's 0b axe gate verifies.
+          input_attrs[:checked] = true if @checked
+          input_attrs["aria-invalid"] = "true" if @invalid
+          input_attrs["aria-describedby"] = @describedby if @describedby.present?
+          concat content_tag(:input, nil, **input_attrs)
           concat content_tag(:span, nil, class: TRACK)
           concat content_tag(:span, nil, class: THUMB, "aria-hidden": "true")
-        }
+        end
       end
     end
 
