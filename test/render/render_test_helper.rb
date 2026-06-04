@@ -9,6 +9,7 @@ require "action_controller/railtie"
 require "action_view/railtie"
 require "view_component"
 require "view_component/test_helpers"
+require "tailwind_merge"
 
 class RenderHarnessApp < Rails::Application
   config.eager_load = false
@@ -28,12 +29,14 @@ require "view_component/test_case"
 require "minitest/autorun"
 
 # Real ApplicationComponent — mirrors install/templates/application_component.rb.tt
-# exactly (cn is inlined; no gem runtime dependency).
+# exactly (cn is backed by tailwind_merge so the render tests exercise components
+# under real merge behavior: a per-thread Merger, class: overrides win conflicts).
 class ApplicationComponent < ViewComponent::Base
   private
 
   def cn(*classes)
-    classes.flatten.compact.reject { |c| c.to_s.empty? }.join(" ")
+    joined = classes.flatten.compact.reject { |c| c.to_s.empty? }.join(" ")
+    (Thread.current[:modelrails_ui_tw_merge] ||= TailwindMerge::Merger.new).merge(joined)
   end
 end
 

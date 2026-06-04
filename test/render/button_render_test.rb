@@ -30,4 +30,14 @@ class ButtonRenderTest < ViewComponent::TestCase
       render_inline(UI::ButtonComponent.new("X", variant: :bogus))
     end
   end
+
+  # Behavioral proof of the tailwind_merge-backed `cn`: a `class:` passthrough
+  # must OVERRIDE a conflicting base utility. The filled base is `rounded-md`;
+  # passing `class: "rounded-full"` must win, and `rounded-md` must be dropped.
+  def test_class_passthrough_overrides_conflicting_base_utility
+    render_inline(UI::ButtonComponent.new("X", variant: :primary, class: "rounded-full"))
+
+    assert_selector "button.rounded-full"
+    refute_selector "button.rounded-md"
+  end
 end
