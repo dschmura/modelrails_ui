@@ -38,6 +38,7 @@ without extra verification.
 | indicator | proven | ✅ | ✅ | Wave 3 (raw palette → semantic success/warning + text-on-interactive; fail-loud variant) |
 | image | proven | ✅ | ✅ | Wave 3 (required alt; loading-mode validation; conditional srcset/sizes/width/height) |
 | figure | proven | ✅ | ✅ | Wave 3 (figcaption only when caption given; text-text-muted is AAA here) |
+| dialog | hardened | ✅ | ⏳ | Wave 4 overlays exemplar (native <dialog>; 0a + JS-behavior 0b: open/escape/aria-modal + AAA on live modal). Was adopted unverified; now has render test + 0b. App 0b CI-pending |
 
 All other gem components: **experimental** (unverified) unless listed above.
 
