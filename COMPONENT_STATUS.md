@@ -24,12 +24,12 @@ without extra verification.
 | input | proven | ✅ | ✅ | Wave 2 (full form-control API; SP2-adopted) — render test added |
 | textarea | proven | ✅ | ✅ | Wave 2 (form-control API; SP2-adopted) — render test added |
 | file_input | proven | ✅ | ✅ | Wave 2 (form-control API + a11y; SP2-adopted) — render test added |
-| label | hardened | ✅ | ⏳ | Wave 2 (explicit AAA token; for-assoc; decorative required `*`) |
-| search_input | hardened | ✅ | ⏳ | Wave 2 (form-control API; aria-label accessible name; 44px) |
-| number_input | hardened | ✅ | ⏳ | Wave 2 (form-control API; id fallback; 44px; spinners hidden) |
-| range | hardened | ✅ | ⏳ | Wave 2 (native slider; invalid/describedby; id fallback) |
-| floating_label | hardened | ✅ | ⏳ | Wave 2 (sets aria-invalid/required/describedby; always-on id/for; peer float) |
-| rating_input | hardened | ✅ | ⏳ | Wave 2 (semantic warning-icon token, was raw yellow-400; group aria-label; 44px stars; i18n) |
+| label | proven | ✅ | ✅ | Wave 2 (explicit AAA token; for-assoc; decorative required `*`) |
+| search_input | proven | ✅ | ✅ | Wave 2 (form-control API; aria-label accessible name; 44px) |
+| number_input | proven | ✅ | ✅ | Wave 2 (form-control API; id fallback; 44px; spinners hidden) |
+| range | proven | ✅ | ✅ | Wave 2 (native slider; invalid/describedby; id fallback) |
+| floating_label | proven | ✅ | ✅ | Wave 2 (sets aria-invalid/required/describedby; always-on id/for; peer float) |
+| rating_input | proven | ✅ | ✅ | Wave 2 (semantic warning-icon token, was raw yellow-400; group aria-label; 44px stars; i18n) |
 | kbd | proven | ✅ | ✅ | Wave 3 display-primitive exemplar (doc + 0a + template-backed preview + 0b). text-text-muted is AAA here (same neutral as body) — no contrast change |
 | separator | proven | ✅ | ✅ | Wave 3 (aria-orientation only when semantic; role none/separator) |
 | skeleton | proven | ✅ | ✅ | Wave 3 (aria-hidden decorative placeholder; motion-reduce:animate-none) |
