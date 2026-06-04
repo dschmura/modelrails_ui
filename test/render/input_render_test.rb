@@ -31,6 +31,13 @@ class InputRenderTest < ViewComponent::TestCase
     assert_selector "input.border-border-strong.bg-surface-raised.text-text-heading.focus\\:ring-interactive-focus"
   end
 
+  # A disabled field is visually distinct (NORMAL carries disabled styling).
+  def test_normal_carries_disabled_styling
+    render_inline(UI::InputComponent.new)
+
+    assert_selector "input.disabled\\:cursor-not-allowed.disabled\\:opacity-50"
+  end
+
   # invalid: drives the server-validation-driven aria-invalid posture AND
   # swaps NORMAL styling for the ERROR token.
   def test_invalid_sets_aria_invalid

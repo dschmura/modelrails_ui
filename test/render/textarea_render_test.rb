@@ -31,6 +31,13 @@ class TextareaRenderTest < ViewComponent::TestCase
     assert_selector "textarea.border-border-strong.bg-surface-raised.text-text-heading.focus\\:ring-interactive-focus"
   end
 
+  # A disabled field is visually distinct (NORMAL carries disabled styling).
+  def test_normal_carries_disabled_styling
+    render_inline(UI::TextareaComponent.new)
+
+    assert_selector "textarea.disabled\\:cursor-not-allowed.disabled\\:opacity-50"
+  end
+
   # invalid: drives aria-invalid AND swaps NORMAL styling for the ERROR token.
   def test_invalid_sets_aria_invalid
     render_inline(UI::TextareaComponent.new(invalid: true))

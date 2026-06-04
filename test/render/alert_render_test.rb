@@ -41,4 +41,18 @@ class AlertRenderTest < ViewComponent::TestCase
       render_inline(UI::AlertComponent.new(variant: :bogus))
     end
   end
+
+  # html_attrs pass through onto the root, matching the sibling components.
+  def test_passes_through_html_attrs_onto_the_root
+    render_inline(UI::AlertComponent.new(title: "Heads up", id: "save-alert", data: {testid: "alert"}))
+
+    assert_selector "div#save-alert[role='status'][data-testid='alert']"
+  end
+
+  # A caller-supplied class merges onto the root without clobbering the variant tokens.
+  def test_merges_caller_class_onto_the_root
+    render_inline(UI::AlertComponent.new(title: "Heads up", class: "mt-4"))
+
+    assert_selector "div.mt-4.bg-surface-raised"
+  end
 end

@@ -17,7 +17,21 @@ class SelectRenderTest < ViewComponent::TestCase
     render_inline(UI::SelectComponent.new(options: %w[A B]))
 
     assert_selector "select.border-border-strong"
-    assert_selector "select.focus\\:ring-interactive-focus"
+    assert_selector "select.focus-visible\\:ring-interactive-focus"
+  end
+
+  # WCAG 2.5.5 target size: the control sits at the 44px floor (--form-input-height).
+  def test_meets_44px_target_floor
+    render_inline(UI::SelectComponent.new(options: %w[A B]))
+
+    assert_selector "select.min-h-\\[var\\(--form-input-height\\)\\]"
+  end
+
+  # invalid: drives a visible danger ring/border, not just aria-invalid.
+  def test_invalid_carries_a_danger_ring_token
+    render_inline(UI::SelectComponent.new(options: %w[A B]))
+
+    assert_selector "select.aria-invalid\\:ring-danger"
   end
 
   def test_selected_marks_the_right_option
