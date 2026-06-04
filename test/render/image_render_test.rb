@@ -27,6 +27,11 @@ class ImageRenderTest < ViewComponent::TestCase
 
     assert_no_selector "img[srcset]", visible: :all
     assert_no_selector "img[sizes]", visible: :all
+  end
+
+  def test_omits_dimension_attrs_when_not_given
+    render_inline(UI::ImageComponent.new(src: SRC, alt: "A photo"))
+
     assert_no_selector "img[width]", visible: :all
     assert_no_selector "img[height]", visible: :all
   end

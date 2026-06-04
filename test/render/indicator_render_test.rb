@@ -24,22 +24,27 @@ class IndicatorRenderTest < ViewComponent::TestCase
 
   def test_variant_tokens_are_semantic
     render_inline(UI::IndicatorComponent.new(variant: :success)) { "x" }
+
     assert_selector "span.bg-success.text-text-on-interactive", visible: :all
 
     render_inline(UI::IndicatorComponent.new(variant: :warning)) { "x" }
+
     assert_selector "span.bg-warning.text-text-heading", visible: :all
 
     render_inline(UI::IndicatorComponent.new(variant: :destructive)) { "x" }
+
     assert_selector "span.bg-danger.text-text-on-interactive", visible: :all
   end
 
   # No raw Tailwind palette — only AAA semantic tokens.
   def test_refutes_raw_palette
     render_inline(UI::IndicatorComponent.new(variant: :success)) { "x" }
+
     assert_no_selector "span.bg-green-500", visible: :all
     assert_no_selector "span.text-white", visible: :all
 
     render_inline(UI::IndicatorComponent.new(variant: :warning)) { "x" }
+
     assert_no_selector "span.bg-yellow-500", visible: :all
   end
 
