@@ -28,6 +28,19 @@ module ModelrailsUi
         end
       end
 
+      def add_tailwind_merge_gem
+        gemfile = File.join(destination_root, "Gemfile")
+
+        if File.exist?(gemfile) && File.read(gemfile).match?(/^\s*gem\s+["']tailwind_merge["']/)
+          say "  Gemfile already requires tailwind_merge — skipping.", :yellow
+          return
+        end
+
+        gem "tailwind_merge"
+        say "  Added gem \"tailwind_merge\" to your Gemfile — the generated ApplicationComponent's " \
+            "`cn` helper requires it at runtime so `class:` overrides win conflicts. Run `bundle install`.", :green
+      end
+
       def create_inflection_initializer
         target = "config/initializers/modelrails_ui_inflections.rb"
 

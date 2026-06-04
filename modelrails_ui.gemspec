@@ -33,4 +33,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "appraisal"
   spec.add_development_dependency "capybara" # render-test assertions (ViewComponent::TestCase matchers)
   spec.add_development_dependency "lefthook"
+  spec.add_development_dependency "tailwind_merge" # render harness backs cn with real tailwind_merge (host gets it via install generator)
 end
