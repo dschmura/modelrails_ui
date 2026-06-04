@@ -14,13 +14,22 @@ without extra verification.
 | --- | --- | --- | --- | --- |
 | button | proven | ✅ | ✅ | SP1 exemplar |
 | alert | proven | ✅ | ✅ | Wave 1 exemplar (gem #4 + app #222 merged) |
-| select | hardened | ✅ | ⏳ | Wave 1 sub-wave 1 (native AAA select; id fallback; invalid/describedby) |
-| checkbox | hardened | ✅ | ⏳ | Wave 1 sub-wave 1 form-control pattern-setter |
-| radio_group | hardened | ✅ | ⏳ | Wave 1 sub-wave 1 (group aria-label; per-option ids; invalid on group) |
-| switch | hardened | ✅ | ⏳ | Wave 1 sub-wave 1 (aria-checked bug fixed; peer-sibling track; 44px target) |
-| toggle | hardened | ✅ | ⏳ | Wave 1 sub-wave 1 (fail-loud size guard; 44px sizes; sm≈default nit deferred) |
-| badge | hardened | ✅ | ⏳ | Wave 1 sub-wave 2 (fail-loud guard; destructive dark-AAA fix; href polymorphism) |
-| data_table | hardened | ✅ | ⏳ | Wave 1 sub-wave 2 (kbd-sortable headers + aria-sort; live region; 44px; i18n) |
+| select | proven | ✅ | ✅ | Wave 1 (native AAA select; id fallback; invalid/describedby) — app #223 merged |
+| checkbox | proven | ✅ | ✅ | Wave 1 form-control pattern-setter — app #223 merged |
+| radio_group | proven | ✅ | ✅ | Wave 1 (group aria-label; per-option ids; invalid on group) — app #223 |
+| switch | proven | ✅ | ✅ | Wave 1 (aria-checked bug fixed; peer-sibling track; 44px) — app #223 |
+| toggle | proven | ✅ | ✅ | Wave 1 (fail-loud size guard; 44px sizes; sm≈default nit deferred) — app #223 |
+| badge | proven | ✅ | ✅ | Wave 1 (fail-loud guard; destructive dark-AAA fix; href polymorphism) — app #224 |
+| data_table | proven | ✅ | ✅ | Wave 1 (kbd-sort + aria-sort; live region; 44px; i18n; sort-reorder bug fixed #7) — app #224 |
+| input | proven | ✅ | ✅ | Wave 2 (full form-control API; SP2-adopted) — render test added |
+| textarea | proven | ✅ | ✅ | Wave 2 (form-control API; SP2-adopted) — render test added |
+| file_input | proven | ✅ | ✅ | Wave 2 (form-control API + a11y; SP2-adopted) — render test added |
+| label | hardened | ✅ | ⏳ | Wave 2 (explicit AAA token; for-assoc; decorative required `*`) |
+| search_input | hardened | ✅ | ⏳ | Wave 2 (form-control API; aria-label accessible name; 44px) |
+| number_input | hardened | ✅ | ⏳ | Wave 2 (form-control API; id fallback; 44px; spinners hidden) |
+| range | hardened | ✅ | ⏳ | Wave 2 (native slider; invalid/describedby; id fallback) |
+| floating_label | hardened | ✅ | ⏳ | Wave 2 (sets aria-invalid/required/describedby; always-on id/for; peer float) |
+| rating_input | hardened | ✅ | ⏳ | Wave 2 (semantic warning-icon token, was raw yellow-400; group aria-label; 44px stars; i18n) |
 
 All other gem components: **experimental** (unverified) unless listed above.
 
