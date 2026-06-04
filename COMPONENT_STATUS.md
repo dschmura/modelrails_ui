@@ -30,6 +30,14 @@ without extra verification.
 | range | hardened | ✅ | ⏳ | Wave 2 (native slider; invalid/describedby; id fallback) |
 | floating_label | hardened | ✅ | ⏳ | Wave 2 (sets aria-invalid/required/describedby; always-on id/for; peer float) |
 | rating_input | hardened | ✅ | ⏳ | Wave 2 (semantic warning-icon token, was raw yellow-400; group aria-label; 44px stars; i18n) |
+| kbd | proven | ✅ | ✅ | Wave 3 display-primitive exemplar (doc + 0a + template-backed preview + 0b). text-text-muted is AAA here (same neutral as body) — no contrast change |
+| separator | proven | ✅ | ✅ | Wave 3 (aria-orientation only when semantic; role none/separator) |
+| skeleton | proven | ✅ | ✅ | Wave 3 (aria-hidden decorative placeholder; motion-reduce:animate-none) |
+| spinner | proven | ✅ | ✅ | Wave 3 (i18n sr-only loading text via t default; role=status; sizes) |
+| progress | proven | ✅ | ✅ | Wave 3 (optional label: → aria-label accessible name; clamp; valuenow/min/max) |
+| indicator | proven | ✅ | ✅ | Wave 3 (raw palette → semantic success/warning + text-on-interactive; fail-loud variant) |
+| image | proven | ✅ | ✅ | Wave 3 (required alt; loading-mode validation; conditional srcset/sizes/width/height) |
+| figure | proven | ✅ | ✅ | Wave 3 (figcaption only when caption given; text-text-muted is AAA here) |
 
 All other gem components: **experimental** (unverified) unless listed above.
 
