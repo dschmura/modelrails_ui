@@ -3,6 +3,10 @@
 require "render_test_helper"
 load_component "range", "range_component.rb.tt"
 
+# STRUCTURE only. The live readout sync (drag the slider → <output> text updates)
+# is verified by the app's 0b browser spec, not here — the render harness has no
+# JS runtime, so we assert the wiring (data-controller / data-action / targets)
+# the `range` Stimulus controller hooks into, not the runtime behavior.
 class RangeRenderTest < ViewComponent::TestCase
   def test_renders_native_range_input_with_min_max_step
     render_inline(UI::RangeComponent.new(min: 0, max: 10, step: 2))
@@ -69,5 +73,39 @@ class RangeRenderTest < ViewComponent::TestCase
     render_inline(UI::RangeComponent.new)
 
     assert_selector "input[type='range'][id]"
+  end
+
+  # --- show_value: opt-in <output> readout (STRUCTURE) ---
+
+  def test_show_value_wraps_input_in_range_controller
+    render_inline(UI::RangeComponent.new(show_value: true))
+
+    assert_selector "div[data-controller='range'] input[type='range']"
+  end
+
+  def test_show_value_wires_input_target_and_sync_action
+    render_inline(UI::RangeComponent.new(show_value: true))
+
+    assert_selector "input[data-range-target='input'][data-action~='input->range#sync']"
+  end
+
+  def test_show_value_renders_output_targeting_input_id_with_aaa_token
+    render_inline(UI::RangeComponent.new(id: "vol", value: 60, show_value: true))
+
+    assert_selector "output[for='vol'][data-range-target='output'].text-text-body", text: "60"
+  end
+
+  def test_show_value_output_uses_native_midpoint_when_value_nil
+    render_inline(UI::RangeComponent.new(min: 0, max: 100, show_value: true))
+
+    assert_selector "output[data-range-target='output']", text: "50"
+  end
+
+  # Default (show_value omitted) is byte-unchanged: no wrapper, no output.
+  def test_default_omits_output_and_range_controller
+    render_inline(UI::RangeComponent.new)
+
+    assert_no_selector "output"
+    assert_no_selector "[data-controller='range']"
   end
 end
