@@ -25,6 +25,20 @@ class FileInputRenderTest < ViewComponent::TestCase
     assert_selector "input.file\\:bg-interactive.file\\:text-text-on-interactive.hover\\:file\\:bg-interactive-hover"
   end
 
+  # A disabled file input is visually distinct.
+  def test_renders_disabled_styling
+    render_inline(UI::FileInputComponent.new)
+
+    assert_selector "input.disabled\\:cursor-not-allowed.disabled\\:opacity-50"
+  end
+
+  # invalid: drives a visible danger ring, not just aria-invalid.
+  def test_carries_a_danger_ring_token_for_invalid
+    render_inline(UI::FileInputComponent.new)
+
+    assert_selector "input.aria-invalid\\:ring-danger"
+  end
+
   def test_accept_passes_through
     render_inline(UI::FileInputComponent.new(accept: "image/*"))
 

@@ -33,6 +33,13 @@ class RangeRenderTest < ViewComponent::TestCase
     assert_selector "input.accent-interactive"
   end
 
+  # invalid: drives a visible danger ring on the slider, not just aria-invalid.
+  def test_carries_a_danger_ring_token_for_invalid
+    render_inline(UI::RangeComponent.new)
+
+    assert_selector "input.aria-invalid\\:ring-danger"
+  end
+
   def test_invalid_sets_aria_invalid
     render_inline(UI::RangeComponent.new(invalid: true))
 

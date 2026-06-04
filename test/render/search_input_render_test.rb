@@ -91,4 +91,15 @@ class SearchInputRenderTest < ViewComponent::TestCase
 
     assert_selector "input[type='search'][name='q'][placeholder='Find a thing…']"
   end
+
+  # The default placeholder is i18n-resolved (falls back to "Search…"), never a
+  # hardcoded string — a placeholder is set by default but is only a hint, not a name.
+  def test_default_placeholder_is_i18n_resolved
+    render_inline(UI::SearchInputComponent.new(name: "q"))
+
+    placeholder = page.find("input[type='search']")["placeholder"]
+
+    refute_nil placeholder
+    refute_empty placeholder.to_s
+  end
 end
