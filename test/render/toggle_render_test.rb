@@ -49,10 +49,23 @@ class ToggleRenderTest < ViewComponent::TestCase
     end
   end
 
-  # AAA semantic token (the design-token guarantee), not raw Tailwind:
-  def test_renders_with_aaa_token
+  # AAA semantic tokens (the design-token guarantee), not raw Tailwind. Selected
+  # (on) uses the tinted interactive-subtle surface — DISTINCT from the neutral
+  # off-hover surface — so clicking to select gives immediate visible feedback.
+  def test_selected_state_is_a_distinct_tinted_surface
     render_inline(UI::ToggleComponent.new("Bold", pressed: true))
 
-    assert_selector "button.data-\\[state\\=on\\]\\:bg-surface-sunken"
+    assert_selector "button.data-\\[state\\=on\\]\\:bg-interactive-subtle"
+    assert_selector "button.data-\\[state\\=on\\]\\:text-interactive"
+  end
+
+  # Hover is scoped to the OFF state so a selected toggle keeps its tinted look on
+  # hover. Regression guard: the prior unscoped `hover:bg-surface-sunken` made the
+  # hover surface identical to the selected surface (hover looked like selected).
+  def test_hover_is_scoped_to_the_off_state
+    render_inline(UI::ToggleComponent.new("Bold"))
+
+    assert_selector "button.data-\\[state\\=off\\]\\:hover\\:bg-surface-sunken"
+    refute_selector "button.hover\\:bg-surface-sunken"
   end
 end
