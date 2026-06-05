@@ -118,9 +118,10 @@ module ModelrailsUi
         )
       end
 
-      # Files worth scanning for conflicts: the agent files + ClaudeOnRails context.
+      # Files worth scanning for conflicts: the resolved agent file (including a
+      # custom --file target) + the conventional agent files + ClaudeOnRails context.
       def scan_files
-        ["CLAUDE.md", "AGENTS.md", ".claude-on-rails/context.md"]
+        (["CLAUDE.md", "AGENTS.md", ".claude-on-rails/context.md"] + [agent_file]).uniq
           .select { |f| File.exist?(File.join(destination_root, f)) }
       end
     end

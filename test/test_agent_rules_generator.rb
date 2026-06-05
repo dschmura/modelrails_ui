@@ -173,7 +173,22 @@ class TestAgentRulesGenerator < Minitest::Test
       output = run_agent_rules(dest)
 
       assert_includes output, "may conflict"
+      assert_includes output, ".claude-on-rails/context.md"
       assert_includes output, "shared library"
+    end
+  end
+
+  def test_honors_custom_file_target_and_scans_it_for_conflicts
+    Dir.mktmpdir do |dest|
+      File.write(File.join(dest, "AGENT.md"),
+        "- ViewComponents only when reused across unrelated views\n")
+
+      output = run_agent_rules(dest, file: "AGENT.md")
+
+      assert_includes File.read(File.join(dest, "AGENT.md")), "<!-- BEGIN modelrails_ui -->"
+      assert_includes output, "AGENT.md"
+      assert_includes output, "shared library"
+      refute_path_exists File.join(dest, "CLAUDE.md")
     end
   end
 end
