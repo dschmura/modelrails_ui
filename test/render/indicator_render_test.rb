@@ -22,15 +22,32 @@ class IndicatorRenderTest < ViewComponent::TestCase
     assert_selector "span.size-2", visible: :all
   end
 
-  def test_variant_tokens_are_semantic
+  def test_info_and_success_use_the_adaptive_on_interactive_token
+    render_inline(UI::IndicatorComponent.new(variant: :info)) { "x" }
+
+    assert_selector "span.bg-info.text-text-on-interactive", visible: :all
+
     render_inline(UI::IndicatorComponent.new(variant: :success)) { "x" }
 
     assert_selector "span.bg-success.text-text-on-interactive", visible: :all
+  end
 
+  # Dots are SOLID fills; count text uses the adaptive on-interactive token on EVERY
+  # level — warning included (NOT the non-adaptive text-text-heading, which went
+  # low-contrast on the fill in both themes).
+  def test_warning_and_danger_use_on_interactive
     render_inline(UI::IndicatorComponent.new(variant: :warning)) { "x" }
 
-    assert_selector "span.bg-warning.text-text-heading", visible: :all
+    assert_selector "span.bg-warning.text-text-on-interactive", visible: :all
+    refute_selector "span.text-text-heading", visible: :all
 
+    render_inline(UI::IndicatorComponent.new(variant: :danger)) { "x" }
+
+    assert_selector "span.bg-danger.text-text-on-interactive", visible: :all
+  end
+
+  # `destructive` is a non-breaking alias for the canonical `danger`.
+  def test_destructive_alias_renders_as_danger
     render_inline(UI::IndicatorComponent.new(variant: :destructive)) { "x" }
 
     assert_selector "span.bg-danger.text-text-on-interactive", visible: :all
