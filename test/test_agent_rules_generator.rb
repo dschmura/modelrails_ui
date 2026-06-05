@@ -34,22 +34,31 @@ class TestAgentRulesGenerator < Minitest::Test
 
   def test_adds_block_to_empty_file
     result = with_block("")
+
     assert_includes result, "<!-- BEGIN modelrails_ui -->"
     assert_includes result, "@.modelrails_ui/agent-rules.md"
   end
 
   def test_appends_block_after_existing_content_with_separation
     result = with_block("# My rules\n")
+
     assert_includes result, "# My rules"
     assert_includes result, "<!-- BEGIN modelrails_ui -->"
-    assert result.index("# My rules") < result.index("<!-- BEGIN modelrails_ui -->")
+    assert_operator result.index("# My rules"), :<, result.index("<!-- BEGIN modelrails_ui -->")
   end
 
   def test_is_idempotent_when_block_already_present
     once = with_block("# My rules\n")
     twice = with_block(once)
+
     assert_equal once, twice
     assert_equal 1, twice.scan("<!-- BEGIN modelrails_ui -->").size
+  end
+
+  def test_does_not_re_add_when_only_begin_marker_present
+    content = "<!-- BEGIN modelrails_ui -->\n"
+
+    assert_equal content, with_block(content)
   end
 
   def warnings_for(content)
@@ -59,6 +68,7 @@ class TestAgentRulesGenerator < Minitest::Test
 
   def test_flags_viewcomponents_only_when_reused
     warnings = warnings_for("- ViewComponents only when reused across unrelated views")
+
     assert_equal 1, warnings.size
     assert_equal "context.md", warnings.first[:file]
     assert_includes warnings.first[:message], "shared library"

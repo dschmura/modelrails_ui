@@ -44,7 +44,9 @@ module ModelrailsUi
       end
 
       # Pure: returns content unchanged if the block is already present; otherwise
-      # appends it (with a blank-line separator when content is non-empty).
+      # appends it (with a blank-line separator when content is non-empty). Presence
+      # is detected by the BEGIN marker alone, so a manually truncated block (END
+      # deleted) is also treated as present — we never rewrite host files.
       def with_import_block(content)
         return content if content.include?(MARKER)
 
