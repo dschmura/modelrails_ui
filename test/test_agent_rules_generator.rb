@@ -6,6 +6,7 @@ require "tmpdir"
 require "stringio"
 require "fileutils"
 require_relative "../lib/generators/modelrails_ui/agent_rules/agent_rules_generator"
+require_relative "../lib/generators/modelrails_ui/install/install_generator"
 
 class TestAgentRulesGenerator < Minitest::Test
   TEMPLATE_ROOT = File.expand_path(
@@ -189,6 +190,15 @@ class TestAgentRulesGenerator < Minitest::Test
       assert_includes output, "AGENT.md"
       assert_includes output, "shared library"
       refute_path_exists File.join(dest, "CLAUDE.md")
+    end
+  end
+
+  def test_install_generator_nudges_toward_agent_rules
+    Dir.mktmpdir do |dest|
+      generator = ModelrailsUi::Generators::InstallGenerator.new([], {}, destination_root: dest)
+      output = capture_stdout { generator.print_agent_rules_nudge }
+
+      assert_includes output, "modelrails_ui:agent_rules"
     end
   end
 end

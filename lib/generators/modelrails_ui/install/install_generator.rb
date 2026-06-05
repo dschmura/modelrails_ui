@@ -103,6 +103,11 @@ module ModelrailsUi
         end
       end
 
+      def print_agent_rules_nudge
+        say "\n  Optional: teach your coding agent to use these components —", :green
+        say "    bin/rails g modelrails_ui:agent_rules", :cyan
+      end
+
       private
 
       # True when the host app already defines the modelrails_ui semantic tokens
