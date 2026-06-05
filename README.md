@@ -91,6 +91,18 @@ The generated preview layout loads your app's compiled Tailwind and importmap, s
 with real tokens and working Stimulus (the dialog actually opens). Previews land in
 `spec/components/previews/ui/` — edit or extend them freely. Dev-only; nothing ships to production.
 
+### Teach your coding agent (optional)
+
+```bash
+rails g modelrails_ui:agent_rules
+```
+
+Writes `.modelrails_ui/agent-rules.md` (gem-owned design-system rules, overwritten on
+re-run) and seeds `.modelrails_ui/house-rules.md` (your editable host-policy defaults), then
+adds a marker-delimited `@`-import to your `CLAUDE.md`/`AGENTS.md`. It reports — never
+rewrites — directives that conflict with the design system. Re-run after a gem bump to refresh
+the rules; your house-rules edits are preserved.
+
 ## Testing & accessibility
 
 The gem's suite (`rake test`) runs two lanes:
