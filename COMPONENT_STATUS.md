@@ -39,6 +39,9 @@ without extra verification.
 | image | proven | ✅ | ✅ | Wave 3 (required alt; loading-mode validation; conditional srcset/sizes/width/height) |
 | figure | proven | ✅ | ✅ | Wave 3 (figcaption only when caption given; text-text-muted is AAA here) |
 | dialog | hardened | ✅ | ⏳ | Wave 4 overlays exemplar (native <dialog>; 0a + JS-behavior 0b: open/escape/aria-modal + AAA on live modal). Was adopted unverified; now has render test + 0b. App 0b CI-pending |
+| alert_dialog | hardened | ✅ | ⏳ | native `<dialog role=alertdialog>` (Wave 4); shared `modal` controller; 0a render test + role/labelledby/describedby + 44px i18n close; app 0b CI-pending |
+| drawer | hardened | ✅ | ⏳ | native bottom `<dialog>` slide-up (Wave 4); shared `modal` controller (translateY); decorative drag-handle + 44px close; 0a; app 0b CI-pending |
+| sheet | hardened | ✅ | ⏳ | native side `<dialog>` per-side slide (Wave 4); fail-loud `coerce_side`; shared `modal` controller; 0a; app 0b CI-pending |
 
 All other gem components: **experimental** (unverified) unless listed above.
 
