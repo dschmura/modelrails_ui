@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Optional `modelrails_ui:agent_rules` generator: writes design-system agent rules + seeded house rules, adds an idempotent `@`-import to `CLAUDE.md`/`AGENTS.md`, reports directive conflicts.
+
 ### Changed
 - Unified signal vocabulary to a canonical `info·success·warning·danger` ladder across alert/badge/button/indicator (`destructive` kept as a non-breaking alias for `danger`). Alert gains all four tinted signal levels; badge signal chips move from solid base-token fills to tinted surfaces (`bg-*-surface` + `text-*` + `*-border`), since the base tokens are TEXT colors and rendered as muddy dark chips when used as fills.
 
