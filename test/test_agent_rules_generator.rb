@@ -114,6 +114,8 @@ class TestAgentRulesGenerator < Minitest::Test
   def run_agent_rules(dest, file: nil)
     opts = file ? {"file" => file} : {}
     generator = ModelrailsUi::Generators::AgentRulesGenerator.new([], opts, destination_root: dest)
+    # Thor's say() reads $stdout dynamically per call, so steps invoked inside the
+    # capture_stdout block are captured even though the generator is built above it.
     capture_stdout do
       generator.write_agent_rules
       generator.seed_house_rules
