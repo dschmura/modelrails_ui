@@ -1333,15 +1333,14 @@ class TestAlertDialogComponent < Minitest::Test
   end
 
   def test_description_stored
-    c = UI::AlertDialogComponent.new(description: "This cannot be undone.")
+    c = UI::AlertDialogComponent.new(title: "Are you sure?", description: "This cannot be undone.")
 
     assert_equal "This cannot be undone.", c.instance_variable_get(:@description)
   end
 
-  def test_nil_defaults
-    c = UI::AlertDialogComponent.new
+  def test_nil_description_default
+    c = UI::AlertDialogComponent.new(title: "Are you sure?")
 
-    assert_nil c.instance_variable_get(:@title)
     assert_nil c.instance_variable_get(:@description)
   end
 end
