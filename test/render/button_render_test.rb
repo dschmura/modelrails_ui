@@ -25,6 +25,17 @@ class ButtonRenderTest < ViewComponent::TestCase
     assert_selector "a[href='/']", text: "Home"
   end
 
+  # `destructive` is a non-breaking alias for the canonical `danger` — identical render.
+  def test_destructive_alias_renders_like_danger
+    render_inline(UI::ButtonComponent.new("Delete", variant: :danger))
+    danger_class = page.find("button")[:class]
+
+    render_inline(UI::ButtonComponent.new("Delete", variant: :destructive))
+    destructive_class = page.find("button")[:class]
+
+    assert_equal danger_class, destructive_class
+  end
+
   def test_unknown_variant_raises
     assert_raises(ArgumentError) do
       render_inline(UI::ButtonComponent.new("X", variant: :bogus))
