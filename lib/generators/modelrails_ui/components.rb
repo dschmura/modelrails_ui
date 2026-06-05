@@ -7,7 +7,9 @@ module ModelrailsUi
 
       # Stimulus controllers not colocated with the component template directory.
       EXTRA_STIMULUS = {
-        "alert_dialog" => {source: "dialog/dialog_controller.js", name: "dialog"}
+        "alert_dialog" => {source: "dialog/modal_controller.js", name: "modal"},
+        "drawer" => {source: "dialog/modal_controller.js", name: "modal"},
+        "sheet" => {source: "dialog/modal_controller.js", name: "modal"}
       }.freeze
 
       # Post-install instructions for components that require external dependencies.
