@@ -2,6 +2,9 @@
 
 require "test_helper"
 require "rails/generators"
+require "tmpdir"
+require "stringio"
+require "fileutils"
 require_relative "../lib/generators/modelrails_ui/agent_rules/agent_rules_generator"
 
 class TestAgentRulesGenerator < Minitest::Test
@@ -96,5 +99,81 @@ class TestAgentRulesGenerator < Minitest::Test
 
     assert_includes content, "I18n locale keys"
     assert_includes content, "Stimulus"
+  end
+
+  def capture_stdout
+    original = $stdout
+    $stdout = StringIO.new
+    yield
+    $stdout.string
+  ensure
+    $stdout = original
+  end
+
+  def run_agent_rules(dest, file: nil)
+    opts = file ? {"file" => file} : {}
+    generator = ModelrailsUi::Generators::AgentRulesGenerator.new([], opts, destination_root: dest)
+    capture_stdout do
+      generator.write_agent_rules
+      generator.seed_house_rules
+      generator.ensure_import
+      generator.report_conflicts
+      generator.print_summary
+    end
+  end
+
+  def test_fresh_run_creates_both_files_and_import
+    Dir.mktmpdir do |dest|
+      run_agent_rules(dest)
+
+      assert_path_exists File.join(dest, ".modelrails_ui/agent-rules.md")
+      assert_path_exists File.join(dest, ".modelrails_ui/house-rules.md")
+      claude = File.read(File.join(dest, "CLAUDE.md"))
+
+      assert_includes claude, "<!-- BEGIN modelrails_ui -->"
+      assert_includes claude, "@.modelrails_ui/agent-rules.md"
+    end
+  end
+
+  def test_rerun_overwrites_rules_but_preserves_house_rules_and_single_import
+    Dir.mktmpdir do |dest|
+      run_agent_rules(dest)
+      house = File.join(dest, ".modelrails_ui/house-rules.md")
+      File.write(house, "# MY EDITS\n")
+      File.write(File.join(dest, ".modelrails_ui/agent-rules.md"), "stale\n")
+
+      run_agent_rules(dest)
+
+      assert_equal "# MY EDITS\n", File.read(house), "house-rules must survive re-run"
+      assert_includes File.read(File.join(dest, ".modelrails_ui/agent-rules.md")),
+        "Design system rules", "agent-rules must be re-seeded from the gem"
+      claude = File.read(File.join(dest, "CLAUDE.md"))
+
+      assert_equal 1, claude.scan("<!-- BEGIN modelrails_ui -->").size, "import added once"
+    end
+  end
+
+  def test_routes_import_into_existing_agents_md
+    Dir.mktmpdir do |dest|
+      File.write(File.join(dest, "AGENTS.md"), "# Agents\n")
+
+      run_agent_rules(dest)
+
+      assert_includes File.read(File.join(dest, "AGENTS.md")), "<!-- BEGIN modelrails_ui -->"
+      refute_path_exists File.join(dest, "CLAUDE.md")
+    end
+  end
+
+  def test_reports_conflict_from_context_md
+    Dir.mktmpdir do |dest|
+      FileUtils.mkdir_p(File.join(dest, ".claude-on-rails"))
+      File.write(File.join(dest, ".claude-on-rails/context.md"),
+        "- ViewComponents only when reused across unrelated views\n")
+
+      output = run_agent_rules(dest)
+
+      assert_includes output, "may conflict"
+      assert_includes output, "shared library"
+    end
   end
 end
