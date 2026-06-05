@@ -1384,14 +1384,14 @@ class TestDrawerComponent < Minitest::Test
     assert_equal "Move to project", c.instance_variable_get(:@title)
   end
 
-  def test_nil_title_default
-    c = UI::DrawerComponent.new
+  def test_wrapper_defaults_to_true
+    c = UI::DrawerComponent.new(title: "Move to project")
 
-    assert_nil c.instance_variable_get(:@title)
+    assert c.instance_variable_get(:@wrapper)
   end
 
   def test_class_extracted
-    c = UI::DrawerComponent.new(class: "max-h-[80vh]")
+    c = UI::DrawerComponent.new(title: "Move to project", class: "max-h-[80vh]")
 
     assert_equal "max-h-[80vh]", c.instance_variable_get(:@extra_class)
   end
