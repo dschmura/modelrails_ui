@@ -1347,19 +1347,19 @@ end
 
 class TestSheetComponent < Minitest::Test
   def test_default_side
-    c = UI::SheetComponent.new
+    c = UI::SheetComponent.new(title: "Filters")
 
     assert_equal :right, c.instance_variable_get(:@side)
   end
 
   def test_custom_side
-    c = UI::SheetComponent.new(side: :left)
+    c = UI::SheetComponent.new(title: "Filters", side: :left)
 
     assert_equal :left, c.instance_variable_get(:@side)
   end
 
   def test_string_side_coerced_to_symbol
-    c = UI::SheetComponent.new(side: "bottom")
+    c = UI::SheetComponent.new(title: "Filters", side: "bottom")
 
     assert_equal :bottom, c.instance_variable_get(:@side)
   end
@@ -1371,9 +1371,25 @@ class TestSheetComponent < Minitest::Test
   end
 
   def test_class_extracted
-    c = UI::SheetComponent.new(class: "text-sm")
+    c = UI::SheetComponent.new(title: "Filters", class: "text-sm")
 
     assert_equal "text-sm", c.instance_variable_get(:@extra_class)
+  end
+
+  def test_title_stored
+    c = UI::SheetComponent.new(title: "Navigation")
+
+    assert_equal "Navigation", c.instance_variable_get(:@title)
+  end
+
+  def test_fail_loud_on_unknown_side
+    assert_raises(ArgumentError) { UI::SheetComponent.new(title: "T", side: :diagonal) }
+  end
+
+  def test_leave_transforms_defined_for_all_sides
+    %i[right left top bottom].each do |side|
+      assert UI::SheetComponent::LEAVE_TRANSFORMS.key?(side), "Missing leave transform for #{side}"
+    end
   end
 end
 

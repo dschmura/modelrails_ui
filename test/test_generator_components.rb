@@ -134,8 +134,10 @@ class TestGeneratorComponents < Minitest::Test
   end
 
   def test_sheet_has_js_controller
-    assert_path_exists File.join(TEMPLATE_ROOT, "sheet", "sheet_controller.js"),
-      "sheet should include sheet_controller.js"
+    # Sheet was rewritten onto the shared native-<dialog> modal controller (Wave 4).
+    # sheet_controller.js is deleted; modal_controller.js ships in its place.
+    assert_path_exists File.join(TEMPLATE_ROOT, "sheet", "modal_controller.js"),
+      "sheet should include modal_controller.js"
   end
 
   def test_popover_has_js_controller
