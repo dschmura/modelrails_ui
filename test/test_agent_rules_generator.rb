@@ -5,6 +5,10 @@ require "rails/generators"
 require_relative "../lib/generators/modelrails_ui/agent_rules/agent_rules_generator"
 
 class TestAgentRulesGenerator < Minitest::Test
+  TEMPLATE_ROOT = File.expand_path(
+    "../lib/generators/modelrails_ui/agent_rules/templates", __dir__
+  )
+
   # `pick_agent_file` is pure (no destination_root / FS), so allocate skips #initialize.
   def pick(existing:, override: nil)
     ModelrailsUi::Generators::AgentRulesGenerator
@@ -76,5 +80,21 @@ class TestAgentRulesGenerator < Minitest::Test
 
   def test_no_warnings_for_clean_content
     assert_empty warnings_for("- Use Pundit for authorization")
+  end
+
+  def test_agent_rules_template_anchors_present
+    content = File.read(File.join(TEMPLATE_ROOT, "agent-rules.md"))
+
+    assert_includes content, "Design system rules (modelrails_ui)"
+    assert_includes content, "bin/rails g modelrails_ui:list"
+    assert_includes content, "text-text-muted"
+    assert_includes content, "@.modelrails_ui/house-rules.md"
+  end
+
+  def test_house_rules_template_anchors_present
+    content = File.read(File.join(TEMPLATE_ROOT, "house-rules.md"))
+
+    assert_includes content, "I18n locale keys"
+    assert_includes content, "Stimulus"
   end
 end
