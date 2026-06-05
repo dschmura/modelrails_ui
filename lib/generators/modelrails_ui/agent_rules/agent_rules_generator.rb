@@ -21,6 +21,15 @@ module ModelrailsUi
         <!-- END modelrails_ui -->
       MARKDOWN
 
+      CONFLICT_PATTERNS = [
+        {
+          pattern: /ViewComponents only when reused/i,
+          summary: '"ViewComponents only when reused"',
+          message: "modelrails_ui's UI::* primitives ARE the shared library; this guideline " \
+                   "governs new app-specific components, not the design-system primitives."
+        }
+      ].freeze
+
       class_option :file, type: :string, default: nil,
         desc: "Host agent file to import into (default: CLAUDE.md, else AGENTS.md)"
 
@@ -40,6 +49,15 @@ module ModelrailsUi
         return content if content.include?(MARKER)
 
         content.empty? ? IMPORT_BLOCK : "#{content.chomp}\n\n#{IMPORT_BLOCK}"
+      end
+
+      # Pure: returns one warning hash per known-tension pattern found in `content`.
+      def conflict_warnings(content, file:)
+        CONFLICT_PATTERNS.filter_map do |c|
+          next unless content.match?(c[:pattern])
+
+          {file: file, summary: c[:summary], message: c[:message]}
+        end
       end
     end
   end

@@ -51,4 +51,20 @@ class TestAgentRulesGenerator < Minitest::Test
     assert_equal once, twice
     assert_equal 1, twice.scan("<!-- BEGIN modelrails_ui -->").size
   end
+
+  def warnings_for(content)
+    ModelrailsUi::Generators::AgentRulesGenerator
+      .allocate.send(:conflict_warnings, content, file: "context.md")
+  end
+
+  def test_flags_viewcomponents_only_when_reused
+    warnings = warnings_for("- ViewComponents only when reused across unrelated views")
+    assert_equal 1, warnings.size
+    assert_equal "context.md", warnings.first[:file]
+    assert_includes warnings.first[:message], "shared library"
+  end
+
+  def test_no_warnings_for_clean_content
+    assert_empty warnings_for("- Use Pundit for authorization")
+  end
 end
