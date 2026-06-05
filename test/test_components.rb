@@ -273,10 +273,12 @@ class TestAlertComponent < Minitest::Test
     assert_equal "Something happened.", c.instance_variable_get(:@description)
   end
 
-  def test_destructive_variant
+  # `destructive` is a non-breaking alias for the canonical `danger`, resolved in
+  # coerce_variant, so the stored variant is `:danger`.
+  def test_destructive_aliases_danger
     c = UI::AlertComponent.new(variant: :destructive)
 
-    assert_equal :destructive, c.instance_variable_get(:@variant)
+    assert_equal :danger, c.instance_variable_get(:@variant)
   end
 end
 
@@ -334,9 +336,16 @@ class TestBadgeComponent < Minitest::Test
   end
 
   def test_all_variants_exist
-    %i[default secondary destructive outline].each do |variant|
+    %i[default secondary info success warning danger outline ghost link].each do |variant|
       assert UI::BadgeComponent::VARIANTS.key?(variant), "Missing variant #{variant}"
     end
+  end
+
+  # `destructive` is a non-breaking alias for the canonical `danger`.
+  def test_destructive_aliases_danger
+    c = UI::BadgeComponent.new("Error", variant: :destructive)
+
+    assert_equal :danger, c.instance_variable_get(:@variant)
   end
 end
 
@@ -927,9 +936,16 @@ class TestIndicatorComponent < Minitest::Test
   end
 
   def test_all_variants_defined
-    %i[default destructive success warning].each do |v|
+    %i[default info success warning danger].each do |v|
       assert UI::IndicatorComponent::VARIANTS.key?(v), "Missing variant #{v}"
     end
+  end
+
+  # `destructive` is a non-breaking alias for the canonical `danger`.
+  def test_destructive_aliases_danger
+    c = UI::IndicatorComponent.new(variant: :destructive)
+
+    assert_equal :danger, c.instance_variable_get(:@variant)
   end
 
   def test_all_positions_defined

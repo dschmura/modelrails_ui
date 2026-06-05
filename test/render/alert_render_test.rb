@@ -10,10 +10,24 @@ class AlertRenderTest < ViewComponent::TestCase
     assert_selector "div[role='status'][aria-live='polite']", text: "Heads up"
   end
 
-  def test_destructive_variant_is_an_assertive_alert_region
+  def test_danger_variant_is_an_assertive_alert_on_the_danger_surface
+    render_inline(UI::AlertComponent.new(variant: :danger, title: "Couldn't save"))
+
+    assert_selector "div[role='alert'][aria-live='assertive'].bg-danger-surface", text: "Couldn't save"
+  end
+
+  # `destructive` is a non-breaking alias for the canonical `danger` — it must
+  # render an identical root (same role + tinted danger surface).
+  def test_destructive_alias_renders_identically_to_danger
     render_inline(UI::AlertComponent.new(variant: :destructive, title: "Couldn't save"))
 
-    assert_selector "div[role='alert'][aria-live='assertive']", text: "Couldn't save"
+    assert_selector "div[role='alert'][aria-live='assertive'].bg-danger-surface", text: "Couldn't save"
+  end
+
+  def test_warning_variant_is_a_polite_status_on_the_warning_surface
+    render_inline(UI::AlertComponent.new(variant: :warning, title: "Heads up"))
+
+    assert_selector "div[role='status'][aria-live='polite'].bg-warning-surface", text: "Heads up"
   end
 
   # AAA semantic tokens (the design-token guarantee), not raw Tailwind:
