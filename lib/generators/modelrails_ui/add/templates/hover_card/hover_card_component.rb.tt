@@ -1,13 +1,33 @@
 # frozen_string_literal: true
 
 module UI
+  # # Hover Card
+  #
+  # A rich, supplemental card revealed on hover **and** keyboard focus of its trigger.
+  # Unlike `tooltip`, the card may hold interactive content; `focus-within` keeps it
+  # open while the user Tabs through that content. Escape dismisses (WCAG 1.4.13).
+  #
+  # ## Use when
+  # - A link/avatar benefits from a supplemental preview (profile, definition) whose
+  #   content is ALSO reachable elsewhere (the card is an enhancement, not the only path).
+  #
+  # ## Don't use when
+  # - The content is a primary interactive surface — use `popover` (click) or a `dialog`.
+  # - It's a short text hint — use `tooltip`.
+  #
+  # ## Accessibility contract
+  # - **Guarantees:** shows on hover AND focus-within (card content is Tab-reachable while
+  #   open); Escape dismisses; `role="group"` + `aria-label` when `label:` is given.
+  # - **You supply:** a `with_trigger` slot (a focusable link/button) and the card content.
   class HoverCardComponent < ApplicationComponent
     renders_one :trigger
 
-    CARD_BASE = "absolute z-50 w-64 rounded-lg border bg-surface-overlay p-4 text-sm " \
+    CARD_BASE = "absolute z-50 w-64 rounded-lg border border-border bg-surface-overlay p-4 text-sm " \
                 "text-text-body shadow-md " \
-                "opacity-0 group-hover:opacity-100 pointer-events-none " \
-                "transition-opacity duration-200"
+                "invisible opacity-0 transition-opacity duration-200 " \
+                "group-hover:visible group-hover:opacity-100 " \
+                "group-focus-within:visible group-focus-within:opacity-100 " \
+                "group-data-[dismissed]:invisible! group-data-[dismissed]:opacity-0!"
 
     POSITIONS = {
       bottom: "top-full left-0 mt-2",
@@ -16,28 +36,50 @@ module UI
       right:  "left-full top-0 ml-2"
     }.freeze
 
-    def initialize(side: :bottom, **html_attrs)
-      @side        = side.to_sym
+    # id: card id; label: optional accessible name (→ role=group + aria-label);
+    # side: :bottom | :top | :left | :right
+    def initialize(id: nil, label: nil, side: :bottom, **html_attrs)
+      @id          = id || "hovercard-#{SecureRandom.hex(4)}"
+      @label       = label
+      @side        = coerce_enum(:side, side, POSITIONS)
       @extra_class = html_attrs.delete(:class)
       @html_attrs  = html_attrs
     end
 
     def call
-      content_tag(:span,
-        class: cn("relative inline-block group", @extra_class),
-        **@html_attrs) do
-        concat trigger if trigger
-        concat card_panel
+      raise ArgumentError, "UI::HoverCardComponent requires a with_trigger slot" unless trigger?
+
+      content_tag(:span, **wrapper_attrs) do
+        safe_join([trigger, card])
       end
     end
 
     private
 
-    def card_panel
-      content_tag(:div,
-        class: cn(CARD_BASE, POSITIONS.fetch(@side, POSITIONS[:bottom]))) do
-        content
+    def wrapper_attrs
+      {
+        class: cn("group relative inline-block", @extra_class),
+        data: {
+          controller: "floating",
+          action: "keydown.esc->floating#dismiss mouseleave->floating#clearDismissed focusout->floating#clearDismissed"
+        }
+      }.merge(@html_attrs)
+    end
+
+    def card
+      attrs = { id: @id, class: cn(CARD_BASE, POSITIONS.fetch(@side)) }
+      if @label
+        attrs[:role] = "group"
+        attrs["aria-label"] = @label
       end
+      content_tag(:div, content, **attrs)
+    end
+
+    def coerce_enum(name, value, map)
+      key = value.to_sym
+      return key if map.key?(key)
+
+      raise ArgumentError, "UI::HoverCard unknown #{name}: #{value.inspect} (allowed: #{map.keys.join(", ")})"
     end
   end
 end
