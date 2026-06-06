@@ -49,7 +49,7 @@ A component is downstream-ready when, verified by the harness:
 7. **i18n** for any user-facing strings.
 8. **Doc comment** — use-when + accessibility contract.
 9. **Slot/content API** — `content || label`, not hardcoded markup.
-10. **Template-backed Lookbook preview** — the copyable artifact, same treatment as the 6.
+10. **Template-backed Lookbook preview** — the copyable artifact, same treatment as the 6. **Plus a `@param` playground** when the component's variation is parameter-driven (enum / variant / size / boolean props) — live Lookbook controls, as on `button` / `toggle` / `badge` / `avatar` / `popover`. Slot-driven overlays whose real variation is *content*, not params (`dialog` / `alert_dialog` / `drawer` / `sheet`), stay static-only and are exempt.
 
 ## Per-component process
 
