@@ -1333,34 +1333,33 @@ class TestAlertDialogComponent < Minitest::Test
   end
 
   def test_description_stored
-    c = UI::AlertDialogComponent.new(description: "This cannot be undone.")
+    c = UI::AlertDialogComponent.new(title: "Are you sure?", description: "This cannot be undone.")
 
     assert_equal "This cannot be undone.", c.instance_variable_get(:@description)
   end
 
-  def test_nil_defaults
-    c = UI::AlertDialogComponent.new
+  def test_nil_description_default
+    c = UI::AlertDialogComponent.new(title: "Are you sure?")
 
-    assert_nil c.instance_variable_get(:@title)
     assert_nil c.instance_variable_get(:@description)
   end
 end
 
 class TestSheetComponent < Minitest::Test
   def test_default_side
-    c = UI::SheetComponent.new
+    c = UI::SheetComponent.new(title: "Filters")
 
     assert_equal :right, c.instance_variable_get(:@side)
   end
 
   def test_custom_side
-    c = UI::SheetComponent.new(side: :left)
+    c = UI::SheetComponent.new(title: "Filters", side: :left)
 
     assert_equal :left, c.instance_variable_get(:@side)
   end
 
   def test_string_side_coerced_to_symbol
-    c = UI::SheetComponent.new(side: "bottom")
+    c = UI::SheetComponent.new(title: "Filters", side: "bottom")
 
     assert_equal :bottom, c.instance_variable_get(:@side)
   end
@@ -1372,9 +1371,25 @@ class TestSheetComponent < Minitest::Test
   end
 
   def test_class_extracted
-    c = UI::SheetComponent.new(class: "text-sm")
+    c = UI::SheetComponent.new(title: "Filters", class: "text-sm")
 
     assert_equal "text-sm", c.instance_variable_get(:@extra_class)
+  end
+
+  def test_title_stored
+    c = UI::SheetComponent.new(title: "Navigation")
+
+    assert_equal "Navigation", c.instance_variable_get(:@title)
+  end
+
+  def test_fail_loud_on_unknown_side
+    assert_raises(ArgumentError) { UI::SheetComponent.new(title: "T", side: :diagonal) }
+  end
+
+  def test_leave_transforms_defined_for_all_sides
+    %i[right left top bottom].each do |side|
+      assert UI::SheetComponent::LEAVE_TRANSFORMS.key?(side), "Missing leave transform for #{side}"
+    end
   end
 end
 
@@ -1385,14 +1400,14 @@ class TestDrawerComponent < Minitest::Test
     assert_equal "Move to project", c.instance_variable_get(:@title)
   end
 
-  def test_nil_title_default
-    c = UI::DrawerComponent.new
+  def test_wrapper_defaults_to_true
+    c = UI::DrawerComponent.new(title: "Move to project")
 
-    assert_nil c.instance_variable_get(:@title)
+    assert c.instance_variable_get(:@wrapper)
   end
 
   def test_class_extracted
-    c = UI::DrawerComponent.new(class: "max-h-[80vh]")
+    c = UI::DrawerComponent.new(title: "Move to project", class: "max-h-[80vh]")
 
     assert_equal "max-h-[80vh]", c.instance_variable_get(:@extra_class)
   end

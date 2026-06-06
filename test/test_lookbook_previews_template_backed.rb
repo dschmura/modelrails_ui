@@ -71,4 +71,51 @@ class TestLookbookPreviewsTemplateBacked < Minitest::Test
       refute_includes src, "avatar_for", "#{scenario} must not use the app avatar helper"
     end
   end
+
+  ALERT_DIALOG_SCENARIOS = %w[basic confirm_destructive].freeze
+  DRAWER_SCENARIOS = %w[basic with_footer].freeze
+  SHEET_SCENARIOS = %w[basic side_left side_bottom].freeze
+
+  OVERLAY_COMPONENTS = {
+    "alert_dialog" => {scenarios: ALERT_DIALOG_SCENARIOS, class: "UI::AlertDialogComponent"},
+    "drawer" => {scenarios: DRAWER_SCENARIOS, class: "UI::DrawerComponent"},
+    "sheet" => {scenarios: SHEET_SCENARIOS, class: "UI::SheetComponent"}
+  }.freeze
+
+  def test_overlay_scenarios_are_template_backed
+    OVERLAY_COMPONENTS.each do |component, config|
+      src = preview_rb(component)
+      config[:scenarios].each do |scenario|
+        path = File.join(PREVIEW_ROOT, "#{component}_component_preview", "#{scenario}.html.erb")
+
+        assert_path_exists path, "missing overlay template #{path}"
+        assert_match(/def #{scenario}(; end|\n\s*end)/, src,
+          "#{component}##{scenario} should be an empty template-backed method")
+      end
+    end
+  end
+
+  def test_overlay_scenarios_have_trigger_slot
+    OVERLAY_COMPONENTS.each do |component, config|
+      config[:scenarios].each do |scenario|
+        path = File.join(PREVIEW_ROOT, "#{component}_component_preview", "#{scenario}.html.erb")
+        src = File.read(path)
+
+        assert_includes src, "with_trigger",
+          "#{component}##{scenario} must include a with_trigger slot so the overlay can be opened"
+      end
+    end
+  end
+
+  def test_overlay_scenarios_use_component_class_directly
+    OVERLAY_COMPONENTS.each do |component, config|
+      config[:scenarios].each do |scenario|
+        path = File.join(PREVIEW_ROOT, "#{component}_component_preview", "#{scenario}.html.erb")
+        src = File.read(path)
+
+        assert_includes src, config[:class],
+          "#{component}##{scenario} should invoke #{config[:class]} directly"
+      end
+    end
+  end
 end

@@ -134,8 +134,26 @@ class TestGeneratorComponents < Minitest::Test
   end
 
   def test_sheet_has_js_controller
-    assert_path_exists File.join(TEMPLATE_ROOT, "sheet", "sheet_controller.js"),
-      "sheet should include sheet_controller.js"
+    # Wave 4: sheet uses the shared `modal` controller via EXTRA_STIMULUS (no own copy).
+    cfg = ModelrailsUi::Generators::Components::EXTRA_STIMULUS["sheet"]
+
+    assert_equal({source: "dialog/modal_controller.js", name: "modal"}, cfg)
+    assert_path_exists File.join(TEMPLATE_ROOT, "dialog", "modal_controller.js")
+  end
+
+  def test_overlays_share_modal_controller_via_extra_stimulus
+    # Wave 4: alert_dialog, drawer, and sheet all wire the single canonical
+    # dialog/modal_controller.js via EXTRA_STIMULUS.
+    expected = {source: "dialog/modal_controller.js", name: "modal"}
+    %w[alert_dialog drawer sheet].each do |overlay|
+      cfg = ModelrailsUi::Generators::Components::EXTRA_STIMULUS[overlay]
+
+      assert_equal expected, cfg,
+        "#{overlay} EXTRA_STIMULUS entry should point at dialog/modal_controller.js as 'modal'"
+    end
+
+    assert_path_exists File.join(TEMPLATE_ROOT, "dialog", "modal_controller.js"),
+      "canonical modal_controller.js must exist in dialog/ template dir"
   end
 
   def test_popover_has_js_controller
