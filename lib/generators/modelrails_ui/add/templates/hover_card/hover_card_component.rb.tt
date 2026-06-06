@@ -24,16 +24,47 @@ module UI
   class HoverCardComponent < ApplicationComponent
     renders_one :trigger
 
-    CARD_BASE = "absolute z-50 w-64 rounded-lg border border-border bg-surface-overlay p-4 text-sm " \
+    CARD_BASE = "z-50 w-64 rounded-lg border border-border bg-surface-overlay p-4 text-sm " \
                 "text-text-body shadow-md " \
                 "invisible opacity-0 transition-opacity duration-200 " \
                 "group-data-[state=open]:visible group-data-[state=open]:opacity-100"
 
+    # Anchor positioning (modern, gated by `supports-`): `fixed` so the viewport is the
+    # containing block, `position-area` to place it, `position-try-fallbacks` to keep it on
+    # screen. Pre-Baseline fallback (`not-supports-`): `absolute` offsets vs the wrapper.
     POSITIONS = {
-      bottom: "top-full left-0 mt-2",
-      top:    "bottom-full left-0 mb-2",
-      left:   "right-full top-0 mr-2",
-      right:  "left-full top-0 ml-2"
+      bottom: "mt-2 " \
+              "supports-[position-area:bottom]:fixed " \
+              "supports-[position-area:bottom]:[position-area:bottom_center] " \
+              "supports-[position-area:bottom]:[position-try-fallbacks:flip-block] " \
+              "not-supports-[position-area:bottom]:absolute " \
+              "not-supports-[position-area:bottom]:top-full " \
+              "not-supports-[position-area:bottom]:left-1/2 " \
+              "not-supports-[position-area:bottom]:-translate-x-1/2",
+      top:    "mb-2 " \
+              "supports-[position-area:bottom]:fixed " \
+              "supports-[position-area:bottom]:[position-area:top_center] " \
+              "supports-[position-area:bottom]:[position-try-fallbacks:flip-block] " \
+              "not-supports-[position-area:bottom]:absolute " \
+              "not-supports-[position-area:bottom]:bottom-full " \
+              "not-supports-[position-area:bottom]:left-1/2 " \
+              "not-supports-[position-area:bottom]:-translate-x-1/2",
+      left:   "mr-2 " \
+              "supports-[position-area:bottom]:fixed " \
+              "supports-[position-area:bottom]:[position-area:center_left] " \
+              "supports-[position-area:bottom]:[position-try-fallbacks:flip-inline] " \
+              "not-supports-[position-area:bottom]:absolute " \
+              "not-supports-[position-area:bottom]:right-full " \
+              "not-supports-[position-area:bottom]:top-1/2 " \
+              "not-supports-[position-area:bottom]:-translate-y-1/2",
+      right:  "ml-2 " \
+              "supports-[position-area:bottom]:fixed " \
+              "supports-[position-area:bottom]:[position-area:center_right] " \
+              "supports-[position-area:bottom]:[position-try-fallbacks:flip-inline] " \
+              "not-supports-[position-area:bottom]:absolute " \
+              "not-supports-[position-area:bottom]:left-full " \
+              "not-supports-[position-area:bottom]:top-1/2 " \
+              "not-supports-[position-area:bottom]:-translate-y-1/2"
     }.freeze
 
     # id: card id; label: optional accessible name (→ role=group + aria-label);
@@ -59,6 +90,7 @@ module UI
     def wrapper_attrs
       {
         class: cn("group relative inline-block", @extra_class),
+        style: "anchor-name: --#{@id}",
         data: {
           controller: "floating",
           action: "mouseenter->floating#hoverOpen mouseleave->floating#hoverClose " \
@@ -71,6 +103,7 @@ module UI
     def card
       attrs = {
         id: @id,
+        style: "position-anchor: --#{@id}",
         data: { floating_target: "panel" },
         class: cn(CARD_BASE, POSITIONS.fetch(@side))
       }
