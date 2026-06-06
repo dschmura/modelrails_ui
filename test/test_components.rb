@@ -1415,25 +1415,25 @@ end
 
 class TestPopoverComponent < Minitest::Test
   def test_default_align
-    c = UI::PopoverComponent.new
+    c = UI::PopoverComponent.new(label: "x")
 
     assert_equal :start, c.instance_variable_get(:@align)
   end
 
   def test_default_side
-    c = UI::PopoverComponent.new
+    c = UI::PopoverComponent.new(label: "x")
 
     assert_equal :bottom, c.instance_variable_get(:@side)
   end
 
   def test_custom_align
-    c = UI::PopoverComponent.new(align: :center)
+    c = UI::PopoverComponent.new(label: "x", align: :center)
 
     assert_equal :center, c.instance_variable_get(:@align)
   end
 
   def test_custom_side
-    c = UI::PopoverComponent.new(side: :top)
+    c = UI::PopoverComponent.new(label: "x", side: :top)
 
     assert_equal :top, c.instance_variable_get(:@side)
   end
