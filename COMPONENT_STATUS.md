@@ -42,6 +42,7 @@ without extra verification.
 | alert_dialog | hardened | ✅ | ⏳ | native `<dialog role=alertdialog>` (Wave 4); shared `modal` controller; 0a render test + role/labelledby/describedby + 44px i18n close; app 0b CI-pending |
 | drawer | hardened | ✅ | ⏳ | native bottom `<dialog>` slide-up (Wave 4); shared `modal` controller (translateY); decorative drag-handle + 44px close; 0a; app 0b CI-pending |
 | sheet | hardened | ✅ | ⏳ | native side `<dialog>` per-side slide (Wave 4); fail-loud `coerce_side`; shared `modal` controller; 0a; app 0b CI-pending |
+| popover | hardened | ✅ | ⏳ | Wave 5a floating exemplar (CSS positioning + shared `floating` controller; real button trigger w/ aria-haspopup/expanded/controls; role=dialog panel named by label:; Escape + outside-click close w/ focus return; fail-loud side/align). 0a render test; app 0b CI-pending |
 
 All other gem components: **experimental** (unverified) unless listed above.
 
