@@ -1,11 +1,32 @@
 # frozen_string_literal: true
 
 module UI
+  # # Tooltip
+  #
+  # A small text bubble describing the element it wraps. Shows on hover **and**
+  # keyboard focus; the wrapper is focusable and `aria-describedby` wires the bubble
+  # to it. Escape dismisses (WCAG 1.4.13) via the shared `floating` controller.
+  #
+  # ## Use when
+  # - You need a short, non-interactive hint describing a single focusable trigger
+  #   (an icon button, a truncated label).
+  #
+  # ## Don't use when
+  # - The content is interactive or rich — use `hover_card`.
+  # - You wrap an already-interactive control — put `aria-describedby` on that control
+  #   instead (this component makes its own wrapper the focusable trigger).
+  #
+  # ## Accessibility contract
+  # - **Guarantees:** shows on hover AND focus; `role="tooltip"` bubble wired via
+  #   `aria-describedby`; Escape dismisses without moving focus; `pointer-events-none`
+  #   so the bubble never traps the pointer.
+  # - **You supply:** `text:` (the hint) and the trigger content (icon/word).
   class TooltipComponent < ApplicationComponent
-    BUBBLE_BASE = "absolute z-50 w-fit rounded-md px-3 py-1.5 text-xs text-balance " \
-                  "bg-text-heading text-surface-raised " \
-                  "opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap " \
-                  "transition-opacity duration-200"
+    BUBBLE_BASE = "absolute z-50 w-max max-w-xs rounded-md px-3 py-1.5 text-xs text-balance " \
+                  "bg-text-heading text-surface-raised whitespace-normal " \
+                  "pointer-events-none opacity-0 transition-opacity duration-200 " \
+                  "group-hover:opacity-100 group-focus-within:opacity-100 " \
+                  "group-data-[dismissed]:opacity-0!"
 
     POSITIONS = {
       top:    "bottom-full left-1/2 -translate-x-1/2 mb-2",
@@ -14,29 +35,45 @@ module UI
       right:  "left-full top-1/2 -translate-y-1/2 ml-2"
     }.freeze
 
-    def initialize(text:, side: :top, **html_attrs)
+    # text: the hint (the bubble's content); id: bubble id (→ aria-describedby);
+    # side: :top | :bottom | :left | :right
+    def initialize(text:, id: nil, side: :top, **html_attrs)
       @text        = text
-      @side        = side.to_sym
+      @id          = id || "tooltip-#{SecureRandom.hex(4)}"
+      @side        = coerce_enum(:side, side, POSITIONS)
       @extra_class = html_attrs.delete(:class)
       @html_attrs  = html_attrs
     end
 
     def call
-      content_tag(:span,
-        class: cn("relative inline-flex group", @extra_class),
-        **@html_attrs) do
-        concat content
-        concat tooltip_bubble
+      content_tag(:span, **wrapper_attrs) do
+        safe_join([content, bubble])
       end
     end
 
     private
 
-    def tooltip_bubble
-      content_tag(:span,
-        @text,
-        class: cn(BUBBLE_BASE, POSITIONS.fetch(@side, POSITIONS[:top])),
-        role: "tooltip")
+    def wrapper_attrs
+      {
+        class: cn("group relative inline-flex", @extra_class),
+        tabindex: "0",
+        "aria-describedby": @id,
+        data: {
+          controller: "floating",
+          action: "keydown.esc->floating#dismiss mouseleave->floating#clearDismissed focusout->floating#clearDismissed"
+        }
+      }.merge(@html_attrs)
+    end
+
+    def bubble
+      content_tag(:span, @text, id: @id, role: "tooltip", class: cn(BUBBLE_BASE, POSITIONS.fetch(@side)))
+    end
+
+    def coerce_enum(name, value, map)
+      key = value.to_sym
+      return key if map.key?(key)
+
+      raise ArgumentError, "UI::Tooltip unknown #{name}: #{value.inspect} (allowed: #{map.keys.join(", ")})"
     end
   end
 end
