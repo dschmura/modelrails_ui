@@ -22,7 +22,7 @@ module UI
     # @param text text
     # @param side select [top, bottom, left, right]
     def playground(text: "Saved to your library", side: :top)
-      ui(:tooltip, text: text, side: side.to_sym) { "Hover or focus me" }
+      render_with_template(locals: {text: text, side: side.to_sym})
     end
   end
 end
