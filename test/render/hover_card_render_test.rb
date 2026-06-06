@@ -57,6 +57,13 @@ class HoverCardRenderTest < ViewComponent::TestCase
     assert_match(/with_trigger/, error.message)
   end
 
+  def test_corner_placement_maps_to_a_position_area_corner
+    render_card(side: :top_right)
+
+    assert_selector "[data-floating-target='panel']",
+      class: ["supports-[position-area:bottom]:[position-area:top_right]"], visible: :all
+  end
+
   def test_fail_loud_on_unknown_side
     assert_raises(ArgumentError) { UI::HoverCardComponent.new(side: :diagonal) }
   end

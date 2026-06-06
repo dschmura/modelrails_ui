@@ -37,6 +37,13 @@ class TooltipRenderTest < ViewComponent::TestCase
     assert_selector "[role='tooltip'].group-data-\\[dismissed\\]\\:opacity-0\\!", visible: :all
   end
 
+  def test_corner_placement_maps_to_a_position_area_corner
+    render_tooltip(side: :top_right)
+
+    assert_selector "[role='tooltip']",
+      class: ["supports-[position-area:bottom]:[position-area:top_right]"], visible: :all
+  end
+
   def test_fail_loud_on_unknown_side
     error = assert_raises(ArgumentError) { UI::TooltipComponent.new(text: "x", side: :sideways) }
     assert_match(/unknown side/, error.message)
