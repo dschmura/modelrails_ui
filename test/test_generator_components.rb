@@ -157,8 +157,8 @@ class TestGeneratorComponents < Minitest::Test
   end
 
   def test_popover_has_js_controller
-    assert_path_exists File.join(TEMPLATE_ROOT, "popover", "popover_controller.js"),
-      "popover should include popover_controller.js"
+    assert_path_exists File.join(TEMPLATE_ROOT, "popover", "floating_controller.js"),
+      "popover should include floating_controller.js"
   end
 
   def test_dropdown_menu_has_js_controller
