@@ -22,5 +22,18 @@ module UI
     # `side:` and `align:` place the panel relative to the trigger.
     def positioned
     end
+
+    # Edit `side`, `align`, and `label` live to explore placement. Popover renders
+    # inline (not a full-screen modal), so the param panel is the natural way to
+    # sweep its positioning matrix.
+    # @param label text
+    # @param side select [bottom, top, left, right]
+    # @param align select [start, center, end]
+    def playground(label: "Account menu", side: :bottom, align: :start)
+      ui :popover, label: label, side: side.to_sym, align: align.to_sym do |c|
+        c.with_trigger { "Open popover" }
+        "Panel anchored #{side}/#{align}. Change the params to explore placement."
+      end
+    end
   end
 end
