@@ -3,9 +3,10 @@
 module UI
   # # Hover Card
   #
-  # A rich, supplemental card revealed on hover **and** keyboard focus of its trigger.
-  # Unlike `tooltip`, the card may hold interactive content; `focus-within` keeps it
-  # open while the user Tabs through that content. Escape dismisses (WCAG 1.4.13).
+  # A rich, supplemental card revealed on hover **and** keyboard focus of its trigger,
+  # driven by the `floating` controller's hover-intent: a short close-delay lets the
+  # pointer cross the trigger→card gap so the card's interactive content stays
+  # reachable and clickable. Escape closes and returns focus to the trigger.
   #
   # ## Use when
   # - A link/avatar benefits from a supplemental preview (profile, definition) whose
@@ -16,8 +17,9 @@ module UI
   # - It's a short text hint — use `tooltip`.
   #
   # ## Accessibility contract
-  # - **Guarantees:** shows on hover AND focus-within (card content is Tab-reachable while
-  #   open); Escape dismisses; `role="group"` + `aria-label` when `label:` is given.
+  # - **Guarantees:** opens on hover AND focus; the hover-intent close-delay keeps the
+  #   card reachable, so its content is clickable and Tab-reachable; Escape closes and
+  #   returns focus to the trigger; `role="group"` + `aria-label` when `label:` is given.
   # - **You supply:** a `with_trigger` slot (a focusable link/button) and the card content.
   class HoverCardComponent < ApplicationComponent
     renders_one :trigger
@@ -25,9 +27,7 @@ module UI
     CARD_BASE = "absolute z-50 w-64 rounded-lg border border-border bg-surface-overlay p-4 text-sm " \
                 "text-text-body shadow-md " \
                 "invisible opacity-0 transition-opacity duration-200 " \
-                "group-hover:visible group-hover:opacity-100 " \
-                "group-focus-within:visible group-focus-within:opacity-100 " \
-                "group-data-[dismissed]:invisible! group-data-[dismissed]:opacity-0!"
+                "group-data-[state=open]:visible group-data-[state=open]:opacity-100"
 
     POSITIONS = {
       bottom: "top-full left-0 mt-2",
@@ -61,13 +61,19 @@ module UI
         class: cn("group relative inline-block", @extra_class),
         data: {
           controller: "floating",
-          action: "keydown.esc->floating#dismiss mouseleave->floating#clearDismissed focusout->floating#clearDismissed"
+          action: "mouseenter->floating#hoverOpen mouseleave->floating#hoverClose " \
+                   "focusin->floating#hoverOpen focusout->floating#hoverClose " \
+                   "keydown.esc->floating#hoverEscape"
         }
       }.merge(@html_attrs)
     end
 
     def card
-      attrs = { id: @id, class: cn(CARD_BASE, POSITIONS.fetch(@side)) }
+      attrs = {
+        id: @id,
+        data: { floating_target: "panel" },
+        class: cn(CARD_BASE, POSITIONS.fetch(@side))
+      }
       if @label
         attrs[:role] = "group"
         attrs["aria-label"] = @label

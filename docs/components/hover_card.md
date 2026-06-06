@@ -1,9 +1,11 @@
 # Hover Card
 
 A rich supplemental card revealed on hover and keyboard focus of its trigger.
-Unlike `tooltip`, the card may hold interactive content (links, buttons);
-`focus-within` keeps it open while the user Tabs through that content. Escape
-dismisses (WCAG 1.4.13) via the shared `floating` Stimulus controller.
+Unlike `tooltip`, the card may hold interactive content (links, buttons). A short
+hover-intent close-delay keeps the card reachable, so the pointer can move from the
+trigger onto the card to click it — and `focus-within` / Tab keeps it open for
+keyboard users. `Escape` closes the card and returns focus to the trigger (WCAG
+1.4.13). All behavior lives in the shared `floating` Stimulus controller.
 
 Use for enhancement — the card's content should never be the only path to that
 information. If you need a click-triggered panel, use `popover`. If the hint is
@@ -69,22 +71,28 @@ named region:
 
 Omitting `label:` renders the card as a plain `<div>` without a role.
 
-## Dismiss on Escape
+## Hover-intent & dismissal
 
-The card hides automatically when the user presses `Escape`
-(`group-data-[dismissed]:invisible! group-data-[dismissed]:opacity-0!`). The
-`floating` controller clears the dismissed state on `mouseleave` and `focusout`
-so the card can reappear on the next interaction.
+The card is opened and closed by the `floating` controller, not by CSS `:hover`
+alone — pure CSS can't keep an *interactive* card reachable across the small gap
+between trigger and card. The controller opens on `mouseenter` / `focus` and
+closes on `mouseleave` / `blur` **after a short delay** (`hideDelay`, default
+`150`ms). The delay survives the gap crossing (and brief mouse-outs), so the
+pointer can move onto the card and click its content. Opening sets
+`data-state="open"` on the wrapper; `group-data-[state=open]` reveals the card.
+
+`Escape` closes the card immediately and returns focus to the trigger.
 
 ## Accessibility contract
 
 The component guarantees:
 
-- Hover (`group-hover:opacity-100`) and keyboard focus-within
-  (`group-focus-within:opacity-100`) both reveal the card.
-- The card remains open while the user Tabs through its links or buttons
-  (`focus-within` covers the trigger and all card descendants).
-- `Escape` dismisses without moving focus (WCAG 1.4.13 — content on hover).
+- Hover and keyboard focus both open the card (the controller sets
+  `data-state="open"`; `group-data-[state=open]` reveals it).
+- The hover-intent close-delay keeps the card reachable, so its interactive
+  content is clickable with the pointer and Tab-reachable for the keyboard.
+- `Escape` closes the card and returns focus to the trigger (WCAG 1.4.13 —
+  content on hover or focus, dismissible without losing your place).
 - When `label:` is given, the card element receives `role="group"` and
   `aria-label` for a named landmark region.
 

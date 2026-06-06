@@ -44,7 +44,7 @@ without extra verification.
 | sheet | hardened | ✅ | ⏳ | native side `<dialog>` per-side slide (Wave 4); fail-loud `coerce_side`; shared `modal` controller; 0a; app 0b CI-pending |
 | popover | hardened | ✅ | ⏳ | Wave 5a floating exemplar (CSS positioning + shared `floating` controller; real button trigger w/ aria-haspopup/expanded/controls; role=dialog panel named by label:; Escape + outside-click close w/ focus return; fail-loud side/align). 0a render test; app 0b CI-pending |
 | tooltip | hardened | ✅ | ⏳ | Wave 5b floating (shows on hover+focus; role=tooltip + aria-describedby; Escape-dismiss via shared `floating` controller w/ group-data-[dismissed]!; fail-loud side). 0a render test; app 0b CI-pending |
-| hover_card | hardened | ✅ | ⏳ | Wave 5b floating (hover+focus-within; interactive content Tab-reachable while open; Escape-dismiss; optional role=group label; fail-loud side). 0a render test; app 0b CI-pending |
+| hover_card | hardened | ✅ | ⏳ | Wave 5b floating (JS hover-intent open/close w/ close-delay so the pointer can cross to the card + click its content; Escape closes + returns focus to trigger; optional role=group label; fail-loud side). 0a render test; app 0b CI-pending |
 
 All other gem components: **experimental** (unverified) unless listed above.
 
