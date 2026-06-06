@@ -9,7 +9,9 @@ module ModelrailsUi
       EXTRA_STIMULUS = {
         "alert_dialog" => {source: "dialog/modal_controller.js", name: "modal"},
         "drawer" => {source: "dialog/modal_controller.js", name: "modal"},
-        "sheet" => {source: "dialog/modal_controller.js", name: "modal"}
+        "sheet" => {source: "dialog/modal_controller.js", name: "modal"},
+        "tooltip" => {source: "popover/floating_controller.js", name: "floating"},
+        "hover_card" => {source: "popover/floating_controller.js", name: "floating"}
       }.freeze
 
       # Post-install instructions for components that require external dependencies.
