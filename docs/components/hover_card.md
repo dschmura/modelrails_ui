@@ -56,6 +56,16 @@ The `with_trigger` slot is required — omitting it raises `ArgumentError`.
 
 Unknown values for `side:` raise `ArgumentError` (fail-loud).
 
+## Placement
+
+Placement uses CSS anchor positioning: the card is `position: fixed` (viewport as
+containing block) and tethered to the trigger via inline `anchor-name`/`position-anchor`
+attributes; `position-area` sets the requested side and `position-try-fallbacks` keeps
+it on-screen near viewport edges. Note that at an extreme edge Chromium clamps the
+element on-screen rather than performing a full flip, because the card is nested inside
+its trigger element. On browsers without anchor positioning (pre-Baseline 2026) the
+component falls back to `absolute` offsets relative to the wrapper.
+
 ## Accessible group label
 
 Pass `label:` to wrap the card in `role="group"` with an `aria-label`. Use

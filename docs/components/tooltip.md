@@ -46,6 +46,16 @@ referenced via `aria-describedby` on the focusable wrapper.
 
 Unknown values for `side:` raise `ArgumentError` (fail-loud).
 
+## Placement
+
+Placement uses CSS anchor positioning: the bubble is `position: fixed` (viewport as
+containing block) and tethered to the trigger via inline `anchor-name`/`position-anchor`
+attributes; `position-area` sets the requested side and `position-try-fallbacks` keeps
+it on-screen near viewport edges. Note that at an extreme edge Chromium clamps the
+element on-screen rather than performing a full flip, because the bubble is nested inside
+its trigger element. On browsers without anchor positioning (pre-Baseline 2026) the
+component falls back to `absolute` offsets relative to the wrapper.
+
 ## Dismiss on Escape
 
 The tooltip hides automatically when the user presses `Escape`
