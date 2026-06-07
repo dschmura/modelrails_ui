@@ -31,21 +31,43 @@ floating band did, plus the heavier menu contract:
 
 - **Trigger** → real `<button type="button">` with `aria-haspopup="menu"`,
   `aria-expanded` (controller-managed), `aria-controls="{menu_id}"`.
+- **Accessible name** → the trigger MUST have an accessible name: visible text
+  content OR an `aria-label`. Icon-only triggers (hamburger, ⋮) MUST pass
+  `aria-label`. The component **fails loud** when a trigger has neither (same guard
+  ethos as the enum guards) — a nameless menu button is unusable by AT.
 - **Menu** → `role="menu"` (`id`); **items** → `role="menuitem"` (+ future
-  `menuitemcheckbox`/`menuitemradio`); separators → `role="separator"`; group
-  labels via `aria-label`/a labelled group.
+  `menuitemcheckbox`/`menuitemradio`); separators → `role="separator"`; grouped
+  items sit in `<div role="group" aria-labelledby="{label_id}">` with a labelled
+  heading (the APG group pattern), not a bare divider.
+- **Disabled items** → `aria-disabled="true"`, kept in the DOM (never removed);
+  arrow-nav and type-ahead **skip** them and activation **rejects** them. They get
+  a non-interactive treatment on semantic tokens (reduced emphasis +
+  `cursor-not-allowed`), never a raw-palette gray.
 - **Keyboard — roving tabindex** (DOM focus moves through items; exactly one item
-  is `tabindex="0"` at a time, the rest `tabindex="-1"` — the APG-standard for
+  is `tabindex="0"` at a time, the rest `tabindex="-1"` — the APG standard for
   menus, more robust for screen readers than `aria-activedescendant`):
-  - Trigger: Enter / Space / ↓ opens and focuses the first item; ↑ opens and
-    focuses the last.
-  - In menu: ↑/↓ move (wrapping), Home/End jump, **type-ahead** focuses the next
-    item whose label starts with the typed character(s), Enter/Space activate,
-    **Escape** closes + returns focus to the trigger, **Tab** closes.
-  - `context_menu`: opens at the pointer on `contextmenu` (right-click), else
-    identical menu semantics.
+  - Trigger: Enter / Space / ↓ opens and focuses the **first** enabled item; ↑
+    opens and focuses the **last**.
+  - In menu: ↑/↓ move (wrapping, skipping disabled), Home/End jump to the
+    first/last enabled item, Enter/Space **activate**, **Escape** closes + returns
+    focus to the trigger, **Tab** closes the menu *and* advances focus to the next
+    element in page order.
+  - **Activation is input-agnostic** — Enter, Space, OR a left-click / pointerup on
+    a `[role=menuitem]` all activate the item and close the menu.
+  - **Type-ahead** — buffers keystrokes and focuses the next enabled item whose
+    label starts with the buffer (case-insensitive, leading whitespace trimmed).
+    The buffer resets after **1s** idle; a no-match keystroke is ignored and the
+    buffer preserved. Matching begins at the item after current focus and wraps.
+  - **Focus edges** — opening moves focus into the menu (first/last per above);
+    closing for any reason (Escape, outside-click, selection) restores focus to the
+    trigger — *except* Tab, which closes then advances to the next page element.
+  - `context_menu`: opens at the pointer on `contextmenu` (right-click) **and** on
+    **Shift+F10** / the ContextMenu key while the host has focus (positioned near
+    the focused element). Keyboard parity is mandatory (WCAG 2.1.1 — right-click is
+    pointer-only); thereafter identical menu semantics.
   - `menubar`: top-level items in a horizontal `role="menubar"`; ←/→ move between
-    them; ↓ (or Enter) opens a submenu and focuses its first item; submenus are
+    them (wrapping); ↓ (or Enter) opens a submenu and focuses its first item, ↑ its
+    last; Escape closes the submenu back to its menubar item; submenus are
     `role="menu"` reusing the same item semantics.
 
 ## §2 — The `menu` controller (dedicated; the approved architecture)
@@ -60,10 +82,12 @@ copied).
 
 Responsibilities: `open`/`close`/`toggle` (manage `hidden` + `aria-expanded` +
 move focus into the menu / restore to trigger); roving-focus navigation
-(`next`/`prev`/`first`/`last` over `[role=menuitem]` targets, wrapping); type-ahead
-(buffer keystrokes, match item text); `activate` (Enter/Space → click the item +
-close); Escape/Tab/outside-click close. `context_menu` adds an `openAt(event)`
-that positions at the pointer; `menubar` adds horizontal ←/→ across top-level items
+(`next`/`prev`/`first`/`last` over **enabled** `[role=menuitem]` targets, wrapping,
+skipping `aria-disabled`); type-ahead (buffer keystrokes with a 1s reset, match
+item text case-insensitively); `activate` (Enter / Space / left-click → activate
+the item + close); Escape/Tab/outside-click close with focus restoration.
+`context_menu` adds an `openAt(event)` that positions at the pointer (bound to both
+`contextmenu` and Shift+F10); `menubar` adds horizontal ←/→ across top-level items
 and submenu open/close.
 
 It does NOT reuse `floating` — menus are a distinct interaction (item navigation is
@@ -78,8 +102,15 @@ the bulk), and `floating` is already multi-modal (popover/tooltip/hover_card); a
 - **context_menu** → positioned at the **pointer coordinates** on right-click.
   Anchor positioning can't anchor to a point, so this one keeps a small JS step in
   the controller (`openAt` sets fixed `top`/`left` from the event), then the menu
-  semantics are identical.
+  semantics are identical. The **Shift+F10** open path has no pointer coordinates,
+  so `openAt` falls back to the focused host element's bounding rect.
 - **menubar** → submenus anchor-position to their parent menubar item.
+
+> **Inherited dependency & CI scope:** the anchor-positioning approach — and its
+> known limitation (the flip *clamps* on-screen rather than flipping to the
+> opposite side, and cross-browser flip behavior is **not** exercised by the
+> Chromium-only test runner) — comes from the floating band. See
+> `2026-06-06-wave5-floating-overlays-design.md` § *Accepted limitation*.
 
 ## §4 — Components & sequencing
 
@@ -98,14 +129,22 @@ simpler components first.
 ## The 10-point DoD (each component) + menu specifics
 
 renders · AAA semantic tokens only · correct ARIA (`role=menu/menuitem`, the
-trigger contract above) · fail-loud guard on enums (e.g. `side`/`align`) · focus
-management + 44px targets · disabled/invalid item states · i18n · doc-comment ·
-slot API (trigger + items/content) · template-backed preview + `@param` playground.
+trigger contract above, **accessible-name guard**) · fail-loud guard on **each
+component's own enums** (`dropdown_menu`/`menubar` validate `side`; **`context_menu`
+has none** — it is pointer/Shift+F10-positioned, so it carries no `side` prop) ·
+focus management + 44px targets · disabled items via `aria-disabled` **plus a
+visible `:focus-visible` ring on semantic tokens** (the roving item must show where
+focus is — no `outline-none` without a replacement) · i18n · doc-comment · slot API
+(trigger + items/content) · template-backed preview + `@param` playground.
 Plus: **0a** render test (asserts the static role/tabindex scaffolding) + **0b**
-browser-axe spec that drives the keyboard (open via Enter, ↓ navigates, type-ahead,
-Escape closes + focus returns) and proves AAA on the open menu in both themes. The
-render harness can't exercise JS, so the roving-focus/keyboard behavior is proven in
-the app 0b (per `dialog`/`popover` precedent).
+browser-axe spec that **drives the full keyboard contract** — open via Enter and ↑
+(first/last), ↓/↑ wrap **skipping disabled**, Home/End, type-ahead (incl. the 1s
+buffer reset), pointer *and* keyboard activation, Escape/Tab/outside-click focus
+restoration, and (context_menu) **Shift+F10** parity — and proves AAA on the open
+menu in both themes. The render harness can't exercise JS, so all roving-focus /
+keyboard behavior is proven in the app 0b (per `dialog`/`popover` precedent); axe
+proves *structural* AAA only, so these behaviors exist **because the 0b drives
+them**, not because CI would otherwise catch them.
 
 ## Hardening artifacts & toolchain
 
@@ -122,7 +161,10 @@ prefix Ruby cmds `PATH="…/ruby/4.0.5/bin:$PATH" bundle exec …`. **App:**
 - **context_menu pointer positioning** is the one spot that keeps JS positioning
   (anchor positioning can't tether to a point) — a small, contained `openAt`.
 - **menubar** is genuinely big (submenus + a sub-component); treat it as its own
-  wave, not a quick follow.
+  wave, not a quick follow. Open at that point: whether `menubar_menu` needs its
+  own submenu controller or can ride the shared `menu` controller via
+  `EXTRA_STIMULUS` (decide when the menubar wave starts, once `menu` is proven on
+  the two simpler components).
 - **`menu` is a 4th controller** in the floating/menu surface (alongside `modal`,
   `floating`); deliberate — menu nav doesn't belong in `floating`.
 - The old `dropdown` controller is deleted (superseded by `menu`), like
