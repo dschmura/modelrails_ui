@@ -694,10 +694,19 @@ git commit -m "docs(menu): dropdown_menu usage doc + ledger row (hardened)"
 
 ## Task 5: App — temp-pin Gemfile + re-vendor
 
+> **⚠️ CORRECTION (post-execution, 2026-06-07): do NOT delete the app's `dropdown_controller.js`.**
+> This plan wrongly classified the host app's `app/javascript/controllers/dropdown_controller.js`
+> as a "stale orphan." It is NOT — it powers the hand-rolled user menu and workspace switcher
+> (`shared/_user_menu.html.erb`, `shared/_user_menu_avatar_button.html.erb`,
+> `shared/_settings_sidebar_switcher.html.erb`) via `data-controller="dropdown"`, and is distinct
+> from the new `menu_controller.js`. Deleting it (commit `8a14468`) broke 25 specs; it was restored
+> in commit `9f8f93c`. Only the **gem template's** `dropdown_controller.js` was a true orphan (Task 1's
+> `git rm` of it is correct). Skip Step 4 below; keep the app controller.
+
 **Files:**
 - Modify (temp): `/Users/dschmura/Documents/code/modelrails_base/Gemfile`
 - Create (via generator): `app/components/ui/dropdown_menu_component.rb`, `app/javascript/controllers/menu_controller.js`
-- Delete: `app/javascript/controllers/dropdown_controller.js` (stale orphan — no matching component)
+- ~~Delete: `app/javascript/controllers/dropdown_controller.js`~~ **(KEEP — see correction above; not an orphan)**
 
 - [ ] **Step 1: Create the app adoption branch**
 
@@ -738,11 +747,11 @@ mise exec -- bin/rails g modelrails_ui:add dropdown_menu --force
 ```
 Expected: writes `app/components/ui/dropdown_menu_component.rb` and `app/javascript/controllers/menu_controller.js`.
 
-- [ ] **Step 4: Remove the stale orphan controller**
+- [ ] ~~**Step 4: Remove the stale orphan controller**~~ **— SKIP (see correction at the top of Task 5; the app's `dropdown_controller.js` is live, not an orphan).**
 
 ```bash
-cd /Users/dschmura/Documents/code/modelrails_base
-git rm app/javascript/controllers/dropdown_controller.js
+# DO NOT RUN — kept for the record of what the plan originally (wrongly) instructed:
+# git rm app/javascript/controllers/dropdown_controller.js
 ```
 (There is no `dropdown_menu` component using it; `menu_controller.js` supersedes it.)
 

@@ -167,5 +167,11 @@ prefix Ruby cmds `PATH="…/ruby/4.0.5/bin:$PATH" bundle exec …`. **App:**
   the two simpler components).
 - **`menu` is a 4th controller** in the floating/menu surface (alongside `modal`,
   `floating`); deliberate — menu nav doesn't belong in `floating`.
-- The old `dropdown` controller is deleted (superseded by `menu`), like
-  `popover_controller.js` was by `floating`.
+- The old `dropdown` controller is deleted **in the gem template** (superseded by
+  `menu`), like `popover_controller.js` was by `floating`. **Correction (2026-06-07,
+  post-exemplar):** this applies ONLY to the gem template's copy. The *host app's*
+  same-named `dropdown_controller.js` is a distinct, app-owned controller that powers
+  the hand-rolled user menu + workspace switcher (`shared/_user_menu*`,
+  `shared/_settings_sidebar_switcher`) — it must NOT be deleted on adoption (doing so
+  broke 25 specs; restored in app commit `9f8f93c`). Migrating those surfaces to the
+  `menu` controller / `UI::DropdownMenuComponent` is a separate future effort.
