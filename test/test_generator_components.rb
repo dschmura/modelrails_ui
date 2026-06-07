@@ -162,8 +162,8 @@ class TestGeneratorComponents < Minitest::Test
   end
 
   def test_dropdown_menu_has_js_controller
-    assert_path_exists File.join(TEMPLATE_ROOT, "dropdown_menu", "dropdown_controller.js"),
-      "dropdown_menu should include dropdown_controller.js"
+    assert_path_exists File.join(TEMPLATE_ROOT, "dropdown_menu", "menu_controller.js"),
+      "dropdown_menu should include menu_controller.js"
   end
 
   def test_context_menu_has_js_controller
