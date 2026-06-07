@@ -116,4 +116,16 @@ class DropdownMenuRenderTest < ViewComponent::TestCase
     assert_selector "[role='menuitem'][tabindex='-1']", text: "Edit", visible: :all
     assert_no_selector "[role='option']", visible: :all
   end
+
+  def test_component_data_and_style_do_not_clobber_wiring
+    render_inline(UI::DropdownMenuComponent.new(id: "m9", data: {turbo_frame: "x"}, style: "color: red")) do |c|
+      c.with_trigger { "Actions" }
+      c.with_item { "Edit" }
+    end
+
+    assert_selector "div[data-controller='menu']" \
+                    "[data-action~='click@document->menu#closeOnClickOutside']" \
+                    "[data-turbo-frame='x']" \
+                    "[style*='anchor-name: --m9'][style*='color: red']", visible: :all
+  end
 end
