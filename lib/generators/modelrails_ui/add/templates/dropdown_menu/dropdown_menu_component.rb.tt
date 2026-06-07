@@ -38,16 +38,19 @@ module UI
       next content_tag(:div, "", role: "separator", class: SEPARATOR) if separator
 
       tag_name = href ? :a : :button
+      caller_data = attrs.delete(:data) || {}
       el = {
         role: "menuitem",
         tabindex: "-1",
         class: cn(ITEM, attrs.delete(:class)),
-        data: {menu_target: "item", action: "click->menu#activate"}
+        data: {menu_target: "item", action: "click->menu#activate"}.merge(caller_data)
       }
       el[:href] = href if href
       el[:type] = "button" unless href
       el[:"aria-disabled"] = "true" if disabled
-      content_tag(tag_name, capture(&block), **el, **attrs)
+      # `el` splats LAST so the ARIA/Stimulus wiring (role/tabindex/class/data) always wins
+      # over caller attrs — callers may add attrs but cannot break the menu contract.
+      content_tag(tag_name, capture(&block), **attrs, **el)
     end
 
     PANEL_BASE = "z-50 min-w-[8rem] overflow-hidden rounded-md border border-border " \

@@ -34,7 +34,7 @@ class DropdownMenuRenderTest < ViewComponent::TestCase
     assert_selector "button[type='button'][id='m2-trigger'][aria-haspopup='menu']" \
                     "[aria-expanded='false'][aria-controls='m2'][data-menu-target='trigger']" \
                     "[data-action~='click->menu#toggle'][data-action~='keydown->menu#triggerKeydown']",
-                    text: "Actions", visible: :all
+      text: "Actions", visible: :all
   end
 
   def test_menu_panel_is_labelled_by_the_trigger_and_hidden
@@ -50,7 +50,7 @@ class DropdownMenuRenderTest < ViewComponent::TestCase
 
     assert_selector "button[role='menuitem'][type='button'][tabindex='-1']" \
                     "[data-menu-target='item'][data-action~='click->menu#activate']",
-                    text: "Edit", visible: :all
+      text: "Edit", visible: :all
   end
 
   def test_disabled_item_is_aria_disabled
@@ -69,7 +69,7 @@ class DropdownMenuRenderTest < ViewComponent::TestCase
     render_menu
 
     assert_selector "a[role='menuitem'][href='/x'][data-menu-target='item']",
-                    text: "Open in new tab", visible: :all
+      text: "Open in new tab", visible: :all
   end
 
   def test_icon_only_trigger_takes_an_aria_label
@@ -94,5 +94,26 @@ class DropdownMenuRenderTest < ViewComponent::TestCase
 
   def test_fail_loud_on_unknown_align
     assert_raises(ArgumentError) { UI::DropdownMenuComponent.new(align: :middle) }
+  end
+
+  def test_item_merges_caller_data_without_clobbering_wiring
+    render_inline(UI::DropdownMenuComponent.new) do |c|
+      c.with_trigger { "Actions" }
+      c.with_item(data: {turbo_frame: "modal"}) { "Edit" }
+    end
+
+    assert_selector "button[role='menuitem'][data-menu-target='item']" \
+                    "[data-action~='click->menu#activate'][data-turbo-frame='modal']",
+      text: "Edit", visible: :all
+  end
+
+  def test_item_cannot_override_reserved_aria_wiring
+    render_inline(UI::DropdownMenuComponent.new) do |c|
+      c.with_trigger { "Actions" }
+      c.with_item(role: "option", tabindex: "0") { "Edit" }
+    end
+
+    assert_selector "[role='menuitem'][tabindex='-1']", text: "Edit", visible: :all
+    assert_no_selector "[role='option']", visible: :all
   end
 end
