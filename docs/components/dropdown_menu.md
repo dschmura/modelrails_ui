@@ -1,65 +1,77 @@
-# DropdownMenu
+# Dropdown menu
 
-Floating menu that opens below a trigger element. Use for actions, options, or navigation items.
+A button that opens a menu of actions, implementing the WAI-ARIA APG menu-button
+pattern. Open/close and the full keyboard model live in the `menu` Stimulus
+controller shipped with this component; placement is CSS anchor positioning.
 
-Requires `dropdown_controller.js` (copied automatically by the generator).
+Requires `menu_controller.js` (copied automatically by the generator).
 
 ## Installation
 
 ```bash
-rails g view_primitives:add dropdown_menu
+rails g modelrails_ui:add dropdown_menu
 ```
 
-Creates `app/components/ui/dropdown_menu_component.rb`.
+Creates `app/components/ui/dropdown_menu_component.rb` and
+`app/javascript/controllers/menu_controller.js`.
 
 ## Usage
 
-Build the panel content using the CSS constants exported by the component:
-
 ```erb
-<%= ui :dropdown_menu do |menu| %>
-  <% menu.with_trigger { ui :button, "Options" } %>
-  <div class="<%= UI::DropdownMenuComponent::LABEL_CLS %>">My Account</div>
-  <a href="<%= profile_path %>" class="<%= UI::DropdownMenuComponent::ITEM %>">Profile</a>
-  <a href="<%= settings_path %>" class="<%= UI::DropdownMenuComponent::ITEM %>">Settings</a>
-  <div class="<%= UI::DropdownMenuComponent::SEPARATOR %>"></div>
-  <a href="<%= sign_out_path %>" class="<%= UI::DropdownMenuComponent::ITEM %>"
-     data-turbo-method="delete">Sign out</a>
+<%= render(UI::DropdownMenuComponent.new) do |c| %>
+  <% c.with_trigger { "Actions" } %>
+  <% c.with_item { "Edit" } %>
+  <% c.with_item(disabled: true) { "Archive" } %>
+  <% c.with_item(separator: true) %>
+  <% c.with_item(href: "/reports/new") { "New report" } %>
 <% end %>
 ```
 
-## Alignment
+The `with_trigger` slot is required (omitting it raises `ArgumentError`). Each
+`with_item` becomes a `role="menuitem"`:
 
-| Align | Description |
-|-------|-------------|
-| `:start` | Left-aligned (default) |
-| `:end` | Right-aligned |
+| Option | Effect |
+|--------|--------|
+| `disabled: true` | `aria-disabled` — skipped by keyboard nav, activation rejected |
+| `separator: true` | renders a divider (no content) in source order |
+| `href: "/path"` | renders an `<a role="menuitem">` instead of a `<button>` |
+
+Icon-only triggers MUST pass `aria_label:` (the menu button's accessible name):
 
 ```erb
-<%= ui :dropdown_menu, align: :end do |menu| %>
-  <% menu.with_trigger { ui :button, "Actions", variant: :outline } %>
-  <a href="#" class="<%= UI::DropdownMenuComponent::ITEM %>">Edit</a>
-  <a href="#" class="<%= UI::DropdownMenuComponent::ITEM %>">Duplicate</a>
+<%= render(UI::DropdownMenuComponent.new(aria_label: "Row actions")) do |c| %>
+  <% c.with_trigger { tag.svg(...) } %>
+  ...
 <% end %>
 ```
 
-## Panel CSS constants
+## Placement
 
-These constants are available for use in the panel body:
+| Arg | Values | Default |
+|-----|--------|---------|
+| `side` | `:bottom`, `:top` | `:bottom` |
+| `align` | `:start`, `:end` (edge-aligned to the trigger) | `:start` |
 
-| Constant | Use for |
-|----------|---------|
-| `ITEM` | Actionable links or buttons |
-| `SEPARATOR` | Horizontal rule between groups |
-| `LABEL_CLS` | Non-interactive group headings |
+Placement uses CSS anchor positioning with an `absolute`-offset fallback on
+pre-Baseline-2026 browsers; `position-try-fallbacks: flip-block` keeps the menu
+on-screen.
 
-## API
+## Keyboard
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `align` | Symbol | `:start` | `:start` or `:end` — panel alignment relative to trigger |
-| `**html_attrs` | Hash | — | Forwarded to the outer `<div>` |
+| Key | Action |
+|-----|--------|
+| `Enter` / `Space` / `↓` (on trigger) | Open, focus first item |
+| `↑` (on trigger) | Open, focus last item |
+| `↓` / `↑` (in menu) | Move (wraps, skips disabled) |
+| `Home` / `End` | First / last item |
+| type a letter | Jump to the next item starting with it (1s buffer) |
+| `Enter` / `Space` / click | Activate item, close |
+| `Escape` | Close, return focus to trigger |
+| `Tab` | Close, advance focus to the next page element |
 
-| Slot | Required | Description |
-|------|----------|-------------|
-| `trigger` | No | Element that toggles the menu on click |
+## Accessibility
+
+WCAG 2.2 AAA. The menu is named by its trigger (`aria-labelledby`); the trigger
+exposes `aria-haspopup="menu"` and a synced `aria-expanded`. Roving tabindex keeps
+exactly one item focusable at a time. Proven by `spec/system/ui/dropdown_menu_component_spec.rb`
+in the host app (keyboard + axe AAA in both themes).
