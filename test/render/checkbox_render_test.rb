@@ -15,7 +15,7 @@ class CheckboxRenderTest < ViewComponent::TestCase
     render_inline(UI::CheckboxComponent.new(label: "Accept terms", name: "terms"))
 
     assert_selector "input.border-border-strong"
-    assert_selector "input.focus-visible\\:ring-interactive-focus"
+    assert_selector "input.focus-ring"
     assert_selector "input.checked\\:bg-interactive"
   end
 

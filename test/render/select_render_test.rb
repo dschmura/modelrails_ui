@@ -17,7 +17,7 @@ class SelectRenderTest < ViewComponent::TestCase
     render_inline(UI::SelectComponent.new(options: %w[A B]))
 
     assert_selector "select.border-border-strong"
-    assert_selector "select.focus-visible\\:ring-interactive-focus"
+    assert_selector "select.focus-ring"
   end
 
   # WCAG 2.5.5 target size: the control sits at the 44px floor (--form-input-height).

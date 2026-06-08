@@ -32,7 +32,7 @@ class SearchInputRenderTest < ViewComponent::TestCase
     render_inline(UI::SearchInputComponent.new(name: "q"))
 
     assert_selector "input.border-border-strong"
-    assert_selector "input.focus-visible\\:ring-interactive-focus"
+    assert_selector "input.focus-ring"
   end
 
   # WCAG 2.5.5 target size: the control sits at the 44px floor (h-11).
