@@ -1,50 +1,31 @@
 # Breadcrumb
 
-Accessible `<nav>` trail showing the current page's path through a hierarchy.
+A breadcrumb trail — a `<nav aria-label>` landmark with an ordered list. The last item is the
+current page (`aria-current="page"`, not a link); earlier items are links with a decorative
+separator.
 
 ## Installation
 
 ```bash
-rails g view_primitives:add breadcrumb
+rails g modelrails_ui:add breadcrumb
 ```
-
-Creates `app/components/ui/breadcrumb_component.rb`.
 
 ## Usage
 
-Pass an `items:` array. The last item is the current page (no `href:` needed).
-
 ```erb
-<%= ui :breadcrumb, items: [
-  { label: "Home",     href: root_path },
-  { label: "Products", href: products_path },
-  { label: "Widget Pro" }
-] %>
+<%= render(UI::BreadcrumbComponent.new(items: [
+  { label: "Home", href: root_path },
+  { label: "Library", href: "/library" },
+  { label: "Data" }
+])) %>
 ```
 
-## Custom separator
+The LAST item (no `href`) is the current page. `label:` overrides the `<nav>` accessible name
+(i18n; defaults to `t("ui.breadcrumb.label", default: "Breadcrumb")`). `separator:` changes the
+divider (default `/`).
 
-```erb
-<%= ui :breadcrumb,
-       separator: "›",
-       items: [
-         { label: "Home",     href: root_path },
-         { label: "Settings", href: settings_path },
-         { label: "Security" }
-       ] %>
-```
+## Accessibility
 
-## API
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `items` | Array | `[]` | Array of `{ label:, href: }` hashes; last item is the current page (no `href:`) |
-| `separator` | String | `"/"` | Character rendered between items |
-| `**html_attrs` | Hash | — | Forwarded to the `<nav>` element |
-
-### Item hash
-
-| Key | Type | Required | Description |
-|-----|------|----------|-------------|
-| `label` | String | Yes | Display text |
-| `href` | String | No | Link destination; omit for the current page |
+WCAG 2.2 AAA. `<nav>` named by `label:`; an `<ol>` of crumbs; the current page is
+`aria-current="page"` and not a link; separators are `aria-hidden="true"`; links carry a
+`:focus-visible` ring. Proven by `spec/system/ui/breadcrumb_component_spec.rb` in the host app.
