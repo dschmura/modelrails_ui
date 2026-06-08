@@ -46,6 +46,7 @@ without extra verification.
 | tooltip | proven | ✅ | ✅ | Wave 5b floating (shows on hover+focus; role=tooltip + aria-describedby; Escape-dismiss via shared `floating` controller w/ group-data-[dismissed]!; fail-loud side). 0a render test |
 | hover_card | proven | ✅ | ✅ | Wave 5b floating (JS hover-intent open/close w/ close-delay so the pointer can cross to the card + click its content; Escape closes + returns focus to trigger; optional role=group label; fail-loud side). 0a render test |
 | dropdown_menu | proven | ✅ | ✅ | Menu-band exemplar (Wave 6): APG menu-button via shared `menu` controller (roving tabindex, type-ahead, Escape/Tab/outside-click dismissal); CSS anchor positioning (side×align). 0a render test; app 0b green + AAA CI (#246) |
+| context_menu | hardened | ✅ | ⏳ | Menu-band (Wave 6): right-click + Shift+F10 APG menu; reuses the shared `menu` controller via EXTRA_STIMULUS (+ openAt); focusable host trigger; JS pointer positioning (no side/align). 0a render test; app 0b CI-pending |
 
 All other gem components: **experimental** (unverified) unless listed above.
 
