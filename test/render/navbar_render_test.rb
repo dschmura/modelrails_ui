@@ -36,6 +36,7 @@ class NavbarRenderTest < ViewComponent::TestCase
 
     button = page.find("button[data-navbar-target='toggle']", visible: :all)
     menu_id = button["aria-controls"]
+
     assert_selector "div##{menu_id}[data-navbar-target='menu'][hidden]", visible: :all
   end
 
