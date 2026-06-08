@@ -1553,7 +1553,7 @@ class TestMenubarComponent < Minitest::Test
   end
 
   def test_class_extracted
-    c = UI::MenubarComponent.new(class: "w-full")
+    c = UI::MenubarComponent.new(label: "Main", class: "w-full")
 
     assert_equal "w-full", c.instance_variable_get(:@extra_class)
   end

@@ -40,6 +40,14 @@ class MenubarRenderTest < ViewComponent::TestCase
     assert_selector "div[data-controller='menu'][data-menubar-item]", count: 2, visible: :all
   end
 
+  def test_each_submenu_wrapper_dismisses_on_outside_click
+    render_bar
+
+    assert_selector "div[data-controller='menu'][data-menubar-item]" \
+                    "[data-action~='click@document->menu#closeOnClickOutside']",
+      count: 2, visible: :all
+  end
+
   def test_bar_item_is_a_menuitem_button_that_triggers_its_menu
     render_bar
 
@@ -83,12 +91,27 @@ class MenubarRenderTest < ViewComponent::TestCase
     assert_selector "[data-menu-target='menu'][class*='position-area:bottom_span-right']", visible: :all
   end
 
-  def test_menubar_label_defaults_to_menu_and_passes_class_through
-    render_inline(UI::MenubarComponent.new(class: "w-full")) do |bar|
+  def test_menubar_requires_a_label
+    assert_raises(ArgumentError) { UI::MenubarComponent.new }
+  end
+
+  def test_menubar_passes_class_through
+    render_inline(UI::MenubarComponent.new(label: "Main", class: "w-full")) do |bar|
       bar.with_menu(label: "File") { |m| m.with_item { "New" } }
     end
 
-    assert_selector "div[role='menubar'][aria-label='Menu'][class~='w-full']", visible: :all
+    assert_selector "div[role='menubar'][aria-label='Main'][class~='w-full']", visible: :all
+  end
+
+  def test_menubar_merges_caller_data_without_clobbering_the_coordinator
+    render_inline(UI::MenubarComponent.new(label: "Main", data: {turbo_frame: "x"})) do |bar|
+      bar.with_menu(label: "File") { |m| m.with_item { "New" } }
+    end
+
+    assert_selector "div[role='menubar'][data-controller='menubar']" \
+                    "[data-menubar-menu-outlet='[data-menubar-item]']" \
+                    "[data-action~='keydown->menubar#navigate'][data-turbo-frame='x']",
+      visible: :all
   end
 
   def test_menubar_menu_requires_a_label
