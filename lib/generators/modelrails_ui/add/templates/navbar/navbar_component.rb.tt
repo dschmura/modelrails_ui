@@ -15,6 +15,7 @@ module UI
   #   active link carries `aria-current="page"`.
   # - **You supply:** `items:` (`[{ label:, href:, active: }]`); optional `brand:`/`brand_href:`;
   #   optional block content for the right action area.
+  # - **Scope:** the action-area block is desktop-only; the mobile menu shows `items:` only.
   class NavbarComponent < ApplicationComponent
     LINK_BASE = "text-sm font-medium transition-colors hover:text-text-heading"
     LINK_IDLE = "text-text-muted"
@@ -85,6 +86,9 @@ module UI
       content_tag(:div, nil, class: "flex-1")
     end
 
+    # Desktop-only (hidden md:flex). The block CTA is intentionally NOT mirrored into the
+    # mobile menu this pass — for mobile parity, put the action in `items:` or extend the
+    # mobile panel with a captured slot. (Deliberate scope cut; see the accessibility note.)
     def action_area
       return "" unless content?
 
