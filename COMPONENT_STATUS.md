@@ -50,6 +50,7 @@ without extra verification.
 | menubar | proven | ✅ | ✅ | Menu-band (Wave 6) final: APG menubar (role=menubar, roving ←/→/Home/End/type-ahead) via a thin `menubar` coordinator + Stimulus outlets; single-level submenus. 0a render test; app 0b green + AAA CI (#249) |
 | menubar_menu | proven | ✅ | ✅ | menubar sub-component: bar item (role=menuitem, aria-haspopup) + role=menu submenu reusing the shared `menu` controller via EXTRA_STIMULUS; CSS anchor positioning; dropdown_menu item model. Covered by the menubar 0a/0b (#249) |
 | tabs | proven | ✅ | ✅ | Navigation band (Wave 7) exemplar: APG tabs (automatic activation) — role=tablist/tab/tabpanel, roving tabindex, ←/→/Home/End, aria-controls/labelledby, focusable panels; slots-only API. 0a render test; app 0b green + AAA CI (#250) |
+| navbar | hardened | ✅ | ⏳ | Navigation band (Wave 7): `<nav>` landmark (i18n label) + APG disclosure mobile menu (hamburger aria-expanded/controls + Escape + outside-click, target-based controller; added the missing menu panel); aria-current on active link. 0a render test; app 0b CI-pending |
 
 All other gem components: **experimental** (unverified) unless listed above.
 
