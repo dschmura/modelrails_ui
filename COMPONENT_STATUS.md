@@ -49,7 +49,7 @@ without extra verification.
 | context_menu | proven | ✅ | ✅ | Menu-band (Wave 6): right-click + Shift+F10 APG menu; reuses the shared `menu` controller via EXTRA_STIMULUS (+ openAt); focusable host trigger; JS pointer positioning (no side/align). 0a render test; app 0b green + AAA CI (#248) |
 | menubar | proven | ✅ | ✅ | Menu-band (Wave 6) final: APG menubar (role=menubar, roving ←/→/Home/End/type-ahead) via a thin `menubar` coordinator + Stimulus outlets; single-level submenus. 0a render test; app 0b green + AAA CI (#249) |
 | menubar_menu | proven | ✅ | ✅ | menubar sub-component: bar item (role=menuitem, aria-haspopup) + role=menu submenu reusing the shared `menu` controller via EXTRA_STIMULUS; CSS anchor positioning; dropdown_menu item model. Covered by the menubar 0a/0b (#249) |
-| tabs | hardened | ✅ | ⏳ | Navigation band (Wave 7) exemplar: APG tabs (automatic activation) — role=tablist/tab/tabpanel, roving tabindex, ←/→/Home/End, aria-controls/labelledby, focusable panels; slots-only API. 0a render test; app 0b CI-pending |
+| tabs | proven | ✅ | ✅ | Navigation band (Wave 7) exemplar: APG tabs (automatic activation) — role=tablist/tab/tabpanel, roving tabindex, ←/→/Home/End, aria-controls/labelledby, focusable panels; slots-only API. 0a render test; app 0b green + AAA CI (#250) |
 
 All other gem components: **experimental** (unverified) unless listed above.
 
