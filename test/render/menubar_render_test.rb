@@ -79,7 +79,7 @@ class MenubarRenderTest < ViewComponent::TestCase
   def test_submenu_panel_uses_anchor_positioning
     render_bar
 
-    assert_selector "[data-menu-target='menu'].fixed", visible: :all
+    assert_selector "[data-menu-target='menu'][class*='position-try-fallbacks:flip-block']", visible: :all
     assert_selector "[data-menu-target='menu'][class*='position-area:bottom_span-right']", visible: :all
   end
 
@@ -93,5 +93,16 @@ class MenubarRenderTest < ViewComponent::TestCase
 
   def test_menubar_menu_requires_a_label
     assert_raises(ArgumentError) { UI::MenubarMenuComponent.new }
+  end
+
+  def test_menubar_menu_wrapper_merges_caller_class_and_data
+    render_inline(UI::MenubarComponent.new(label: "Main")) do |bar|
+      bar.with_menu(label: "File", class: "shrink-0", data: {turbo_frame: "x"}) do |m|
+        m.with_item { "New" }
+      end
+    end
+
+    assert_selector "div[data-controller='menu'][data-menubar-item][data-turbo-frame='x']" \
+                    "[class~='relative'][class~='shrink-0']", visible: :all
   end
 end

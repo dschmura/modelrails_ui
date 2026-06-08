@@ -186,6 +186,13 @@ class TestGeneratorComponents < Minitest::Test
       "menubar should include menubar_controller.js"
   end
 
+  def test_menubar_menu_reuses_menu_controller
+    cfg = ModelrailsUi::Generators::Components::EXTRA_STIMULUS["menubar_menu"]
+
+    assert_equal({source: "dropdown_menu/menu_controller.js", name: "menu"}, cfg)
+    assert_path_exists File.join(TEMPLATE_ROOT, "dropdown_menu", "menu_controller.js")
+  end
+
   def test_command_has_js_controller
     assert_path_exists File.join(TEMPLATE_ROOT, "command", "command_controller.js"),
       "command should include command_controller.js"
