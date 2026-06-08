@@ -111,9 +111,9 @@ class TestGeneratorComponents < Minitest::Test
       "tabs should have tabs_component and tabs_item_component templates"
   end
 
-  def test_tabs_has_html_erb_template
-    assert_path_exists File.join(TEMPLATE_ROOT, "tabs", "tabs_component.html.erb"),
-      "tabs should include tabs_component.html.erb"
+  def test_tabs_has_no_html_erb_template
+    refute_path_exists File.join(TEMPLATE_ROOT, "tabs", "tabs_component.html.erb"),
+      "tabs uses call; tabs_component.html.erb must not exist"
   end
 
   def test_tabs_has_js_controller

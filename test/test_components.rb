@@ -1200,40 +1200,46 @@ class TestFooterComponent < Minitest::Test
 end
 
 class TestTabsComponent < Minitest::Test
-  def test_items_data_from_array
-    c = UI::TabsComponent.new(items: [{title: "A", content: "a"}])
+  def test_label_stored
+    c = UI::TabsComponent.new(label: "Account")
 
-    assert_equal 1, c.instance_variable_get(:@items_data).size
+    assert_equal "Account", c.instance_variable_get(:@label)
   end
 
-  def test_nil_items_becomes_empty_array
-    c = UI::TabsComponent.new
+  def test_default_selected_index
+    c = UI::TabsComponent.new(label: "Account")
 
-    assert_equal [], c.instance_variable_get(:@items_data)
+    assert_equal 0, c.instance_variable_get(:@selected)
   end
 
-  def test_default_index
-    c = UI::TabsComponent.new
+  def test_custom_selected_index
+    c = UI::TabsComponent.new(label: "Account", selected: 2)
 
-    assert_equal 0, c.instance_variable_get(:@default_index)
-  end
-
-  def test_custom_default_index
-    c = UI::TabsComponent.new(default_index: 2)
-
-    assert_equal 2, c.instance_variable_get(:@default_index)
+    assert_equal 2, c.instance_variable_get(:@selected)
   end
 
   def test_string_index_coerced_to_int
-    c = UI::TabsComponent.new(default_index: "1")
+    c = UI::TabsComponent.new(label: "Account", selected: "1")
 
-    assert_equal 1, c.instance_variable_get(:@default_index)
+    assert_equal 1, c.instance_variable_get(:@selected)
   end
 
   def test_class_extracted
-    c = UI::TabsComponent.new(class: "rounded-lg")
+    c = UI::TabsComponent.new(label: "Account", class: "rounded-lg")
 
     assert_equal "rounded-lg", c.instance_variable_get(:@extra_class)
+  end
+
+  def test_id_auto_generated_when_not_supplied
+    c = UI::TabsComponent.new(label: "Account")
+
+    assert_match(/\Atabs-[0-9a-f]{8}\z/, c.instance_variable_get(:@id))
+  end
+
+  def test_custom_id_stored
+    c = UI::TabsComponent.new(label: "Account", id: "my-tabs")
+
+    assert_equal "my-tabs", c.instance_variable_get(:@id)
   end
 end
 
