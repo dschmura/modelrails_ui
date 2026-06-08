@@ -23,6 +23,14 @@ class TabsRenderTest < ViewComponent::TestCase
     assert_selector "div[data-controller='tabs'][data-tabs-index-value='0']", visible: :all
   end
 
+  def test_caller_data_merges_without_clobbering_the_controller
+    render_inline(UI::TabsComponent.new(label: "Account", data: {turbo_frame: "f"})) do |t|
+      t.with_tab(title: "Profile") { "profile body" }
+    end
+
+    assert_selector "div[data-controller='tabs'][data-tabs-index-value='0'][data-turbo-frame='f']", visible: :all
+  end
+
   def test_tablist_has_role_and_accessible_name
     render_tabs
 
@@ -57,6 +65,7 @@ class TabsRenderTest < ViewComponent::TestCase
 
     tab = page.find("button[role='tab']", text: "Profile", visible: :all)
     panel_id = tab["aria-controls"]
+
     assert_selector "div##{panel_id}[role='tabpanel'][aria-labelledby='#{tab["id"]}'][tabindex='0']" \
                     "[data-tabs-target='panel']", text: "profile body", visible: :all
   end
