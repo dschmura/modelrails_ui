@@ -167,8 +167,11 @@ class TestGeneratorComponents < Minitest::Test
   end
 
   def test_context_menu_has_js_controller
-    assert_path_exists File.join(TEMPLATE_ROOT, "context_menu", "context_menu_controller.js"),
-      "context_menu should include context_menu_controller.js"
+    # Wave 6: context_menu uses the shared `menu` controller via EXTRA_STIMULUS (no own copy).
+    cfg = ModelrailsUi::Generators::Components::EXTRA_STIMULUS["context_menu"]
+
+    assert_equal({source: "dropdown_menu/menu_controller.js", name: "menu"}, cfg)
+    assert_path_exists File.join(TEMPLATE_ROOT, "dropdown_menu", "menu_controller.js")
   end
 
   def test_menubar_copies_two_rb_tt_files
