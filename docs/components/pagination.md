@@ -1,48 +1,37 @@
 # Pagination
 
-Page navigation with previous/next controls, page number links, and ellipsis for long ranges.
-
-## Installation
-
-```bash
-rails g view_primitives:add pagination
-```
-
-Creates `app/components/ui/pagination_component.rb`.
+**Use Pagy's built-in `@pagy.series_nav`.** This app paginates with [Pagy](https://ddnexus.github.io/pagy/)
+(43.x), whose `series_nav` already renders an accessible navigation bar (`aria-label`,
+`role="link" aria-current="page"` on the current page, `rel="prev"`/`rel="next"`, gap
+separators). There is **no custom `PaginationComponent`** to adopt — building one would only
+duplicate Pagy's windowing.
 
 ## Usage
 
-```erb
-<%= ui :pagination,
-       current_page: @pagy.page,
-       total_pages:  @pagy.pages,
-       url: ->(page) { articles_path(page: page) } %>
+In the controller:
+
+```ruby
+@pagy, @records = pagy(scope)            # or pagy(:offset, array)
 ```
 
-The `url:` option must be a callable (lambda or proc) that receives a page number and returns a path string.
-
-## Render nothing on one page
-
-The component renders nothing when `total_pages` is 1 or fewer.
-
-## Window size
-
-The `window:` option controls how many page numbers appear on each side of the current page before an ellipsis is shown (default: 2).
+In the view (wrap in a design-system container; the app ships a `shared/_pagination` partial):
 
 ```erb
-<%= ui :pagination,
-       current_page: 5,
-       total_pages:  20,
-       url: ->(page) { posts_path(page: page) },
-       window: 1 %>
+<%== @pagy.series_nav(aria_label: t("pagination.aria_label", default: "Pages")) %>
 ```
 
-## API
+`@pagy.page_url(page)` builds a URL for any page; `@pagy.series` is the raw page array
+(`[1, 2, "3", 4, :gap, 50]`) if you ever need fully custom markup.
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `current_page` | Integer | required | Active page number |
-| `total_pages` | Integer | required | Total number of pages |
-| `url` | Callable | required | Receives a page number, returns a URL string |
-| `window` | Integer | `2` | Pages shown on each side of the current page |
-| `**html_attrs` | Hash | — | Forwarded to the `<nav>` element |
+## Styling (design system)
+
+`series_nav` emits `<nav class="pagy series-nav">…</nav>` with plain `<a>` children — **unstyled
+by default**. The host app styles them to the design-system tokens (AAA in both themes) via a
+`@layer components` block targeting `.pagy.series-nav` (see `app/assets/tailwind/application.css`
+in `modelrails_base`, proven by `spec/system/ui/pagination_a11y_spec.rb`). Copy that block to
+match your design system.
+
+## Accessibility
+
+WCAG 2.2 AAA. Pagy's `series_nav` provides the ARIA contract; the design-system CSS provides
+the AAA-contrast styling in both themes (proven in the host app's CI `test` job).
