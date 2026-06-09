@@ -73,7 +73,7 @@ module UI
 
       def initialize(src:, kind: :subtitles, label: nil, srclang: nil, default: false, **html_attrs)
         @src     = src
-        @kind    = KINDS.include?(kind.to_sym) ? kind.to_sym : :subtitles
+        @kind    = coerce_kind(kind)
         @label   = label
         @srclang = srclang
         @default = default
@@ -86,6 +86,17 @@ module UI
         attrs[:srclang] = @srclang if @srclang
         attrs[:default] = true     if @default
         tag.track(**attrs, **@html_attrs)
+      end
+
+      private
+
+      # Was: KINDS.include?(kind.to_sym) ? kind.to_sym : :subtitles — a typo'd kind silently
+      # became :subtitles. Fail loud instead (the program's canonical silent-fallback defect).
+      def coerce_kind(value)
+        sym = value.to_sym
+        return sym if KINDS.include?(sym)
+
+        raise ArgumentError, "unknown track kind #{value.inspect} — use one of #{KINDS.join(', ')}"
       end
     end
   end
