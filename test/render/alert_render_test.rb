@@ -69,4 +69,62 @@ class AlertRenderTest < ViewComponent::TestCase
 
     assert_selector "div.mt-4.bg-surface-raised"
   end
+
+  # --- B2: 1-axis tone rename (deprecated `variant:` alias must stay byte-identical) ---
+
+  # The DEPRECATED `variant:` alias path. Each legacy value must render the exact
+  # same surface class + role + aria-live as before the tone rename.
+  LEGACY_VARIANT_BACK_COMPAT = {
+    default: {surface: "bg-surface-raised", role: "status", live: "polite"},
+    info: {surface: "bg-info-surface", role: "status", live: "polite"},
+    success: {surface: "bg-success-surface", role: "status", live: "polite"},
+    warning: {surface: "bg-warning-surface", role: "status", live: "polite"},
+    danger: {surface: "bg-danger-surface", role: "alert", live: "assertive"},
+    destructive: {surface: "bg-danger-surface", role: "alert", live: "assertive"}
+  }.freeze
+
+  LEGACY_VARIANT_BACK_COMPAT.each do |legacy, expected|
+    define_method("test_legacy_variant_#{legacy}_renders_byte_identical") do
+      render_inline(UI::AlertComponent.new(variant: legacy, title: "X"))
+
+      assert_selector "div[role='#{expected[:role]}'][aria-live='#{expected[:live]}'].#{expected[:surface]}"
+    end
+  end
+
+  # The NEW `tone:` axis. `tone: :neutral` is the renamed `default` — identical output.
+  def test_tone_neutral_matches_legacy_default
+    render_inline(UI::AlertComponent.new(tone: :neutral, title: "X"))
+
+    assert_selector "div[role='status'][aria-live='polite'].bg-surface-raised"
+    assert_selector "div.text-text-body"
+  end
+
+  def test_tone_warning_is_a_polite_status_on_the_warning_surface
+    render_inline(UI::AlertComponent.new(tone: :warning, title: "Heads up"))
+
+    assert_selector "div[role='status'][aria-live='polite'].bg-warning-surface", text: "Heads up"
+  end
+
+  def test_tone_danger_is_an_assertive_alert_on_the_danger_surface
+    render_inline(UI::AlertComponent.new(tone: :danger, title: "Couldn't save"))
+
+    assert_selector "div[role='alert'][aria-live='assertive'].bg-danger-surface", text: "Couldn't save"
+  end
+
+  # The legacy `variant:` alias and the new `tone:` axis must resolve identically.
+  def test_legacy_default_variant_and_tone_neutral_render_identically
+    render_inline(UI::AlertComponent.new(variant: :default, title: "X"))
+    legacy = page.native.to_html
+
+    render_inline(UI::AlertComponent.new(tone: :neutral, title: "X"))
+    new_axis = page.native.to_html
+
+    assert_equal legacy, new_axis
+  end
+
+  def test_unknown_tone_raises
+    assert_raises(ArgumentError) do
+      render_inline(UI::AlertComponent.new(tone: :bogus))
+    end
+  end
 end
