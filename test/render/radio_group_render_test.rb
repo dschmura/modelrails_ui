@@ -100,11 +100,10 @@ class RadioGroupRenderTest < ViewComponent::TestCase
     assert_selector "input.accent-interactive"
   end
 
-  # Standard library 3px focus ring (not ring-1), matching the other form controls.
-  def test_inputs_use_the_standard_3px_focus_ring
+  # Uniform focus-ring utility (converged convention).
+  def test_inputs_use_the_focus_ring_utility
     render_inline(UI::RadioGroupComponent.new(name: "plan", label: "Billing plan", items: PLAN_ITEMS))
 
-    assert_selector "input.focus-visible\\:ring-\\[3px\\]"
-    assert_selector "input.focus-visible\\:ring-interactive-focus"
+    assert_selector "input.focus-ring"
   end
 end

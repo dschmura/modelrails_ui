@@ -21,14 +21,14 @@ class TextareaRenderTest < ViewComponent::TestCase
   def test_renders_base_aaa_tokens
     render_inline(UI::TextareaComponent.new)
 
-    assert_selector "textarea.block.w-full.rounded-md.border.focus\\:ring-2"
+    assert_selector "textarea.block.w-full.rounded-md.border.focus-ring"
   end
 
   # NORMAL styling on a non-invalid field.
   def test_renders_normal_aaa_tokens_when_valid
     render_inline(UI::TextareaComponent.new)
 
-    assert_selector "textarea.border-border-strong.bg-surface-raised.text-text-heading.focus\\:ring-interactive-focus"
+    assert_selector "textarea.border-border-strong.bg-surface-raised.text-text-heading"
   end
 
   # A disabled field is visually distinct (NORMAL carries disabled styling).

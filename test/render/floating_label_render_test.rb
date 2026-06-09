@@ -15,7 +15,7 @@ class FloatingLabelRenderTest < ViewComponent::TestCase
     render_inline(UI::FloatingLabelComponent.new(label: "Email"))
 
     assert_selector "input.border-border-strong"
-    assert_selector "input.focus-visible\\:ring-interactive-focus"
+    assert_selector "input.focus-ring"
   end
 
   def test_label_text_renders

@@ -20,12 +20,12 @@ class BadgeRenderTest < ViewComponent::TestCase
 
   # The canonical `danger` signal uses the TINTED treatment (soft danger-surface +
   # saturated text-danger + danger-border), not a solid fill. Never raw palette /
-  # text-white; danger uniquely keeps a danger-colored focus ring.
+  # text-white; focus ring is the uniform focus-ring utility.
   def test_danger_uses_tinted_surface
     render_inline(UI::BadgeComponent.new("Error", variant: :danger))
 
     assert_selector "span.bg-danger-surface.text-danger.border-danger-border"
-    assert_selector 'span.focus-visible\\:ring-danger'
+    assert_selector "span.focus-ring"
     refute_selector "span.text-white"
   end
 

@@ -6,18 +6,18 @@ module UI
     # @layer components). Filled family (primary/secondary/danger) + text family
     # (text/text_interactive/text_danger). All AAA-tuned, aligned to --form-input-height.
     FILLED = "inline-flex items-center justify-center px-4 rounded-md font-medium cursor-pointer " \
-             "focus:outline-none focus:ring-2 focus:ring-offset-2 min-h-[var(--form-input-height)]"
+             "focus-ring min-h-[var(--form-input-height)]"
 
     TEXT = "inline-flex items-center justify-center px-2 min-h-[var(--form-input-height)] min-w-[var(--form-input-height)] " \
-           "font-medium underline rounded focus-visible:outline-none focus-visible:ring-2 hover:no-underline"
+           "font-medium underline rounded focus-ring hover:no-underline"
 
     VARIANTS = {
-      primary: "#{FILLED} bg-interactive hover:bg-interactive-hover text-text-on-interactive focus:ring-interactive-focus",
-      secondary: "#{FILLED} border border-border text-text-body hover:bg-surface-sunken focus:ring-interactive-focus",
-      danger: "#{FILLED} bg-danger hover:bg-danger/90 text-text-on-interactive focus:ring-danger",
-      text: "#{TEXT} text-interactive focus-visible:ring-interactive-focus",
-      text_interactive: "#{TEXT} text-interactive focus-visible:ring-interactive-focus",
-      text_danger: "#{TEXT} text-danger focus-visible:ring-danger"
+      primary: "#{FILLED} bg-interactive hover:bg-interactive-hover text-text-on-interactive",
+      secondary: "#{FILLED} border border-border text-text-body hover:bg-surface-sunken",
+      danger: "#{FILLED} bg-danger hover:bg-danger/90 text-text-on-interactive",
+      text: "#{TEXT} text-interactive",
+      text_interactive: "#{TEXT} text-interactive",
+      text_danger: "#{TEXT} text-danger"
     }.freeze
 
     # Optional size overrides (the app uses a single size keyed to --form-input-height,

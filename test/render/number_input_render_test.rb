@@ -22,7 +22,7 @@ class NumberInputRenderTest < ViewComponent::TestCase
     render_inline(UI::NumberInputComponent.new(name: "qty"))
 
     assert_selector "input.border-border-strong"
-    assert_selector "input.focus-visible\\:ring-interactive-focus"
+    assert_selector "input.focus-ring"
   end
 
   # 44px AAA touch target: the input carries the --form-input-height min-height token.

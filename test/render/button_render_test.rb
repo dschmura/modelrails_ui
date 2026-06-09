@@ -16,7 +16,7 @@ class ButtonRenderTest < ViewComponent::TestCase
 
     assert_selector "button.bg-interactive"
     assert_selector "button.text-text-on-interactive"
-    assert_selector "button.focus\\:ring-interactive-focus"
+    assert_selector "button.focus-ring"
   end
 
   def test_href_renders_anchor
