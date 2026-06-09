@@ -13,7 +13,8 @@ module ModelrailsUi
         "tooltip" => {source: "popover/floating_controller.js", name: "floating"},
         "hover_card" => {source: "popover/floating_controller.js", name: "floating"},
         "context_menu" => {source: "dropdown_menu/menu_controller.js", name: "menu"},
-        "menubar_menu" => {source: "dropdown_menu/menu_controller.js", name: "menu"}
+        "menubar_menu" => {source: "dropdown_menu/menu_controller.js", name: "menu"},
+        "gallery" => {source: "dialog/modal_controller.js", name: "modal"}
       }.freeze
 
       # Post-install instructions for components that require external dependencies.
