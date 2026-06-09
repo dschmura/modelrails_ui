@@ -29,4 +29,16 @@ class EmbedRenderTest < ViewComponent::TestCase
 
     assert_selector "p.text-danger"
   end
+
+  def test_youtube_watch_url_form_extracts_id_from_query
+    render_inline(UI::EmbedComponent.new(url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"))
+
+    assert_selector "iframe[src*='youtube.com/embed/dQw4w9WgXcQ']", visible: :all
+  end
+
+  def test_google_maps_url_with_q_param_renders
+    render_inline(UI::EmbedComponent.new(url: "https://www.google.com/maps?q=Eiffel+Tower"))
+
+    assert_selector "iframe[src*='output=embed']", visible: :all
+  end
 end
