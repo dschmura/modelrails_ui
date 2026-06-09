@@ -13,7 +13,8 @@ class TestLookbookPreviewsTemplateBacked < Minitest::Test
     "input" => %w[default required invalid dont_raw_input],
     "textarea" => %w[default invalid dont_raw_textarea],
     "file_input" => %w[default images_only multiple dont_raw_file_input],
-    "avatar" => %w[image initials custom_hue dont_interactive_no_label]
+    "avatar" => %w[image initials custom_hue dont_interactive_no_label],
+    "form_field" => %w[default with_hint with_error required]
   }.freeze
 
   def preview_rb(component)
