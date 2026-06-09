@@ -18,6 +18,28 @@ class BadgeRenderTest < ViewComponent::TestCase
     assert_selector "span.text-text-on-interactive"
   end
 
+  # Back-compat lock: every legacy flat `variant:` value must keep rendering its
+  # exact marker class (byte-identical output through the deprecation shim). The
+  # 9 historical variants + `destructive` alias.
+  {
+    default: "bg-interactive",
+    secondary: "bg-interactive-subtle",
+    info: "bg-info-surface",
+    success: "bg-success-surface",
+    warning: "bg-warning-surface",
+    danger: "bg-danger-surface",
+    destructive: "bg-danger-surface",
+    outline: "border-border",
+    ghost: "[a&]:hover:bg-surface-sunken",
+    link: "underline-offset-4"
+  }.each do |legacy, marker|
+    define_method("test_legacy_variant_#{legacy}_still_renders") do
+      render_inline(UI::BadgeComponent.new("X", variant: legacy))
+
+      assert_selector "span.#{marker.gsub(/[\[\]()&:]/) { |c| "\\#{c}" }}"
+    end
+  end
+
   # The canonical `danger` signal uses the TINTED treatment (soft danger-surface +
   # saturated text-danger + danger-border), not a solid fill. Never raw palette /
   # text-white; focus ring is the uniform focus-ring utility.
@@ -29,7 +51,8 @@ class BadgeRenderTest < ViewComponent::TestCase
     refute_selector "span.text-white"
   end
 
-  # `destructive` is a non-breaking alias for the canonical `danger` — identical fill.
+  # `destructive` is a non-breaking alias for the canonical `danger` — identical fill
+  # (the SOFT chip, NOT a solid fill).
   def test_destructive_alias_renders_as_danger
     render_inline(UI::BadgeComponent.new("Error", variant: :destructive))
 
@@ -59,6 +82,28 @@ class BadgeRenderTest < ViewComponent::TestCase
 
     assert_selector "span.bg-warning-surface.text-warning.border-warning-border"
     refute_selector "span.text-text-heading"
+  end
+
+  # New two-axis API: variant: (shape) × tone: (signal).
+  def test_two_axis_soft_info_renders_info_chip
+    render_inline(UI::BadgeComponent.new("Note", variant: :soft, tone: :info))
+
+    assert_selector "span.bg-info-surface.text-info.border-info-border"
+  end
+
+  def test_two_axis_ghost_neutral_renders_ghost
+    render_inline(UI::BadgeComponent.new("Quiet", variant: :ghost, tone: :neutral))
+
+    assert_selector "span.\\[a\\&\\]\\:hover\\:bg-surface-sunken"
+    assert_selector "span.\\[a\\&\\]\\:hover\\:text-text-heading"
+  end
+
+  # UNPROVEN cell for badge: there's no solid-danger chip (badge danger is the soft
+  # tinted treatment). The AAA combo-guard must raise in dev for an untested pairing.
+  def test_solid_danger_unproven_raises
+    assert_raises(ArgumentError) do
+      render_inline(UI::BadgeComponent.new("X", variant: :solid, tone: :danger))
+    end
   end
 
   def test_href_renders_anchor

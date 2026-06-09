@@ -142,16 +142,20 @@ class TestButtonComponent < Minitest::Test
     assert_equal "Save", c.instance_variable_get(:@label)
   end
 
-  def test_default_variant
+  def test_default_axes
     c = UI::ButtonComponent.new
 
-    assert_equal :primary, c.instance_variable_get(:@variant)
+    assert_equal :solid, c.instance_variable_get(:@variant)
+    assert_equal :primary, c.instance_variable_get(:@tone)
   end
 
-  def test_variant_stored_as_symbol
+  # A legacy flat `variant:` (here the string "danger") coerces through SHIM to the
+  # two-axis form: [:solid, :danger]. Back-compat for every existing call site.
+  def test_legacy_variant_coerced_to_axes
     c = UI::ButtonComponent.new(variant: "danger")
 
-    assert_equal :danger, c.instance_variable_get(:@variant)
+    assert_equal :solid, c.instance_variable_get(:@variant)
+    assert_equal :danger, c.instance_variable_get(:@tone)
   end
 
   def test_default_size
@@ -255,10 +259,10 @@ class TestButtonComponent < Minitest::Test
 end
 
 class TestAlertComponent < Minitest::Test
-  def test_default_variant
+  def test_default_tone
     c = UI::AlertComponent.new
 
-    assert_equal :default, c.instance_variable_get(:@variant)
+    assert_equal :neutral, c.instance_variable_get(:@tone)
   end
 
   def test_title_kwarg_stored
@@ -273,12 +277,12 @@ class TestAlertComponent < Minitest::Test
     assert_equal "Something happened.", c.instance_variable_get(:@description)
   end
 
-  # `destructive` is a non-breaking alias for the canonical `danger`, resolved in
-  # coerce_variant, so the stored variant is `:danger`.
+  # `destructive` is a non-breaking alias for the canonical `danger` tone, resolved via
+  # the deprecated `variant:` path in coerce_tone, so the stored tone is `:danger`.
   def test_destructive_aliases_danger
     c = UI::AlertComponent.new(variant: :destructive)
 
-    assert_equal :danger, c.instance_variable_get(:@variant)
+    assert_equal :danger, c.instance_variable_get(:@tone)
   end
 end
 
@@ -329,23 +333,30 @@ class TestBadgeComponent < Minitest::Test
     assert_equal "New", c.instance_variable_get(:@label)
   end
 
-  def test_default_variant
+  # Two-axis default (converged-conventions B2): variant: :solid × tone: :primary.
+  def test_default_axes
     c = UI::BadgeComponent.new
 
-    assert_equal :default, c.instance_variable_get(:@variant)
+    assert_equal :solid, c.instance_variable_get(:@variant)
+    assert_equal :primary, c.instance_variable_get(:@tone)
   end
 
-  def test_all_variants_exist
-    %i[default secondary info success warning danger outline ghost link].each do |variant|
-      assert UI::BadgeComponent::VARIANTS.key?(variant), "Missing variant #{variant}"
+  # Every shipped (variant, tone) cell is an AAA-proven treatment in COMBOS.
+  def test_all_combos_exist
+    [%i[solid primary], %i[soft primary], %i[soft info], %i[soft success],
+      %i[soft warning], %i[soft danger], %i[outline neutral], %i[ghost neutral],
+      %i[link primary]].each do |cell|
+      assert UI::BadgeComponent::COMBOS.key?(cell), "Missing cell #{cell.inspect}"
     end
   end
 
-  # `destructive` is a non-breaking alias for the canonical `danger`.
-  def test_destructive_aliases_danger
+  # `destructive` is a non-breaking alias for the canonical `danger`, which on badge
+  # is the SOFT tinted chip — so it resolves to the [:soft, :danger] cell (NOT solid).
+  def test_destructive_aliases_soft_danger
     c = UI::BadgeComponent.new("Error", variant: :destructive)
 
-    assert_equal :danger, c.instance_variable_get(:@variant)
+    assert_equal :soft, c.instance_variable_get(:@variant)
+    assert_equal :danger, c.instance_variable_get(:@tone)
   end
 end
 

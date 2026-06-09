@@ -42,6 +42,61 @@ class ButtonRenderTest < ViewComponent::TestCase
     end
   end
 
+  # --- B2 two-axis (variant × tone) + A8 :icon size ---------------------------
+
+  # Back-compat: every legacy flat `variant:` value still renders its marker class
+  # (the shim translates the old enum to a (variant, tone) cell — byte-identical output).
+  {
+    primary: "bg-interactive",
+    secondary: "border-border",
+    danger: "bg-danger",
+    destructive: "bg-danger",
+    text: "text-interactive",
+    text_interactive: "text-interactive",
+    text_danger: "text-danger"
+  }.each do |legacy, marker|
+    define_method("test_legacy_variant_#{legacy}_still_renders") do
+      render_inline(UI::ButtonComponent.new("Go", variant: legacy))
+
+      assert_selector "button.#{marker.tr(" ", ".")}"
+    end
+  end
+
+  def test_two_axis_solid_primary_matches_legacy_primary
+    render_inline(UI::ButtonComponent.new("Go", variant: :solid, tone: :primary))
+
+    assert_selector "button.bg-interactive.text-text-on-interactive"
+  end
+
+  def test_two_axis_text_danger
+    render_inline(UI::ButtonComponent.new("Go", variant: :text, tone: :danger))
+
+    assert_selector "button.text-danger"
+  end
+
+  def test_two_axis_outline_neutral_matches_legacy_secondary
+    render_inline(UI::ButtonComponent.new("Go", variant: :outline, tone: :neutral))
+
+    assert_selector "button.border-border"
+  end
+
+  # Unproven (variant, tone) cell — raises in dev/test (the AAA combo-guard:
+  # a new fill is an untested text-on-* pairing).
+  def test_unproven_cell_raises_in_dev
+    assert_raises(ArgumentError) do
+      render_inline(UI::ButtonComponent.new("Go", variant: :solid, tone: :neutral))
+    end
+  end
+
+  # A8: `size: :icon` is a 44×44 square (drop horizontal padding, add min-w; min-h
+  # is already carried by the FILLED base).
+  def test_size_icon_is_a_44px_square
+    render_inline(UI::ButtonComponent.new(variant: :solid, tone: :primary, size: :icon))
+
+    assert_selector "button.px-0"
+    assert_selector 'button.min-w-\\[var\\(--form-input-height\\)\\]'
+  end
+
   # Behavioral proof of the tailwind_merge-backed `cn`: a `class:` passthrough
   # must OVERRIDE a conflicting base utility. The filled base is `rounded-md`;
   # passing `class: "rounded-full"` must win, and `rounded-md` must be dropped.
