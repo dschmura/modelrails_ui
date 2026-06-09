@@ -20,7 +20,13 @@ class TestLookbookPreviewsTemplateBacked < Minitest::Test
     "banner" => %w[default info dismissible dont_dismiss_no_label],
     "list_group" => %w[default links dont_div_rows],
     "chat_bubble" => %w[sent received with_meta dont_color_only_author],
-    "footer" => %w[default minimal dont_div_links]
+    "footer" => %w[default minimal dont_div_links],
+    "iframe" => %w[default responsive dont_no_title],
+    "picture" => %w[default formats dont_no_alt],
+    "device_mockup" => %w[phone browser dont_decorative_image_no_alt],
+    "map_area" => %w[default dont_area_no_alt],
+    "timeline" => %w[default variants with_datetime dont_div_steps],
+    "scroll_area" => %w[default horizontal dont_no_keyboard_access]
   }.freeze
 
   def preview_rb(component)
