@@ -351,11 +351,13 @@ class TestGeneratorComponents < Minitest::Test
     assert_includes source, "gallery"
   end
 
-  def test_gallery_controller_has_open_close
+  def test_gallery_controller_is_a_thin_open_coordinator
     js = File.read(File.join(TEMPLATE_ROOT, "gallery", "gallery_controller.js"))
 
+    # Hardened: opening swaps the shared <dialog> image; the reused `modal`
+    # controller owns close/escape/restore (no colocated close here).
     assert_includes js, "open("
-    assert_includes js, "close("
+    assert_includes js, 'static targets = ["image"]'
   end
 
   def test_carousel_has_slides_and_controller
