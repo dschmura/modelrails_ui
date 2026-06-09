@@ -1,0 +1,8 @@
+<%# ✗ Meaningful screenshot with empty alt — the decorative FRAME is fine, but the %>
+<%# slotted content image is hidden from AT. A real screenshot needs real alt text. %>
+<%= ui :device_mockup, variant: :browser, url: "https://example.com", class: "max-w-2xl" do %>
+  <%= ui :image,
+        src: "https://picsum.photos/id/180/800/500",
+        alt: "",
+        class: "w-full" %>
+<% end %>
