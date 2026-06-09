@@ -20,6 +20,25 @@ Defer to it instead of inventing UI from scratch.
 - **AAA is built into the tokens.** `text-text-muted` resolves to the *same* value as
   `text-text-body` (both ≥7:1) — de-emphasize with size/weight, never by "fixing" muted.
 
+## Component API — variant × tone, data-slot, focus
+- **Two-axis variants.** `button` and `badge` take `variant:` (shape) × `tone:` (signal) —
+  button: `variant: :solid|:outline|:text` × `tone: :primary|:neutral|:danger`; badge:
+  `variant: :solid|:soft|:outline|:ghost|:link` × `tone: :primary|:neutral|:info|:success|:warning|:danger`.
+  `alert` is tone-only (`tone: :neutral|:info|:success|:warning|:danger`). Old flat values
+  (`variant: :text_danger`, etc.) still work via a deprecation shim, but **write the two axes
+  in new code.** Only AAA-proven `(variant, tone)` cells exist — an unproven combo **raises in
+  dev**; add one only with a 0b axe row to prove the new on-color pairing.
+- **`data-slot` is the role contract.** Compound primitives tag their parts
+  (`data-slot=label/control/description/item/…`); spacing adjacency and ARIA key off it. When
+  you compose a field, put `data-slot=control` on the input **group** (prefix + input + suffix),
+  not the bare input, or the adjacency spacing breaks. Pass the field's wiring to your control
+  via the yielded context (e.g. `<%= ui :input, **f.input_attrs %>`), don't hand-wire ids.
+- **Focus is an offset `outline`, never a `ring`.** Focusable controls carry the `focus-ring`
+  utility (a 2px AAA offset outline). Never `focus:ring-*` / `focus-visible:ring-*` — a
+  box-shadow ring is clipped by `overflow:hidden` ancestors and vanishes in forced-colors mode
+  (a 2.4.7 failure). The one exception is a menu item's full-surface
+  `focus-visible:bg-surface-sunken` highlight (a stronger indicator where an outline is clipped).
+
 ## Before you call UI work done
 - **Check both themes** — light *and* dark (class-based dark mode).
 - **Contrast is proven in CI, not locally** — a local axe pass is AA-only; don't claim AAA
