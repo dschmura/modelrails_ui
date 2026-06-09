@@ -39,6 +39,12 @@ without extra verification.
 | indicator | proven | ✅ | ✅ | Wave 3 (raw palette → semantic success/warning + text-on-interactive; fail-loud variant) |
 | image | proven | ✅ | ✅ | Wave 3 (required alt; loading-mode validation; conditional srcset/sizes/width/height) |
 | figure | proven | ✅ | ✅ | Wave 3 (figcaption only when caption given; text-text-muted is AAA here) |
+| aspect_ratio | hardened | ✅ | ⏳ | Display-2 (presentational ratio wrapper; already clean — layout-only `overflow-hidden`, no enum so no fail-loud; slotted media carries its own a11y). 0a render test; app 0b/AAA CI pending |
+| card | hardened | ✅ | ⏳ | Display-2 (bare `border` → `border-border`; card_title hardcoded `<h3>` heading-hijack → caller-owned `level:` + fail-loud guard + `text-text-heading`). 0a render test; app 0b/AAA CI pending |
+| banner | hardened | ✅ | ⏳ | Display-2 (raw palette → tinted signal tokens; `role=region` + i18n aria-label; fail-loud variant; dismissible close button w/ focus-ring + co-located `banner_controller.js`). 0a render test; app 0b/AAA CI pending |
+| list_group | hardened | ✅ | ⏳ | Display-2 (invalid `<a>`-in-`<ul>` → `li>a`; added link focus-ring + aria-current=page on active; fail-loud variant). 0a render test; app 0b/AAA CI pending |
+| chat_bubble | hardened | ✅ | ⏳ | Display-2 (who-spoke by color/alignment alone → always-present sr-only direction label + optional author; received `text-text-heading`→`text-text-body`; fail-loud on non-boolean sent). 0a render test; app 0b/AAA CI pending |
+| footer | hardened | ✅ | ⏳ | Display-2 (`<footer>` contentinfo landmark; link columns are heading + `<ul>`/`<li>`/`<a>`; added the missing `focus-ring` on links; interpolated `md:grid-cols-#{n}` phantom class → static COLS map; optional i18n `label:` for multi-footer pages). 0a render test; app 0b/AAA CI pending |
 | dialog | proven | ✅ | ✅ | Wave 4 overlays exemplar (native <dialog>; 0a + JS-behavior 0b: open/escape/aria-modal + AAA on live modal). Was adopted unverified; now app-adopted + 0b green (#241) |
 | alert_dialog | proven | ✅ | ✅ | native `<dialog role=alertdialog>` (Wave 4); shared `modal` controller; 0a render test + role/labelledby/describedby + 44px i18n close |
 | drawer | proven | ✅ | ✅ | native bottom `<dialog>` slide-up (Wave 4); shared `modal` controller (translateY); decorative drag-handle + 44px close; 0a |

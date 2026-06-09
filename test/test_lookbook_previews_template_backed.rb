@@ -14,7 +14,13 @@ class TestLookbookPreviewsTemplateBacked < Minitest::Test
     "textarea" => %w[default invalid dont_raw_textarea],
     "file_input" => %w[default images_only multiple dont_raw_file_input],
     "avatar" => %w[image initials custom_hue dont_interactive_no_label],
-    "form_field" => %w[default with_hint with_error required]
+    "form_field" => %w[default with_hint with_error required],
+    "aspect_ratio" => %w[default square dont_no_content],
+    "card" => %w[default with_footer dont_heading_misuse],
+    "banner" => %w[default info dismissible dont_dismiss_no_label],
+    "list_group" => %w[default links dont_div_rows],
+    "chat_bubble" => %w[sent received with_meta dont_color_only_author],
+    "footer" => %w[default minimal dont_div_links]
   }.freeze
 
   def preview_rb(component)

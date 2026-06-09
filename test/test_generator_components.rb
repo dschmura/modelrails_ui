@@ -313,7 +313,7 @@ class TestGeneratorComponents < Minitest::Test
     source = File.read(File.join(TEMPLATE_ROOT, "chat_bubble", "chat_bubble_component.rb.tt"))
 
     assert_includes source, "sent"
-    assert_includes source, "BUBBLE_RECV"
+    assert_includes source, "received"
   end
 
   def test_device_mockup_has_phone_and_browser_variants
