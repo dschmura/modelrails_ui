@@ -5,6 +5,8 @@ module UI
     # Add <source> elements via a.with_source(src:, type:)
     renders_many :sources, "UI::AudioComponent::SourceComponent"
 
+    PRELOADS = %i[auto metadata none].freeze
+
     # controls:    show native browser controls (default: true)
     # autoplay:    start playing automatically — requires muted: true in some browsers
     # muted:       mute the audio track
@@ -16,13 +18,13 @@ module UI
       @autoplay = autoplay
       @muted    = muted
       @loop     = loop
-      @preload  = preload
+      @preload  = coerce_preload(preload)
       @extra_class = html_attrs.delete(:class)
       @html_attrs  = html_attrs
     end
 
     def call
-      attrs = { preload: @preload, class: @extra_class }
+      attrs = { preload: @preload, class: cn(@extra_class) }
       attrs[:controls] = true if @controls
       attrs[:autoplay] = true if @autoplay
       attrs[:muted]    = true if @muted
@@ -32,6 +34,16 @@ module UI
         sources.each { |s| concat s }
         concat content if content?
       end
+    end
+
+    private
+
+    # Fail loud so a typo'd preload is caught immediately (not silently dropped to the attr).
+    def coerce_preload(value)
+      sym = value.to_sym
+      return sym if PRELOADS.include?(sym)
+
+      raise ArgumentError, "unknown preload #{value.inspect} — use one of #{PRELOADS.join(', ')}"
     end
 
     # Represents a <source> element inside <audio>.

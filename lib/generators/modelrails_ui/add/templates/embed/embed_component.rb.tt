@@ -48,7 +48,9 @@ module UI
       /yandex\.(ru|com)\/maps/i                         => :yandex_maps
     }.freeze
 
-    WRAPPER_CLS      = "overflow-hidden rounded-md"
+    WRAPPER_CLS = "overflow-hidden rounded-md"
+    # bg-black is an intentional letterbox backdrop for media iframes —
+    # a media surface, not a text-contrast surface (so no semantic token applies).
     DARK_WRAPPER_CLS = "overflow-hidden rounded-md bg-black"
 
     def self.detect_provider(url)
@@ -56,15 +58,33 @@ module UI
       nil
     end
 
+    TITLES = {
+      youtube:     "YouTube video",
+      vimeo:       "Vimeo video",
+      spotify:     "Spotify player",
+      google_maps: "Google Maps",
+      yandex_maps: "Yandex Maps",
+      loom:        "Loom video",
+      soundcloud:  "SoundCloud player",
+      x:           "Post on X",
+      telegram:    "Telegram post",
+      facebook:    "Facebook video"
+    }.freeze
+
     def initialize(url: nil, query: nil, aspect: nil, height: nil, title: nil, **html_attrs)
       @type   = query ? :google_maps : self.class.detect_provider(url)
       @url    = url
       @query  = query
       @aspect = aspect || PROVIDERS.dig(@type, :aspect)
       @height = height || default_height
-      @title  = title  || default_title
+      @title_override = title           # was: @title = title || default_title
       @extra_class = html_attrs.delete(:class)
       @html_attrs  = html_attrs
+    end
+
+    # Resolve at render time (t needs the view context).
+    def title
+      @title_override || default_title
     end
 
     def call
@@ -121,7 +141,7 @@ module UI
 
       sandbox = PROVIDERS.dig(@type, :sandbox)
       iframe_attrs = {
-        src:  embed_url, title: @title, loading: "lazy",
+        src:  embed_url, title: title, loading: "lazy",
         class: "w-full h-full border-0 block",
         allowfullscreen: true,
         allow: "autoplay; fullscreen; picture-in-picture"
@@ -151,7 +171,9 @@ module UI
     end
 
     def unsupported_msg
-      content_tag(:p, "Unsupported embed type: #{@type}", class: "text-sm text-danger")
+      content_tag(:p,
+        t("ui.embed.unsupported", type: @type, default: "Unsupported embed type: %{type}"),
+        class: "text-sm text-danger")
     end
 
     # ── Embed URL builders ────────────────────────────────────────────────────
@@ -176,17 +198,19 @@ module UI
         "https://maps.google.com/maps?q=#{CGI.escape(@query)}&output=embed"
       elsif @url
         return @url if @url.include?("output=embed") || @url.match?(%r{/maps/embed})
-        uri = URI.parse(@url)
-        q = CGI.parse(uri.query.to_s)["q"]&.first
-        if q
-          "https://maps.google.com/maps?q=#{CGI.escape(q)}&output=embed"
-        else
-          sep = @url.include?("?") ? "&" : "?"
-          "#{@url}#{sep}output=embed"
+        begin
+          uri = URI.parse(@url)
+          q = URI.decode_www_form(uri.query.to_s).to_h["q"]
+          if q
+            "https://maps.google.com/maps?q=#{CGI.escape(q)}&output=embed"
+          else
+            sep = @url.include?("?") ? "&" : "?"
+            "#{@url}#{sep}output=embed"
+          end
+        rescue URI::InvalidURIError, ArgumentError
+          nil
         end
       end
-    rescue URI::InvalidURIError
-      nil
     end
 
     def yandex_maps_url
@@ -216,9 +240,9 @@ module UI
       if uri.host&.include?("youtu.be")
         uri.path.delete_prefix("/")
       elsif uri.host&.include?("youtube.com")
-        CGI.parse(uri.query.to_s)["v"]&.first
+        URI.decode_www_form(uri.query.to_s).to_h["v"]
       end
-    rescue URI::InvalidURIError
+    rescue URI::InvalidURIError, ArgumentError
       nil
     end
 
@@ -254,18 +278,7 @@ module UI
     end
 
     def default_title
-      {
-        youtube:     "YouTube video",
-        vimeo:       "Vimeo video",
-        spotify:     "Spotify player",
-        google_maps: "Google Maps",
-        yandex_maps: "Yandex Maps",
-        loom:        "Loom video",
-        soundcloud:  "SoundCloud player",
-        x:           "Post on X",
-        telegram:    "Telegram post",
-        facebook:    "Facebook video"
-      }.fetch(@type, "Embedded content")
+      t("ui.embed.titles.#{@type}", default: TITLES.fetch(@type, "Embedded content"))
     end
   end
 end

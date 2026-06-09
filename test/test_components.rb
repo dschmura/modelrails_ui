@@ -1783,10 +1783,8 @@ class TestVideoComponent < Minitest::Test
     assert_equal "en", t.instance_variable_get(:@srclang)
   end
 
-  def test_track_invalid_kind_falls_back_to_subtitles
-    t = UI::VideoComponent::TrackComponent.new(src: "subs.vtt", kind: :bogus)
-
-    assert_equal :subtitles, t.instance_variable_get(:@kind)
+  def test_track_invalid_kind_raises
+    assert_raises(ArgumentError) { UI::VideoComponent::TrackComponent.new(src: "subs.vtt", kind: :bogus) }
   end
 end
 

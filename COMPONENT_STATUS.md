@@ -67,6 +67,11 @@ without extra verification.
 | navbar | proven | ✅ | ✅ | Navigation band (Wave 7): `<nav>` landmark (i18n label) + APG disclosure mobile menu (hamburger aria-expanded/controls + Escape + outside-click, target-based controller; added the missing menu panel); aria-current on active link. 0a render test; app 0b green + AAA CI (#251) |
 | breadcrumb | proven | ✅ | ✅ | Navigation band (Wave 7): `<nav aria-label>` landmark (i18n label) + ol/li; current page aria-current=page (not a link); decorative aria-hidden separators; focus-visible links. 0a render test; app 0b green + AAA CI (#252) |
 | pagination | proven | ➖ | ✅ | Navigation band (Wave 7): NOT a custom component — leans on Pagy 43 `@pagy.series_nav` (accessible: aria-label/aria-current/rel) + design-system CSS in the host app (`.pagy.series-nav`), AAA-proven on a real paginated view. The experimental `PaginationComponent` template is superseded (do not adopt). |
+| audio | hardened | ✅ | ⏳ | Media band (fail-loud `preload` guard; native `<audio>` controls; render test). App 0b pending. |
+| video | hardened | ✅ | ⏳ | Media band (fail-loud track-`kind` guard; `<track>` captions; native controls; render test). App 0b pending. |
+| gallery | hardened | ✅ | ⏳ | Media band (`<figure>`→focusable `<button>` trigger [2.1.1]; lightbox reuses the `modal` `<dialog>` via `EXTRA_STIMULUS` — focus-trap/escape/restore; caption off text-over-image → semantic surface; `alt` required when `lightbox:`; render test). App 0b pending. |
+| carousel | hardened | ✅ | ⏳ | Media band (APG-basic ARIA: `aria-roledescription` carousel/slide + `aria-current` dots + live region; 44px prev/next + dots; compliant autoplay [pause/play + hover/focus suspend + `prefers-reduced-motion` + `aria-live` flip]; `focus-visible:ring`→`focus-ring`; i18n; render test). App 0b pending. |
+| embed | hardened | ✅ | ⏳ | Media band (i18n `unsupported` msg + per-provider iframe titles; title resolved at render time; `bg-black` letterbox commented; render test). App 0b pending. |
 
 All other gem components: **experimental** (unverified) unless listed above.
 
