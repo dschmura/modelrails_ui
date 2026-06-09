@@ -2047,13 +2047,13 @@ class TestChatBubbleComponent < Minitest::Test
   def test_sent_defaults_to_false
     c = UI::ChatBubbleComponent.new
 
-    refute c.instance_variable_get(:@sent)
+    assert_equal :received, c.instance_variable_get(:@variant)
   end
 
   def test_sent_stored
     c = UI::ChatBubbleComponent.new(sent: true)
 
-    assert c.instance_variable_get(:@sent)
+    assert_equal :sent, c.instance_variable_get(:@variant)
   end
 
   def test_timestamp_nil_by_default
