@@ -10,7 +10,7 @@ Add Chart.js to your importmap before using this component:
 
 ```ruby
 # config/importmap.rb
-pin "chart.js", to: "https://esm.sh/chart.js@4"
+pin "chart.js", to: "https://cdn.jsdelivr.net/npm/chart.js@4/+esm"
 ```
 
 ## Installation
