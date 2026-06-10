@@ -93,6 +93,7 @@ module UI
       when :complete
         content_tag(:span, check_svg,
           class: cn(base, "border-interactive bg-interactive text-text-on-interactive"),
+          role: "img",
           "aria-label": I18n.t("modelrails_ui.stepper.completed", default: "Completed"))
       when :current
         content_tag(:span, "●",
@@ -101,6 +102,7 @@ module UI
       else
         content_tag(:span, "○",
           class: cn(base, "border-text-muted text-text-muted"),
+          role: "img",
           "aria-label": I18n.t("modelrails_ui.stepper.pending", default: "Pending"))
       end
     end
