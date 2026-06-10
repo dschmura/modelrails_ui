@@ -40,11 +40,11 @@ module ModelrailsUi
           To use Quill (adapter: :quill), add it to your importmap:
 
             # config/importmap.rb
-            pin "quill", to: "https://esm.sh/quill@2"
+            pin "quill", to: "https://cdn.jsdelivr.net/npm/quill@2/+esm"
 
           Also add Quill's stylesheet to your CSS entry point:
 
-            @import url("https://esm.sh/quill@2/dist/quill.snow.css");
+            @import url("https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css");
 
           Usage:
 
