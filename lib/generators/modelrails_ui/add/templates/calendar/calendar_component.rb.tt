@@ -50,7 +50,7 @@ module UI
     DAY_NORMAL = "hover:bg-surface-sunken hover:text-text-heading"
     DAY_TODAY  = "font-semibold text-text-heading ring-1 ring-border"
     DAY_SEL    = "bg-interactive text-text-on-interactive hover:bg-interactive-hover"
-    DAY_MUTED  = "text-text-muted/50"
+    DAY_MUTED  = "text-text-muted"
     DAY_DISABLED = "pointer-events-none opacity-30"
 
     CHEVRON_L = "m15 18-6-6 6-6"

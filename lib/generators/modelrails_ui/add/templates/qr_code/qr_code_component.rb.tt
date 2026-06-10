@@ -32,12 +32,12 @@ module UI
   # - `size:` pixel dimensions of the `<img>` (ignored for block content; default: 200)
   # - `**html_attrs:` forwarded to the wrapper `<div>`
   #
-  # ## Usage
-  #   <%= ui :qr_code, src: qr_url, alt: "QR code linking to example.com" %>
+  # ## Usage (in an ERB view)
+  #   ui :qr_code, src: qr_url, alt: "QR code linking to example.com"
   #
-  #   <%= ui :qr_code, alt: "QR code linking to example.com" do %>
-  #     <%= RQRCode::QRCode.new("https://example.com").as_svg(viewbox: true).html_safe %>
-  #   <% end %>
+  #   ui :qr_code, alt: "QR code linking to example.com" do
+  #     RQRCode::QRCode.new("https://example.com").as_svg(viewbox: true).html_safe
+  #   end
   class QrCodeComponent < ApplicationComponent
     # bg-surface (a semantic token, not raw `bg-white`) + p-3 quiet zone keeps the
     # code on a light, high-contrast field that scanners need, in both themes.

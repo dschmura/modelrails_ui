@@ -1,5 +1,5 @@
 <%= ui :command do |cmd| %>
-  <% cmd.with_trigger { ui :button, "⌘K", variant: :outline } %>
+  <% cmd.with_trigger { ui :button, "⌘K", variant: :outline, tone: :neutral } %>
 
   <div class="<%= UI::CommandComponent::GROUP_WRAPPER %>" data-command-group>
     <p class="<%= UI::CommandComponent::GROUP %>">Pages</p>
