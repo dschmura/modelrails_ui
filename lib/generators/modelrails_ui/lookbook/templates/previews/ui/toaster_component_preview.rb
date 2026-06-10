@@ -33,6 +33,7 @@ module UI
   # — each tinted (`bg-<signal>-surface` + `border-<signal>-border` + `text-<signal>`).
   # Aliases: `:destructive`/`:error` → `:danger`, `:alert` → `:warning` (the latter two
   # smooth the app `shared/_toasts` flash-key collision, where `:alert` means warning).
+  # @logical_path Feedback & Status
   class ToasterComponentPreview < ViewComponent::Preview
     include UIHelper
 

@@ -17,6 +17,7 @@ module UI
   #   ids, and `input_attrs` carrying id + describedby + invalid + required. The
   #   required `*` is a decorative aria-hidden mark on the label.
   # - **You supply:** the control inside the block, spread with `**f.input_attrs`.
+  # @logical_path Forms & Inputs
   class FormFieldComponentPreview < ViewComponent::Preview
     include UIHelper
 
