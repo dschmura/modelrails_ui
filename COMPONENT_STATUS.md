@@ -77,6 +77,11 @@ without extra verification.
 | stepper | proven | ✅ | ✅ | Disclosure band — i18n status labels (`I18n.t` default:); fail-loud `coerce` on orientation + step status (mirrors indicator); **`role="img"` on the status circles so `aria-label` is legal (4.1.2)** — caught by the live-axe 0b, the 0a only checked the label was present (gem #40). 0a (11) + app 0b/AAA CI green (gem #39+#40 / app #264) |
 | button_group | proven | ✅ | ✅ | Disclosure band — presentational `role="group"` segmented wrapper; optional `aria_label:`; formalize (0a + preview). 0a (8) + app 0b/AAA CI green (gem #39 / app #264) |
 | toggle_group | proven | ✅ | ✅ | Disclosure band — REQUIRED accessible name (`aria_label`/`aria_labelledby`, mirrors scroll_area); fail-loud `type`; kept `role="group"` for single+multiple (items are `aria-pressed` buttons, not radios — a true radiogroup variant is deferred). 0a (12) + app 0b/AAA CI green (gem #39 / app #264) |
+| sidebar | proven | ✅ | ✅ | Nav-remainder exemplar — `focus-ring` ×2 (toggle + items); named `<nav>` landmark (`label:`→`aria-label`, i18n default); i18n toggle. 0a (9) + app 0b/AAA CI green (gem #41 / app #265) |
+| bottom_nav | proven | ✅ | ✅ | Nav-remainder — named `<nav>` landmark; added the missing `focus-ring` on items; `border-t`→semantic `border-border`. 0a (8) + app 0b/AAA CI green (gem #41 / app #265) |
+| speed_dial | proven | ✅ | ✅ | Nav-remainder — `focus-ring` ×3; FAB disclosure `aria-controls` + controller-synced `aria-expanded`; i18n label; fail-loud `position`; **fixed a caller-`data:` attr-clobber that dropped the controller wiring**. 0a (12) + app 0b/AAA CI green (gem #41 / app #265) |
+| mega_menu | proven | ✅ | ✅ | Nav-remainder — `focus-ring` ×2; disclosure aria (haspopup/expanded/controls); panel → named `<nav>`; documented **nav-disclosure, not `role="menu"`** (owns its `mega-menu` controller, not the shared menu). 0a (13) + app 0b/AAA CI green (gem #41 / app #265) |
+| navigation_menu | proven | ✅ | ✅ | Nav-remainder — `focus-ring` ×3; named `<nav>` landmark; disclosure-flyout aria; fail-loud `align`; hover-driven nav owns its `navigation-menu` controller (not the shared menu). 0a (12) + app 0b/AAA CI green (gem #41 / app #265) |
 
 All other gem components: **experimental** (unverified) unless listed above.
 
