@@ -547,7 +547,10 @@ class TestGeneratorComponents < Minitest::Test
   def test_chart_controller_uses_chartjs_adapter
     js = File.read(File.join(TEMPLATE_ROOT, "chart", "chart_controller.js"))
 
-    assert_includes js, "import { Chart"
+    # Chart.js is a lazy opt-in dependency: imported inside connect(), NOT at the
+    # module top level (which would make every eager-loaded page resolve it).
+    assert_includes js, 'await import("chart.js")'
+    refute_includes js, 'import { Chart, registerables } from "chart.js"'
     assert_includes js, "connect("
     assert_includes js, "disconnect("
     assert_includes js, "destroy"
