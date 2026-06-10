@@ -23,7 +23,7 @@ module ModelrailsUi
           Chart requires Chart.js. Add it to your importmap:
 
             # config/importmap.rb
-            pin "chart.js", to: "https://esm.sh/chart.js@4"
+            pin "chart.js", to: "https://cdn.jsdelivr.net/npm/chart.js@4/+esm"
 
           Then use the component:
 
