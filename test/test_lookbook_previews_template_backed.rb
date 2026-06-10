@@ -55,7 +55,9 @@ class TestLookbookPreviewsTemplateBacked < Minitest::Test
 
   def test_playground_stays_inline_where_present
     %w[button avatar].each do |component|
-      assert_match(/def playground\(.*\)\n\s+ui /, preview_rb(component),
+      # Renders inline via `ui` — optionally after a setup line (e.g. splitting a
+      # two-axis variant/tone cell). Not template-backed.
+      assert_match(/def playground\(.*\)\n(?:\s+.+\n)*?\s+ui /, preview_rb(component),
         "#{component} playground should remain an inline explorer")
     end
   end
