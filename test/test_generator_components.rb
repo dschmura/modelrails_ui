@@ -84,6 +84,11 @@ class TestGeneratorComponents < Minitest::Test
       "accordion should have accordion_component and accordion_item_component templates"
   end
 
+  def test_accordion_uses_call_not_a_sidecar_template
+    refute_path_exists File.join(TEMPLATE_ROOT, "accordion", "accordion_component.html.erb"),
+      "accordion uses call; accordion_component.html.erb must not exist"
+  end
+
   def test_card_copies_six_rb_tt_files
     files = Dir[File.join(TEMPLATE_ROOT, "card", "*.rb.tt")]
 
