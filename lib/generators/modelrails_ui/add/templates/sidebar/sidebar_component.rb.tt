@@ -20,7 +20,7 @@ module UI
 
     TOGGLE_CLS = "inline-flex size-8 items-center justify-center rounded-md " \
                  "text-text-muted hover:bg-surface-sunken hover:text-text-heading " \
-                 "focus-visible:ring-[3px] focus-visible:ring-interactive-focus outline-none transition"
+                 "focus-ring transition"
 
     NAV_CLS = "flex-1 overflow-y-auto px-2 py-3"
 
@@ -33,7 +33,7 @@ module UI
                "group-data-[collapsed=true]:justify-center group-data-[collapsed=true]:gap-0 " \
                "hover:bg-surface-sunken hover:text-text-heading " \
                "aria-[current]:bg-surface-sunken aria-[current]:text-text-heading aria-[current]:font-semibold " \
-               "focus-visible:ring-[3px] focus-visible:ring-interactive-focus outline-none"
+               "focus-ring"
 
     ITEM_LABEL = "transition-[opacity,width] group-data-[collapsed=true]:w-0 " \
                  "group-data-[collapsed=true]:opacity-0 group-data-[collapsed=true]:overflow-hidden " \
@@ -44,9 +44,11 @@ module UI
 
     # brand:     text shown in the header
     # collapsed: initial collapsed state (default: false)
-    def initialize(brand: nil, collapsed: false, **html_attrs)
+    # label:     accessible name for the <nav> landmark (default: i18n "Sidebar")
+    def initialize(brand: nil, collapsed: false, label: nil, **html_attrs)
       @brand       = brand
       @collapsed   = collapsed
+      @label       = label
       @extra_class = html_attrs.delete(:class)
       @html_attrs  = html_attrs
     end
@@ -75,12 +77,13 @@ module UI
     def toggle_btn
       content_tag(:button, type: "button",
         class: TOGGLE_CLS,
-        "aria-label": "Toggle sidebar",
+        "aria-label": I18n.t("modelrails_ui.sidebar.toggle", default: "Toggle sidebar"),
         data: { action: "click->sidebar#toggle" }) { chevron_icon }
     end
 
     def nav_body
-      content_tag(:nav, class: NAV_CLS) do
+      content_tag(:nav, class: NAV_CLS,
+        "aria-label": @label || I18n.t("modelrails_ui.sidebar.nav_label", default: "Sidebar")) do
         concat safe_join(groups) if groups.any?
         concat content_tag(:div, safe_join(items), class: "space-y-0.5") if items.any?
         concat content if content?
