@@ -1,0 +1,12 @@
+<%# ✗ A hand-rolled toast with raw palette colors (border-green-500/text-green-500) %>
+<%# sits off the design-token system, and a bare icon-only close button is announced %>
+<%# as just "button". The component tints with signal tokens and names its dismiss %>
+<%# control (i18n "Dismiss") — never hand-roll this. %>
+<div class="pointer-events-auto flex items-start gap-3 rounded-lg border border-green-500/40 bg-surface-raised px-4 py-3 shadow-lg text-green-500">
+  <div class="flex-1 min-w-0">
+    <p class="text-sm leading-snug">Profile saved.</p>
+  </div>
+  <button type="button" class="ml-auto -mr-1 -mt-0.5 shrink-0 inline-flex size-6 items-center justify-center rounded-md focus-visible:ring-[3px]">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-3.5" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+</div>

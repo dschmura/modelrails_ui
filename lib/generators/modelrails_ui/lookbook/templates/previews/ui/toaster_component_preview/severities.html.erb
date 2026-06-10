@@ -1,0 +1,6 @@
+<%= ui :toaster do |t| %>
+  <% t.with_toast(message: "A new version is available.", severity: :info) %>
+  <% t.with_toast(message: "Your changes were saved.", severity: :success) %>
+  <% t.with_toast(message: "Your trial ends in 3 days.", severity: :warning) %>
+  <% t.with_toast(message: "Couldn't save changes.", severity: :danger) %>
+<% end %>
