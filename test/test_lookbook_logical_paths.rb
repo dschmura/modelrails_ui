@@ -59,6 +59,7 @@ class TestLookbookLogicalPaths < Minitest::Test
   def test_every_preview_is_in_the_expected_map
     extra = all_preview_components - EXPECTED.keys
     missing = EXPECTED.keys - all_preview_components
+
     assert_empty extra, "previews with no EXPECTED section (add them to the map): #{extra.sort}"
     assert_empty missing, "EXPECTED components with no preview file: #{missing.sort}"
   end
@@ -66,6 +67,7 @@ class TestLookbookLogicalPaths < Minitest::Test
   def test_every_preview_declares_its_expected_logical_path
     all_preview_components.each do |component|
       actual = declared_logical_path(component)
+
       refute_nil actual, "#{component}: missing `@logical_path` tag"
       assert_includes SECTIONS, actual, "#{component}: `#{actual}` is not a canonical section"
       assert_equal EXPECTED[component], actual, "#{component}: expected `#{EXPECTED[component]}`, got `#{actual}`"

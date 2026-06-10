@@ -34,9 +34,11 @@ class TestLookbookOverviewPage < Minitest::Test
 
   def test_every_embed_target_exists
     embeds = page_src.scan(/embed\s+UI::(\w+)ComponentPreview,\s*:(\w+)/)
+
     assert_operator embeds.size, :>=, 3, "page should embed at least 3 live hero scenarios"
     embeds.each do |klass, scenario|
       file = File.join(PREVIEW_ROOT, "#{klass.gsub(/([a-z])([A-Z])/, '\1_\2').downcase}_component_preview.rb")
+
       assert_path_exists file, "embed references missing preview #{klass}"
       assert_match(/def #{scenario}\b/, File.read(file), "embed references missing scenario :#{scenario} on #{klass}")
     end
