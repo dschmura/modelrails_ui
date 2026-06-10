@@ -24,8 +24,9 @@ class StepperRenderTest < ViewComponent::TestCase
   def test_complete_step_renders_the_check_svg_and_the_completed_label
     render_inline(UI::StepperComponent.new(steps: THREE_STEPS))
 
-    # The completed circle is named for AT and the check glyph is decorative.
-    assert_selector "span[aria-label='Completed'] svg[aria-hidden='true']"
+    # The completed circle is a named graphic (role=img so aria-label is legal on the
+    # span) and the check glyph is decorative.
+    assert_selector "span[role='img'][aria-label='Completed'] svg[aria-hidden='true']"
   end
 
   def test_current_step_carries_aria_current_step
@@ -37,7 +38,7 @@ class StepperRenderTest < ViewComponent::TestCase
   def test_pending_step_carries_the_i18n_pending_label
     render_inline(UI::StepperComponent.new(steps: THREE_STEPS))
 
-    assert_selector "span[aria-label='Pending']"
+    assert_selector "span[role='img'][aria-label='Pending']"
   end
 
   def test_status_defaults_to_pending_when_omitted
