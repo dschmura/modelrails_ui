@@ -1618,7 +1618,9 @@ class TestComboboxComponent < Minitest::Test
   def test_default_placeholder
     c = UI::ComboboxComponent.new(name: "x")
 
-    assert_equal "Select...", c.instance_variable_get(:@placeholder)
+    # The default placeholder is resolved (i18n) at render via placeholder_text,
+    # not stored in @placeholder.
+    assert_equal "Select…", c.send(:placeholder_text)
   end
 
   def test_custom_placeholder

@@ -424,8 +424,10 @@ class TestGeneratorComponents < Minitest::Test
     source = File.read(File.join(TEMPLATE_ROOT, "calendar", "calendar_component.rb.tt"))
 
     assert_includes source, "beginning_of_month"
-    assert_includes source, "DAYS_OF_WEEK"
+    assert_includes source, "weekday_start"
     assert_includes source, "calendar"
+    # Hardened: an APG date grid.
+    assert_includes source, 'role="grid"'
   end
 
   def test_calendar_controller_has_select_and_nav
