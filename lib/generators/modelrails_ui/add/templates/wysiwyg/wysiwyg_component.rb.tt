@@ -22,9 +22,9 @@ module UI
     #
     # Quill setup:
     #   # config/importmap.rb
-    #   pin "quill", to: "https://esm.sh/quill@2"
+    #   pin "quill", to: "https://cdn.jsdelivr.net/npm/quill@2/+esm"
     #   # In your CSS entry point:
-    #   @import url("https://esm.sh/quill@2/dist/quill.snow.css");
+    #   @import url("https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css");
     #
     # Options:
     #   name:        form field name (required)

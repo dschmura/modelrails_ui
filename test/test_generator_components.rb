@@ -607,7 +607,7 @@ class TestGeneratorComponents < Minitest::Test
 
     assert_includes components_rb, '"wysiwyg"'
     assert_includes components_rb, "actiontext"
-    assert_includes components_rb, "esm.sh/quill"
+    assert_includes components_rb, "cdn.jsdelivr.net/npm/quill"
   end
 
   def test_map_area_renders_img_and_map_elements
