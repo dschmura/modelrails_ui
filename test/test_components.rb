@@ -696,43 +696,43 @@ end
 
 class TestToggleGroupComponent < Minitest::Test
   def test_default_type
-    c = UI::ToggleGroupComponent.new
+    c = UI::ToggleGroupComponent.new(aria_label: "Formatting")
 
     assert_equal :single, c.instance_variable_get(:@type)
   end
 
   def test_type_stored_as_symbol
-    c = UI::ToggleGroupComponent.new(type: "multiple")
+    c = UI::ToggleGroupComponent.new(type: "multiple", aria_label: "Formatting")
 
     assert_equal :multiple, c.instance_variable_get(:@type)
   end
 
   def test_single_value_normalized_to_array
-    c = UI::ToggleGroupComponent.new(value: "bold")
+    c = UI::ToggleGroupComponent.new(value: "bold", aria_label: "Formatting")
 
     assert_equal ["bold"], c.instance_variable_get(:@value)
   end
 
   def test_array_value_stored
-    c = UI::ToggleGroupComponent.new(value: %w[bold underline])
+    c = UI::ToggleGroupComponent.new(value: %w[bold underline], aria_label: "Formatting")
 
     assert_equal %w[bold underline], c.instance_variable_get(:@value)
   end
 
   def test_nil_value_becomes_empty_array
-    c = UI::ToggleGroupComponent.new
+    c = UI::ToggleGroupComponent.new(aria_label: "Formatting")
 
     assert_equal [], c.instance_variable_get(:@value)
   end
 
   def test_item_pressed_true_when_in_value
-    c = UI::ToggleGroupComponent.new(value: "bold")
+    c = UI::ToggleGroupComponent.new(value: "bold", aria_label: "Formatting")
 
     assert c.item_pressed?("bold")
   end
 
   def test_item_pressed_false_when_not_in_value
-    c = UI::ToggleGroupComponent.new(value: "bold")
+    c = UI::ToggleGroupComponent.new(value: "bold", aria_label: "Formatting")
 
     refute c.item_pressed?("italic")
   end
