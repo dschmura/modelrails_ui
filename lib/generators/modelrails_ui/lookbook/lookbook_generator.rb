@@ -15,13 +15,6 @@ module ModelrailsUi
         copy_file "component_preview.html.erb", "app/views/layouts/component_preview.html.erb"
       end
 
-      # Self-contained light/dark toggle for the preview host (used by the
-      # toggle button in component_preview.html.erb). Auto-registered by
-      # stimulus-loading's eagerLoadControllersFrom as the `preview-theme` controller.
-      def copy_preview_theme_controller
-        copy_file "preview_theme_controller.js", "app/javascript/controllers/preview_theme_controller.js"
-      end
-
       def copy_initializer
         copy_file "lookbook.rb", "config/initializers/modelrails_ui_lookbook.rb"
       end
