@@ -28,6 +28,16 @@ module UI
   class BadgeComponentPreview < ViewComponent::Preview
     include UIHelper
 
+    # @!group Overview
+
+    # Every AAA-proven variant × tone cell on one screen.
+    def showcase
+    end
+
+    # @!endgroup
+
+    # @!group Examples
+
     # The default, high-emphasis label.
     def default
     end
@@ -72,6 +82,10 @@ module UI
     def link_href
     end
 
+    # @!endgroup
+
+    # @!group Reference
+
     # Edit `label` and the two-axis `variant`/`tone` cell live. Only the 9 AAA-proven
     # cells are offered (signals live on the SOFT variant as tinted chips; an unproven
     # pairing raises in dev).
@@ -90,5 +104,7 @@ module UI
     # @label Don't · badge as an action
     def dont_action
     end
+
+    # @!endgroup
   end
 end

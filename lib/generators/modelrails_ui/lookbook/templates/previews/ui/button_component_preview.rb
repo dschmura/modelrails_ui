@@ -27,6 +27,16 @@ module UI
   class ButtonComponentPreview < ViewComponent::Preview
     include UIHelper
 
+    # @!group Overview
+
+    # Every AAA-proven variant × tone cell on one screen.
+    def showcase
+    end
+
+    # @!endgroup
+
+    # @!group Examples
+
     # The default, high-emphasis action. Aim for one primary per view.
     def primary
     end
@@ -47,6 +57,10 @@ module UI
     def link
     end
 
+    # @!endgroup
+
+    # @!group Reference
+
     # Edit `label` and the two-axis `variant`/`tone` cell live. Only the AAA-proven
     # cells are offered (an unproven pairing raises in dev).
     # @param label text
@@ -64,5 +78,7 @@ module UI
     # @label Don't · icon-only without a label
     def dont_icon_only_without_label
     end
+
+    # @!endgroup
   end
 end
