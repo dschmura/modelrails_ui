@@ -17,6 +17,7 @@ module UI
   #
   # ## Modes
   # Independent (default) · `exclusive: true` (one open at a time, via Stimulus).
+  # @logical_path Data Display
   class AccordionComponentPreview < ViewComponent::Preview
     include UIHelper
 

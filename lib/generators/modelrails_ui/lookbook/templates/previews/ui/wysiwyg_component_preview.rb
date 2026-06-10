@@ -25,6 +25,7 @@ module UI
   #   buttons carrying `aria-pressed` + the AAA `focus-ring`, and semantic tokens.
   # - **You supply:** a form-field `name:`, an optional initial `value:`, and a
   #   valid `adapter:` (`:trix` | `:quill` — an unknown value raises).
+  # @logical_path Forms & Inputs
   class WysiwygComponentPreview < ViewComponent::Preview
     include UIHelper
 
