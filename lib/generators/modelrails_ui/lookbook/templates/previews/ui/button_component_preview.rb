@@ -46,11 +46,13 @@ module UI
     def link
     end
 
-    # Edit `label` and `variant` live to explore the component.
+    # Edit `label` and the two-axis `variant`/`tone` cell live. Only the AAA-proven
+    # cells are offered (an unproven pairing raises in dev).
     # @param label text
-    # @param variant select [primary, secondary, danger, text, text_interactive, text_danger]
-    def playground(label: "Button", variant: :primary)
-      ui :button, label, variant: variant.to_sym
+    # @param cell select [solid/primary, solid/danger, outline/neutral, text/primary, text/danger]
+    def playground(label: "Button", cell: "solid/primary")
+      variant, tone = cell.split("/")
+      ui :button, label, variant: variant.to_sym, tone: tone.to_sym
     end
 
     # ## Don't — icon-only button with no accessible name
