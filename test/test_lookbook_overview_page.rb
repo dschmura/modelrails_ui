@@ -33,14 +33,21 @@ class TestLookbookOverviewPage < Minitest::Test
   end
 
   def test_every_embed_target_exists
-    embeds = page_src.scan(/embed\s+UI::(\w+)ComponentPreview,\s*:(\w+)/)
+    # Scenario-less embeds only: the catalog-wide @!group grouping nests leaf scenarios
+    # inside groups, so `embed Klass, :leaf` resolves nil at runtime (Lookbook looks up
+    # top-level scenario names, which are now the group names) and 500s the page.
+    offenders = page_src.scan(/embed\s+UI::\w+ComponentPreview\s*,\s*:\w+/)
+
+    assert_empty offenders, "use the scenario-less embed form: #{offenders.join(", ")}"
+
+    embeds = page_src.scan(/embed\s+UI::(\w+)ComponentPreview\b/).flatten
 
     assert_operator embeds.size, :>=, 3, "page should embed at least 3 live hero scenarios"
-    embeds.each do |klass, scenario|
+    embeds.each do |klass|
       file = File.join(PREVIEW_ROOT, "#{klass.gsub(/([a-z])([A-Z])/, '\1_\2').downcase}_component_preview.rb")
 
       assert_path_exists file, "embed references missing preview #{klass}"
-      assert_match(/def #{scenario}\b/, File.read(file), "embed references missing scenario :#{scenario} on #{klass}")
+      assert_match(/^\s+def [a-z_]/, File.read(file), "#{klass} has no scenarios to embed")
     end
   end
 
