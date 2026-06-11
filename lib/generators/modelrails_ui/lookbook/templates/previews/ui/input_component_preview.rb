@@ -31,6 +31,8 @@ module UI
   class InputComponentPreview < ViewComponent::Preview
     include UIHelper
 
+    # @!group Examples
+
     # Plain text input — the baseline appearance.
     def default
     end
@@ -44,6 +46,10 @@ module UI
     def invalid
     end
 
+    # @!endgroup
+
+    # @!group Reference
+
     # ## Don't — hand-rolled `<input>` tag
     #
     # Writing a bare `<input>` in ERB skips the AAA styling tokens, the focus ring,
@@ -52,5 +58,7 @@ module UI
     # @label Don't · raw <input> tag
     def dont_raw_input
     end
+
+    # @!endgroup
   end
 end
