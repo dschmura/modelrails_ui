@@ -36,6 +36,8 @@ module UI
   class DialogComponentPreview < ViewComponent::Preview
     include UIHelper
 
+    # @!group Examples
+
     # Standard dialog: trigger button, title, description, and body content.
     # The `with_trigger` slot renders inside the `modal` controller wrapper so
     # clicking the button calls `modal#open` automatically.
@@ -46,6 +48,10 @@ module UI
     def large
     end
 
+    # @!endgroup
+
+    # @!group Reference
+
     # ## Don't — dialog without a title
     #
     # `title:` is required. It is wired to `aria-labelledby` on the `<dialog>` element,
@@ -54,5 +60,7 @@ module UI
     # @label Don't · no title (breaks aria-labelledby)
     def dont_no_title
     end
+
+    # @!endgroup
   end
 end

@@ -32,6 +32,8 @@ module UI
   class FileInputComponentPreview < ViewComponent::Preview
     include UIHelper
 
+    # @!group Examples
+
     # Generic file picker — no type restriction.
     def default
     end
@@ -45,6 +47,10 @@ module UI
     def multiple
     end
 
+    # @!endgroup
+
+    # @!group Reference
+
     # ## Don't — hand-rolled `<input type="file">` tag
     #
     # A bare `<input type="file">` in ERB skips the AAA styling tokens, the focus ring,
@@ -54,5 +60,7 @@ module UI
     # @label Don't · raw <input type="file"> tag
     def dont_raw_file_input
     end
+
+    # @!endgroup
   end
 end

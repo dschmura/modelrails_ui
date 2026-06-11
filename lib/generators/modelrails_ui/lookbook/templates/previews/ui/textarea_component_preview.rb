@@ -30,6 +30,8 @@ module UI
   class TextareaComponentPreview < ViewComponent::Preview
     include UIHelper
 
+    # @!group Examples
+
     # Multi-line input at rest — the baseline appearance.
     def default
     end
@@ -39,6 +41,10 @@ module UI
     def invalid
     end
 
+    # @!endgroup
+
+    # @!group Reference
+
     # ## Don't — hand-rolled `<textarea>` tag
     #
     # Writing a bare `<textarea>` in ERB skips the AAA styling tokens, the focus ring,
@@ -47,5 +53,7 @@ module UI
     # @label Don't · raw <textarea> tag
     def dont_raw_textarea
     end
+
+    # @!endgroup
   end
 end

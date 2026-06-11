@@ -37,6 +37,8 @@ module UI
   class ToasterComponentPreview < ViewComponent::Preview
     include UIHelper
 
+    # @!group Examples
+
     # A neutral default toast on the raised surface — announced politely (role=status).
     def default
     end
@@ -60,6 +62,10 @@ module UI
     def dismissible
     end
 
+    # @!endgroup
+
+    # @!group Reference
+
     # ## Don't — a raw-palette / unnamed toast
     #
     # A hand-rolled toast with raw palette colors (border-green-500) and a bare
@@ -68,5 +74,7 @@ module UI
     # @label Don't · raw palette + unnamed dismiss
     def dont_raw_palette
     end
+
+    # @!endgroup
   end
 end
