@@ -1,18 +1,49 @@
 # frozen_string_literal: true
 
 module UI
+  # # Picture
+  #
+  # A `<picture>` element with art-direction / format-fallback `<source>`s and a
+  # required base `<img>`. The browser picks the first matching `<source>`; the
+  # `<img>` is both the final fallback and the element that carries the accessible
+  # name and intrinsic dimensions.
+  #
+  # ## Use when
+  # - You need format fallbacks (AVIF/WebP → JPEG) or art direction (a different
+  #   crop per viewport) that `srcset`/`sizes` on a plain `<img>` can't express.
+  #
+  # ## Don't use when
+  # - You only need resolution switching — a single `image` with `srcset:`/`sizes:`
+  #   is simpler and sufficient.
+  #
+  # ## Accessibility contract
+  # - **Guarantees:** `alt:` is REQUIRED on the base `<img>`, forcing an explicit
+  #   decision at every call site; an invalid `loading:` falls back to `:lazy`.
+  #   `<source>`s carry no `alt` — a `<picture>`'s accessible name comes solely from
+  #   its `<img>`, so the requirement lives there.
+  # - **You supply:** real `alt:` text for meaningful images, or `alt: ""` (the
+  #   correct decorative signal) for purely decorative ones. `alt` is NOT a caption —
+  #   keep it a terse equivalent; use `figure` for captions.
+  #
+  # ## Parameters
+  # - `src:` fallback `<img>` URL (required)
+  # - `alt:` alternative text on the fallback `<img>` (required; `""` marks it decorative)
+  # - `loading:` :lazy (default) | :eager | :auto
+  # - `width:`/`height:` native dimensions on the fallback `<img>` (prevents layout shift)
+  #
+  # Each source is declared via the `sources` slot:
+  #   ui(:picture, src:, alt:) { |p| p.with_source(srcset:, type:, media:, sizes:) }
   class PictureComponent < ApplicationComponent
-    # Each source is added via p.with_source(srcset:, type:, media:, sizes:)
+    BASE = "max-w-full"
+
+    LOADING_MODES = %i[lazy eager auto].freeze
+
     renders_many :sources, "UI::PictureComponent::SourceComponent"
 
-    # src:     fallback <img> URL (required)
-    # alt:     alternative text on the fallback <img> (required)
-    # loading: :lazy (default) | :eager
-    # width / height: applied to the fallback <img>
     def initialize(src:, alt:, loading: :lazy, width: nil, height: nil, **html_attrs)
       @src     = src
       @alt     = alt
-      @loading = loading.to_sym
+      @loading = LOADING_MODES.include?(loading.to_sym) ? loading.to_sym : :lazy
       @width   = width
       @height  = height
       @extra_class = html_attrs.delete(:class)
@@ -54,7 +85,7 @@ module UI
     private
 
     def fallback_img
-      attrs = { src: @src, alt: @alt, loading: @loading, class: cn("max-w-full", @extra_class) }
+      attrs = { src: @src, alt: @alt, loading: @loading, class: cn(BASE, @extra_class) }
       attrs[:width]  = @width  if @width
       attrs[:height] = @height if @height
       tag.img(**attrs)

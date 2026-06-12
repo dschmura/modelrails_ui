@@ -35,6 +35,10 @@ parity specs, and are adopted in the app via zero-call-site adapters.
 Generator: **fixed at source** (`source_root` instance-method bug + Thor public-method bug) →
 `rails g view_primitives:add` works natively. *(Upstreamable PR.)*
 
+Generator `agent_rules`: **solid** — writes `.modelrails_ui/agent-rules.md` (overwritten) + seeds
+`.modelrails_ui/house-rules.md` (once), adds an idempotent marker-delimited `@`-import to
+`CLAUDE.md`/`AGENTS.md`, and reports (never rewrites) conflicting directives.
+
 ---
 
 ## 🟡 PRE-RELEASE — token-ported, renders, NOT parity-audited or adopted

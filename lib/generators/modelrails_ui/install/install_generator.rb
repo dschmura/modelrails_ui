@@ -28,6 +28,19 @@ module ModelrailsUi
         end
       end
 
+      def add_tailwind_merge_gem
+        gemfile = File.join(destination_root, "Gemfile")
+
+        if File.exist?(gemfile) && File.read(gemfile).match?(/^\s*gem\s+["']tailwind_merge["']/)
+          say "  Gemfile already requires tailwind_merge — skipping.", :yellow
+          return
+        end
+
+        gem "tailwind_merge"
+        say "  Added gem \"tailwind_merge\" to your Gemfile — the generated ApplicationComponent's " \
+            "`cn` helper requires it at runtime so `class:` overrides win conflicts. Run `bundle install`.", :green
+      end
+
       def create_inflection_initializer
         target = "config/initializers/modelrails_ui_inflections.rb"
 
@@ -35,6 +48,16 @@ module ModelrailsUi
           say "  #{target} already exists — skipping.", :yellow
         else
           copy_file "inflections.rb", target
+        end
+      end
+
+      def create_ui_helper
+        target = "app/helpers/ui_helper.rb"
+
+        if File.exist?(File.join(destination_root, target))
+          say "  #{target} already exists — skipping.", :yellow
+        else
+          copy_file "ui_helper.rb", target
         end
       end
 
@@ -78,6 +101,11 @@ module ModelrailsUi
         else
           append_to_file entry, "\n#{import_line}"
         end
+      end
+
+      def print_agent_rules_nudge
+        say "\n  Optional: teach your coding agent to use these components —", :green
+        say "    bin/rails g modelrails_ui:agent_rules", :cyan
       end
 
       private

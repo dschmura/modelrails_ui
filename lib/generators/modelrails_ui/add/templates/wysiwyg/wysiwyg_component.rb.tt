@@ -4,6 +4,12 @@ module UI
   class WysiwygComponent < ApplicationComponent
     # Rich-text editor wrapper — picks between Trix and Quill via adapter:.
     #
+    # NOTE (this app): SUPERSEDED by Lexxy (Lexical-based rich text). This app
+    # composes Lexxy directly, so it does NOT adopt this component — much like
+    # pagination defers to Pagy and toasts to `shared/_toasts`. The gem template
+    # is kept correct + button-tier accessible for OTHER consumers that still use
+    # Trix/Quill; it is hardened gem-side only (no app adoption / no app 0b).
+    #
     # Usage:
     #   ui :wysiwyg, name: "body"                            # Trix (default)
     #   ui :wysiwyg, name: "body", adapter: :quill
@@ -16,9 +22,9 @@ module UI
     #
     # Quill setup:
     #   # config/importmap.rb
-    #   pin "quill", to: "https://esm.sh/quill@2"
+    #   pin "quill", to: "https://cdn.jsdelivr.net/npm/quill@2/+esm"
     #   # In your CSS entry point:
-    #   @import url("https://esm.sh/quill@2/dist/quill.snow.css");
+    #   @import url("https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css");
     #
     # Options:
     #   name:        form field name (required)
@@ -27,40 +33,110 @@ module UI
     #   placeholder: placeholder text
     #   toolbar:     show editor toolbar (default: true)
     #   height:      editor content area height in px (default: 200; Quill only)
+    #   label:       accessible name for the editor region (default: i18n "Rich text editor")
 
     ADAPTERS = %w[trix quill].freeze
 
-    WRAPPER_CLS = "rounded-md border border-border-strong bg-surface-raised shadow-xs"
+    # Focus is shown on the editor itself (focus-ring); the wrapper echoes it with
+    # an offset outline (never a box-shadow ring — it'd be clipped by overflow).
+    WRAPPER_CLS = "rounded-md border border-border-strong bg-surface-raised shadow-xs " \
+                  "focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 " \
+                  "focus-within:outline-border-strong"
+
+    TOOLBAR_CLS = "flex flex-wrap items-center gap-0.5 border-b border-border px-1.5 py-1"
+
+    # Toolbar toggle button: AAA target size, semantic tokens, offset focus-ring
+    # (never focus:ring-*), and an active surface keyed off aria-pressed.
+    TOOLBAR_BTN_CLS = "inline-flex size-9 items-center justify-center rounded-md " \
+                      "text-text-body hover:bg-surface-sunken hover:text-text-heading " \
+                      "aria-pressed:bg-surface-sunken aria-pressed:text-text-heading " \
+                      "focus-ring transition"
+
+    EDITOR_CLS = "trix-content block min-h-[200px] px-3 py-2 text-sm text-text-body focus-ring"
+
+    # Each toolbar control: an i18n label key + the Trix attribute it toggles.
+    # aria-pressed advertises toggle state to assistive tech; the editor JS flips
+    # it as the selection's formatting changes.
+    TOOLBAR_BUTTONS = [
+      { attribute: "bold",   key: "bold",   default: "Bold",          glyph: "B" },
+      { attribute: "italic", key: "italic", default: "Italic",        glyph: "I" },
+      { attribute: "strike", key: "strike", default: "Strikethrough", glyph: "S" },
+      { attribute: "href",   key: "link",   default: "Link",          glyph: "Link" },
+      { attribute: "bullet", key: "bullet", default: "Bulleted list", glyph: "•" },
+      { attribute: "number", key: "number", default: "Numbered list", glyph: "1." }
+    ].freeze
 
     def initialize(name:, adapter: :trix, value: nil, placeholder: nil,
-                   toolbar: true, height: 200, **html_attrs)
+                   toolbar: true, height: 200, label: nil, **html_attrs)
       @name        = name
-      @adapter     = ADAPTERS.include?(adapter.to_s) ? adapter.to_s : "trix"
+      @adapter     = normalize_adapter(adapter)
       @value       = value
       @placeholder = placeholder
       @toolbar     = toolbar
       @height      = height
+      @label       = label
       @extra_class = html_attrs.delete(:class)
       @html_attrs  = html_attrs
       @input_id    = "wysiwyg-#{SecureRandom.hex(4)}"
+      @toolbar_id  = "#{@input_id}-toolbar"
     end
 
     def call
-      content_tag(:div, class: cn(WRAPPER_CLS, @extra_class)) do
+      content_tag(:div, class: cn(WRAPPER_CLS, @extra_class), **@html_attrs) do
         @adapter == "quill" ? quill_markup : trix_markup
       end
     end
 
     private
 
+    # Fail loud: an unknown adapter is a caller bug, not a silent fallback.
+    def normalize_adapter(adapter)
+      value = adapter.to_s
+      return value if ADAPTERS.include?(value)
+
+      raise ArgumentError,
+        "Unknown wysiwyg adapter #{adapter.inspect}. Expected one of: #{ADAPTERS.join(', ')}."
+    end
+
+    def editor_label
+      @label || I18n.t("modelrails_ui.wysiwyg.label", default: "Rich text editor")
+    end
+
     def trix_markup
       safe_join([
         tag.input(type: "hidden", id: @input_id, name: @name, value: @value),
+        (@toolbar ? trix_toolbar : nil),
         tag.send(:"trix-editor",
           input: @input_id,
+          toolbar: (@toolbar ? @toolbar_id : nil),
           placeholder: @placeholder,
-          class: "trix-content min-h-[200px] px-3 py-2 text-sm focus:outline-none")
-      ])
+          role: "textbox",
+          "aria-multiline": "true",
+          "aria-label": editor_label,
+          class: EDITOR_CLS)
+      ].compact)
+    end
+
+    # An explicit, accessible toolbar of named toggle buttons. Trix wires each
+    # button by its data-trix-attribute; the i18n aria-label gives every control
+    # an accessible name and aria-pressed advertises the toggle state.
+    def trix_toolbar
+      tag.send(:"trix-toolbar", id: @toolbar_id) do
+        content_tag(:div, role: "toolbar",
+          "aria-label": I18n.t("modelrails_ui.wysiwyg.toolbar", default: "Formatting"),
+          class: TOOLBAR_CLS) do
+          safe_join(TOOLBAR_BUTTONS.map { |btn| trix_toolbar_button(btn) })
+        end
+      end
+    end
+
+    def trix_toolbar_button(btn)
+      content_tag(:button, btn[:glyph],
+        type: "button",
+        class: TOOLBAR_BTN_CLS,
+        "aria-pressed": "false",
+        "aria-label": I18n.t("modelrails_ui.wysiwyg.#{btn[:key]}", default: btn[:default]),
+        data: { "trix-attribute": btn[:attribute] })
     end
 
     def quill_markup
@@ -75,6 +151,10 @@ module UI
         safe_join([
           tag.div(
             data: { wysiwyg_target: "editor" },
+            role: "textbox",
+            "aria-multiline": "true",
+            "aria-label": editor_label,
+            class: "focus-ring",
             style: "height: #{@height}px"),
           tag.input(
             type: "hidden",

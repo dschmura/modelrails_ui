@@ -1,0 +1,8 @@
+<%= render "shared/modal",
+      title: "Edit profile",
+      description: "Update your display name and preferences.",
+      size: :lg,
+      trigger: "Open large dialog",
+      trigger_class: "btn-secondary" do %>
+  <%= ui :input, type: "text", name: "display_name", placeholder: "Display name" %>
+<% end %>

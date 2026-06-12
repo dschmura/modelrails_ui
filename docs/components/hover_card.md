@@ -1,11 +1,22 @@
-# HoverCard
+# Hover Card
 
-Rich floating card that appears when the user hovers over a trigger element. Pure CSS via Tailwind `group-hover` — no JavaScript required.
+A rich supplemental card revealed on hover and keyboard focus of its trigger.
+Unlike `tooltip`, the card may hold interactive content (links, buttons). A short
+hover-intent close-delay keeps the card reachable, so the pointer can move from the
+trigger onto the card to click it — and `focus-within` / Tab keeps it open for
+keyboard users. `Escape` closes the card and returns focus to the trigger (WCAG
+1.4.13). All behavior lives in the shared `floating` Stimulus controller.
+
+Use for enhancement — the card's content should never be the only path to that
+information. If you need a click-triggered panel, use `popover`. If the hint is
+short and non-interactive, use `tooltip`.
+
+Requires `floating_controller.js` (copied automatically by the generator).
 
 ## Installation
 
 ```bash
-rails g view_primitives:add hover_card
+rails g modelrails_ui:add hover_card
 ```
 
 Creates `app/components/ui/hover_card_component.rb`.
@@ -13,40 +24,103 @@ Creates `app/components/ui/hover_card_component.rb`.
 ## Usage
 
 ```erb
-<%= ui :hover_card do |card| %>
-  <% card.with_trigger do %>
-    <%= link_to "@alec", profile_path, class: "underline" %>
+<%= render(UI::HoverCardComponent.new) do |c| %>
+  <% c.with_trigger do %>
+    <%= link_to "@dave", profile_path, class: "underline" %>
   <% end %>
-  <div>
-    <p class="font-semibold">Alec P.</p>
-    <p class="text-sm text-muted-foreground">Joined January 2024</p>
+  <div class="space-y-1">
+    <p class="font-medium text-text-heading">Dave Chmura</p>
+    <p class="text-text-body">Building modelrails_ui.</p>
+    <a href="#" class="text-text-body underline">View profile</a>
   </div>
 <% end %>
 ```
 
-## Position
+The `with_trigger` slot is required — omitting it raises `ArgumentError`.
+
+## Side
 
 | Side | Description |
 |------|-------------|
-| `:bottom` | Below trigger (default) |
-| `:top` | Above trigger |
-| `:left` | Left of trigger |
-| `:right` | Right of trigger |
+| `:bottom` | Below the trigger (default) |
+| `:top` | Above the trigger |
+| `:left` | Left of the trigger |
+| `:right` | Right of the trigger |
 
 ```erb
-<%= ui :hover_card, side: :right do |card| %>
-  <% card.with_trigger { link_to "More info", "#" } %>
-  <p class="text-sm">Additional details appear here.</p>
+<%= render(UI::HoverCardComponent.new(side: :right)) do |c| %>
+  <% c.with_trigger { link_to "More info", "#" } %>
+  <p class="text-text-body">Additional details appear here.</p>
 <% end %>
 ```
+
+Unknown values for `side:` raise `ArgumentError` (fail-loud).
+
+## Placement
+
+Placement uses CSS anchor positioning: the card is `position: fixed` (viewport as
+containing block) and tethered to the trigger via inline `anchor-name`/`position-anchor`
+attributes; `position-area` sets the requested side and `position-try-fallbacks` keeps
+it on-screen near viewport edges. Note that at an extreme edge Chromium clamps the
+element on-screen rather than performing a full flip, because the card is nested inside
+its trigger element. On browsers without anchor positioning (pre-Baseline 2026) the
+component falls back to `absolute` offsets relative to the wrapper.
+
+## Accessible group label
+
+Pass `label:` to wrap the card in `role="group"` with an `aria-label`. Use
+this when the card contains multiple interactive elements that benefit from a
+named region:
+
+```erb
+<%= render(UI::HoverCardComponent.new(label: "User card")) do |c| %>
+  <% c.with_trigger { "@dave" } %>
+  <p class="text-text-body">Profile preview.</p>
+<% end %>
+```
+
+Omitting `label:` renders the card as a plain `<div>` without a role.
+
+## Hover-intent & dismissal
+
+The card is opened and closed by the `floating` controller, not by CSS `:hover`
+alone — pure CSS can't keep an *interactive* card reachable across the small gap
+between trigger and card. The controller opens on `mouseenter` / `focus` and
+closes on `mouseleave` / `blur` **after a short delay** (`hideDelay`, default
+`150`ms). The delay survives the gap crossing (and brief mouse-outs), so the
+pointer can move onto the card and click its content. Opening sets
+`data-state="open"` on the wrapper; `group-data-[state=open]` reveals the card.
+
+`Escape` closes the card immediately and returns focus to the trigger.
+
+## Accessibility contract
+
+The component guarantees:
+
+- Hover and keyboard focus both open the card (the controller sets
+  `data-state="open"`; `group-data-[state=open]` reveals it).
+- The hover-intent close-delay keeps the card reachable, so its interactive
+  content is clickable with the pointer and Tab-reachable for the keyboard.
+- `Escape` closes the card and returns focus to the trigger (WCAG 1.4.13 —
+  content on hover or focus, dismissible without losing your place).
+- When `label:` is given, the card element receives `role="group"` and
+  `aria-label` for a named landmark region.
+
+You supply:
+
+- `with_trigger` slot — a focusable link or button (required).
+- Block content — the card's body (text, links, arbitrary markup).
+- `label:` — optional accessible name for the card region.
 
 ## API
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
+| `id` | String | auto `hovercard-<hex>` | Card element ID |
+| `label` | String | `nil` | Accessible name → `role="group"` + `aria-label` on the card |
 | `side` | Symbol | `:bottom` | `:bottom`, `:top`, `:left`, or `:right` |
 | `**html_attrs` | Hash | — | Forwarded to the outer `<span>` wrapper |
 
 | Slot | Required | Description |
 |------|----------|-------------|
-| `trigger` | No | Element that triggers the hover card |
+| `with_trigger` | Yes | Focusable element (link/button) that triggers the card — omitting raises `ArgumentError` |

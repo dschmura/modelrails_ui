@@ -84,6 +84,11 @@ class TestGeneratorComponents < Minitest::Test
       "accordion should have accordion_component and accordion_item_component templates"
   end
 
+  def test_accordion_uses_call_not_a_sidecar_template
+    refute_path_exists File.join(TEMPLATE_ROOT, "accordion", "accordion_component.html.erb"),
+      "accordion uses call; accordion_component.html.erb must not exist"
+  end
+
   def test_card_copies_six_rb_tt_files
     files = Dir[File.join(TEMPLATE_ROOT, "card", "*.rb.tt")]
 
@@ -111,9 +116,9 @@ class TestGeneratorComponents < Minitest::Test
       "tabs should have tabs_component and tabs_item_component templates"
   end
 
-  def test_tabs_has_html_erb_template
-    assert_path_exists File.join(TEMPLATE_ROOT, "tabs", "tabs_component.html.erb"),
-      "tabs should include tabs_component.html.erb"
+  def test_tabs_has_no_html_erb_template
+    refute_path_exists File.join(TEMPLATE_ROOT, "tabs", "tabs_component.html.erb"),
+      "tabs uses call; tabs_component.html.erb must not exist"
   end
 
   def test_tabs_has_js_controller
@@ -134,23 +139,44 @@ class TestGeneratorComponents < Minitest::Test
   end
 
   def test_sheet_has_js_controller
-    assert_path_exists File.join(TEMPLATE_ROOT, "sheet", "sheet_controller.js"),
-      "sheet should include sheet_controller.js"
+    # Wave 4: sheet uses the shared `modal` controller via EXTRA_STIMULUS (no own copy).
+    cfg = ModelrailsUi::Generators::Components::EXTRA_STIMULUS["sheet"]
+
+    assert_equal({source: "dialog/modal_controller.js", name: "modal"}, cfg)
+    assert_path_exists File.join(TEMPLATE_ROOT, "dialog", "modal_controller.js")
+  end
+
+  def test_overlays_share_modal_controller_via_extra_stimulus
+    # Wave 4: alert_dialog, drawer, and sheet all wire the single canonical
+    # dialog/modal_controller.js via EXTRA_STIMULUS.
+    expected = {source: "dialog/modal_controller.js", name: "modal"}
+    %w[alert_dialog drawer sheet].each do |overlay|
+      cfg = ModelrailsUi::Generators::Components::EXTRA_STIMULUS[overlay]
+
+      assert_equal expected, cfg,
+        "#{overlay} EXTRA_STIMULUS entry should point at dialog/modal_controller.js as 'modal'"
+    end
+
+    assert_path_exists File.join(TEMPLATE_ROOT, "dialog", "modal_controller.js"),
+      "canonical modal_controller.js must exist in dialog/ template dir"
   end
 
   def test_popover_has_js_controller
-    assert_path_exists File.join(TEMPLATE_ROOT, "popover", "popover_controller.js"),
-      "popover should include popover_controller.js"
+    assert_path_exists File.join(TEMPLATE_ROOT, "popover", "floating_controller.js"),
+      "popover should include floating_controller.js"
   end
 
   def test_dropdown_menu_has_js_controller
-    assert_path_exists File.join(TEMPLATE_ROOT, "dropdown_menu", "dropdown_controller.js"),
-      "dropdown_menu should include dropdown_controller.js"
+    assert_path_exists File.join(TEMPLATE_ROOT, "dropdown_menu", "menu_controller.js"),
+      "dropdown_menu should include menu_controller.js"
   end
 
   def test_context_menu_has_js_controller
-    assert_path_exists File.join(TEMPLATE_ROOT, "context_menu", "context_menu_controller.js"),
-      "context_menu should include context_menu_controller.js"
+    # Wave 6: context_menu uses the shared `menu` controller via EXTRA_STIMULUS (no own copy).
+    cfg = ModelrailsUi::Generators::Components::EXTRA_STIMULUS["context_menu"]
+
+    assert_equal({source: "dropdown_menu/menu_controller.js", name: "menu"}, cfg)
+    assert_path_exists File.join(TEMPLATE_ROOT, "dropdown_menu", "menu_controller.js")
   end
 
   def test_menubar_copies_two_rb_tt_files
@@ -163,6 +189,13 @@ class TestGeneratorComponents < Minitest::Test
   def test_menubar_has_js_controller
     assert_path_exists File.join(TEMPLATE_ROOT, "menubar", "menubar_controller.js"),
       "menubar should include menubar_controller.js"
+  end
+
+  def test_menubar_menu_reuses_menu_controller
+    cfg = ModelrailsUi::Generators::Components::EXTRA_STIMULUS["menubar_menu"]
+
+    assert_equal({source: "dropdown_menu/menu_controller.js", name: "menu"}, cfg)
+    assert_path_exists File.join(TEMPLATE_ROOT, "dropdown_menu", "menu_controller.js")
   end
 
   def test_command_has_js_controller
@@ -285,7 +318,7 @@ class TestGeneratorComponents < Minitest::Test
     source = File.read(File.join(TEMPLATE_ROOT, "chat_bubble", "chat_bubble_component.rb.tt"))
 
     assert_includes source, "sent"
-    assert_includes source, "BUBBLE_RECV"
+    assert_includes source, "received"
   end
 
   def test_device_mockup_has_phone_and_browser_variants
@@ -323,11 +356,13 @@ class TestGeneratorComponents < Minitest::Test
     assert_includes source, "gallery"
   end
 
-  def test_gallery_controller_has_open_close
+  def test_gallery_controller_is_a_thin_open_coordinator
     js = File.read(File.join(TEMPLATE_ROOT, "gallery", "gallery_controller.js"))
 
+    # Hardened: opening swaps the shared <dialog> image; the reused `modal`
+    # controller owns close/escape/restore (no colocated close here).
     assert_includes js, "open("
-    assert_includes js, "close("
+    assert_includes js, 'static targets = ["image"]'
   end
 
   def test_carousel_has_slides_and_controller
@@ -389,8 +424,10 @@ class TestGeneratorComponents < Minitest::Test
     source = File.read(File.join(TEMPLATE_ROOT, "calendar", "calendar_component.rb.tt"))
 
     assert_includes source, "beginning_of_month"
-    assert_includes source, "DAYS_OF_WEEK"
+    assert_includes source, "weekday_start"
     assert_includes source, "calendar"
+    # Hardened: an APG date grid.
+    assert_includes source, 'role="grid"'
   end
 
   def test_calendar_controller_has_select_and_nav
@@ -510,7 +547,10 @@ class TestGeneratorComponents < Minitest::Test
   def test_chart_controller_uses_chartjs_adapter
     js = File.read(File.join(TEMPLATE_ROOT, "chart", "chart_controller.js"))
 
-    assert_includes js, "import { Chart"
+    # Chart.js is a lazy opt-in dependency: imported inside connect(), NOT at the
+    # module top level (which would make every eager-loaded page resolve it).
+    assert_includes js, 'await import("chart.js")'
+    refute_includes js, 'import { Chart, registerables } from "chart.js"'
     assert_includes js, "connect("
     assert_includes js, "disconnect("
     assert_includes js, "destroy"
@@ -567,7 +607,7 @@ class TestGeneratorComponents < Minitest::Test
 
     assert_includes components_rb, '"wysiwyg"'
     assert_includes components_rb, "actiontext"
-    assert_includes components_rb, "esm.sh/quill"
+    assert_includes components_rb, "cdn.jsdelivr.net/npm/quill"
   end
 
   def test_map_area_renders_img_and_map_elements

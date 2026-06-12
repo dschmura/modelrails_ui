@@ -142,16 +142,20 @@ class TestButtonComponent < Minitest::Test
     assert_equal "Save", c.instance_variable_get(:@label)
   end
 
-  def test_default_variant
+  def test_default_axes
     c = UI::ButtonComponent.new
 
-    assert_equal :primary, c.instance_variable_get(:@variant)
+    assert_equal :solid, c.instance_variable_get(:@variant)
+    assert_equal :primary, c.instance_variable_get(:@tone)
   end
 
-  def test_variant_stored_as_symbol
-    c = UI::ButtonComponent.new(variant: "destructive")
+  # A legacy flat `variant:` (here the string "danger") coerces through SHIM to the
+  # two-axis form: [:solid, :danger]. Back-compat for every existing call site.
+  def test_legacy_variant_coerced_to_axes
+    c = UI::ButtonComponent.new(variant: "danger")
 
-    assert_equal :destructive, c.instance_variable_get(:@variant)
+    assert_equal :solid, c.instance_variable_get(:@variant)
+    assert_equal :danger, c.instance_variable_get(:@tone)
   end
 
   def test_default_size
@@ -248,13 +252,17 @@ class TestButtonComponent < Minitest::Test
 
     refute captured.key?(:type)
   end
+
+  def test_unknown_variant_raises
+    assert_raises(ArgumentError) { UI::ButtonComponent.new("Save", variant: :bogus) }
+  end
 end
 
 class TestAlertComponent < Minitest::Test
-  def test_default_variant
+  def test_default_tone
     c = UI::AlertComponent.new
 
-    assert_equal :default, c.instance_variable_get(:@variant)
+    assert_equal :neutral, c.instance_variable_get(:@tone)
   end
 
   def test_title_kwarg_stored
@@ -269,10 +277,12 @@ class TestAlertComponent < Minitest::Test
     assert_equal "Something happened.", c.instance_variable_get(:@description)
   end
 
-  def test_destructive_variant
+  # `destructive` is a non-breaking alias for the canonical `danger` tone, resolved via
+  # the deprecated `variant:` path in coerce_tone, so the stored tone is `:danger`.
+  def test_destructive_aliases_danger
     c = UI::AlertComponent.new(variant: :destructive)
 
-    assert_equal :destructive, c.instance_variable_get(:@variant)
+    assert_equal :danger, c.instance_variable_get(:@tone)
   end
 end
 
@@ -323,16 +333,30 @@ class TestBadgeComponent < Minitest::Test
     assert_equal "New", c.instance_variable_get(:@label)
   end
 
-  def test_default_variant
+  # Two-axis default (converged-conventions B2): variant: :solid × tone: :primary.
+  def test_default_axes
     c = UI::BadgeComponent.new
 
-    assert_equal :default, c.instance_variable_get(:@variant)
+    assert_equal :solid, c.instance_variable_get(:@variant)
+    assert_equal :primary, c.instance_variable_get(:@tone)
   end
 
-  def test_all_variants_exist
-    %i[default secondary destructive outline].each do |variant|
-      assert UI::BadgeComponent::VARIANTS.key?(variant), "Missing variant #{variant}"
+  # Every shipped (variant, tone) cell is an AAA-proven treatment in COMBOS.
+  def test_all_combos_exist
+    [%i[solid primary], %i[soft primary], %i[soft info], %i[soft success],
+      %i[soft warning], %i[soft danger], %i[outline neutral], %i[ghost neutral],
+      %i[link primary]].each do |cell|
+      assert UI::BadgeComponent::COMBOS.key?(cell), "Missing cell #{cell.inspect}"
     end
+  end
+
+  # `destructive` is a non-breaking alias for the canonical `danger`, which on badge
+  # is the SOFT tinted chip — so it resolves to the [:soft, :danger] cell (NOT solid).
+  def test_destructive_aliases_soft_danger
+    c = UI::BadgeComponent.new("Error", variant: :destructive)
+
+    assert_equal :soft, c.instance_variable_get(:@variant)
+    assert_equal :danger, c.instance_variable_get(:@tone)
   end
 end
 
@@ -672,43 +696,43 @@ end
 
 class TestToggleGroupComponent < Minitest::Test
   def test_default_type
-    c = UI::ToggleGroupComponent.new
+    c = UI::ToggleGroupComponent.new(aria_label: "Formatting")
 
     assert_equal :single, c.instance_variable_get(:@type)
   end
 
   def test_type_stored_as_symbol
-    c = UI::ToggleGroupComponent.new(type: "multiple")
+    c = UI::ToggleGroupComponent.new(type: "multiple", aria_label: "Formatting")
 
     assert_equal :multiple, c.instance_variable_get(:@type)
   end
 
   def test_single_value_normalized_to_array
-    c = UI::ToggleGroupComponent.new(value: "bold")
+    c = UI::ToggleGroupComponent.new(value: "bold", aria_label: "Formatting")
 
     assert_equal ["bold"], c.instance_variable_get(:@value)
   end
 
   def test_array_value_stored
-    c = UI::ToggleGroupComponent.new(value: %w[bold underline])
+    c = UI::ToggleGroupComponent.new(value: %w[bold underline], aria_label: "Formatting")
 
     assert_equal %w[bold underline], c.instance_variable_get(:@value)
   end
 
   def test_nil_value_becomes_empty_array
-    c = UI::ToggleGroupComponent.new
+    c = UI::ToggleGroupComponent.new(aria_label: "Formatting")
 
     assert_equal [], c.instance_variable_get(:@value)
   end
 
   def test_item_pressed_true_when_in_value
-    c = UI::ToggleGroupComponent.new(value: "bold")
+    c = UI::ToggleGroupComponent.new(value: "bold", aria_label: "Formatting")
 
     assert c.item_pressed?("bold")
   end
 
   def test_item_pressed_false_when_not_in_value
-    c = UI::ToggleGroupComponent.new(value: "bold")
+    c = UI::ToggleGroupComponent.new(value: "bold", aria_label: "Formatting")
 
     refute c.item_pressed?("italic")
   end
@@ -923,9 +947,16 @@ class TestIndicatorComponent < Minitest::Test
   end
 
   def test_all_variants_defined
-    %i[default destructive success warning].each do |v|
+    %i[default info success warning danger].each do |v|
       assert UI::IndicatorComponent::VARIANTS.key?(v), "Missing variant #{v}"
     end
+  end
+
+  # `destructive` is a non-breaking alias for the canonical `danger`.
+  def test_destructive_aliases_danger
+    c = UI::IndicatorComponent.new(variant: :destructive)
+
+    assert_equal :danger, c.instance_variable_get(:@variant)
   end
 
   def test_all_positions_defined
@@ -1180,40 +1211,46 @@ class TestFooterComponent < Minitest::Test
 end
 
 class TestTabsComponent < Minitest::Test
-  def test_items_data_from_array
-    c = UI::TabsComponent.new(items: [{title: "A", content: "a"}])
+  def test_label_stored
+    c = UI::TabsComponent.new(label: "Account")
 
-    assert_equal 1, c.instance_variable_get(:@items_data).size
+    assert_equal "Account", c.instance_variable_get(:@label)
   end
 
-  def test_nil_items_becomes_empty_array
-    c = UI::TabsComponent.new
+  def test_default_selected_index
+    c = UI::TabsComponent.new(label: "Account")
 
-    assert_equal [], c.instance_variable_get(:@items_data)
+    assert_equal 0, c.instance_variable_get(:@selected)
   end
 
-  def test_default_index
-    c = UI::TabsComponent.new
+  def test_custom_selected_index
+    c = UI::TabsComponent.new(label: "Account", selected: 2)
 
-    assert_equal 0, c.instance_variable_get(:@default_index)
-  end
-
-  def test_custom_default_index
-    c = UI::TabsComponent.new(default_index: 2)
-
-    assert_equal 2, c.instance_variable_get(:@default_index)
+    assert_equal 2, c.instance_variable_get(:@selected)
   end
 
   def test_string_index_coerced_to_int
-    c = UI::TabsComponent.new(default_index: "1")
+    c = UI::TabsComponent.new(label: "Account", selected: "1")
 
-    assert_equal 1, c.instance_variable_get(:@default_index)
+    assert_equal 1, c.instance_variable_get(:@selected)
   end
 
   def test_class_extracted
-    c = UI::TabsComponent.new(class: "rounded-lg")
+    c = UI::TabsComponent.new(label: "Account", class: "rounded-lg")
 
     assert_equal "rounded-lg", c.instance_variable_get(:@extra_class)
+  end
+
+  def test_id_auto_generated_when_not_supplied
+    c = UI::TabsComponent.new(label: "Account")
+
+    assert_match(/\Atabs-[0-9a-f]{8}\z/, c.instance_variable_get(:@id))
+  end
+
+  def test_custom_id_stored
+    c = UI::TabsComponent.new(label: "Account", id: "my-tabs")
+
+    assert_equal "my-tabs", c.instance_variable_get(:@id)
   end
 end
 
@@ -1313,34 +1350,33 @@ class TestAlertDialogComponent < Minitest::Test
   end
 
   def test_description_stored
-    c = UI::AlertDialogComponent.new(description: "This cannot be undone.")
+    c = UI::AlertDialogComponent.new(title: "Are you sure?", description: "This cannot be undone.")
 
     assert_equal "This cannot be undone.", c.instance_variable_get(:@description)
   end
 
-  def test_nil_defaults
-    c = UI::AlertDialogComponent.new
+  def test_nil_description_default
+    c = UI::AlertDialogComponent.new(title: "Are you sure?")
 
-    assert_nil c.instance_variable_get(:@title)
     assert_nil c.instance_variable_get(:@description)
   end
 end
 
 class TestSheetComponent < Minitest::Test
   def test_default_side
-    c = UI::SheetComponent.new
+    c = UI::SheetComponent.new(title: "Filters")
 
     assert_equal :right, c.instance_variable_get(:@side)
   end
 
   def test_custom_side
-    c = UI::SheetComponent.new(side: :left)
+    c = UI::SheetComponent.new(title: "Filters", side: :left)
 
     assert_equal :left, c.instance_variable_get(:@side)
   end
 
   def test_string_side_coerced_to_symbol
-    c = UI::SheetComponent.new(side: "bottom")
+    c = UI::SheetComponent.new(title: "Filters", side: "bottom")
 
     assert_equal :bottom, c.instance_variable_get(:@side)
   end
@@ -1352,9 +1388,25 @@ class TestSheetComponent < Minitest::Test
   end
 
   def test_class_extracted
-    c = UI::SheetComponent.new(class: "text-sm")
+    c = UI::SheetComponent.new(title: "Filters", class: "text-sm")
 
     assert_equal "text-sm", c.instance_variable_get(:@extra_class)
+  end
+
+  def test_title_stored
+    c = UI::SheetComponent.new(title: "Navigation")
+
+    assert_equal "Navigation", c.instance_variable_get(:@title)
+  end
+
+  def test_fail_loud_on_unknown_side
+    assert_raises(ArgumentError) { UI::SheetComponent.new(title: "T", side: :diagonal) }
+  end
+
+  def test_leave_transforms_defined_for_all_sides
+    %i[right left top bottom].each do |side|
+      assert UI::SheetComponent::LEAVE_TRANSFORMS.key?(side), "Missing leave transform for #{side}"
+    end
   end
 end
 
@@ -1365,14 +1417,14 @@ class TestDrawerComponent < Minitest::Test
     assert_equal "Move to project", c.instance_variable_get(:@title)
   end
 
-  def test_nil_title_default
-    c = UI::DrawerComponent.new
+  def test_wrapper_defaults_to_true
+    c = UI::DrawerComponent.new(title: "Move to project")
 
-    assert_nil c.instance_variable_get(:@title)
+    assert c.instance_variable_get(:@wrapper)
   end
 
   def test_class_extracted
-    c = UI::DrawerComponent.new(class: "max-h-[80vh]")
+    c = UI::DrawerComponent.new(title: "Move to project", class: "max-h-[80vh]")
 
     assert_equal "max-h-[80vh]", c.instance_variable_get(:@extra_class)
   end
@@ -1380,25 +1432,25 @@ end
 
 class TestPopoverComponent < Minitest::Test
   def test_default_align
-    c = UI::PopoverComponent.new
+    c = UI::PopoverComponent.new(label: "x")
 
     assert_equal :start, c.instance_variable_get(:@align)
   end
 
   def test_default_side
-    c = UI::PopoverComponent.new
+    c = UI::PopoverComponent.new(label: "x")
 
     assert_equal :bottom, c.instance_variable_get(:@side)
   end
 
   def test_custom_align
-    c = UI::PopoverComponent.new(align: :center)
+    c = UI::PopoverComponent.new(label: "x", align: :center)
 
     assert_equal :center, c.instance_variable_get(:@align)
   end
 
   def test_custom_side
-    c = UI::PopoverComponent.new(side: :top)
+    c = UI::PopoverComponent.new(label: "x", side: :top)
 
     assert_equal :top, c.instance_variable_get(:@side)
   end
@@ -1518,7 +1570,7 @@ class TestMenubarComponent < Minitest::Test
   end
 
   def test_class_extracted
-    c = UI::MenubarComponent.new(class: "w-full")
+    c = UI::MenubarComponent.new(label: "Main", class: "w-full")
 
     assert_equal "w-full", c.instance_variable_get(:@extra_class)
   end
@@ -1566,7 +1618,9 @@ class TestComboboxComponent < Minitest::Test
   def test_default_placeholder
     c = UI::ComboboxComponent.new(name: "x")
 
-    assert_equal "Select...", c.instance_variable_get(:@placeholder)
+    # The default placeholder is resolved (i18n) at render via placeholder_text,
+    # not stored in @placeholder.
+    assert_equal "Select…", c.send(:placeholder_text)
   end
 
   def test_custom_placeholder
@@ -1731,10 +1785,8 @@ class TestVideoComponent < Minitest::Test
     assert_equal "en", t.instance_variable_get(:@srclang)
   end
 
-  def test_track_invalid_kind_falls_back_to_subtitles
-    t = UI::VideoComponent::TrackComponent.new(src: "subs.vtt", kind: :bogus)
-
-    assert_equal :subtitles, t.instance_variable_get(:@kind)
+  def test_track_invalid_kind_raises
+    assert_raises(ArgumentError) { UI::VideoComponent::TrackComponent.new(src: "subs.vtt", kind: :bogus) }
   end
 end
 
@@ -1995,13 +2047,13 @@ class TestChatBubbleComponent < Minitest::Test
   def test_sent_defaults_to_false
     c = UI::ChatBubbleComponent.new
 
-    refute c.instance_variable_get(:@sent)
+    assert_equal :received, c.instance_variable_get(:@variant)
   end
 
   def test_sent_stored
     c = UI::ChatBubbleComponent.new(sent: true)
 
-    assert c.instance_variable_get(:@sent)
+    assert_equal :sent, c.instance_variable_get(:@variant)
   end
 
   def test_timestamp_nil_by_default

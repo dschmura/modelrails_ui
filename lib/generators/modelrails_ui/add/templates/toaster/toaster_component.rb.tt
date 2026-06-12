@@ -1,21 +1,50 @@
 # frozen_string_literal: true
 
 module UI
+  # # Toaster
+  #
+  # A fixed-position stack of ephemeral, auto-dismissing toast notifications
+  # (Sonner-style). Place the toaster once in the application layout; each toast is
+  # a tinted-surface card with an i18n-named dismiss `<button>`.
+  #
+  # > **Superseded in this app.** This host app has its own flash/toast pipeline
+  # > (`shared/_toasts`) — like pagination → Pagy, the gem `toaster` is NOT adopted
+  # > here. It is hardened gem-side (0a render test + preview) only; there is no app
+  # > adoption and no app-side 0b. Use `shared/_toasts` for real flashes.
+  #
+  # ## Use when
+  # - You need a stack of transient, self-dismissing confirmations layered over the
+  #   page ("Profile saved", "Copied to clipboard") — fired server-side via the
+  #   `with_toast` slot or client-side via a `toaster:add` window event.
+  #
+  # ## Don't use when
+  # - It's an inline message tied to surrounding content — use `alert`.
+  # - It's a standing page-level announcement — use `banner`.
+  #
+  # ## Accessibility contract
+  # - **Guarantees:** the stack is a live region — `role="status"`/`aria-live="polite"`
+  #   for ordinary toasts, `role="alert"`/`aria-live="assertive"` for the `danger`
+  #   severity (so an error interrupts) — with each toast carrying AAA-contrast text on
+  #   a tinted signal surface, and a real focusable dismiss `<button>` with a 44px
+  #   target, an i18n accessible name ("Dismiss"), and the `focus-ring` utility.
+  # - **You supply:** a `message` (and optional `title`) per toast, a valid `severity`
+  #   (an unknown one raises in development), and the `toaster` Stimulus controller
+  #   (ships co-located, auto-registered by the generator).
+  #
+  # ## Severity
+  # The canonical signal axis — `default` · `info` · `success` · `warning` · `danger`.
+  # Each signal severity uses the tinted-surface treatment shared with `alert` and
+  # `banner` (`bg-<signal>-surface` + `border-<signal>-border` + `text-<signal>`),
+  # never a solid signal fill (base signal tokens are TEXT colors).
+  #
+  # ### Severity-naming collision (vs the app toast pipeline)
+  # The app's `shared/_toasts` flash pipeline names its severities after Rails flash
+  # keys — there, `:alert` means *warning* and `:error`/`:alert` map to danger. This
+  # gem component instead names severities after the canonical SIGNAL axis, so
+  # `:warning` is warning and `:danger` is danger. To smooth that mismatch, the flash
+  # names `:alert` (→ `:warning`) and `:error` (→ `:danger`) are accepted as aliases.
+  # The legacy gem name `:destructive` is also accepted as an alias for `:danger`.
   class ToasterComponent < ApplicationComponent
-    # Fixed-position toast stack (Sonner-style).
-    # Place once in the application layout; trigger toasts server-side via
-    # the renders_many slot or client-side via a `toaster:add` window event.
-    #
-    # Usage (layout):
-    #   ui :toaster do |t|
-    #     t.with_toast(message: "Profile saved", variant: :success)
-    #   end
-    #
-    # Usage (JS dispatch from any controller):
-    #   window.dispatchEvent(new CustomEvent("toaster:add", {
-    #     detail: { message: "Done!", variant: "success", duration: 3000 }
-    #   }))
-
     POSITIONS = {
       bottom_right: "fixed bottom-4 right-4",
       bottom_left: "fixed bottom-4 left-4",
@@ -30,85 +59,121 @@ module UI
     renders_many :toasts, "UI::ToasterComponent::ToastComponent"
 
     # position: corner to anchor the stack (default: :bottom_right)
-    def initialize(position: :bottom_right, **html_attrs)
+    # label:    region accessible name (i18n; defaults to "Notifications")
+    def initialize(position: :bottom_right, label: nil, **html_attrs)
       @position = position.to_sym
+      @region_label = label
       @extra_class = html_attrs.delete(:class)
+      # Merge the caller's `data:` with the component's own so a passed-through
+      # data attribute isn't clobbered by the controller/action wiring (and vice versa).
+      @caller_data = html_attrs.delete(:data) || {}
       @html_attrs = html_attrs
     end
 
     def call
       pos_cls = POSITIONS.fetch(@position, POSITIONS[:bottom_right])
       content_tag(:div,
+        safe_join(toasts),
+        **@html_attrs,
+        role: "status",
+        "aria-live": "polite",
+        "aria-label": region_label,
         class: cn(CONTAINER_CLS, pos_cls, @extra_class),
         data: {
           controller: "toaster",
           action: "toaster:add@window->toaster#add"
-        },
-        **@html_attrs) do
-        safe_join(toasts)
-      end
+        }.merge(@caller_data))
+    end
+
+    private
+
+    # t() is resolved at RENDER time (here, not in initialize — no view context there).
+    def region_label
+      @region_label || I18n.t("ui.toaster.label", default: "Notifications")
     end
 
     class ToastComponent < ApplicationComponent
-      VARIANTS = {
-        default: {border: "border-border", icon: nil, icon_color: "text-text-heading"},
-        success: {
-          border: "border-green-500/40",
-          icon: "M9 12l2 2 4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0z",
-          icon_color: "text-green-500"
-        },
-        warning: {
-          border: "border-amber-500/40",
-          icon: "M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z",
-          icon_color: "text-amber-500"
-        },
-        destructive: {
-          border: "border-danger-border/40",
-          icon: "M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 1 1-18 0 9 9 0 0 1 18 0z",
-          icon_color: "text-danger"
+      # Each signal severity shares the tinted-surface treatment used by `alert` and
+      # `banner` (`bg-<signal>-surface` + `border-<signal>-border` + `text-<signal>`).
+      # Base signal tokens are TEXT colors, so the fill is the dedicated `-surface`
+      # token — never a raw palette color (`border-green-500`, `text-amber-500`) and
+      # never a solid signal fill or an opacity hack like `text-danger/90`.
+      SEVERITIES = {
+        default: {
+          surface: "bg-surface-raised border-border text-text-body",
+          icon: nil
         },
         info: {
-          border: "border-blue-500/40",
-          icon: "M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z",
-          icon_color: "text-blue-500"
+          surface: "bg-info-surface border-info-border text-info",
+          icon: "M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"
+        },
+        success: {
+          surface: "bg-success-surface border-success-border text-success",
+          icon: "M9 12l2 2 4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"
+        },
+        warning: {
+          surface: "bg-warning-surface border-warning-border text-warning",
+          icon: "M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
+        },
+        danger: {
+          surface: "bg-danger-surface border-danger-border text-danger",
+          icon: "M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"
         }
       }.freeze
 
+      # Deprecated / flash-pipeline severity aliases → canonical signal severity.
+      # `destructive` is the legacy gem name for `danger`; `alert`/`error` are the
+      # app `shared/_toasts` flash names (Rails-flash semantics, where `:alert` reads
+      # as a warning and `:error` as danger). See the class-level collision note.
+      SEVERITY_ALIASES = { destructive: :danger, error: :danger, alert: :warning }.freeze
+
+      # Live-region urgency by severity: only `danger` interrupts (assertive); every
+      # other severity announces politely.
+      ROLES = { default: "status", info: "status", success: "status", warning: "status", danger: "alert" }.freeze
+      LIVE  = { default: "polite", info: "polite", success: "polite", warning: "polite", danger: "assertive" }.freeze
+
       TOAST_CLS = "pointer-events-auto flex items-start gap-3 rounded-lg border " \
-                  "bg-surface-raised px-4 py-3 shadow-lg text-text-heading " \
+                  "px-4 py-3 shadow-lg " \
                   "transition-all duration-300 translate-y-2 opacity-0 " \
                   "data-[open=true]:translate-y-0 data-[open=true]:opacity-100"
 
-      CLOSE_CLS = "ml-auto -mr-1 -mt-0.5 shrink-0 inline-flex size-6 items-center justify-center " \
-                  "rounded-md text-text-muted hover:text-text-heading hover:bg-surface-sunken " \
-                  "focus-visible:ring-[3px] focus-visible:ring-interactive-focus outline-none transition"
+      # The dismiss control is a 44px-min focusable <button> with an i18n accessible
+      # name and the `focus-ring` utility (NEVER focus:ring-* — a box-shadow ring is
+      # clipped by overflow:hidden ancestors and fails in forced-colors mode).
+      CLOSE_CLS = "ml-auto -mr-2 -mt-1.5 shrink-0 inline-flex size-11 items-center justify-center " \
+                  "rounded-md text-current hover:opacity-80 focus-ring transition"
 
       # message:  toast body (required)
       # title:    optional bold heading
-      # variant:  :default | :success | :warning | :destructive | :info
+      # severity: :default | :info | :success | :warning | :danger
+      #           (aliases: :destructive/:error → :danger, :alert → :warning;
+      #            `variant:` is accepted as a deprecated alias for `severity:`)
       # duration: auto-dismiss in ms; 0 = no auto-dismiss (default: 4000)
-      def initialize(message:, title: nil, variant: :default, duration: 4000, **html_attrs)
+      def initialize(message:, title: nil, severity: :default, variant: nil, duration: 4000, **html_attrs)
         @message = message
         @title = title
-        @variant = variant.to_sym
+        @severity = resolve_severity(severity, variant)
         @duration = duration.to_i
         @extra_class = html_attrs.delete(:class)
+        # Merge the caller's `data:` with the component's own (target + duration param)
+        # so a passed-through data attribute isn't clobbered, and vice versa.
+        @caller_data = html_attrs.delete(:data) || {}
         @html_attrs = html_attrs
       end
 
       def call
-        v = VARIANTS.fetch(@variant, VARIANTS[:default])
+        sev = SEVERITIES.fetch(@severity)
         content_tag(:div,
-          class: cn(TOAST_CLS, v[:border], @extra_class),
-          role: "alert",
-          "aria-live": "polite",
+          **@html_attrs,
+          role: ROLES.fetch(@severity),
+          "aria-live": LIVE.fetch(@severity),
           "data-open": "false",
+          class: cn(TOAST_CLS, sev[:surface], @extra_class),
           data: {
             toaster_target: "toast",
             toaster_duration_param: @duration
-          },
-          **@html_attrs) do
-          concat icon_svg(v[:icon], v[:icon_color]) if v[:icon]
+          }.merge(@caller_data)) do
+          concat icon_svg(sev[:icon]) if sev[:icon]
           concat body
           concat close_btn
         end
@@ -116,35 +181,59 @@ module UI
 
       private
 
+      # Resolve the severity, accepting the deprecated `variant:` alias and the flash
+      # / legacy severity names. Fail loud on an unknown severity in development/test
+      # so misuse is caught immediately; fall back to :default in production so a bad
+      # severity never 500s a page. The Rails.respond_to?(:env) guard stays correct
+      # even when Rails is defined but Rails.env isn't booted (the gem's Rails-less
+      # render tests load rails/generators, which defines Rails without Rails.env).
+      def resolve_severity(severity, variant)
+        sev = (variant || severity).to_sym
+        sev = SEVERITY_ALIASES.fetch(sev, sev)
+        return sev if SEVERITIES.key?(sev)
+
+        unless defined?(Rails) && Rails.respond_to?(:env) && Rails.env.production?
+          raise ArgumentError,
+            "UI::ToasterComponent::ToastComponent: unknown severity #{sev.inspect}. " \
+            "Expected one of: #{SEVERITIES.keys.join(", ")} " \
+            "(aliases — destructive/error→danger, alert→warning)."
+        end
+
+        :default
+      end
+
       def body
         content_tag(:div, class: "flex-1 min-w-0") do
           concat content_tag(:p, @title, class: "text-sm font-semibold leading-tight") if @title
           concat content_tag(:p, @message,
-            class: "text-sm leading-snug#{" text-text-muted mt-0.5" if @title}")
+            class: "text-sm leading-snug#{" mt-0.5" if @title}")
         end
       end
 
       def close_btn
-        content_tag(:button, type: "button",
+        content_tag(:button, dismiss_icon,
+          type: "button",
+          "aria-label": I18n.t("ui.toaster.dismiss", default: "Dismiss"),
           class: CLOSE_CLS,
-          "aria-label": "Dismiss",
-          data: {action: "click->toaster#dismiss"}) do
-          content_tag(:svg,
-            content_tag(:path, nil, d: "M18 6 6 18M6 6l12 12",
-              "stroke-linecap": "round", "stroke-linejoin": "round"),
-            xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 24 24",
-            fill: "none", stroke: "currentColor", "stroke-width": "2",
-            class: "size-3.5", "aria-hidden": "true")
-        end
+          data: { action: "click->toaster#dismiss" })
       end
 
-      def icon_svg(path, color_cls)
+      def dismiss_icon
+        content_tag(:svg,
+          content_tag(:path, nil, d: "M18 6 6 18M6 6l12 12",
+            "stroke-linecap": "round", "stroke-linejoin": "round"),
+          xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 24 24",
+          fill: "none", stroke: "currentColor", "stroke-width": "2",
+          class: "size-3.5", "aria-hidden": "true")
+      end
+
+      def icon_svg(path)
         content_tag(:svg,
           content_tag(:path, nil, d: path,
             "stroke-linecap": "round", "stroke-linejoin": "round"),
           xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 24 24",
           fill: "none", stroke: "currentColor", "stroke-width": "2",
-          class: "mt-0.5 size-4 shrink-0 #{color_cls}",
+          class: "mt-0.5 size-4 shrink-0 text-current",
           "aria-hidden": "true")
       end
     end

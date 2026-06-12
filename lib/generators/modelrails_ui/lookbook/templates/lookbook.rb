@@ -10,4 +10,6 @@ if Rails.env.development?
   vc.previews.default_layout = "component_preview"
   # Lookbook keeps its OWN preview_paths (separate from ViewComponent's).
   Rails.application.config.lookbook.preview_paths = [preview_dir]
+  Rails.application.config.lookbook.page_paths = [Rails.root.join("spec/components/previews/pages").to_s]
+  Rails.application.config.lookbook.preview_display_options = {theme: %w[light dark]}
 end

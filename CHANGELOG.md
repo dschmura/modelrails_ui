@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-06-11
+
+### Added
+- Optional `modelrails_ui:agent_rules` generator: writes design-system agent rules + seeded house rules, adds an idempotent `@`-import to `CLAUDE.md`/`AGENTS.md`, reports directive conflicts.
+- Hardened the component library to the proven tier — 80 of 82 components proven (render tests + template-backed Lookbook previews; browser-axe AAA verification in the host app's CI) across display, dialog, floating, menu, navigation, and media bands. See `COMPONENT_STATUS.md`.
+- One shared `modal` Stimulus controller drives the native-`<dialog>` family (dialog, alert_dialog, drawer, sheet, gallery lightbox); one shared `menu` controller (roving tabindex, type-ahead, dismissal) drives dropdown_menu, context_menu, and the menubar coordinator.
+- CSS anchor positioning (`position-area`/`position-try`) for popover, tooltip, and hover_card.
+- Lookbook teaching catalog: choosing/decision pages, form-control playgrounds, Related cross-link graphs, and per-preview backgrounds.
+
+### Changed
+- Two-axis component API: `button` and `badge` take `variant:` (shape) × `tone:` (signal); old flat values still work via a deprecation shim.
+- Unified signal vocabulary to a canonical `info·success·warning·danger` ladder across alert/badge/button/indicator (`destructive` kept as a non-breaking alias for `danger`). Alert gains all four tinted signal levels; badge signal chips move from solid base-token fills to tinted surfaces (`bg-*-surface` + `text-*` + `*-border`), since the base tokens are TEXT colors and rendered as muddy dark chips when used as fills.
+- Focus indicators standardized on the `focus-ring` offset-outline utility (never `focus:ring-*` box-shadows, which vanish in forced-colors mode).
+
+### Fixed
+- Indicator `warning` count text used the non-adaptive `text-text-heading` (low-contrast on the fill in both themes); now uses the adaptive `text-text-on-interactive`.
+
 ## [0.2.0] - 2026-05-30
 
 ### Added

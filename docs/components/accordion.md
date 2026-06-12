@@ -2,17 +2,18 @@
 
 Collapsible content sections. Built on native `<details>`/`<summary>` — no JavaScript required. The chevron rotates on open via Tailwind's `group-open:` modifier.
 
+Each summary carries the AAA `focus-ring` outline, and the chevron is a decorative `aria-hidden` icon — the open/closed state is conveyed by the native disclosure.
+
 ## Installation
 
 ```bash
-rails g view_primitives:add accordion
+rails g modelrails_ui:add accordion
 ```
 
 Creates:
 - `app/components/ui/accordion_component.rb`
-- `app/components/ui/accordion_component.html.erb`
 - `app/components/ui/accordion_item_component.rb`
-- `app/components/ui/accordion_item_component.html.erb`
+- `app/javascript/controllers/accordion_controller.js` (powers `exclusive:` mode)
 
 ## Usage
 

@@ -7,7 +7,14 @@ module ModelrailsUi
 
       # Stimulus controllers not colocated with the component template directory.
       EXTRA_STIMULUS = {
-        "alert_dialog" => {source: "dialog/dialog_controller.js", name: "dialog"}
+        "alert_dialog" => {source: "dialog/modal_controller.js", name: "modal"},
+        "drawer" => {source: "dialog/modal_controller.js", name: "modal"},
+        "sheet" => {source: "dialog/modal_controller.js", name: "modal"},
+        "tooltip" => {source: "popover/floating_controller.js", name: "floating"},
+        "hover_card" => {source: "popover/floating_controller.js", name: "floating"},
+        "context_menu" => {source: "dropdown_menu/menu_controller.js", name: "menu"},
+        "menubar_menu" => {source: "dropdown_menu/menu_controller.js", name: "menu"},
+        "gallery" => {source: "dialog/modal_controller.js", name: "modal"}
       }.freeze
 
       # Post-install instructions for components that require external dependencies.
@@ -16,7 +23,7 @@ module ModelrailsUi
           Chart requires Chart.js. Add it to your importmap:
 
             # config/importmap.rb
-            pin "chart.js", to: "https://esm.sh/chart.js@4"
+            pin "chart.js", to: "https://cdn.jsdelivr.net/npm/chart.js@4/+esm"
 
           Then use the component:
 
@@ -33,11 +40,11 @@ module ModelrailsUi
           To use Quill (adapter: :quill), add it to your importmap:
 
             # config/importmap.rb
-            pin "quill", to: "https://esm.sh/quill@2"
+            pin "quill", to: "https://cdn.jsdelivr.net/npm/quill@2/+esm"
 
           Also add Quill's stylesheet to your CSS entry point:
 
-            @import url("https://esm.sh/quill@2/dist/quill.snow.css");
+            @import url("https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css");
 
           Usage:
 

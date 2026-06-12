@@ -15,12 +15,12 @@ rails action_text:install
 
 ```ruby
 # config/importmap.rb
-pin "quill", to: "https://esm.sh/quill@2"
+pin "quill", to: "https://cdn.jsdelivr.net/npm/quill@2/+esm"
 ```
 
 ```css
 /* your CSS entry point */
-@import url("https://esm.sh/quill@2/dist/quill.snow.css");
+@import url("https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css");
 ```
 
 ## Usage

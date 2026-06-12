@@ -1,61 +1,48 @@
 # Navbar
 
-Sticky top navigation bar with brand link, desktop nav links, an action area, and a mobile hamburger menu.
+A responsive top navigation bar (a `<nav>` landmark) — a brand, inline desktop links, an
+optional right-aligned action area, and a mobile disclosure (a hamburger toggles a stacked
+menu). The disclosure follows the WAI-ARIA APG disclosure pattern.
 
-Requires `navbar_controller.js` (copied automatically by the generator).
+Requires `navbar_controller.js` (copied by the generator).
 
 ## Installation
 
 ```bash
-rails g view_primitives:add navbar
+rails g modelrails_ui:add navbar
 ```
-
-Creates `app/components/ui/navbar_component.rb`.
 
 ## Usage
 
 ```erb
-<%= ui :navbar,
-       brand: "Acme",
-       brand_href: root_path,
-       items: [
-         { label: "Home",     href: root_path,    active: true },
-         { label: "Products", href: products_path },
-         { label: "Pricing",  href: pricing_path }
-       ] %>
-```
-
-## Action area
-
-Pass a block to add content (e.g. sign-in button) to the right side of the navbar. It is hidden on mobile.
-
-```erb
-<%= ui :navbar,
-       brand: "Acme",
-       items: [{ label: "Home", href: root_path }] do %>
-  <%= ui :button, "Sign in", href: new_session_path, size: :sm %>
+<%= render(UI::NavbarComponent.new(
+  brand: "Acme",
+  brand_href: root_path,
+  label: "Main",
+  items: [
+    { label: "Dashboard", href: "/dashboard", active: true },
+    { label: "Pricing", href: "/pricing" }
+  ]
+)) do %>
+  <%= link_to "Sign in", "/login", class: "btn-primary" %>
 <% end %>
 ```
 
-## Brand only (no nav links)
+`label:` is the `<nav>` accessible name (i18n; defaults to `t("ui.navbar.label", default: "Main")`).
+`items:` are the links (`active: true` → `aria-current="page"`). Block content goes in the
+right-aligned action area (desktop). On narrow screens the inline links collapse behind a
+hamburger that discloses a stacked menu.
 
-```erb
-<%= ui :navbar, brand: "Acme", brand_href: root_path %>
-```
+## Keyboard
 
-## API
+| Key | Action |
+|-----|--------|
+| `Enter` / `Space` on the hamburger | Toggle the mobile menu (syncs `aria-expanded`) |
+| `Escape` | Close the mobile menu, return focus to the hamburger |
+| click outside | Close the mobile menu |
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `brand` | String | `nil` | Brand name shown as a link on the left |
-| `brand_href` | String | `"/"` | URL for the brand link |
-| `items` | Array | `[]` | Array of `{ label:, href:, active: }` hashes |
-| `**html_attrs` | Hash | — | Forwarded to the `<nav>` element |
+## Accessibility
 
-### Item hash
-
-| Key | Type | Required | Description |
-|-----|------|----------|-------------|
-| `label` | String | Yes | Link text |
-| `href` | String | Yes | Link destination |
-| `active` | Boolean | No | Applies active text colour |
+WCAG 2.2 AAA. `<nav>` named by `label:`; the hamburger is a `<button>` with synced
+`aria-expanded` + `aria-controls`; the active link is `aria-current="page"`. Proven by
+`spec/system/ui/navbar_component_spec.rb` in the host app (at a mobile viewport).
