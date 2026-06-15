@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-06-15
+
+### Fixed
+- Calendar: a day that is both today and selected rendered low-contrast heading text on the selected fill (dark-mode AAA failure); today's text emphasis now yields to the selected on-color.
+
 ## [0.3.0] - 2026-06-11
 
 ### Added
