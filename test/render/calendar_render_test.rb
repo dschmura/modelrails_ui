@@ -64,6 +64,7 @@ class CalendarRenderTest < ViewComponent::TestCase
     end
 
     today = page.find("button[aria-current='date']")
+
     assert_includes today[:class], "bg-interactive"
     assert_includes today[:class], "text-text-on-interactive"
     refute_includes today[:class], "text-text-heading"
