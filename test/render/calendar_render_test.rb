@@ -10,6 +10,8 @@ load_component "calendar", "calendar_component.rb.tt"
 # APG date-grid scaffolding the controller relies on, plus the focus/label
 # contract, never the runtime behavior itself.
 class CalendarRenderTest < ViewComponent::TestCase
+  include ActiveSupport::Testing::TimeHelpers
+
   # A fixed month so the grid layout is deterministic. June 2026 begins on a
   # Monday; the 15th is a Monday in the second visible week.
   JUNE = Date.new(2026, 6, 15)
@@ -47,6 +49,25 @@ class CalendarRenderTest < ViewComponent::TestCase
     assert_selector "[role='grid'] [role='row']", count: 7
     assert_selector "[role='gridcell']", count: 42
     assert_selector "[role='gridcell'] button[type='button']", count: 42
+  end
+
+  # --- Today + selected must keep on-color text ------------------------------
+
+  # Regression: when the selected day IS today, the today indicator must not
+  # override the selected fill's on-color text. The today cell carried
+  # `text-text-heading`, which won the cascade over DAY_SEL's
+  # `text-text-on-interactive` and put heading text on the bg-interactive fill —
+  # a dark-mode contrast failure the app's preview-host axe spec caught.
+  def test_today_when_also_selected_keeps_on_interactive_text
+    travel_to(JUNE) do # JUNE is today, so today == the selected day
+      render_inline(UI::CalendarComponent.new(month: JUNE, selected: JUNE))
+    end
+
+    today = page.find("button[aria-current='date']")
+
+    assert_includes today[:class], "bg-interactive"
+    assert_includes today[:class], "text-text-on-interactive"
+    refute_includes today[:class], "text-text-heading"
   end
 
   # --- Day buttons carry a full-date accessible name -------------------------
