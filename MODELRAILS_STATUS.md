@@ -73,7 +73,7 @@ The app's implementations are superior AND tightly integration-coupled; forcing 
 general gem would drag app-specific coupling in (the opposite of easy adoption).
 
 - **Toasts** — flash-driven two-tier (pill/card) subsystem (`config.toasts`, live regions, layout mount). App keeps it.
-- **`select`** — Rails `choices` API (arrays/grouped/collections) doesn't map to the gem's `options:`.
+- **`select`** — the **form-builder** path stays native (Rails `choices` API — arrays/grouped/collections — doesn't map to the gem's `options:`). The gem's `UI::Select` component (`options:` API) *is* adopted in the app and, as of **v0.4.0**, styles its open picker via `appearance: base-select` where supported (design-system overlay + brand checkmark + flipping icon; untouched native fallback elsewhere) — 0b-axe parity-proven in both themes.
 - **`check_box`** — needs Rails' paired hidden field (unchecked value).
 - **`collection_check_boxes` / `collection_radio_buttons`** — fieldset iterators, no single-component equivalent.
 - **(Not yet evaluated)** user_menu/dropdown, sidebar, footer — app-specific nav; likely adapter or keep-native.
