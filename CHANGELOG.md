@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-06-30
+
+### Added
+- Customizable Select: `UI::Select`'s native `<select>` picker now opts into `appearance: base-select` where supported (Chromium, Safari 26+), rendering a fully styled picker that matches the design system — the combobox's overlay/border/shadow, a brand-tinted checkmark on the selected row, roomy options, and a flipping picker-icon. Browsers without support fall back to the untouched native control. Pure CSS + one `ui-select` hook class; no JS, no markup change.
+
 ## [0.3.1] - 2026-06-15
 
 ### Fixed
