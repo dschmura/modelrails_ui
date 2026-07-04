@@ -519,7 +519,21 @@
     appearance: base-select;
   }
 
+  /* Button layout: selected text at the start, picker-icon pinned to the
+     inline-end on the SAME row. `.form-field`/`.form-input` apply `display: block`,
+     which overrides base-select's default flex button and drops the picker-icon
+     onto its own line (and lets it drift as the picker opens). Restore
+     `display: flex` here — this unlayered @supports block wins over those layered
+     field utilities — then align and pin the icon. */
+  .ui-select {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
   .ui-select::picker-icon {
+    flex: none;
     color: var(--color-text-body);
     transition: rotate 0.2s ease;
   }
