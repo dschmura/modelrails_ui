@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Customizable Select: the styled base-select button dropped its picker-icon onto a second line (and let it drift as the picker opened), because `.form-field`/`.form-input` set `display: block`, overriding base-select's default flex button. The `@supports` block now restores `display: flex` on `.ui-select` and pins the picker-icon inline at the end.
+
 ## [0.4.0] - 2026-06-30
 
 ### Added
