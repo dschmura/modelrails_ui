@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-07-05
+
+### Added
+- Alert: signal tones (`info` · `success` · `warning` · `danger`) now render a tone-matched severity icon automatically — the same Lucide-style glyphs as the toaster, so an alert and a toast at the same level share one glyph. Distinct shapes keep severity legible without relying on color alone (WCAG 1.4.1); the icon is `aria-hidden`, so screen readers still hear only the urgency-matched live region and the caller's title/description. `neutral` stays icon-free; the new `icon: false` kwarg opts out and restores the previous rendering exactly.
+
 ### Fixed
 - Customizable Select: the styled base-select button dropped its picker-icon onto a second line (and let it drift as the picker opened), because `.form-field`/`.form-input` set `display: block`, overriding base-select's default flex button. The `@supports` block now restores `display: flex` on `.ui-select` and pins the picker-icon inline at the end.
 
