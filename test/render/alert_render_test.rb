@@ -127,4 +127,39 @@ class AlertRenderTest < ViewComponent::TestCase
       render_inline(UI::AlertComponent.new(tone: :bogus))
     end
   end
+
+  # --- Severity icons ---
+
+  # Each signal tone renders its severity glyph as a direct child of the live
+  # region — a redundant, non-color severity cue (WCAG 1.4.1). Decorative
+  # (aria-hidden): the region announces only the caller's text.
+  %i[info success warning danger].each do |tone|
+    define_method("test_tone_#{tone}_renders_a_decorative_severity_icon") do
+      render_inline(UI::AlertComponent.new(tone: tone, title: "X"))
+
+      assert_selector "div[role] > svg[aria-hidden='true']"
+      assert_selector "svg path[d='#{UI::AlertComponent::ICONS.fetch(tone)}']"
+    end
+  end
+
+  # The glyphs must stay distinct across tones — identical shapes would collapse
+  # the non-color severity cue back into color-only signaling.
+  def test_signal_tone_glyphs_are_distinct
+    paths = UI::AlertComponent::ICONS.values.compact
+    assert_equal paths.uniq, paths
+  end
+
+  # Neutral isn't a signal level — no glyph, and the grid keeps its no-icon layout.
+  def test_neutral_tone_renders_no_icon
+    render_inline(UI::AlertComponent.new(title: "X"))
+
+    assert_no_selector "svg"
+  end
+
+  def test_icon_false_suppresses_the_severity_icon
+    render_inline(UI::AlertComponent.new(tone: :danger, title: "X", icon: false))
+
+    assert_selector "div[role='alert']", text: "X"
+    assert_no_selector "svg"
+  end
 end
