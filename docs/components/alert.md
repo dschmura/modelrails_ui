@@ -25,19 +25,24 @@ Creates `app/components/ui/alert_component.rb`.
 
 Slots take precedence over kwargs when both are provided.
 
-## Variants
+## Tones
 
-| Variant | Description |
-|---------|-------------|
-| `default` | Neutral — uses `--background` and `--foreground` |
-| `destructive` | Error or danger — uses `--destructive` colour |
+| Tone | Description |
+|------|-------------|
+| `neutral` | Default — raised surface, body text, no icon |
+| `info` | Informational signal on the info-tinted surface |
+| `success` | Confirmation on the success-tinted surface |
+| `warning` | Warning on the warning-tinted surface |
+| `danger` | Error — announced assertively (`role="alert"`) on the danger surface |
+
+`variant:` is accepted as a deprecated alias for `tone:` (`default`→`neutral`, `destructive`→`danger`, the rest 1:1).
 
 ```erb
-<%= ui :alert, variant: :default,
+<%= ui :alert, tone: :info,
                 title: "Note",
                 description: "Your free trial expires in 3 days." %>
 
-<%= ui :alert, variant: :destructive,
+<%= ui :alert, tone: :danger,
                 title: "Error",
                 description: "Your session has expired. Please log in again." %>
 ```
@@ -58,16 +63,16 @@ Use slots when the content contains HTML, links, or other components:
 <% end %>
 ```
 
-## With an icon
+## Icons
 
-Place an SVG before the slots. The component shifts content right automatically via `[&>svg~*]:pl-7`:
+Each signal tone renders a matching severity icon automatically — info circle, success check circle, warning triangle, danger circle-x (the same glyphs the toaster uses, so an alert and a toast at the same level read the same). Distinct shapes keep severity legible without relying on color alone (WCAG 1.4.1). The icon is `aria-hidden` — decorative for screen readers, which already get the urgency-matched live region and your title/description. The `neutral` tone has no icon.
 
 ```erb
-<%= ui :alert, variant: :destructive do |alert| %>
-  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" ...>...</svg>
-  <% alert.with_alert_title { "Error" } %>
-  <% alert.with_alert_description { "Something went wrong." } %>
-<% end %>
+<%# Warning triangle renders automatically %>
+<%= ui :alert, tone: :warning, title: "Storage almost full" %>
+
+<%# Opt out with icon: false %>
+<%= ui :alert, tone: :warning, icon: false, title: "Storage almost full" %>
 ```
 
 ## Flash messages
@@ -75,23 +80,23 @@ Place an SVG before the slots. The component shifts content right automatically 
 ```erb
 <%# app/views/shared/_flash.html.erb %>
 <% flash.each do |type, message| %>
-  <%= ui :alert, variant: flash_variant(type), description: message %>
+  <%= ui :alert, tone: flash_tone(type), description: message %>
 <% end %>
 ```
 
 ```ruby
 # app/helpers/flash_helper.rb
 module FlashHelper
-  FLASH_VARIANTS = {
-    "notice"  => :default,
-    "success" => :default,
-    "alert"   => :destructive,
-    "error"   => :destructive,
-    "warning" => :destructive
+  FLASH_TONES = {
+    "notice"  => :neutral,
+    "success" => :success,
+    "alert"   => :warning,
+    "error"   => :danger,
+    "warning" => :warning
   }.freeze
 
-  def flash_variant(type)
-    FLASH_VARIANTS.fetch(type.to_s, :default)
+  def flash_tone(type)
+    FLASH_TONES.fetch(type.to_s, :neutral)
   end
 end
 ```
@@ -110,7 +115,9 @@ end
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `variant` | Symbol | `:default` | Visual style — see Variants table |
+| `tone` | Symbol | `:neutral` | Severity level — see Tones table |
+| `variant` | Symbol | `nil` | Deprecated alias for `tone:` (`default`→`neutral`, `destructive`→`danger`) |
+| `icon` | Boolean | `true` | Render the tone's severity icon. `false` suppresses it |
 | `title` | String | `nil` | Plain-text title, alternative to `with_alert_title` slot |
 | `description` | String | `nil` | Plain-text description, alternative to `with_alert_description` slot |
 
