@@ -146,6 +146,7 @@ class AlertRenderTest < ViewComponent::TestCase
   # the non-color severity cue back into color-only signaling.
   def test_signal_tone_glyphs_are_distinct
     paths = UI::AlertComponent::ICONS.values.compact
+
     assert_equal paths.uniq, paths
   end
 
