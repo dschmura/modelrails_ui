@@ -48,7 +48,9 @@ module ModelrailsUi
         return {value: :direct, detail: "ui/render call"} if direct?(component, klass, host_code)
 
         adapter = @adapter_map[component]
-        return {value: :adapter, detail: adapter_detail(adapter)} if adapter && adapter_hit?(adapter, host_code)
+        if adapter && adapter_hit?(adapter, host_code, host_markup)
+          return {value: :adapter, detail: adapter_detail(adapter)}
+        end
 
         if adapter && adapter[:kind] == :css_prefix
           n = count(css_needle(adapter[:value]), host_markup)
@@ -77,11 +79,20 @@ module ModelrailsUi
       # :css_prefix is deliberately absent here — it never resolves to
       # :adapter. It always routes through the dedicated utility_standin
       # check below, which uses a dot-stripped needle (see #css_needle).
-      def adapter_hit?(adapter, src)
+      #
+      # :method/:helper match bare Ruby tokens (`f.text_area`, `avatar_for`)
+      # that are never legitimately quoted, so they scan `code` (strings
+      # stripped) like `direct?`. :partial is the opposite: a partial path
+      # (`shared/_modal`) only ever appears inside a quoted `render` argument
+      # — scanning `code` would blank that argument to `""` and the branch
+      # could never match, silently misclassifying a partial-only host as
+      # :none. It scans `markup` (strings preserved) instead, exactly like
+      # the css_prefix utility-standin check does.
+      def adapter_hit?(adapter, code, markup)
         case adapter[:kind]
-        when :method then src.match?(/[.\s]#{Regexp.escape(adapter[:value])}\b/)
-        when :partial then src.include?(adapter[:value]) || src.include?(adapter[:value].sub("_", ""))
-        when :helper then src.match?(/\b#{Regexp.escape(adapter[:value])}\b/)
+        when :method then code.match?(/[.\s]#{Regexp.escape(adapter[:value])}\b/)
+        when :partial then markup.include?(adapter[:value]) || markup.include?(adapter[:value].sub("_", ""))
+        when :helper then code.match?(/\b#{Regexp.escape(adapter[:value])}\b/)
         else false
         end
       end

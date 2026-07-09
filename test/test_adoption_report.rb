@@ -5,6 +5,7 @@ require "modelrails_ui/adoption"
 
 class TestAdoptionReport < Minitest::Test
   APP = File.expand_path("fixtures/adoption_app", __dir__)
+  HOST_PREVIEWS_APP = File.expand_path("fixtures/adoption_app_host_previews", __dir__)
 
   def test_report_has_a_row_per_supported_component
     report = ModelrailsUi::Adoption.report(app_root: APP)
@@ -53,5 +54,21 @@ class TestAdoptionReport < Minitest::Test
 
     refute_includes blind_names, "alert", "suppressed component must be dropped"
     assert_includes blind_names, "badge", "un-suppressed peer must remain"
+  end
+
+  def test_audit_coverage_m_comes_from_host_previews_not_gem_templates
+    # The gem's shipped dialog templates are {default, large}. This fixture's
+    # host ships DIFFERENT scenario names (zzz_host_only_a/b) under its own
+    # spec/components/previews/ui/dialog_component_preview/, visited by its
+    # own spec/system/ui/dialog_spec.rb. If M were still sourced from the
+    # gem's templates (the bug this fixture reproduces), these host-visited
+    # names could never intersect {default, large} and N would be stuck at 0
+    # no matter what the host's spec visits — the exact cardinal lie that
+    # misclassified a fully-audited dialog as a 0/2 blind spot against the
+    # real modelrails_base app.
+    report = ModelrailsUi::Adoption.report(app_root: HOST_PREVIEWS_APP)
+    dialog = report[:rows].find { |r| r[:component] == "dialog" }
+
+    assert_equal({n: 2, m: 2, unresolved: 0}, dialog[:audited])
   end
 end

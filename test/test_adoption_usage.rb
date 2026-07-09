@@ -6,10 +6,17 @@ require "modelrails_ui/adoption/adapter_map"
 
 class TestAdoptionUsage < Minitest::Test
   APP = File.expand_path("fixtures/adoption_app", __dir__)
+  PARTIAL_APP = File.expand_path("fixtures/adoption_app_partial_dialog", __dir__)
 
   def usage
     @usage ||= ModelrailsUi::Adoption::Usage.new(
       app_root: APP, adapter_map: ModelrailsUi::Adoption::AdapterMap::DEFAULTS
+    )
+  end
+
+  def partial_usage
+    @partial_usage ||= ModelrailsUi::Adoption::Usage.new(
+      app_root: PARTIAL_APP, adapter_map: ModelrailsUi::Adoption::AdapterMap::DEFAULTS
     )
   end
 
@@ -77,5 +84,20 @@ class TestAdoptionUsage < Minitest::Test
     # Without string-stripping in the `code` variant this would false-match
     # direct? and misclassify carousel as :direct instead of :none.
     assert_equal :none, usage.classify("carousel")[:value]
+  end
+
+  def test_partial_adapter_is_reachable_via_rendered_partial_only
+    # dialog's adapter is {kind: :partial, value: "shared/_modal"}. In this
+    # fixture app dialog is reached ONLY via a rendered partial
+    # (`render "shared/modal"`) — no direct `render UI::DialogComponent`
+    # anywhere. A partial path only ever appears inside a quoted render
+    # argument, so adapter_hit?'s :partial branch must scan the
+    # strings-PRESERVED `markup` variant. Scanning the strings-stripped
+    # `code` variant (the bug) blanks that argument to `""` and the branch
+    # can never match, so this fixture would misclassify as :none.
+    result = partial_usage.classify("dialog")
+
+    assert_equal :adapter, result[:value]
+    assert_match(/shared\/_modal/, result[:detail])
   end
 end

@@ -17,6 +17,23 @@ module ModelrailsUi
       "../generators/modelrails_ui/lookbook/templates/previews/ui", __dir__
     ).freeze
 
+    # Candidate host roots for the audit-coverage inputs (fork-resilient: first
+    # that exists wins), mirroring Usage's HOST_VIEW_DIRS probe pattern.
+    #
+    # HOST_PREVIEW_DIRS matters because a host's live previews DRIFT from the
+    # gem's shipped templates the moment a fork edits scenarios — the gem's
+    # {default, large} for dialog vs. a real host's {basic,
+    # confirm_destructive, with_form}. M (the denominator) must come from
+    # whichever scenarios the host's own specs actually visit, or coverage
+    # never intersects and a fully-audited component (N == M) is misreported
+    # as a 0/2 blind spot. GEM_PREVIEWS is the fallback ONLY for a host that
+    # ships no previews of its own — never a substitute for a host that has
+    # drifted.
+    HOST_PREVIEW_DIRS = [
+      "spec/components/previews/ui", "test/components/previews/ui", "app/components/previews/ui"
+    ].freeze
+    HOST_SPEC_DIRS = ["spec/system/ui", "test/system/ui"].freeze
+
     module_function
 
     def report(app_root:)
@@ -26,7 +43,7 @@ module ModelrailsUi
 
       usage = Usage.new(app_root: app_root, adapter_map: adapters)
       coverage = AuditCoverage.new(
-        specs_root: File.join(app_root, "spec/system/ui"), previews_root: GEM_PREVIEWS
+        specs_root: resolve_specs_root(app_root), previews_root: resolve_previews_root(app_root)
       )
 
       rows = Components.supported.map do |c|
@@ -56,6 +73,20 @@ module ModelrailsUi
       out << full_table(report[:rows]) if verbose
       out << remedy_footer
       out
+    end
+
+    # The host's own live previews (what its specs actually visit) — the
+    # gem's shipped templates are only a fallback for a host that ships none.
+    def resolve_previews_root(app_root)
+      HOST_PREVIEW_DIRS.map { |d| File.join(app_root, d) }.find { |p| Dir.exist?(p) } || GEM_PREVIEWS
+    end
+
+    # Same fork-resilient probe; degrades gracefully (AuditCoverage#cover
+    # treats a missing specs_root as "no spec found", never a crash), so an
+    # all-candidates-missing host just falls back to the first candidate path.
+    def resolve_specs_root(app_root)
+      candidates = HOST_SPEC_DIRS.map { |d| File.join(app_root, d) }
+      candidates.find { |p| Dir.exist?(p) } || candidates.first
     end
 
     def load_config(app_root)
