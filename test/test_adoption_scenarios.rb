@@ -18,6 +18,6 @@ class TestAdoptionScenarios < Minitest::Test
   end
 
   def test_returns_empty_when_no_preview_dir
-    assert_empty ModelrailsUi::Adoption::Scenarios.for("pagination", previews_root: ROOT)
+    assert_empty ModelrailsUi::Adoption::Scenarios.for("nonexistent_component", previews_root: ROOT)
   end
 end
