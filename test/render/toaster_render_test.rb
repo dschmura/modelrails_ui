@@ -4,7 +4,7 @@ require "render_test_helper"
 load_component "toaster", "toaster_component.rb.tt"
 
 class ToasterRenderTest < ViewComponent::TestCase
-  # --- The stack container is a polite live region landmark ---
+  # --- The stack container is a polite live region (role=status, not a landmark) ---
 
   def test_container_is_a_polite_live_region_with_an_i18n_name
     render_inline(UI::ToasterComponent.new)
