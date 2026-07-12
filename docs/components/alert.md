@@ -75,6 +75,19 @@ Each signal tone renders a matching severity icon automatically — info circle,
 <%= ui :alert, tone: :warning, icon: false, title: "Storage almost full" %>
 ```
 
+## Persistent context — the `role:` override
+
+An alert is a live region by default (see Tones). For **persistent context** that
+should not be re-announced — a "viewing as" banner, an ambient notice that Turbo
+re-renders with unchanged text — override the role. Any override (e.g. `:note`)
+also drops `aria-live` entirely: persistent context is NOT a live region, and
+re-announcing unchanged text on every re-render is a screen-reader bug, not a
+feature.
+
+```erb
+<%= ui :alert, tone: :info, role: :note, title: "Viewing as a member" %>
+```
+
 ## Flash messages
 
 ```erb
@@ -118,6 +131,7 @@ end
 | `tone` | Symbol | `:neutral` | Severity level — see Tones table |
 | `variant` | Symbol | `nil` | Deprecated alias for `tone:` (`default`→`neutral`, `destructive`→`danger`) |
 | `icon` | Boolean | `true` | Render the tone's severity icon. `false` suppresses it |
+| `role` | Symbol/String | `nil` | Override the tone's role (e.g. `:note` for persistent context); any override drops `aria-live` |
 | `title` | String | `nil` | Plain-text title, alternative to `with_alert_title` slot |
 | `description` | String | `nil` | Plain-text description, alternative to `with_alert_description` slot |
 

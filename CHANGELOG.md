@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+Fixes surfaced by MiClassrooms rooms work.
+
+### Added
+- Tooltip: `TooltipComponent.bubble_classes(side:)` public API for the documented "describe an existing interactive control" pattern — the caller puts `aria-describedby` on its own control, builds a `group/tooltip` wrapper, and reuses the bubble exactly instead of reaching into the component's constants.
+- Tabs: `tablist_class:` kwarg merges extra classes onto the tablist bar for placement/styling cases (e.g. a tablist floated over a media stage); conflicts resolve in the caller's favor via `cn`.
+- Alert: `role:` override (e.g. `:note`) for persistent context. Any override also drops `aria-live` entirely — persistent context is not a live region, and a banner that Turbo re-rendered with unchanged text was re-announced on every keystroke.
+
+### Fixed
+- Tooltip: the bubble's reveal variants use the **named** group `group/tooltip` (`group-hover/tooltip:` · `group-focus-within/tooltip:` · `group-data-[dismissed]/tooltip:`) instead of the bare `group-*:` forms. Tailwind's unnamed group variants match ANY `.group` ancestor — a tooltip nested inside a grouped `<details>` had every bubble raised whenever hover/focus sat anywhere inside that ancestor.
+- Breadcrumb: a non-last item without `href` renders as plain text instead of an href-less `<a>` — "linked for some viewers, plain for others" crumbs (e.g. a policy-gated building link) are now expressible.
+
 ## [0.5.0] - 2026-07-05
 
 ### Added
