@@ -40,6 +40,26 @@ class TestTargetSize < Minitest::Test
     assert_includes template("context_menu/context_menu_component.rb.tt"), 'role: "button"'
   end
 
+  def test_context_menu_trigger_honors_button_activation
+    # role="button" is a name-role-value PROMISE — the trigger must open on
+    # Enter/Space, not only Shift+F10 (2026-07 review). triggerKeydown wires
+    # Enter/Space/ArrowDown.
+    assert_includes template("context_menu/context_menu_component.rb.tt"),
+      "keydown->menu#triggerKeydown",
+      "context_menu trigger must wire triggerKeydown so role=button is truthful"
+  end
+
+  def test_range_is_a_44px_hit_box_with_a_slim_track
+    src = template("range/range_component.rb.tt")
+
+    assert_includes src, "h-11", "range must have a 44px interaction box (2.5.5)"
+    assert_includes src, "bg-transparent", "range box must be transparent so the visible track stays slim"
+    assert_includes src, "[&::-webkit-slider-runnable-track]:h-2",
+      "range must paint a slim track on the runnable-track pseudo, not inflate the box"
+    refute_includes src, "h-2 accent-interactive",
+      "range must not put the slim height on the input itself (fails target size)"
+  end
+
   def test_sidebar_toggle_is_44px
     assert_includes template("sidebar/sidebar_component.rb.tt"), "size-11",
       "sidebar TOGGLE_CLS must be size-11"

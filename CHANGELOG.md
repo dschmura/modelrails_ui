@@ -7,11 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.1] - 2026-07-13
+
 ### Fixed
 
 - form_draft controller: rename instance property `scope` → `scopeDigest` — it collided with Stimulus's reserved `scope` getter, throwing on connect and disabling recovery entirely. form_draft is non-functional in v0.6.0 and v0.7.0.
 - form_draft controller: evaluateReveal hides an already-visible notice when a re-check finds no valid draft (expired drafts no longer leave a stale notice after a morph).
 - form_draft notice partial: build the chip wrapper with tag.div so the conditional hidden attribute passes herb-lint (erb-no-output-in-attribute-name).
+
+### Accessibility (follow-up review)
+
+- **context_menu trigger honors `role="button"`.** v0.7.0 added
+  `role="button"` (to satisfy axe `aria-allowed-attr`) but the trigger only
+  opened on Shift+F10 — a name-role-value promise it didn't keep (WCAG
+  4.1.2). It now wires `menu#triggerKeydown`, so Enter/Space/ArrowDown open
+  the menu (anchored to the trigger); right-click still opens at the pointer.
+- **range slider is a 44px hit box with a slim visible track.** v0.7.0's
+  batch omitted `range`, leaving its 8px track failing 2.5.5. Rather than
+  inflate the visible track to 44px (a fat pill), the input is now a
+  transparent 44px interaction box with a slim track painted via
+  `::-webkit-slider-runnable-track` / `::-moz-range-track` and a larger
+  (20px) thumb.
 
 ## [0.7.0] - 2026-07-06
 
