@@ -36,6 +36,10 @@ Creates `app/components/ui/tabs_component.rb`, `app/components/ui/tabs_item_comp
 `aria-disabled` (skipped by the keyboard). `selected:` (default `0`) sets the initially-active
 tab.
 
+`tablist_class:` merges extra classes onto the tablist bar itself for placement/styling
+cases (e.g. a tablist floated over a media stage); conflicts resolve in the caller's favor
+via `cn`, and the panels/root are untouched.
+
 ## Keyboard
 
 | Key | Action |

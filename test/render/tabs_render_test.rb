@@ -37,6 +37,18 @@ class TabsRenderTest < ViewComponent::TestCase
     assert_selector "div[role='tablist'][aria-label='Account'][aria-orientation='horizontal']", visible: :all
   end
 
+  # tablist_class: merges onto the tablist bar (placement/styling — e.g. a
+  # tablist floated over a media stage) without clobbering the base classes;
+  # cn resolves conflicts in the caller's favor.
+  def test_tablist_class_merges_onto_the_tablist
+    render_inline(UI::TabsComponent.new(label: "Account", tablist_class: "w-full justify-start")) do |t|
+      t.with_tab(title: "Profile") { "profile body" }
+    end
+
+    assert_selector "div[role='tablist'].w-full.justify-start.bg-surface-sunken", visible: :all
+    assert_no_selector "div[role='tablist'].justify-center", visible: :all
+  end
+
   def test_each_tab_is_a_role_tab_button_wired_to_the_controller
     render_tabs
 

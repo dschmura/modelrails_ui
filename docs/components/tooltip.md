@@ -59,9 +59,39 @@ component falls back to `absolute` offsets relative to the wrapper.
 ## Dismiss on Escape
 
 The tooltip hides automatically when the user presses `Escape`
-(`group-data-[dismissed]:opacity-0!`). The `floating` controller clears the
+(`group-data-[dismissed]/tooltip:opacity-0!`). The `floating` controller clears the
 dismissed state on `mouseleave` and `focusout` so the tooltip can reappear on
 the next interaction.
+
+## Named group — nesting inside other `.group` containers
+
+The wrapper is the **named** group `group/tooltip`, and the bubble's reveal
+variants are `group-hover/tooltip:` / `group-focus-within/tooltip:` /
+`group-data-[dismissed]/tooltip:`. Tailwind's unnamed `group-*:` variants match
+ANY `.group` ancestor — a tooltip nested inside a grouped container (a `.group`
+`<details>`, a card) had every bubble raised whenever hover or focus sat
+anywhere inside that ancestor. The named group scopes the reveal to the
+tooltip's own wrapper.
+
+## Describing an existing interactive control
+
+The component makes its own wrapper the focusable trigger, so don't wrap an
+already-interactive control. Instead put `aria-describedby` on that control,
+build your own `group/tooltip relative` wrapper, and reuse the bubble exactly
+via the public API:
+
+```erb
+<span class="group/tooltip relative inline-flex">
+  <button aria-describedby="save-tip" class="btn-ghost btn-icon">★</button>
+  <span id="save-tip" role="tooltip"
+        class="<%= UI::TooltipComponent.bubble_classes(side: :bottom) %>">
+    Save to library
+  </span>
+</span>
+```
+
+`bubble_classes(side:)` returns the bubble's base classes plus the placement
+classes for the given side (default `:top`); an unknown side raises `KeyError`.
 
 ## Accessibility contract
 
@@ -71,8 +101,9 @@ The component guarantees:
   `aria-describedby` pointing to the bubble's `id`.
 - The bubble has `role="tooltip"` and the `id` referenced above.
 - The bubble is `pointer-events-none` — it never traps the pointer.
-- Hover (`group-hover:opacity-100`) and keyboard focus
-  (`group-focus-within:opacity-100`) both reveal the bubble.
+- Hover (`group-hover/tooltip:opacity-100`) and keyboard focus
+  (`group-focus-within/tooltip:opacity-100`) both reveal the bubble — scoped to
+  the tooltip's own named group, never another `.group` ancestor.
 - `Escape` dismisses without moving focus (WCAG 1.4.13 — content on hover).
 
 You supply:
