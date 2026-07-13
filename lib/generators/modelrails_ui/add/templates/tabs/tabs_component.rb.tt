@@ -24,15 +24,18 @@ module UI
 
     TABLIST = "inline-flex h-9 items-center justify-center rounded-lg bg-surface-sunken p-1 text-text-muted"
     # rubocop:disable Layout/LineLength
-    TRIGGER = "inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1 text-sm font-medium transition-all focus-ring aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[state=active]:bg-surface-raised data-[state=active]:text-text-heading data-[state=active]:shadow"
+    TRIGGER = "inline-flex min-h-11 items-center justify-center whitespace-nowrap rounded-md px-3 py-1 text-sm font-medium transition-all focus-ring aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[state=active]:bg-surface-raised data-[state=active]:text-text-heading data-[state=active]:shadow"
     # rubocop:enable Layout/LineLength
     PANEL = "mt-2 focus-ring"
 
     # label:    accessible name for the tablist (aria-label; required; i18n at the call site).
     # selected: index of the initially-active tab (default 0).
     # id:       base id (auto-generated; → tab/panel ids).
-    def initialize(label:, selected: 0, id: nil, **html_attrs)
+    # tablist_class: extra classes merged onto the tablist bar (placement/styling —
+    #           e.g. a tablist floated over a media stage).
+    def initialize(label:, selected: 0, id: nil, tablist_class: nil, **html_attrs)
       @label = label
+      @tablist_class = tablist_class
       @selected = selected.to_i
       @id = id || "tabs-#{SecureRandom.hex(4)}"
       @extra_class = html_attrs.delete(:class)
@@ -54,7 +57,7 @@ module UI
         role: "tablist",
         "aria-label": @label,
         "aria-orientation": "horizontal",
-        class: TABLIST)
+        class: cn(TABLIST, @tablist_class))
     end
 
     def trigger(tab, index)

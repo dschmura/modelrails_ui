@@ -24,6 +24,10 @@ The LAST item (no `href`) is the current page. `label:` overrides the `<nav>` ac
 (i18n; defaults to `t("ui.breadcrumb.label", default: "Breadcrumb")`). `separator:` changes the
 divider (default `/`).
 
+A **non-last** item without an `href` renders as plain text (never a dead `<a>`), so
+"linked for some viewers, plain for others" crumbs — e.g. a parent page whose link is
+policy-gated — stay expressible with the same `items:` array.
+
 ## Accessibility
 
 WCAG 2.2 AAA. `<nav>` named by `label:`; an `<ol>` of crumbs; the current page is

@@ -163,4 +163,23 @@ class AlertRenderTest < ViewComponent::TestCase
     assert_selector "div[role='alert']", text: "X"
     assert_no_selector "svg"
   end
+
+  # --- role: override ---
+
+  # A role: override (e.g. :note for persistent context) replaces the tone's
+  # role AND opts out of aria-live entirely — persistent context is NOT a live
+  # region; re-announcing unchanged text on every Turbo re-render was the bug.
+  def test_role_override_replaces_the_live_region_semantics
+    render_inline(UI::AlertComponent.new(tone: :info, title: "Viewing as member", role: :note))
+
+    assert_selector "div[role='note'].bg-info-surface", text: "Viewing as member"
+    assert_no_selector "div[aria-live]"
+  end
+
+  # Without an override the tone's live-region pairing is untouched.
+  def test_no_role_override_keeps_the_tone_live_region
+    render_inline(UI::AlertComponent.new(tone: :info, title: "X"))
+
+    assert_selector "div[role='status'][aria-live='polite'].bg-info-surface"
+  end
 end

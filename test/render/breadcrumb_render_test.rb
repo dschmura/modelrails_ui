@@ -40,4 +40,18 @@ class BreadcrumbRenderTest < ViewComponent::TestCase
 
     assert_selector "nav[aria-label='You are here']", visible: :all
   end
+
+  # "Linked for some viewers, plain for others": a non-last crumb WITHOUT an
+  # href renders as plain text (never a dead <a>), so a policy-gated crumb can
+  # drop its link without leaving the trail.
+  def test_hrefless_non_last_item_renders_as_plain_text
+    render_inline(UI::BreadcrumbComponent.new(items: [
+      {label: "Building"},
+      {label: "Room 2100"}
+    ]))
+
+    assert_selector "li > span.text-text-muted", text: "Building", visible: :all
+    assert_no_selector "a", visible: :all
+    assert_selector "[aria-current='page']", text: "Room 2100", visible: :all
+  end
 end

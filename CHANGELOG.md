@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+Fixes surfaced by MiClassrooms rooms work.
+
+### Added
+- Tooltip: `TooltipComponent.bubble_classes(side:)` public API for the documented "describe an existing interactive control" pattern — the caller puts `aria-describedby` on its own control, builds a `group/tooltip` wrapper, and reuses the bubble exactly instead of reaching into the component's constants.
+- Tabs: `tablist_class:` kwarg merges extra classes onto the tablist bar for placement/styling cases (e.g. a tablist floated over a media stage); conflicts resolve in the caller's favor via `cn`.
+- Alert: `role:` override (e.g. `:note`) for persistent context. Any override also drops `aria-live` entirely — persistent context is not a live region, and a banner that Turbo re-rendered with unchanged text was re-announced on every keystroke.
+
+### Fixed
+- Tooltip: the bubble's reveal variants use the **named** group `group/tooltip` (`group-hover/tooltip:` · `group-focus-within/tooltip:` · `group-data-[dismissed]/tooltip:`) instead of the bare `group-*:` forms. Tailwind's unnamed group variants match ANY `.group` ancestor — a tooltip nested inside a grouped `<details>` had every bubble raised whenever hover/focus sat anywhere inside that ancestor.
+- Breadcrumb: a non-last item without `href` renders as plain text instead of an href-less `<a>` — "linked for some viewers, plain for others" crumbs (e.g. a policy-gated building link) are now expressible.
+
+### Accessibility
+
+- Target size (WCAG 2.5.5, Level AAA): interactive controls across ~18 components now guarantee the 44×44px minimum. `min-h-11`/`min-w-11` (or a bumped fixed height) was applied to tooltip, checkbox and radio_group labels, tabs triggers, breadcrumb links, context_menu trigger, navbar (brand, hamburger, mobile links), sidebar (nav items + collapse toggle now `size-11`), navigation_menu (triggers + links `h-11`), mega_menu trigger, combobox (all `sm`/`md`/`lg` sizes → `h-11`), timepicker trigger, collapsible summary, input_otp cells (`w-11`), banner dismiss button, and the badge link variant. The resizable separator now owns a real 44px-wide (or -tall) grab strip while the visible hairline is drawn with a centered `before:` pseudo-element — the operable target meets AAA without thickening the divider.
+- Removed the `scale-95` rest class from the dialog, alert_dialog, and gallery panels and neutralized `scale` in `modal_controller.js` (on `connect` and at the top of `animateIn`). Under Tailwind 4, `scale-95` compiles to the standalone `scale:` property, which *composes* with — rather than overrides — the controller's inline `transform`, so any panel rendered already-open (a path that skips `animateIn`) rested permanently at 95%.
+- Context menu: the trigger region gained `role="button"`. Carrying `aria-haspopup`/`aria-expanded` on a role-less `<div>` is an axe critical (`aria-allowed-attr`); the role makes the ARIA state legal.
+- Carousel: the previous/next arrow plates go from 80% to 95% surface opacity for stronger contrast over slide images.
+- Popover Lookbook preview: the account links are sized to the 44px target.
+
 ## [0.6.0] - 2026-07-06
 
 ### Added
