@@ -26,11 +26,18 @@ class RangeRenderTest < ViewComponent::TestCase
     assert_no_selector "input[type='range'][value]"
   end
 
-  # AAA semantic token (the design-token guarantee), not raw Tailwind:
+  # AAA semantic token (the design-token guarantee), not raw Tailwind: the
+  # visible track is painted on ::-webkit-slider-runnable-track with the
+  # semantic bg-surface-sunken token inside a transparent 44px hit box (v0.7.1
+  # redesign — `accent-interactive` is moot once appearance-none + a custom
+  # track/thumb replace the native accent).
   def test_renders_with_aaa_token
     render_inline(UI::RangeComponent.new)
 
-    assert_selector "input.accent-interactive"
+    assert_selector "input.bg-transparent.h-11"
+    # &-prefixed arbitrary variant is HTML-escaped in the attribute; match the
+    # unambiguous tail so the semantic token on the runnable-track is pinned.
+    assert_includes rendered_content, "slider-runnable-track]:bg-surface-sunken"
   end
 
   # invalid: drives a visible danger ring on the slider, not just aria-invalid.
