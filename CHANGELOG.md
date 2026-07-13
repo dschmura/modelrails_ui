@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- form_draft controller: rename instance property `scope` → `scopeDigest` — it collided with Stimulus's reserved `scope` getter, throwing on connect and disabling recovery entirely. form_draft is non-functional in v0.6.0 and v0.7.0.
+
 ## [0.7.0] - 2026-07-06
 
 Fixes surfaced by MiClassrooms rooms work.
