@@ -24,8 +24,14 @@ class TestCatalogCompleteness < Minitest::Test
   # here is a review-blocking smell.
   SUPERSEDED_EXEMPT = {}.freeze # pagination is NOT here — it must be fixed, not exempted
 
+  # Components exempt because they ship no `UI::*Component` class at all —
+  # partial-only generator output, so there is nothing to preview or
+  # render_inline in the catalog. Distinct from SUPERSEDED_EXEMPT (which is
+  # for components that DO have a class but are deliberately not promoted).
+  PARTIAL_ONLY = %w[form_draft].freeze
+
   def gated_components
-    Components.supported - SUPERSEDED_EXEMPT.keys
+    Components.supported - SUPERSEDED_EXEMPT.keys - PARTIAL_ONLY
   end
 
   def test_every_component_has_at_least_one_auditable_preview_scenario

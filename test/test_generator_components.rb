@@ -20,7 +20,16 @@ class TestGeneratorComponents < Minitest::Test
   ].freeze
   PHASE8 = %w[timeline toaster chart wysiwyg].freeze
   PHASE9 = %w[image figure picture video audio iframe map_area embed].freeze
-  ALL_COMPONENTS = (PHASE1 + PHASE2 + PHASE3 + PHASE4 + PHASE5 + PHASE6 + PHASE7 + PHASE8 + PHASE9).freeze
+
+  # Partial-only generator utilities — NOT a phase roster of ViewComponent-backed
+  # components like PHASE1-9 above. They ship a partial + JS controller but no
+  # `_component.rb.tt`, so they're excluded from the .rb.tt check below. Still
+  # folded into ALL_COMPONENTS so the supported-components accounting (every
+  # Components.supported entry must be represented somewhere in this file, per
+  # test_supported_has_no_extra_directories) stays complete.
+  PARTIAL_ONLY = %w[form_draft].freeze
+
+  ALL_COMPONENTS = (PHASE1 + PHASE2 + PHASE3 + PHASE4 + PHASE5 + PHASE6 + PHASE7 + PHASE8 + PHASE9 + PARTIAL_ONLY).freeze
 
   TEMPLATE_ROOT = File.expand_path("../lib/generators/modelrails_ui/add/templates", __dir__)
 
@@ -54,6 +63,8 @@ class TestGeneratorComponents < Minitest::Test
 
   def test_all_template_directories_contain_at_least_one_rb_tt_file
     ALL_COMPONENTS.each do |component|
+      next if PARTIAL_ONLY.include?(component)
+
       dir = File.join(TEMPLATE_ROOT, component)
       tt_files = Dir[File.join(dir, "*.rb.tt")]
 
