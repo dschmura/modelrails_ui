@@ -24,8 +24,12 @@ class FormDraftRenderTest < Minitest::Test
     assert_equal ["_form_draft_notice.html.erb", "form_draft_controller.js"], files
   end
 
+  # The chip's wrapper (including the hidden-until-revealed attribute) is
+  # built via tag.div's block form — not string interpolation in attribute-
+  # name position — so herb-lint's erb-no-output-in-attribute-name rule passes.
   def test_notice_chip_is_a_controller_target
-    assert_includes partial_source, 'data-form-draft-target="notice"'
+    assert_includes partial_source, 'form_draft_target: "notice"'
+    assert_includes partial_source, "hidden: !revealed"
   end
 
   def test_notice_chip_wears_the_warning_surface_treatment
