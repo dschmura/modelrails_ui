@@ -19,6 +19,7 @@ module ModelrailsUi
         end
 
         say "\nInstall: rails g modelrails_ui:add <name>\n", :cyan
+        say "Audit adoption: rake modelrails_ui:adoption\n", :cyan
       end
     end
   end

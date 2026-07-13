@@ -1,0 +1,11 @@
+<%# test/fixtures/adoption_app/app/views/pages/form.html.erb %>
+<%# Bare code only below — must survive the string-stripped `code` variant. %>
+<%= f.text_area :bio %>
+<%# proves the :method adapter branch for "textarea" (no `ui :textarea` anywhere) %>
+<%= avatar_for(@user) %>
+<%# proves the :helper adapter branch for "avatar" (no `ui :avatar` anywhere) %>
+<%= ui :file_input %>
+<%= f.file_field :doc %>
+<%# file_input: direct call AND its :method adapter both present — direct must win %>
+<div data-hint="ui :carousel"></div>
+<%# guard: a component name inside a quoted string must NOT count as adoption %>
