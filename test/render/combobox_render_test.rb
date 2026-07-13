@@ -137,13 +137,13 @@ class ComboboxRenderTest < ViewComponent::TestCase
   def test_default_size_is_md
     render_basic
 
-    assert_selector "input[role='combobox'].h-9"
+    assert_selector "input[role='combobox'].h-11"
   end
 
   def test_size_lg_grows_the_input
     render_basic(size: :lg)
 
-    assert_selector "input[role='combobox'].h-10"
+    assert_selector "input[role='combobox'].h-11"
   end
 
   def test_unknown_size_raises
