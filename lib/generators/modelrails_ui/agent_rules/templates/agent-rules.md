@@ -56,6 +56,8 @@ Defer to it instead of inventing UI from scratch.
   from a local run.
 - **Fail loud, don't fabricate.** If a needed token or primitive seems missing, surface it —
   don't invent a raw-value or contrast workaround.
+- **Check adoption drift** — `rake modelrails_ui:adoption` shows which components this app
+  renders but never audits in isolation (the a11y blind spot).
 
 ## Project house rules
 This app also follows @.modelrails_ui/house-rules.md — sensible defaults you can edit.

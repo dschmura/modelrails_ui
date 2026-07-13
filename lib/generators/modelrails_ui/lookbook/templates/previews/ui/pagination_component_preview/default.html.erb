@@ -1,0 +1,5 @@
+<div class="min-h-96 p-12">
+  <%= render(UI::PaginationComponent.new(
+    current_page: 3, total_pages: 10, url: ->(page) { "?page=#{page}" }
+  )) %>
+</div>

@@ -31,7 +31,7 @@ class TestLookbookLogicalPaths < Minitest::Test
     "dropdown_menu" => "Overlays", "context_menu" => "Overlays", "menubar" => "Overlays",
     "navbar" => "Navigation", "sidebar" => "Navigation", "breadcrumb" => "Navigation",
     "tabs" => "Navigation", "bottom_nav" => "Navigation", "mega_menu" => "Navigation",
-    "navigation_menu" => "Navigation", "footer" => "Navigation",
+    "navigation_menu" => "Navigation", "footer" => "Navigation", "pagination" => "Navigation",
     "alert" => "Feedback & Status", "banner" => "Feedback & Status", "badge" => "Feedback & Status",
     "progress" => "Feedback & Status", "spinner" => "Feedback & Status", "skeleton" => "Feedback & Status",
     "indicator" => "Feedback & Status", "stepper" => "Feedback & Status", "toaster" => "Feedback & Status",

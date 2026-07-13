@@ -26,6 +26,15 @@ Fixes surfaced by MiClassrooms rooms work.
 - Carousel: the previous/next arrow plates go from 80% to 95% surface opacity for stronger contrast over slide images.
 - Popover Lookbook preview: the account links are sized to the 44px target.
 
+## [0.6.0] - 2026-07-06
+
+### Added
+- Component adoption manifest: a new `rake modelrails_ui:adoption` (and `:adoption:strict`) reports, per component, how the host app adopts it (`direct`/`adapter`/`utility-standin`/`transitive`/`none`) and its `N/M` audit-scenario coverage — leading with the "adopted-but-under-audited" blind-spot list. Adoption is read from host code (comments/strings stripped, so doc examples don't inflate); the audit denominator comes from the host's own live previews; a fork-owned `.modelrails_ui/adoption.yml` supplies adapter overrides and row suppression. A gem-internal completeness gate now fails the build if any shipped component lacks a real Lookbook preview or render test.
+- form_draft: encrypted localStorage form-draft recovery (notice partial + form-mounted controller).
+
+### Changed
+- `COMPONENT_STATUS.md` drops its two machine-derivable columns (`Render test`, `App-adopted`) — those facts are now computed by `rake modelrails_ui:adoption`; the ledger is human judgment (Tier + Notes) only.
+
 ## [0.5.0] - 2026-07-05
 
 ### Added

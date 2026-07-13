@@ -17,5 +17,9 @@ module ModelrailsUi
         ActiveSupport.on_load(hook) { include ModelrailsUi::ComponentHelper }
       end
     end
+
+    rake_tasks do
+      load File.expand_path("tasks/adoption.rake", __dir__)
+    end
   end
 end
