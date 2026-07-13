@@ -97,8 +97,9 @@ ledger is human judgment (Tier + Notes) only.
 | timepicker | proven | Final band — `role=spinbutton` hour/minute/AM-PM (chosen over listbox); `focus-ring` ×3; disclosure aria; fail-loud `format`; attr-clobber fix. 0a (23) + app 0b/AAA (gem #42 / app #266) |
 | wysiwyg | hardened | Final band — **gem-0a-only, SUPERSEDED in this app by Lexxy** (no app adoption). Template still hardened: editor `role=textbox`+label; named toolbar buttons + `aria-pressed`; `focus-ring`; fail-loud `adapter`. 0a (14) |
 | toaster | hardened | Final band — **gem-0a-only, SUPERSEDED in this app by `shared/_toasts`** (no app adoption). Template still hardened: 6 raw-palette → tinted signal tokens (alert/banner model); per-severity live region; 44px dismiss + `focus-ring`; fail-loud `severity` (documents the flash-key collision). 0a (21) |
+| form_draft | gem-0a-proven / app-0b-pending | encrypted localStorage form-draft recovery (notice partial + form-mounted controller). 0a render test; app 0b pending. |
 
-**Hardening program COMPLETE** — all 81 components are `proven` (0a + app 0b/AAA) or `hardened` (gem 0a; `wysiwyg`/`toaster` are superseded in this host and adopt no app 0b). No `experimental` components remain.
+**Hardening program COMPLETE** — all 82 components are `proven` (0a + app 0b/AAA), `hardened` (gem 0a; `wysiwyg`/`toaster` are superseded in this host and adopt no app 0b), or `gem-0a-proven / app-0b-pending` (form_draft). No `experimental` components remain.
 
 **Sibling templates to copy:** `alert` is the canonical Wave 1 reference. Copy its render test
 (`test/render/alert_render_test.rb`), template-backed preview, and — for 0b — its preview-host
