@@ -1,0 +1,7 @@
+<%# test/fixtures/adoption_app_partial_dialog/app/views/pages/show.html.erb %>
+<%# dialog is reached ONLY via its :partial adapter (shared/_modal) — no
+    direct `render UI::DialogComponent` anywhere in this fixture app. This is
+    the regression fixture for the adapter_hit? :partial dead-code bug: the
+    partial path only ever appears inside a quoted render argument, so it
+    must be visible to the strings-PRESERVED `markup` variant. %>
+<%= render "shared/modal" %>

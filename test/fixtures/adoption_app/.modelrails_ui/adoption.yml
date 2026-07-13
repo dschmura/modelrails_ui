@@ -1,0 +1,7 @@
+suppress:
+  # alert IS an otherwise-qualifying blind spot in this fixture (:direct via
+  # `ui :alert` in show.html.erb, 0/7 audit coverage since the fixture ships no
+  # spec/system/ui) — suppressing it is what makes the suppression test genuine
+  # rather than vacuous. badge is DELIBERATELY left unsuppressed as the control.
+  alert: superseded
+  toaster: superseded
