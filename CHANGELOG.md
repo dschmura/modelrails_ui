@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - form_draft controller: rename instance property `scope` → `scopeDigest` — it collided with Stimulus's reserved `scope` getter, throwing on connect and disabling recovery entirely. form_draft is non-functional in v0.6.0 and v0.7.0.
 - form_draft controller: evaluateReveal hides an already-visible notice when a re-check finds no valid draft (expired drafts no longer leave a stale notice after a morph).
+- form_draft notice partial: build the chip wrapper with tag.div so the conditional hidden attribute passes herb-lint (erb-no-output-in-attribute-name).
 
 ## [0.7.0] - 2026-07-06
 
