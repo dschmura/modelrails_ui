@@ -367,13 +367,16 @@ class TestGeneratorComponents < Minitest::Test
     assert_includes source, "gallery"
   end
 
-  def test_gallery_controller_is_a_thin_open_coordinator
+  def test_gallery_controller_is_an_index_aware_open_prev_next_coordinator
     js = File.read(File.join(TEMPLATE_ROOT, "gallery", "gallery_controller.js"))
 
     # Hardened: opening swaps the shared <dialog> image; the reused `modal`
     # controller owns close/escape/restore (no colocated close here).
     assert_includes js, "open("
-    assert_includes js, 'static targets = ["image"]'
+    assert_includes js, "prev("
+    assert_includes js, "next("
+    assert_includes js, 'static targets = ["image", "caption", "count"]'
+    assert_includes js, 'this.dispatch("navigated"'
   end
 
   def test_carousel_has_slides_and_controller

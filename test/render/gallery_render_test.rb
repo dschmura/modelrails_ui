@@ -78,4 +78,47 @@ class GalleryRenderTest < ViewComponent::TestCase
     assert_selector "button[data-gallery-src-param='/big.jpg']"
     assert_selector "img[src='/thumb.jpg']"
   end
+
+  def multi_image_gallery
+    render_inline(UI::GalleryComponent.new) do |g|
+      g.with_image(src: "/a.jpg", alt: "A", caption: "First")
+      g.with_image(src: "/b.jpg", alt: "B")
+    end
+  end
+
+  def test_lightbox_with_multiple_images_renders_prev_and_next_buttons
+    multi_image_gallery
+
+    assert_selector "dialog button[data-action='click->gallery#prev']", visible: :all
+    assert_selector "dialog button[data-action='click->gallery#next']", visible: :all
+  end
+
+  def test_lightbox_with_multiple_images_renders_caption_and_count_targets
+    multi_image_gallery
+
+    assert_selector "dialog [data-gallery-target='caption']", visible: :all
+    assert_selector "dialog [data-gallery-target='count']", visible: :all
+  end
+
+  def test_lightbox_triggers_carry_index_params_in_dom_order
+    multi_image_gallery
+
+    assert_selector "button[data-gallery-index-param='0']"
+    assert_selector "button[data-gallery-index-param='1']"
+  end
+
+  def test_lightbox_with_a_single_image_renders_no_nav
+    render_inline(UI::GalleryComponent.new) do |g|
+      g.with_image(src: "/a.jpg", alt: "A")
+    end
+
+    assert_no_selector "dialog button[data-action='click->gallery#prev']", visible: :all
+  end
+
+  def test_lightbox_component_renders_standalone
+    render_inline(UI::GalleryComponent::LightboxComponent.new(count: 3))
+
+    assert_selector "dialog[data-modal-target='dialog']", visible: :all
+    assert_selector "dialog button[data-action='click->gallery#next']", visible: :all
+  end
 end
