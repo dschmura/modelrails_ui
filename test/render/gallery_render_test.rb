@@ -39,6 +39,14 @@ class GalleryRenderTest < ViewComponent::TestCase
     assert_selector "dialog button[data-action~='click->modal#close'][aria-label].focus-ring", visible: :all
   end
 
+  def test_lightbox_panel_reserves_minimum_height_so_close_and_nav_never_overlap
+    gallery
+
+    # min-h-32 keeps the panel tall enough that the -top-2 close button and the
+    # vertically-centered nav buttons can never physically overlap (WCAG 2.5.8).
+    assert_selector "dialog [data-modal-target='panel'].min-h-32", visible: :all
+  end
+
   def test_grid_wires_both_controllers
     gallery
 
