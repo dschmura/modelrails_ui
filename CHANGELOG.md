@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.0] - 2026-08-07
+
+### Added
+
+- Gallery: `full_src:` option lets the lightbox display a larger rendition than the grid thumbnail — lightbox previews auto-scale to fit the viewport while the full source remains clickable.
+- Gallery: `LightboxComponent` extracted as a standalone, reusable view component (previously lightbox logic was inline within GalleryComponent). The lightbox now ships prev/next buttons, arrow-key navigation (← / →), and a caption + counter bar (e.g., "2 / 8") rendered only when 2+ images are present.
+- Gallery: new `gallery:navigated` Stimulus event fired whenever the lightbox opens, moves to the previous image, or moves to the next image. Event detail includes `{index: N}` (0-based position in the gallery). Callers can listen to this event for analytics, logging, or coordinating with other UI.
+- Gallery: trigger contract now includes `gallery-index-param` and `gallery-caption-param` to support the new caption + counter rendering in the lightbox.
+- **Migration note:** Running `rails g modelrails_ui:add gallery` regenerates local copies and may overwrite your edits if you have drift. Diff before regenerating; manual integration of changes is safe.
+
 ## [0.7.1] - 2026-07-13
 
 ### Fixed
