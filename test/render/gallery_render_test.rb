@@ -69,4 +69,13 @@ class GalleryRenderTest < ViewComponent::TestCase
 
     assert_match(/alt/, error.message)
   end
+
+  def test_lightbox_trigger_prefers_full_src_over_src_for_the_dialog_swap
+    render_inline(UI::GalleryComponent.new) do |g|
+      g.with_image(src: "/thumb.jpg", full_src: "/big.jpg", alt: "A photo")
+    end
+
+    assert_selector "button[data-gallery-src-param='/big.jpg']"
+    assert_selector "img[src='/thumb.jpg']"
+  end
 end
