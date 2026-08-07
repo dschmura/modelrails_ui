@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Gallery: trigger contract now includes `gallery-index-param` and `gallery-caption-param` to support the new caption + counter rendering in the lightbox.
 - **Migration note:** Running `rails g modelrails_ui:add gallery` regenerates local copies and may overwrite your edits if you have drift. Diff before regenerating; manual integration of changes is safe.
 
+### Fixed
+
+- Gallery: the lightbox panel now carries a `min-h-32` floor. The prev/next buttons this release adds are vertically centered on the panel while the close button sits at `-top-2`; the two only clear each other once the panel is at least ~116px tall. A very short/wide framed image — or the instant right after `modal#open`, before the swapped `src` has decoded and `naturalHeight` is briefly 0 — could collapse the panel below that and overlap the close button with a nav button (WCAG 2.5.8). Found during downstream app integration.
+
 ## [0.7.1] - 2026-07-13
 
 ### Fixed
