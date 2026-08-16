@@ -101,4 +101,106 @@ class FileInputRenderTest < ViewComponent::TestCase
 
     assert_no_selector "input[aria-describedby]"
   end
+
+  # --- show_selection: opt-in file-name display (STRUCTURE) ---
+  # No JS runtime in render tests, so we assert the Stimulus wiring
+  # (data-controller / values / targets / action) like range's show_value tests.
+
+  # Default (show_selection omitted) is byte-unchanged: bare <input>, no wrapper.
+  def test_default_renders_no_selection_wrapper
+    render_inline(UI::FileInputComponent.new)
+
+    assert_no_selector "[data-controller='file-input']"
+    assert_no_selector "div"
+  end
+
+  def test_default_renders_no_selection_list_template_or_live_region
+    render_inline(UI::FileInputComponent.new)
+
+    assert_no_selector "ul", visible: :all
+    assert_no_selector "template", visible: :all
+    assert_no_selector "[aria-live]", visible: :all
+  end
+
+  def test_show_selection_wraps_input_in_file_input_controller
+    render_inline(UI::FileInputComponent.new(show_selection: true))
+
+    assert_selector "div[data-controller='file-input'] input[type='file']"
+  end
+
+  def test_show_selection_wires_input_target_and_change_action
+    render_inline(UI::FileInputComponent.new(show_selection: true))
+
+    assert_selector "input[data-file-input-target='input'][data-action~='change->file-input#update']"
+  end
+
+  def test_show_selection_carries_default_english_label_values
+    render_inline(UI::FileInputComponent.new(show_selection: true))
+
+    assert_selector "div[data-file-input-one-value='1 file selected: %{names}']"
+    assert_selector "div[data-file-input-many-value='%{count} files selected: %{names}']"
+    assert_selector "div[data-file-input-none-value='No files selected']"
+  end
+
+  # selection_labels merges over the English defaults (host supplies i18n strings).
+  def test_selection_labels_override_reaches_the_data_values
+    render_inline(UI::FileInputComponent.new(
+      show_selection: true,
+      selection_labels: {many: "%{count} Dateien: %{names}", none: "Keine Dateien"}
+    ))
+
+    assert_selector "div[data-file-input-many-value='%{count} Dateien: %{names}']"
+    assert_selector "div[data-file-input-none-value='Keine Dateien']"
+    assert_selector "div[data-file-input-one-value='1 file selected: %{names}']"
+  end
+
+  # The list starts hidden (the controller un-hides it once it holds pills).
+  def test_show_selection_renders_hidden_list_target
+    render_inline(UI::FileInputComponent.new(show_selection: true))
+
+    assert_selector "ul[data-file-input-target='list'][hidden]", visible: :all
+  end
+
+  # Pill template reuses the badge soft chip treatment (proven AAA pairing:
+  # bg-interactive-subtle + text-interactive — the badge [:soft, :primary] cell).
+  # Capybara's HTML5 parse makes <template> content an inert fragment, so we
+  # reach the pill through an HTML4 Nokogiri parse of the rendered output.
+  def test_show_selection_pill_template_uses_badge_soft_chip_tokens
+    render_inline(UI::FileInputComponent.new(show_selection: true))
+
+    pill = Nokogiri::HTML4.fragment(rendered_content)
+      .at_css("template[data-file-input-target=pill] > li")
+
+    refute_nil pill
+    %w[rounded-full bg-interactive-subtle text-interactive].each do |token|
+      assert_includes pill["class"].split, token
+    end
+  end
+
+  # The sr-only status live region is ALWAYS present in the DOM (a live region
+  # that exists from page load announces reliably; un-hiding a populated one
+  # does not — which is why status is separate from the visible list).
+  def test_show_selection_renders_always_present_sr_only_live_region
+    render_inline(UI::FileInputComponent.new(show_selection: true))
+
+    assert_selector "span.sr-only[aria-live='polite'][data-file-input-target='status']"
+  end
+
+  # All existing attrs/html_attrs still land on the INPUT in wrapper mode.
+  def test_show_selection_keeps_input_attrs_and_html_attrs_on_the_input
+    render_inline(UI::FileInputComponent.new(
+      show_selection: true, accept: "image/*", multiple: true, required: true,
+      invalid: true, describedby: "gallery_error", name: "photos[]", id: "photos"
+    ))
+
+    assert_selector "div[data-controller='file-input'] " \
+      "input[type='file'][accept='image/*'][multiple][required][aria-required='true']" \
+      "[aria-invalid='true'][aria-describedby='gallery_error'][name='photos[]'][id='photos']"
+  end
+
+  def test_show_selection_keeps_aaa_tokens_on_the_input
+    render_inline(UI::FileInputComponent.new(show_selection: true))
+
+    assert_selector "div[data-controller='file-input'] input.block.w-full.text-text-body"
+  end
 end

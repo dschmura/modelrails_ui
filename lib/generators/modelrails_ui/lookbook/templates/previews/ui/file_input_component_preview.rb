@@ -47,6 +47,13 @@ module UI
     def multiple
     end
 
+    # Shows WHICH files are selected — the native control alone only shows a count
+    # ("3 files"). Renders one soft pill per file name plus an sr-only live-region
+    # announcement, synced by the vendored `file-input` Stimulus controller. Pass
+    # host-app translations via `selection_labels:`.
+    def show_selection
+    end
+
     # @!endgroup
 
     # @!group Reference
