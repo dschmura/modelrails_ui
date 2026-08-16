@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.0] - 2026-08-16
+
+### Added
+
+- FileInput: opt-in `show_selection:` renders a pill per selected file name plus an always-present sr-only `aria-live` announcement — native `multiple` inputs only show a count, never which files. `selection_labels:` takes host-supplied strings (`one:`/`many:`/`none:`, literal `%{count}`/`%{names}` placeholders; i18n lives in the host). Default mode renders the bare input unchanged. Ships a component-own `file-input` Stimulus controller (auto-vendored alongside the component); pills reuse the proven badge soft/primary cell — no new AAA pairing.
+- **Migration note:** Running `rails g modelrails_ui:add file_input` regenerates local copies and may overwrite your edits if you have drift. Diff before regenerating; manual integration of changes is safe.
+
 ## [0.8.0] - 2026-08-07
 
 ### Added
