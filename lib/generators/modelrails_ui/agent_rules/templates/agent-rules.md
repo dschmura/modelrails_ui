@@ -52,8 +52,9 @@ Defer to it instead of inventing UI from scratch.
 
 ## Before you call UI work done
 - **Check both themes** — light *and* dark (class-based dark mode).
-- **Contrast is proven in CI, not locally** — a local axe pass is AA-only; don't claim AAA
-  from a local run.
+- **Contrast is proven by the axe gate, not by eyeballing** — the reference host runs the
+  WCAG 2.2 AAA audit locally by default (both themes, each set explicitly) and again in CI;
+  don't claim AAA until that gate has passed on your change.
 - **Fail loud, don't fabricate.** If a needed token or primitive seems missing, surface it —
   don't invent a raw-value or contrast workaround.
 - **Check adoption drift** — `rake modelrails_ui:adoption` shows which components this app
