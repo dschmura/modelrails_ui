@@ -7,7 +7,7 @@ Requires `sidebar_controller.js` (copied automatically by the generator).
 ## Installation
 
 ```bash
-rails g view_primitives:add sidebar
+rails g modelrails_ui:add sidebar
 ```
 
 Creates `app/components/ui/sidebar_component.rb`.

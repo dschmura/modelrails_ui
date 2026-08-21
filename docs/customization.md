@@ -1,6 +1,6 @@
-# Customizing ViewPrimitives
+# Customizing ModelrailsUi
 
-ViewPrimitives follows the shadcn/ui philosophy: **you own the code**. Components are copied into your app by the generator, so you can change anything without forking the gem.
+ModelrailsUi follows the shadcn/ui philosophy: **you own the code**. Components are copied into your app by the generator, so you can change anything without forking the gem.
 
 There are three levels of customization, from lightest to deepest:
 
@@ -8,12 +8,12 @@ There are three levels of customization, from lightest to deepest:
 
 ## Level 1 — Design tokens (colors, radius, spacing)
 
-All visual properties are driven by CSS variables defined in `app/assets/stylesheets/view_primitives.css` (exact path depends on your setup — see `rails g view_primitives:install`).
+All visual properties are driven by CSS variables defined in `app/assets/stylesheets/modelrails_ui.css` (exact path depends on your setup — see `rails g modelrails_ui:install`).
 
 The `:root` block sets the default light theme. Override any variable there to change it globally:
 
 ```css
-/* app/assets/stylesheets/view_primitives.css */
+/* app/assets/stylesheets/modelrails_ui.css */
 
 :root {
   /* Brand color — all primary buttons, links, active states */
@@ -150,7 +150,7 @@ This works because all components pass `@extra_class` last through the `cn()` he
 Suppose your brand is indigo with rounded corners and a warm dark mode:
 
 ```css
-/* app/assets/stylesheets/view_primitives.css */
+/* app/assets/stylesheets/modelrails_ui.css */
 
 :root {
   --primary:            oklch(0.52 0.22 264);
@@ -176,10 +176,10 @@ No component files need to change — the design tokens propagate everywhere aut
 
 ## Keeping components up to date
 
-If a new version of ViewPrimitives ships improvements to a component, re-run the generator with `--force` to overwrite your local copy:
+If a new version of ModelrailsUi ships improvements to a component, re-run the generator with `--force` to overwrite your local copy:
 
 ```bash
-rails g view_primitives:add button --force
+rails g modelrails_ui:add button --force
 ```
 
 Any customizations you made to that file will be lost. The recommended workflow is to keep local changes minimal (prefer token overrides) or track them in git so you can re-apply them as a patch.

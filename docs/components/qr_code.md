@@ -5,7 +5,7 @@ Container for displaying a QR code. Accepts a pre-rendered image URL or raw SVG/
 ## Installation
 
 ```bash
-rails g view_primitives:add qr_code
+rails g modelrails_ui:add qr_code
 ```
 
 Creates `app/components/ui/qr_code_component.rb`.

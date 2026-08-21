@@ -5,7 +5,7 @@ Interactive star rating — hover to preview, click to select. Submits the chose
 ## Installation
 
 ```bash
-rails g view_primitives:add rating_input
+rails g modelrails_ui:add rating_input
 ```
 
 Creates:

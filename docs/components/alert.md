@@ -5,7 +5,7 @@ Informational banner for surfacing status messages, warnings, and errors. Accept
 ## Installation
 
 ```bash
-rails g view_primitives:add alert
+rails g modelrails_ui:add alert
 ```
 
 Creates `app/components/ui/alert_component.rb`.

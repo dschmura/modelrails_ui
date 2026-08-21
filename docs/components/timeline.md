@@ -5,7 +5,7 @@ Vertical list of dated events with coloured dot indicators.
 ## Installation
 
 ```bash
-rails g view_primitives:add timeline
+rails g modelrails_ui:add timeline
 ```
 
 Creates `app/components/ui/timeline_component.rb`.

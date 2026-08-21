@@ -7,7 +7,7 @@ Requires `sheet_controller.js` (copied automatically by the generator).
 ## Installation
 
 ```bash
-rails g view_primitives:add sheet
+rails g modelrails_ui:add sheet
 ```
 
 Creates `app/components/ui/sheet_component.rb`.

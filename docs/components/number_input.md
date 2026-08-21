@@ -5,7 +5,7 @@ Numeric input with browser spin buttons hidden and consistent focus styling.
 ## Installation
 
 ```bash
-rails g view_primitives:add number_input
+rails g modelrails_ui:add number_input
 ```
 
 Creates `app/components/ui/number_input_component.rb`.

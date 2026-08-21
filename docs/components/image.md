@@ -5,7 +5,7 @@ Responsive `<img>` with lazy loading, srcset/sizes support, and layout-shift pre
 ## Installation
 
 ```bash
-rails g view_primitives:add image
+rails g modelrails_ui:add image
 ```
 
 Creates `app/components/ui/image_component.rb`.

@@ -9,7 +9,7 @@ Requires `gallery_controller.js` (copied automatically by the generator) when `l
 ## Installation
 
 ```bash
-rails g view_primitives:add gallery
+rails g modelrails_ui:add gallery
 ```
 
 Creates `app/components/ui/gallery_component.rb`.

@@ -5,7 +5,7 @@ Scrollable container with a thin, themed scrollbar styled via CSS custom propert
 ## Installation
 
 ```bash
-rails g view_primitives:add scroll_area
+rails g modelrails_ui:add scroll_area
 ```
 
 Creates `app/components/ui/scroll_area_component.rb`.

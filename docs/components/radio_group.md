@@ -5,7 +5,7 @@ Group of radio inputs rendered from an array of items.
 ## Installation
 
 ```bash
-rails g view_primitives:add radio_group
+rails g modelrails_ui:add radio_group
 ```
 
 Creates `app/components/ui/radio_group_component.rb`.

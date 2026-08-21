@@ -7,7 +7,7 @@ Requires `toggle_controller.js` (copied automatically by the generator).
 ## Installation
 
 ```bash
-rails g view_primitives:add toggle
+rails g modelrails_ui:add toggle
 ```
 
 Creates `app/components/ui/toggle_component.rb`.

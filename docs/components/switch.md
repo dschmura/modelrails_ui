@@ -5,7 +5,7 @@ Toggle switch built from a styled checkbox. Thumb slides on check; no JavaScript
 ## Installation
 
 ```bash
-rails g view_primitives:add switch
+rails g modelrails_ui:add switch
 ```
 
 Creates `app/components/ui/switch_component.rb`.

@@ -5,7 +5,7 @@ Bordered container with composable header, title, description, content, and foot
 ## Installation
 
 ```bash
-rails g view_primitives:add card
+rails g modelrails_ui:add card
 ```
 
 Creates 6 files under `app/components/ui/`: `card_component.rb`, `card_header_component.rb`,

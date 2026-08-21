@@ -7,7 +7,7 @@ Requires `command_controller.js` (copied automatically by the generator).
 ## Installation
 
 ```bash
-rails g view_primitives:add command
+rails g modelrails_ui:add command
 ```
 
 Creates `app/components/ui/command_component.rb`.

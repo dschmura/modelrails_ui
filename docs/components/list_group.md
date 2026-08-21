@@ -5,7 +5,7 @@ Bordered list of items with optional active state, links, and muted variant. Cop
 ## Installation
 
 ```bash
-rails g view_primitives:add list_group
+rails g modelrails_ui:add list_group
 ```
 
 Creates:

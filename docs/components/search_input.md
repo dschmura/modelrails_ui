@@ -5,7 +5,7 @@ Text input with a built-in search icon on the left. Renders `<input type="search
 ## Installation
 
 ```bash
-rails g view_primitives:add search_input
+rails g modelrails_ui:add search_input
 ```
 
 Creates `app/components/ui/search_input_component.rb`.

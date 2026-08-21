@@ -7,7 +7,7 @@ Requires `date_picker_controller.js` and `calendar_controller.js` (both copied a
 ## Installation
 
 ```bash
-rails g view_primitives:add date_picker
+rails g modelrails_ui:add date_picker
 ```
 
 Creates `app/components/ui/date_picker_component.rb`.

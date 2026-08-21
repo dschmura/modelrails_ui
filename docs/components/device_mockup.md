@@ -5,7 +5,7 @@ Decorative device frame — phone, tablet, or browser window — that wraps any 
 ## Installation
 
 ```bash
-rails g view_primitives:add device_mockup
+rails g modelrails_ui:add device_mockup
 ```
 
 Creates `app/components/ui/device_mockup_component.rb`.

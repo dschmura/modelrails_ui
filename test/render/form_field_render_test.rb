@@ -30,10 +30,13 @@ class FormFieldRenderTest < ViewComponent::TestCase
     assert_selector "p#user_email-hint[data-slot='description']", text: "No spam."
   end
 
-  def test_error_has_an_id_alert_role_and_description_slot
+  def test_error_is_a_plain_paragraph_with_id_and_description_slot
     render_field(error: "is required")
 
-    assert_selector "p#user_email-error[role='alert'][data-slot='description']", text: "is required"
+    assert_selector "p#user_email-error[data-slot='description']", text: "is required"
+    # No live region on the server-rendered path: the focused ErrorSummary is the
+    # announcement mechanism; role=alert here never fires (region arrives with content).
+    assert_no_selector "p#user_email-error[role='alert']"
   end
 
   def test_label_carries_the_data_slot_for_adjacency_spacing
@@ -46,7 +49,7 @@ class FormFieldRenderTest < ViewComponent::TestCase
     c = UI::FormFieldComponent.new(id: "user_email", label: "Email", hint: "h", error: "e", required: true)
 
     assert_equal(
-      {id: "user_email", describedby: "user_email-hint user_email-error", invalid: true, required: true},
+      {id: "user_email", describedby: "user_email-error user_email-hint", invalid: true, required: true},
       c.input_attrs
     )
   end
@@ -62,5 +65,31 @@ class FormFieldRenderTest < ViewComponent::TestCase
     render_field(required: true)
 
     assert_selector "label span[aria-hidden='true']", text: "*"
+  end
+
+  def test_describedby_is_error_first_then_hint
+    c = UI::FormFieldComponent.new(id: "f", hint: "h", error: "e")
+
+    assert_equal "f-error f-hint", c.input_attrs[:describedby]
+  end
+
+  def test_html_input_attrs_translate_to_real_aria_attributes
+    c = UI::FormFieldComponent.new(id: "f", hint: "h", error: "e", required: true)
+
+    assert_equal(
+      {:id => "f", "aria-describedby" => "f-error f-hint", "aria-invalid" => "true", "aria-required" => "true"},
+      c.html_input_attrs
+    )
+  end
+
+  def test_html_input_attrs_omit_absent_axes
+    c = UI::FormFieldComponent.new(id: "f")
+
+    assert_equal({id: "f"}, c.html_input_attrs)
+  end
+
+  def test_hint_and_error_classes_are_public_shared_constants
+    assert_equal "text-sm text-text-muted", UI::FormFieldComponent::HINT_CLASSES
+    assert_equal "text-sm text-danger", UI::FormFieldComponent::ERROR_CLASSES
   end
 end

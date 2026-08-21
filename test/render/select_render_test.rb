@@ -82,4 +82,12 @@ class SelectRenderTest < ViewComponent::TestCase
 
     assert_selector "select[id]"
   end
+
+  def test_invalid_ring_has_a_width_not_just_a_color
+    render_inline(UI::SelectComponent.new(options: %w[a], invalid: true))
+
+    # aria-invalid:ring-danger without aria-invalid:ring-2 paints nothing —
+    # a ring colour needs a ring width (gem issue #112).
+    assert_selector "select[class*='aria-invalid:ring-2'][class*='aria-invalid:ring-danger']"
+  end
 end

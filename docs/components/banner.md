@@ -5,7 +5,7 @@ Styled announcement strip for notices, warnings, and status messages.
 ## Installation
 
 ```bash
-rails g view_primitives:add banner
+rails g modelrails_ui:add banner
 ```
 
 Creates `app/components/ui/banner_component.rb`.

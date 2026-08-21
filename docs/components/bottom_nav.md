@@ -5,7 +5,7 @@ Fixed bottom navigation bar for mobile layouts. Shows up to five icon+label link
 ## Installation
 
 ```bash
-rails g view_primitives:add bottom_nav
+rails g modelrails_ui:add bottom_nav
 ```
 
 Creates `app/components/ui/bottom_nav_component.rb`.

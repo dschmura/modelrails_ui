@@ -7,7 +7,7 @@ Requires `input_otp_controller.js` (copied automatically by the generator).
 ## Installation
 
 ```bash
-rails g view_primitives:add input_otp
+rails g modelrails_ui:add input_otp
 ```
 
 Creates `app/components/ui/input_otp_component.rb`.
