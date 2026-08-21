@@ -69,4 +69,25 @@ class CollapsibleRenderTest < ViewComponent::TestCase
 
     assert_selector "details#faq.mt-4"
   end
+
+  # <details> has no `disabled` attribute: announced via aria-disabled, out of the tab
+  # order, pointer-inert. No JS.
+  def test_disabled_summary_is_announced_and_unreachable
+    render_inline(UI::CollapsibleComponent.new(disabled: true)) { |c| c.with_trigger { "More" } }
+
+    assert_selector "summary[aria-disabled='true'][tabindex='-1'].pointer-events-none", visible: :all
+  end
+
+  def test_enabled_summary_stays_operable
+    render_inline(UI::CollapsibleComponent.new) { |c| c.with_trigger { "More" } }
+
+    assert_no_selector "summary[aria-disabled]", visible: :all
+  end
+
+  # Disabling blocks the control; it does not collapse content out from under a reader.
+  def test_open_disabled_disclosure_stays_open
+    render_inline(UI::CollapsibleComponent.new(disabled: true, open: true)) { |c| c.with_trigger { "More" } }
+
+    assert_selector "details[open]", visible: :all
+  end
 end

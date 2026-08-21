@@ -77,4 +77,32 @@ class AvatarRenderTest < ViewComponent::TestCase
 
     assert_match(/unknown size/, error.message)
   end
+
+  # `fallback:` alone only ever covered a NIL src; a 404 still left a broken-image glyph.
+  # The recovery pair is rendered only when BOTH a src and a fallback exist, so a
+  # src-only call site keeps its bare <img>.
+  def test_src_without_fallback_stays_a_bare_img
+    render_inline(UI::AvatarComponent.new(src: "/a.png", aria_label: "Dave"))
+
+    assert_no_selector "[data-controller~='avatar']", visible: :all
+  end
+
+  def test_src_with_fallback_wires_the_error_handler
+    render_inline(UI::AvatarComponent.new(src: "/a.png", fallback: "DC", aria_label: "Dave"))
+
+    assert_selector "[data-controller~='avatar'] img[data-action~='error->avatar#showFallback']", visible: :all
+  end
+
+  def test_standby_initials_ship_hidden
+    render_inline(UI::AvatarComponent.new(src: "/a.png", fallback: "DC", aria_label: "Dave"))
+
+    assert_selector "[data-avatar-target='fallback'][hidden]", text: "DC", visible: :all
+  end
+
+  # The img carries the accessible name; the standby initials must not announce a second.
+  def test_avatar_is_named_once
+    render_inline(UI::AvatarComponent.new(src: "/a.png", fallback: "DC", aria_label: "Dave"))
+
+    assert_selector "[aria-label='Dave']", count: 1, visible: :all
+  end
 end
