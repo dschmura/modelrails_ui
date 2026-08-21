@@ -17,6 +17,30 @@ module ModelrailsUi
         "gallery" => {source: "dialog/modal_controller.js", name: "modal"}
       }.freeze
 
+      # Shared ES modules — plain modules, NOT Stimulus controllers. Some behaviour has to
+      # be a single instance shared by every overlay (the top-layer helper below), which a
+      # per-component controller copy cannot provide, so it ships as a module the
+      # controllers import.
+      #
+      # `source` is the canonical copy in the owning component's template dir; `dir` is the
+      # namespace it lands in under app/javascript/, which is also the importmap pin.
+      # Every entry is enforced by test/test_shared_js_modules.rb — an unregistered `.js`
+      # in a template dir would be silently dropped by the generator.
+      TOP_LAYER = {source: "dropdown_menu/top_layer.js", dir: "overlays"}.freeze
+
+      SHARED_JS = {
+        "dropdown_menu" => [TOP_LAYER],
+        "context_menu" => [TOP_LAYER],
+        "menubar" => [TOP_LAYER],
+        "menubar_menu" => [TOP_LAYER],
+        "popover" => [TOP_LAYER],
+        "combobox" => [TOP_LAYER],
+        "date_picker" => [TOP_LAYER],
+        "timepicker" => [TOP_LAYER],
+        "navigation_menu" => [TOP_LAYER],
+        "mega_menu" => [TOP_LAYER]
+      }.freeze
+
       # Post-install instructions for components that require external dependencies.
       SETUP_NOTES = {
         "chart" => <<~TEXT,
