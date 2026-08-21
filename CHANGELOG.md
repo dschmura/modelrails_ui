@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Sidebar: the collapsed rail now explains its icons. Items show a hint bubble on hover or focus, `aria-hidden` by construction — the item's label is clipped to width 0 but stays in the accessibility tree, so the link already has its name and announcing the bubble too would name every item twice. It is `fixed` + anchor-positioned because the nav is `overflow-y-auto`, which makes its overflow-x non-visible as well and would clip an `absolute` bubble at the rail edge. (A5)
+
+- Sidebar: `remember:` (default `true`) persists the collapse choice to a `sidebar_collapsed` cookie. A cookie rather than localStorage so the server can render the rail in the remembered shape on the first paint instead of painting it expanded and collapsing after; the component doc comment carries the one-line host helper. (A5)
+
 - Drawer drag-to-dismiss. The component already rendered a grab handle that ignored the pointer. Drag starts from the handle only (dragging from the body would mean telling a drag from a scroll on every pointerdown, and getting that wrong breaks scrolling inside the drawer); the dismiss threshold is a fraction of the panel's own height rather than a fixed distance, because a bottom-anchored drawer has only its own height of travel below the handle. Drag is an addition — Escape and the close button are untouched, and the handle stays `aria-hidden` and unfocusable rather than advertising a control keyboard users cannot operate. (A8)
 
 - Command palette fuzzy ranking. The filter was substring-only and preserved source order; it now scores with cmdk's scorer (vendored, MIT — full notice in the file header) and ranks matches within each group. `data-command-keywords` lets an item be found by a synonym it does not display. Group order is left alone deliberately: it is authored intent, and reordering groups between keystrokes moves the palette's shape under the reader. (A7)
@@ -42,6 +46,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The shipped stylesheet no longer carries app-specific CSS: Markdowndocs prose styles, the Rouge syntax theme, workspace-branding overrides, Biscuit cookie-banner theming, and the development-only a11y-simulation filters. **1155 → 677 lines (−41%).** No component template referenced any of it. A fork using Markdowndocs or Biscuit now owns that styling — `modelrails_base` already does, in its own `_prose.css` and `_syntax.css`.
 
 ### Fixed
+
+- Sidebar: the toggle exposed no state to assistive technology. Collapse lived entirely in `data-collapsed`, which drives the CSS and is invisible to a screen reader — the button announced no state before, none after, and no indication anything had happened (WCAG 4.1.2). It now carries `aria-expanded` and `aria-controls` pointing at the nav it collapses, kept in step by the controller. (A5)
+
+- Sidebar: a caller-supplied `id:` stopped reaching the root `<aside>` once `id:` became a named argument for the nav wiring. It is rendered on the root again, and derives the nav's id.
 
 - `modal` warned "Stacked modals are not supported" and then called `showModal()` anyway. The browser has always supported it: a second `showModal()` puts that dialog above the first in the top layer, moves the focus trap, and gives it Escape. The warning is gone and browser tests hold the behaviour it was wrong about.
 
