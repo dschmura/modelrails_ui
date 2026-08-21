@@ -10,13 +10,13 @@ class ButtonRenderTest < ViewComponent::TestCase
     assert_selector "button[type='button']", text: "Save changes"
   end
 
-  # AAA semantic tokens (the design-token guarantee), not raw Tailwind:
-  def test_primary_renders_with_aaa_tokens
+  # The component selects a canonical .btn-* class; the stylesheet owns what that class
+  # looks like. Asserting the utilities behind it here is what allowed COMBOS and the CSS
+  # to drift apart (#101), so these assert the class the component chose.
+  def test_primary_renders_the_canonical_button_class
     render_inline(UI::ButtonComponent.new("Save changes", variant: :primary))
 
-    assert_selector "button.bg-interactive"
-    assert_selector "button.text-text-on-interactive"
-    assert_selector "button.focus-ring"
+    assert_selector "button.btn-primary"
   end
 
   def test_href_renders_anchor
@@ -47,13 +47,13 @@ class ButtonRenderTest < ViewComponent::TestCase
   # Back-compat: every legacy flat `variant:` value still renders its marker class
   # (the shim translates the old enum to a (variant, tone) cell — byte-identical output).
   {
-    primary: "bg-interactive",
-    secondary: "border-border",
-    danger: "bg-danger",
-    destructive: "bg-danger",
-    text: "text-interactive",
-    text_interactive: "text-interactive",
-    text_danger: "text-danger"
+    primary: "btn-primary",
+    secondary: "btn-secondary",
+    danger: "btn-danger",
+    destructive: "btn-danger",
+    text: "btn-text-interactive",
+    text_interactive: "btn-text-interactive",
+    text_danger: "btn-text-danger"
   }.each do |legacy, marker|
     define_method("test_legacy_variant_#{legacy}_still_renders") do
       render_inline(UI::ButtonComponent.new("Go", variant: legacy))
@@ -65,19 +65,19 @@ class ButtonRenderTest < ViewComponent::TestCase
   def test_two_axis_solid_primary_matches_legacy_primary
     render_inline(UI::ButtonComponent.new("Go", variant: :solid, tone: :primary))
 
-    assert_selector "button.bg-interactive.text-text-on-interactive"
+    assert_selector "button.btn-primary"
   end
 
   def test_two_axis_text_danger
     render_inline(UI::ButtonComponent.new("Go", variant: :text, tone: :danger))
 
-    assert_selector "button.text-danger"
+    assert_selector "button.btn-text-danger"
   end
 
   def test_two_axis_outline_neutral_matches_legacy_secondary
     render_inline(UI::ButtonComponent.new("Go", variant: :outline, tone: :neutral))
 
-    assert_selector "button.border-border"
+    assert_selector "button.btn-secondary"
   end
 
   # Unproven (variant, tone) cell — raises in dev/test (the AAA combo-guard:
@@ -89,7 +89,7 @@ class ButtonRenderTest < ViewComponent::TestCase
   end
 
   # A8: `size: :icon` is a 44×44 square (drop horizontal padding, add min-w; min-h
-  # is already carried by the FILLED base).
+  # is already carried by the .btn-* classes).
   def test_size_icon_is_a_44px_square
     render_inline(UI::ButtonComponent.new(variant: :solid, tone: :primary, size: :icon))
 
