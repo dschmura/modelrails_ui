@@ -5,7 +5,7 @@ HTML5 `<audio>` element with multiple source formats and playback controls.
 ## Installation
 
 ```bash
-rails g view_primitives:add audio
+rails g modelrails_ui:add audio
 ```
 
 Creates `app/components/ui/audio_component.rb`.

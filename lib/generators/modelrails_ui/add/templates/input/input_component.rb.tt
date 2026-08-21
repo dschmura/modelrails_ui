@@ -2,9 +2,8 @@
 
 module UI
   class InputComponent < ApplicationComponent
-    # Styling matches the host app's TailwindFormBuilder field constants exactly,
-    # so swapping the builder to render this component is visually invisible.
-    # (FIELD_BASE / FIELD_NORMAL / FIELD_ERROR in app/form_builders/tailwind_form_builder.rb)
+    # Styling matches the form builder's (`UI::FormBuilder`) field rendering exactly,
+    # so `f.text_field`/`f.email_field`/etc. and this component render identically.
     BASE   = "block w-full rounded-md border px-3 py-2 placeholder:text-text-muted " \
              "focus-ring min-h-[var(--form-input-height)]"
     NORMAL = "border-border-strong bg-surface-raised text-text-heading " \

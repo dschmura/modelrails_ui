@@ -20,14 +20,14 @@ Creates:
 ```erb
 <%# items: array — plain text, no block needed %>
 <%= ui :accordion, items: [
-  { title: "What is ViewPrimitives?",      content: "A shadcn-inspired component library for Rails." },
+  { title: "What is ModelrailsUi?",      content: "A shadcn-inspired component library for Rails." },
   { title: "Do I need to configure it?",   content: "No. Works with any Tailwind setup." },
   { title: "Can I customise the styles?",  content: "Yes — the files are yours to edit." }
 ] %>
 
 <%# Slot API — for rich HTML inside items %>
 <%= ui :accordion do |accordion| %>
-  <% accordion.with_item(title: "What is ViewPrimitives?") do %>
+  <% accordion.with_item(title: "What is ModelrailsUi?") do %>
     A shadcn-inspired component library for Rails using ViewComponent and Tailwind.
   <% end %>
 <% end %>

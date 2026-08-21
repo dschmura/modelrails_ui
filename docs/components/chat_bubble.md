@@ -5,7 +5,7 @@ Styled message bubble for chat or comment interfaces. Supports sent and received
 ## Installation
 
 ```bash
-rails g view_primitives:add chat_bubble
+rails g modelrails_ui:add chat_bubble
 ```
 
 Creates `app/components/ui/chat_bubble_component.rb`.

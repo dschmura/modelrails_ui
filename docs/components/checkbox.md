@@ -5,7 +5,7 @@ Styled checkbox input with optional inline label.
 ## Installation
 
 ```bash
-rails g view_primitives:add checkbox
+rails g modelrails_ui:add checkbox
 ```
 
 Creates `app/components/ui/checkbox_component.rb`.

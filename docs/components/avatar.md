@@ -5,7 +5,7 @@ Circular image or initials fallback for user representation.
 ## Installation
 
 ```bash
-rails g view_primitives:add avatar
+rails g modelrails_ui:add avatar
 ```
 
 Creates `app/components/ui/avatar_component.rb`.

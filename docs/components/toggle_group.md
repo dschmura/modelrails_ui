@@ -7,7 +7,7 @@ Requires `toggle_group_controller.js` (copied automatically by the generator).
 ## Installation
 
 ```bash
-rails g view_primitives:add toggle_group
+rails g modelrails_ui:add toggle_group
 ```
 
 Creates `app/components/ui/toggle_group_component.rb`.

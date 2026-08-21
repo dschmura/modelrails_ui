@@ -60,7 +60,7 @@ module ModelrailsUi
               labels: ["Jan", "Feb", "Mar"],
               datasets: [{ label: "Revenue", data: [100, 200, 150] }]
         TEXT
-        "wysiwyg" => <<~TEXT
+        "wysiwyg" => <<~TEXT,
           WYSIWYG defaults to Trix (adapter: :trix). To use Trix, install ActionText:
 
             bundle add actiontext
@@ -80,14 +80,64 @@ module ModelrailsUi
             ui :wysiwyg, name: "body"
             ui :wysiwyg, name: "body", adapter: :quill, placeholder: "Write something..."
         TEXT
+        "form_builder" => <<~TEXT
+          Wire it up as your app's default form builder:
+
+            # config/initializers/form_builder.rb
+            Rails.application.config.to_prepare do
+              ActionView::Base.default_form_builder = UI::FormBuilder
+            end
+
+          …or per form:
+
+            form_with model: @user, builder: UI::FormBuilder
+
+          This file is meant to be SUBCLASSED, not edited — re-running
+          `rails g modelrails_ui:add form_builder` overwrites it. Put your
+          customizations in a subclass (see the class header comment).
+        TEXT
       }.freeze
+
+      # Ruby templates that are NOT ViewComponents, routed by explicit map — the
+      # SHARED_JS precedent, one asset kind over. An unmapped non-component .rb.tt
+      # would be misfiled into app/components/ui/ by the generator's fallback;
+      # test/test_form_builder_registry.rb pins the invariant.
+      NON_COMPONENT_RB = {
+        "form_builder/form_builder.rb.tt" => "app/form_builders/ui/form_builder.rb"
+      }.freeze
+
+      # Install-status markers for components whose primary file is not
+      # app/components/ui/<name>_component.rb (see primary_path below).
+      PRIMARY_PATHS = {
+        "form_builder" => "app/form_builders/ui/form_builder.rb"
+      }.freeze
+
+      # Components that hard-require sibling components at render time. The add
+      # generator installs these transitively — without this, `add form_builder`
+      # in a bare app installs a file that NameErrors on the first field.
+      DEPENDENCIES = {
+        "form_builder" => %w[form_field input textarea file_input select label error_summary]
+      }.freeze
+
+      # Transitive dependency expansion, input order first, no duplicates.
+      def self.expand(names)
+        seen = []
+        queue = names.dup
+        while (name = queue.shift)
+          next if seen.include?(name)
+
+          seen << name
+          queue.concat(DEPENDENCIES.fetch(name, []))
+        end
+        seen
+      end
 
       def self.supported
         @supported ||= Dir.children(TEMPLATE_ROOT).sort.freeze
       end
 
       def self.primary_path(component)
-        "app/components/ui/#{component}_component.rb"
+        PRIMARY_PATHS.fetch(component) { "app/components/ui/#{component}_component.rb" }
       end
 
       def self.installed?(component, root)

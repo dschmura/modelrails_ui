@@ -7,7 +7,7 @@ Requires `data_table_controller.js` (copied automatically by the generator).
 ## Installation
 
 ```bash
-rails g view_primitives:add data_table
+rails g modelrails_ui:add data_table
 ```
 
 Creates `app/components/ui/data_table_component.rb`.

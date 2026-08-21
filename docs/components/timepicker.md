@@ -7,7 +7,7 @@ Requires `timepicker_controller.js` (copied automatically by the generator).
 ## Installation
 
 ```bash
-rails g view_primitives:add timepicker
+rails g modelrails_ui:add timepicker
 ```
 
 Creates `app/components/ui/timepicker_component.rb`.

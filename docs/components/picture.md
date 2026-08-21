@@ -5,7 +5,7 @@ Renders a `<picture>` element with multiple `<source>` formats and a fallback `<
 ## Installation
 
 ```bash
-rails g view_primitives:add picture
+rails g modelrails_ui:add picture
 ```
 
 Creates `app/components/ui/picture_component.rb`.

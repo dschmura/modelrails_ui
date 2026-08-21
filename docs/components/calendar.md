@@ -7,7 +7,7 @@ Requires `calendar_controller.js` (copied automatically by the generator).
 ## Installation
 
 ```bash
-rails g view_primitives:add calendar
+rails g modelrails_ui:add calendar
 ```
 
 Creates `app/components/ui/calendar_component.rb`.

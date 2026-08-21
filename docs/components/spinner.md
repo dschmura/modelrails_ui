@@ -5,7 +5,7 @@ Animated loading indicator for in-progress states.
 ## Installation
 
 ```bash
-rails g view_primitives:add spinner
+rails g modelrails_ui:add spinner
 ```
 
 Creates `app/components/ui/spinner_component.rb`.

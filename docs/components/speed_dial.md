@@ -7,7 +7,7 @@ Requires `speed_dial_controller.js` (copied automatically by the generator).
 ## Installation
 
 ```bash
-rails g view_primitives:add speed_dial
+rails g modelrails_ui:add speed_dial
 ```
 
 Creates `app/components/ui/speed_dial_component.rb`.

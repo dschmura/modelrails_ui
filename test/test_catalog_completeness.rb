@@ -30,6 +30,21 @@ class TestCatalogCompleteness < Minitest::Test
   # for components that DO have a class but are deliberately not promoted).
   PARTIAL_ONLY = %w[form_draft].freeze
 
+  # Components exempt from ONE check inside the render-test predicate below:
+  # the `render_inline` literal-match heuristic. form_builder ships
+  # `UI::FormBuilder < ActionView::Helpers::FormBuilder`, not a ViewComponent
+  # — its render test (test/render/form_builder_render_test.rb) calls the
+  # builder's Rails-named field methods directly and asserts on the returned
+  # HTML via Capybara, so it never calls ViewComponent::TestCase's
+  # `render_inline`, even though every field method it exercises renders
+  # real UI::* components internally through the current view context. The
+  # has_method/has_assert checks still apply in full — this only widens
+  # what counts as "really rendering". Distinct from PARTIAL_ONLY, which
+  # drops a component out of the gate entirely (including the preview
+  # check, which form_builder does NOT get here — that failure stays red
+  # until Task 8 ships its preview).
+  NOT_A_VIEWCOMPONENT = %w[form_builder].freeze
+
   def gated_components
     Components.supported - SUPERSEDED_EXEMPT.keys - PARTIAL_ONLY
   end
@@ -70,7 +85,7 @@ class TestCatalogCompleteness < Minitest::Test
       end
       src = File.read(path)
       has_method = src.match?(/def test_\w+/)
-      has_render = src.include?("render_inline")
+      has_render = NOT_A_VIEWCOMPONENT.include?(c) || src.include?("render_inline")
       has_assert = src.match?(/\bassert|\brefute/)
       offenders << "#{c} (stub render test)" unless has_method && has_render && has_assert
     end

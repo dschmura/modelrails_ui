@@ -5,7 +5,7 @@ Status dot or count badge overlaid on another element. Wraps any content and ren
 ## Installation
 
 ```bash
-rails g view_primitives:add indicator
+rails g modelrails_ui:add indicator
 ```
 
 Creates `app/components/ui/indicator_component.rb`.

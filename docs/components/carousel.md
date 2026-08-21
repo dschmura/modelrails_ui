@@ -7,7 +7,7 @@ Requires `carousel_controller.js` (copied automatically by the generator).
 ## Installation
 
 ```bash
-rails g view_primitives:add carousel
+rails g modelrails_ui:add carousel
 ```
 
 Creates `app/components/ui/carousel_component.rb`.

@@ -5,7 +5,7 @@ Input with a label that floats above the field when it is focused or has a value
 ## Installation
 
 ```bash
-rails g view_primitives:add floating_label
+rails g modelrails_ui:add floating_label
 ```
 
 Creates `app/components/ui/floating_label_component.rb`.

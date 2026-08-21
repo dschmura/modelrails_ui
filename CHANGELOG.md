@@ -35,9 +35,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Popover, combobox, date_picker, timepicker, navigation_menu and mega_menu now place with CSS anchor positioning (`anchor-name`/`position-anchor` + `position-area` + `position-try-fallbacks`), matching dropdown_menu and menubar_menu. Panels flip to stay on-screen where the old static offsets clipped. Width-tied panels (combobox, mega_menu) take their width from `anchor-size(width)`.
 - DropdownMenu: checkable items (`checkbox:`/`radio:` → `menuitemcheckbox`/`menuitemradio` with `aria-checked`), which toggle in place and keep the menu open; `tone: :danger` for destructive actions; and nested submenus via `with_item(submenu: "…")`.
 
+- `UI::FormBuilder` — generator-installed form builder rendering fields through FormFieldComponent, wired to ActiveModel::Errors; aria-required only, never native `required`.
+- `UI::ErrorSummary` — focusable, autofocused form-level error panel; items link to fields; `heading_level:` option.
+- Add generator: `NON_COMPONENT_RB` routing for non-component Ruby templates; transitive `DEPENDENCIES` installation.
+- Install generator: consolidated `config/locales/modelrails_ui.en.yml`.
+- `FormFieldComponent#html_input_attrs` — input_attrs translated to real ARIA attributes for native controls.
+
 ### Changed
 
 - `ButtonComponent::COMBOS` now names the canonical `.btn-*` classes instead of re-listing their utilities. The stylesheet owns button appearance and the Ruby table is the typed accessor for it — previously the same rules existed in both languages and had already drifted. Rendered output is equivalent; `.btn-primary` carries exactly what the old utility string produced. (#101)
+
+- **Breaking:** `FormFieldComponent` describedby order is now error-first; field-level error paragraphs are plain `<p>` (no `role="alert"`) — the focused ErrorSummary is the announcement mechanism.
+- SelectComponent invalid state now paints its ring (`aria-invalid:ring-2` added) (#112).
+- **Breaking:** railties floor raised to >= 8.0 — the form builder uses Rails 8's canonical checkbox helpers.
 
 ### Removed
 
@@ -76,6 +86,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Generator no longer drops unrecognised template files silently — it says which file it skipped. A plain `.js` in a template directory used to vanish with no warning and no pin, leaving a bare-specifier import that throws at runtime.
 
 - The two status files contradicted each other. README's "Known gaps" and `MODELRAILS_STATUS.md` both said `form_field`, `qr_code`, `input_otp` and `embed` were broken and must not be used, while `COMPONENT_STATUS.md` listed all 82 components as proven or hardened. The pessimistic pair was stale: all four generate and render, verified on Ruby 4.0.5 with 6, 8, 8 and 16 passing render tests.
+
+- form_field docs: stale `view_primitives` generator name; corrected hint/error co-rendering claim (#114).
 
 ## [0.9.0] - 2026-08-16
 

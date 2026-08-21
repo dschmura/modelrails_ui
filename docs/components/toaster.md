@@ -7,7 +7,7 @@ Requires `toaster_controller.js` (copied automatically by the generator).
 ## Installation
 
 ```bash
-rails g view_primitives:add toaster
+rails g modelrails_ui:add toaster
 ```
 
 Creates `app/components/ui/toaster_component.rb`.

@@ -5,7 +5,7 @@ Styled `<input type="file">` with support for MIME-type filtering and multiple f
 ## Installation
 
 ```bash
-rails g view_primitives:add file_input
+rails g modelrails_ui:add file_input
 ```
 
 Creates `app/components/ui/file_input_component.rb`.

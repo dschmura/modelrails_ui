@@ -5,7 +5,7 @@ Multi-line text input that grows to fit its content via CSS `field-sizing: conte
 ## Installation
 
 ```bash
-rails g view_primitives:add textarea
+rails g modelrails_ui:add textarea
 ```
 
 Creates `app/components/ui/textarea_component.rb`.

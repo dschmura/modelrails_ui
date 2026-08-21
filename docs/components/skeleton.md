@@ -5,7 +5,7 @@ Animated loading placeholder. Size is controlled entirely by classes passed by t
 ## Installation
 
 ```bash
-rails g view_primitives:add skeleton
+rails g modelrails_ui:add skeleton
 ```
 
 Creates `app/components/ui/skeleton_component.rb`.

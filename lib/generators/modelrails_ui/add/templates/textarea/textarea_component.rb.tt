@@ -2,8 +2,8 @@
 
 module UI
   class TextareaComponent < ApplicationComponent
-    # Styling matches the host app's TailwindFormBuilder field constants (shared
-    # with UI::InputComponent) so the builder can delegate to it invisibly.
+    # Styling matches the form builder's (`UI::FormBuilder`) field rendering (shared
+    # with UI::InputComponent) so `f.text_area` delegates to it invisibly.
     BASE   = "block w-full rounded-md border px-3 py-2 placeholder:text-text-muted " \
              "focus-ring min-h-[var(--form-input-height)]"
     NORMAL = "border-border-strong bg-surface-raised text-text-heading " \

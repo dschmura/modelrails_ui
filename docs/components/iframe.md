@@ -5,7 +5,7 @@ Accessible `<iframe>` with sandboxing, lazy loading, and optional aspect-ratio w
 ## Installation
 
 ```bash
-rails g view_primitives:add iframe
+rails g modelrails_ui:add iframe
 ```
 
 Creates `app/components/ui/iframe_component.rb`.

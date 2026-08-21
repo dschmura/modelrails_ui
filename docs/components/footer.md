@@ -5,7 +5,7 @@ Site footer with optional link columns, block content area, and a copyright row.
 ## Installation
 
 ```bash
-rails g view_primitives:add footer
+rails g modelrails_ui:add footer
 ```
 
 Creates `app/components/ui/footer_component.rb`.
@@ -29,7 +29,7 @@ Place any HTML inside the footer between the columns grid and the copyright row:
 ```erb
 <%= ui :footer, copyright: "© 2025 Acme" do %>
   <p class="text-sm text-muted-foreground text-center mb-6">
-    Built with ViewPrimitives.
+    Built with ModelrailsUi.
   </p>
 <% end %>
 ```

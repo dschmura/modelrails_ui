@@ -5,7 +5,7 @@ Horizontal progress bar with accessible ARIA attributes.
 ## Installation
 
 ```bash
-rails g view_primitives:add progress
+rails g modelrails_ui:add progress
 ```
 
 Creates `app/components/ui/progress_component.rb`.

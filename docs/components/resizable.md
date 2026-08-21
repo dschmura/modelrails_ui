@@ -7,7 +7,7 @@ Requires `resizable_controller.js` (copied automatically by the generator).
 ## Installation
 
 ```bash
-rails g view_primitives:add resizable
+rails g modelrails_ui:add resizable
 ```
 
 Creates `app/components/ui/resizable_component.rb`.

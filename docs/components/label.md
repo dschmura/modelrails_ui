@@ -5,7 +5,7 @@ Accessible form label that pairs with an input via `for:`.
 ## Installation
 
 ```bash
-rails g view_primitives:add label
+rails g modelrails_ui:add label
 ```
 
 Creates `app/components/ui/label_component.rb`.
