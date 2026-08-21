@@ -17,11 +17,8 @@ end
 
 # Open/close, aria-expanded sync and focus return — none of it visible to the render lane.
 #
-# NOT covered here: top-layer promotion. The harness serves no compiled CSS, so the panel
-# never computes to `position: fixed` and top_layer.js correctly declines to promote it.
-# That guard is the right behaviour, and it means promotion can only be proven where real
-# CSS exists — modelrails_base. Asserting it here would require faking the style, which
-# would prove the fake rather than the component.
+# NOT covered here: top-layer promotion — unprovable without compiled CSS. See
+# docs/testing.md; `assert_promoted_to_top_layer` fails with the reason if you try.
 class PopoverSystemTest < BrowserTestCase
   def setup
     super

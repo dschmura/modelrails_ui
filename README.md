@@ -105,7 +105,8 @@ the rules; your house-rules edits are preserved.
 
 ## Testing & accessibility
 
-The gem's suite (`rake test`) runs two lanes:
+The gem's suite (`rake test`) runs three lanes — see **[docs/testing.md](docs/testing.md)**
+for what each one can and, importantly, cannot prove:
 
 - **`test:structural`** — fast, no Rails: reads the `.rb.tt` templates as text and asserts
   structure (`test/test_components.rb` and friends).
@@ -113,6 +114,15 @@ The gem's suite (`rake test`) runs two lanes:
   a component, asserting actual HTML/ARIA. AAA contrast is guaranteed by
   `test/test_aaa_contrast.rb` (token ratios), so a render test that asserts a component
   uses the semantic token classes inherits AAA.
+- **`test:system`** — a real Chrome: proves what only happens once JavaScript runs
+  (open/close, roving focus, ARIA a controller keeps in sync, runtime-minted ids).
+
+> **Two things the browser lane cannot prove.** It serves no compiled stylesheet, so
+> **colour contrast** and **top-layer promotion** are both out of reach there — `axe` runs
+> with `color-contrast` disabled, and `top_layer.js` correctly declines to promote a panel
+> that never computes to `position: fixed`. Both are proven in `modelrails_base` against a
+> real app with built CSS. Do not inject styles to make them fire locally; the assertion
+> would prove the injected style. Details in [docs/testing.md](docs/testing.md).
 
 ### Verifying components (render tests)
 
