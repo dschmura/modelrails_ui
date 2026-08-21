@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Browser lane coverage for tabs, popover, combobox and checkbox — 38 tests over the behaviour the render lane cannot reach: arrow-key models, roving tabindex, filtering, `aria-activedescendant` resolving to a real option, runtime-minted ids staying unique across instances, and the `indeterminate` DOM property.
 - Browser test lane (`rake test:system`). A real Chrome drives the gem's own controller templates through a real importmap, so behaviour that only exists once JS runs is provable here instead of only in a host app. Includes a structural axe audit (colour-contrast deliberately disabled — the stylesheet ships as Tailwind source, so a contrast pass here would be meaningless).
 
 ### Fixed
