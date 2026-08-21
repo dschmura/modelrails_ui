@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Avatar was absent from the accessibility tree after its image failed to load. The `<img>` carries the accessible name and is removed on failure, so the standby initials — hardcoded `aria-hidden` — left screen-reader users with nothing where sighted users saw initials. Both nodes are named now; `hidden` keeps only one exposed.
+- A caller-supplied `data:` on Avatar clobbered the Stimulus wiring and silently disabled the image-error fallback. The wiring is merged over caller data now.
+- A DropdownMenu submenu stayed open when its parent menu closed — `aria-expanded="true"` while the menu was shut, and already expanded on reopen. The parent now closes its submenus.
+
 ### Added
 
 - Checkbox: `indeterminate:` for tri-state parents. Ships an `indeterminate` controller, since the property has no HTML attribute; deliberately does not also set `checked`.
