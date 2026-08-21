@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Drawer drag-to-dismiss. The component already rendered a grab handle that ignored the pointer. Drag starts from the handle only (dragging from the body would mean telling a drag from a scroll on every pointerdown, and getting that wrong breaks scrolling inside the drawer); the dismiss threshold is a fraction of the panel's own height rather than a fixed distance, because a bottom-anchored drawer has only its own height of travel below the handle. Drag is an addition — Escape and the close button are untouched, and the handle stays `aria-hidden` and unfocusable rather than advertising a control keyboard users cannot operate. (A8)
+
+### Fixed
+
+- `modal` warned "Stacked modals are not supported" and then called `showModal()` anyway. The browser has always supported it: a second `showModal()` puts that dialog above the first in the top layer, moves the focus trap, and gives it Escape. The warning is gone and browser tests hold the behaviour it was wrong about.
+
+### Added
+
 - Command palette fuzzy ranking. The filter was substring-only and preserved source order; it now scores with cmdk's scorer (vendored, MIT — full notice in the file header) and ranks matches within each group. `data-command-keywords` lets an item be found by a synonym it does not display. Group order is left alone deliberately: it is authored intent, and reordering groups between keystrokes moves the palette's shape under the reader. (A7)
 
 ### Fixed
