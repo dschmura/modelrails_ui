@@ -27,6 +27,10 @@ module ModelrailsUi
       # Every entry is enforced by test/test_shared_js_modules.rb — an unregistered `.js`
       # in a template dir would be silently dropped by the generator.
       TOP_LAYER = {source: "dropdown_menu/top_layer.js", dir: "overlays"}.freeze
+      # Vendored third-party (cmdk's command-score, MIT — see the file header). Its own
+      # namespace rather than `overlays`: it is a scoring utility, not an overlay concern,
+      # and a host reading its importmap should be able to tell what it is.
+      COMMAND_SCORE = {source: "command/command_score.js", dir: "search"}.freeze
 
       SHARED_JS = {
         "dropdown_menu" => [TOP_LAYER],
@@ -38,7 +42,8 @@ module ModelrailsUi
         "date_picker" => [TOP_LAYER],
         "timepicker" => [TOP_LAYER],
         "navigation_menu" => [TOP_LAYER],
-        "mega_menu" => [TOP_LAYER]
+        "mega_menu" => [TOP_LAYER],
+        "command" => [COMMAND_SCORE]
       }.freeze
 
       # Post-install instructions for components that require external dependencies.
