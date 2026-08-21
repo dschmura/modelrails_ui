@@ -99,10 +99,27 @@ class AvatarRenderTest < ViewComponent::TestCase
     assert_selector "[data-avatar-target='fallback'][hidden]", text: "DC", visible: :all
   end
 
-  # The img carries the accessible name; the standby initials must not announce a second.
-  def test_avatar_is_named_once
+  # BOTH nodes are named: the <img> is REMOVED on failure and carries the name, so
+  # unnamed initials would leave the avatar absent from the accessibility tree entirely.
+  # `hidden` keeps only one of them exposed at a time.
+  def test_standby_initials_are_named_for_after_the_swap
     render_inline(UI::AvatarComponent.new(src: "/a.png", fallback: "DC", aria_label: "Dave"))
 
-    assert_selector "[aria-label='Dave']", count: 1, visible: :all
+    assert_selector "[data-avatar-target='fallback'][role='img'][aria-label='Dave']", visible: :all
+  end
+
+  def test_avatar_is_named_once_among_visible_nodes
+    render_inline(UI::AvatarComponent.new(src: "/a.png", fallback: "DC", aria_label: "Dave"))
+
+    assert_selector "[aria-label='Dave']", count: 1
+  end
+
+  # A caller `data:` used to splat over the wiring and silently disable the fallback —
+  # the component rendered, looked right, and never recovered from a 404.
+  def test_caller_data_does_not_clobber_the_error_wiring
+    render_inline(UI::AvatarComponent.new(src: "/a.png", fallback: "DC", aria_label: "Dave",
+      data: {testid: "user-avatar"}))
+
+    assert_selector "img[data-action~='error->avatar#showFallback'][data-testid='user-avatar']", visible: :all
   end
 end
