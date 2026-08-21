@@ -9,10 +9,10 @@ module UI
   # the control. The control arrives as a block, so the component yields its field
   # context (`input_attrs`) and the caller spreads it onto any control:
   #
-  #   <%= ui :form_field, label: "Email", hint: "We'll never share it.",
+  #   <%%= ui :form_field, label: "Email", hint: "We'll never share it.",
   #         error: @user.errors[:email].first, required: true do |f| %>
-  #     <%= ui :input, type: "email", name: "user[email]", **f.input_attrs %>
-  #   <% end %>
+  #     <%%= ui :input, type: "email", name: "user[email]", **f.input_attrs %>
+  #   <%% end %>
   #
   # ## Use when
   # - You're composing a single labelled field by hand (a one-off form, or a control
