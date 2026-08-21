@@ -54,3 +54,14 @@ By default the panel uses as many columns as slots. Override with `cols:`:
 |--------|------|---------|-------------|
 | `heading` | String | `nil` | Optional column heading shown in small uppercase text |
 | `items` | Array | `[]` | Array of `{ title:, description:, href: }` hashes |
+
+## Placement
+
+The panel is placed by CSS anchor positioning (`position: fixed`, tethered to the field
+by `anchor-name`/`position-anchor`) and is promoted to the browser's **top layer** while
+open. That lets it escape a stacking context — a `sticky` header or a `backdrop-blur`
+navbar traps a `z-50` panel inside it, and no z-index fixes that from within.
+
+Browsers without anchor positioning fall back to `absolute` offsets and are deliberately
+**not** promoted, since the top layer would resolve those offsets against the viewport
+rather than the trigger.

@@ -1,11 +1,13 @@
 # Popover
 
-Non-modal floating panel anchored to a trigger button. Positioning is CSS (a
-`relative` wrapper + `absolute` panel — the author picks `side` and `align`);
-open/close behavior lives in the `floating` Stimulus controller shipped with
-this component.
+Non-modal floating panel anchored to a trigger button. Placement is CSS anchor
+positioning — the panel is `position: fixed`, tethered to the trigger's wrapper by
+`anchor-name`/`position-anchor`, with the author picking `side` and `align`.
+Open/close behavior lives in the `floating` Stimulus controller shipped with this
+component.
 
-Requires `floating_controller.js` (copied automatically by the generator).
+Requires `floating_controller.js` and the shared `overlays/top_layer.js` module
+(both copied automatically by the generator, which also adds the importmap pin).
 
 ## Installation
 
@@ -64,12 +66,22 @@ to the trigger button.
 Clicking outside the popover closes it automatically. Focus returns to the
 trigger button.
 
-## Limitation
+## Stacking contexts and the top layer
 
-The panel has no top layer — it is `position: absolute` inside its wrapper. A
-popover placed inside an `overflow: hidden` or CSS-transformed ancestor can be
-clipped. Restructure the markup to avoid the clipping context, or use `dialog`
-instead.
+Because the panel is viewport-positioned, it is promoted to the browser's **top
+layer** while open. That matters because a `sticky` header or a `backdrop-blur`
+navbar establishes a stacking context, and a `z-50` panel inside one is trapped
+there — no z-index escapes a stacking context from the inside. Promotion paints the
+panel above the whole page while leaving it in the DOM, so the actions inside it
+stay wired.
+
+On browsers without CSS anchor positioning the panel falls back to `absolute`
+offsets and is deliberately **not** promoted: the top layer re-parents an element's
+containing block to the viewport, which would resolve those offsets against the
+screen and tear the panel off its trigger. The fallback keeps today's behaviour —
+correctly placed, but buriable by a stacking context.
+
+An `overflow: hidden` or CSS-transformed ancestor can still clip the fallback path.
 
 ## Accessibility contract
 

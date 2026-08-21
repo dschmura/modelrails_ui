@@ -9,7 +9,9 @@ module UI
   #
   # ## Accessibility contract
   # - **Guarantees:** `aria-haspopup="menu"` + synced `aria-expanded`; `role="menu"`
-  #   named by the trigger; `role="menuitem"` items with roving tabindex.
+  #   named by the trigger; `role="menuitem"` items with roving tabindex. Checkable items
+  #   render `menuitemcheckbox`/`menuitemradio` with `aria-checked`; a sub-trigger adds
+  #   `aria-haspopup="menu"` and owns a nested `role="menu"`.
   # - **You supply:** a `with_trigger` slot and `with_item` slots; `aria_label:` for
   #   icon-only triggers.
   #
@@ -28,6 +30,17 @@ module UI
 
     # `side:` and `align:` edge-align the menu to the trigger.
     def positioned
+    end
+
+    # Checkable items (`menuitemcheckbox` / `menuitemradio`) change state and keep the menu
+    # open, so a multi-select view menu is usable in one pass. `tone: :danger` marks a
+    # destructive action.
+    def checkable_items
+    end
+
+    # A nested menu. The sub-trigger stays part of the parent's arrow-key rotation;
+    # ArrowRight/Enter opens the submenu, ArrowLeft/Escape closes it.
+    def submenus
     end
 
     # @!endgroup

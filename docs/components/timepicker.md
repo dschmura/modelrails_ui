@@ -47,3 +47,14 @@ Common steps are 5, 15, and 30 minutes:
 | `format` | Symbol | `:h24` | `:h24` (24-hour) or `:h12` (12-hour with AM/PM) |
 | `step` | Integer | `1` | Minute increment (1–60) |
 | `**html_attrs` | Hash | — | Forwarded to the outer `<div>` |
+
+## Placement
+
+The panel is placed by CSS anchor positioning (`position: fixed`, tethered to the field
+by `anchor-name`/`position-anchor`) and is promoted to the browser's **top layer** while
+open. That lets it escape a stacking context — a `sticky` header or a `backdrop-blur`
+navbar traps a `z-50` panel inside it, and no z-index fixes that from within.
+
+Browsers without anchor positioning fall back to `absolute` offsets and are deliberately
+**not** promoted, since the top layer would resolve those offsets against the viewport
+rather than the trigger.

@@ -53,3 +53,14 @@ The trigger button displays the selected date formatted as "Month D, YYYY". On c
 | `min` | Date | `nil` | Earliest selectable date |
 | `max` | Date | `nil` | Latest selectable date |
 | `**html_attrs` | Hash | — | Forwarded to the outer `<div>` |
+
+## Placement
+
+The panel is placed by CSS anchor positioning (`position: fixed`, tethered to the field
+by `anchor-name`/`position-anchor`) and is promoted to the browser's **top layer** while
+open. That lets it escape a stacking context — a `sticky` header or a `backdrop-blur`
+navbar traps a `z-50` panel inside it, and no z-index fixes that from within.
+
+Browsers without anchor positioning fall back to `absolute` offsets and are deliberately
+**not** promoted, since the top layer would resolve those offsets against the viewport
+rather than the trigger.
