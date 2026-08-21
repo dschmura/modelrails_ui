@@ -73,6 +73,7 @@ module ModelrailsUi
         dir = File.join(self.class.source_root, name)
         Dir.each_child(dir).sort.each { |file| copy_template_file(name, file) }
         copy_extra_stimulus(name)
+        copy_shared_js(name)
       end
 
       def copy_template_file(component, file)
@@ -85,6 +86,13 @@ module ModelrailsUi
           copy_file source, html_erb_destination(file)
         when /_controller\.js\z/
           copy_js_controller source, file.delete_suffix("_controller.js")
+        when /\.js\z/
+          # Shared ES module — placed via Components::SHARED_JS, not from here, because
+          # several components share one copy. Nothing to do on this pass.
+        else
+          # Never drop a template file silently: a new kind of asset that nobody taught
+          # the generator about is a bug, and used to vanish without a word.
+          say "  Skipped #{source} — unrecognised template file type.", :yellow
         end
       end
 
@@ -98,6 +106,43 @@ module ModelrailsUi
       def copy_extra_stimulus(name)
         config = Components::EXTRA_STIMULUS[name]
         copy_js_controller(config[:source], config[:name]) if config
+      end
+
+      def copy_shared_js(name)
+        Array(Components::SHARED_JS[name]).each do |mod|
+          copy_file mod.fetch(:source), shared_js_destination(mod)
+          pin_shared_js(mod.fetch(:dir))
+        end
+      end
+
+      def shared_js_destination(mod)
+        "app/javascript/#{mod.fetch(:dir)}/#{File.basename(mod.fetch(:source))}"
+      end
+
+      def shared_js_pin(dir)
+        %(pin_all_from "app/javascript/#{dir}", under: "#{dir}")
+      end
+
+      # The module is imported by bare specifier, so without the pin the controller throws
+      # on import and silently never connects. Add it rather than print an instruction —
+      # a missed manual step here is invisible until something stops working.
+      def pin_shared_js(dir)
+        importmap = "config/importmap.rb"
+        pin = shared_js_pin(dir)
+
+        unless File.exist?(File.join(destination_root, importmap))
+          say "  No #{importmap} — add this to your JS entry point yourself:", :yellow
+          say "    #{pin}", :cyan
+          return
+        end
+
+        if File.read(File.join(destination_root, importmap)).include?(pin)
+          say "  importmap already pins #{dir}", :green
+          return
+        end
+
+        append_to_file importmap, "\n#{pin}\n"
+        say "  importmap → #{pin}", :green
       end
 
       def copy_js_controller(source, stimulus_name)

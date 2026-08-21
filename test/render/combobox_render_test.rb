@@ -36,18 +36,22 @@ class ComboboxRenderTest < ViewComponent::TestCase
 
   # --- combobox + listbox roles -------------------------------------------
 
+  # The listbox id used to be a shared constant, so two comboboxes on one page emitted
+  # duplicate ids and `aria-controls` resolved to whichever rendered first. Assert the
+  # WIRING rather than a literal id — the id is now per-instance.
   def test_input_is_a_combobox_controlling_the_listbox
     render_basic
 
-    assert_selector(
-      "input[role='combobox'][aria-expanded='false'][aria-controls='combobox-list'][aria-autocomplete='list']"
-    )
+    assert_selector "input[role='combobox'][aria-expanded='false'][aria-autocomplete='list']"
+    listbox_id = page.find("[role='listbox']", visible: :all)[:id]
+
+    assert_selector "input[role='combobox'][aria-controls='#{listbox_id}']"
   end
 
   def test_popup_is_a_named_listbox
     render_basic
 
-    assert_selector "div#combobox-list[role='listbox'][aria-label]"
+    assert_selector "div[role='listbox'][aria-label][id]"
   end
 
   def test_options_are_listbox_options_with_aria_selected
