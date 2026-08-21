@@ -29,7 +29,7 @@ Place any HTML inside the footer between the columns grid and the copyright row:
 ```erb
 <%= ui :footer, copyright: "© 2025 Acme" do %>
   <p class="text-sm text-muted-foreground text-center mb-6">
-    Built with ViewPrimitives.
+    Built with ModelrailsUi.
   </p>
 <% end %>
 ```

@@ -71,14 +71,13 @@ module ModelrailsUi
         copy_file "modelrails_ui.css", css_dest_path
       end
 
+      # Plain copy_file — Thor prompts on conflict (diff / overwrite / skip),
+      # so re-running install can refresh the file with newly-added keys.
+      # Hosts review the diff (or the prompt) rather than silently losing
+      # edits: their own key overrides survive a "keep mine" choice, and Thor
+      # shows exactly what changed when they choose to take the update.
       def create_locale_file
-        target = "config/locales/modelrails_ui.en.yml"
-
-        if File.exist?(File.join(destination_root, target))
-          say "  #{target} already exists — skipping (host owns its copy).", :yellow
-        else
-          copy_file "modelrails_ui.en.yml", target
-        end
+        copy_file "modelrails_ui.en.yml", "config/locales/modelrails_ui.en.yml"
       end
 
       def inject_css_import

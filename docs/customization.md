@@ -1,6 +1,6 @@
-# Customizing ViewPrimitives
+# Customizing ModelrailsUi
 
-ViewPrimitives follows the shadcn/ui philosophy: **you own the code**. Components are copied into your app by the generator, so you can change anything without forking the gem.
+ModelrailsUi follows the shadcn/ui philosophy: **you own the code**. Components are copied into your app by the generator, so you can change anything without forking the gem.
 
 There are three levels of customization, from lightest to deepest:
 
@@ -176,7 +176,7 @@ No component files need to change — the design tokens propagate everywhere aut
 
 ## Keeping components up to date
 
-If a new version of ViewPrimitives ships improvements to a component, re-run the generator with `--force` to overwrite your local copy:
+If a new version of ModelrailsUi ships improvements to a component, re-run the generator with `--force` to overwrite your local copy:
 
 ```bash
 rails g modelrails_ui:add button --force

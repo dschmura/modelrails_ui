@@ -17,14 +17,24 @@ dependencies automatically: `form_field`, `input`, `textarea`, `file_input`,
 `select`, `label`, `error_summary`. You do not need to `add` any of these
 yourself.
 
+**Requires Rails >= 8.0.** `checkbox`/`b.checkbox` is Rails 8's canonical
+name for the check_box helper — it doesn't exist on ActionView 7.1/7.2, so
+the builder's `super` call has nothing to reach on those versions.
+
 ## Wiring it up
 
 Site-wide, as the app's default builder:
 
 ```ruby
 # config/initializers/form_builder.rb
-ActionView::Base.default_form_builder = UI::FormBuilder
+Rails.application.config.to_prepare do
+  ActionView::Base.default_form_builder = UI::FormBuilder
+end
 ```
+
+`to_prepare` runs on every code reload in development (once in production) —
+assigning at the initializer's top level would autoload `UI::FormBuilder`
+during boot, before Zeitwerk's eager-loading pass is ready for it.
 
 …or per form:
 
@@ -38,18 +48,24 @@ ActionView::Base.default_form_builder = UI::FormBuilder
 
 Every Rails-named field helper is available on `f`, but not every one is
 *wrapped* (routed through `FormFieldComponent` for label/hint/error/id
-wiring). Three buckets:
+wiring). Four buckets:
 
 **Wrapped** — render through `FormFieldComponent` + a `UI::*` control, with
 full label/hint/error/aria wiring: `text_field`, `email_field`,
 `password_field` (defaults `autocomplete: "new-password"`), `url_field`,
 `tel_field`, `number_field`, `date_field`, `search_field`, `text_area`,
-`file_field`, `select`, `checkbox` (canonical name; `check_box` is
+`file_field`, `select`. Plus two more that don't go through
+`FormFieldComponent` but are still builder-aware: `submit` (see below) and
+`error_summary` (a shim, not a Rails-named override — see below).
+
+**Checkbox family** — `checkbox` (canonical name; `check_box` is
 re-aliased to it — see below), `collection_checkboxes` (+
-`collection_check_boxes`), `collection_radio_buttons`. Plus two more that
-don't go through `FormFieldComponent` but are still builder-aware:
-`submit` (see below) and `error_summary` (a shim, not a Rails-named
-override — see below).
+`collection_check_boxes`), `collection_radio_buttons`. These render their
+own `<label>`/`<fieldset>` markup directly — **not** through
+`FormFieldComponent`, and not through the standalone `UI::CheckboxComponent`
+either — but share its id + hint/error *conventions*: the same
+`#{id}-hint`/`#{id}-error` paragraph classes, the same error-first
+`aria-describedby` order. See [Checkbox family](#checkbox-family) below.
 
 **Passthrough** — Rails' own implementation, untouched: `hidden_field`,
 `fields_for`, `label`, `button`. Nothing to wire (no visible label to bind,
@@ -72,6 +88,31 @@ alias-definition time. Overriding only `check_box` would leave `f.checkbox`
 walking straight past this builder. The template defines `checkbox` and then
 re-aliases `check_box` to it, so both names produce identical, wrapped
 output (see `test_check_box_legacy_name_produces_identical_output`).
+
+## Checkbox family
+
+```erb
+<%= f.checkbox :terms, label: "I accept the terms", help: "Required before you can submit" %>
+<%= f.collection_checkboxes :role_ids, Role.all, :id, :name, help: "Who can edit" %>
+<%= f.collection_radio_buttons :role_id, Role.all, :id, :name %>
+```
+
+`checkbox`, `collection_checkboxes` (+ `collection_check_boxes`), and
+`collection_radio_buttons` render their own row markup — a `<label>` wrapping
+input + caption, one ≥44px target per WCAG 2.5.5 — rather than going through
+`FormFieldComponent`. `help:` still works: it renders a hint paragraph
+(`#{id}-hint`, right below the row) wired via `aria-describedby`, same as
+the wrapped fields — the id and class conventions are shared even though the
+markup isn't. `aria-describedby` lists **error-first, then hint** when both
+are present, matching the wrapped-field order.
+
+**Caller `class:`** on any of the three is additive — merged with the
+family's shared `CHECKBOX_CLASSES`, never a replacement (so a caller styling
+hook doesn't silently drop the accent color or focus ring).
+
+**An explicit `id: nil`** on `checkbox` opts out of id-derived wiring
+entirely: no `aria-describedby`, and the hint/error paragraphs render with
+no `id` rather than a degenerate `"-error"`/`"-hint"` nothing points at.
 
 ## `submit`
 
@@ -171,26 +212,36 @@ rendered output references. Verified against
 
 | Property | Used for |
 |---|---|
-| `--color-danger` | required-mark asterisk, inline field errors, error-summary heading/link text |
-| `--color-danger-surface` | the error summary's panel background |
-| `--color-danger-border` | the error summary's panel border, invalid-state borders on wrapped controls |
+| `--color-danger` | required-mark asterisk (label + checkbox), inline field errors, invalid-state text/border/ring on input & textarea, error-summary heading/link text |
+| `--color-danger-surface` | invalid-state background on input & textarea, the error summary's panel background |
+| `--color-danger-border` | invalid-state border on select & file_input, the error summary's panel border |
 | `--color-danger-icon` | the error summary's decorative icon |
-| `--color-text-muted` | hint paragraphs |
-| `--color-text-body` | checkbox/collection row labels, fieldset legends |
-| `--color-border-strong` | checkbox border |
-| `--color-interactive` | checkbox accent (checked-state) color |
+| `--color-text-muted` | hint paragraphs, input/textarea placeholder text |
+| `--color-text-heading` | input/textarea value text color |
+| `--color-text-body` | checkbox/collection row labels, fieldset legends, field caption text (label), file_input's filename caption |
+| `--color-border-strong` | checkbox border, default border on input/textarea/select |
+| `--color-border-focus` | select's focus/hover border |
+| `--color-interactive` | checkbox accent (checked-state) color, file_input's choose-file button background and selected-file chip text |
+| `--color-interactive-hover` | file_input's choose-file button hover background |
+| `--color-interactive-subtle` | file_input's selected-file chip background |
+| `--color-text-on-interactive` | file_input's choose-file button text color |
 | `--color-surface-raised` | background of the text/textarea/select controls the builder wraps |
 | `--form-input-height` | the 44px (2.75rem) minimum control height (WCAG 2.5.5), on the wrapped text/textarea/select/file controls |
 
 Plus the `focus-ring` utility (every focusable control, including the
 checkbox) and the `.btn-primary` utility class (`submit`'s default).
 
-`--color-interactive` is literal in the `checkbox` component via the
-`text-interactive` utility. The transitive tokens — `--color-surface-raised`
-and `--form-input-height` — are consumed by the `input`/`textarea`/`select`/
-`file_input` components the builder renders internally. They're listed here
-because using the builder means rendering all of them; each control's own docs
-page documents its complete token list if you need more detail than this summary.
+`--color-danger`, `--color-text-body`, `--color-border-strong` and
+`--color-interactive` are literal in the **builder itself** — its own
+`CHECKBOX_CLASSES`/`CHECKBOX_ROW_CLASSES`/`LEGEND_CLASSES` constants and
+`required_mark` helper render the checkbox family's markup directly; there
+is no separate checkbox component in that path (see
+[Checkbox family](#checkbox-family)). Every other token here is transitive:
+consumed by the `FormFieldComponent`, `LabelComponent`, `InputComponent`,
+`TextareaComponent`, `SelectComponent` and `FileInputComponent` the builder
+renders internally for the wrapped fields. They're listed here because using
+the builder means rendering all of them; each control's own docs page
+documents its complete token list if you need more detail than this summary.
 
 ## `select`: Rails choice-pair order, not the primitive's
 
@@ -247,4 +298,7 @@ would fight the wrapper's own built-in rhythm instead of composing with it.
 
 - `form_field` — the primitive the builder wraps every field in.
 - `error_summary` — the form-level error panel `f.error_summary` shims.
-- `input` · `select` · `checkbox` — the controls behind the wrapped helpers.
+- `input` · `select` — the controls behind the wrapped helpers.
+- `checkbox` — the standalone component with the same visual language as the
+  builder's checkbox-family markup; the builder does **not** render it (its
+  own `CHECKBOX_CLASSES` constant duplicates the styling, not the component).

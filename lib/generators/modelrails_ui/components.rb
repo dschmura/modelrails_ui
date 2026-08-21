@@ -84,7 +84,9 @@ module ModelrailsUi
           Wire it up as your app's default form builder:
 
             # config/initializers/form_builder.rb
-            ActionView::Base.default_form_builder = UI::FormBuilder
+            Rails.application.config.to_prepare do
+              ActionView::Base.default_form_builder = UI::FormBuilder
+            end
 
           …or per form:
 
