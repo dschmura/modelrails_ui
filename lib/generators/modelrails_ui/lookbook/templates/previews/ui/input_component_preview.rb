@@ -7,9 +7,9 @@ module UI
   # `aria-describedby` wiring baked in.
   #
   # **Normally reached via `f.text_field`, `f.email_field`, `f.password_field`, etc.**
-  # The `TailwindFormBuilder` renders this control together with its label, help text,
-  # error message, and full ARIA wiring. Use `ui :input` directly only when you need
-  # a bare control outside a managed form.
+  # The form builder (`UI::FormBuilder`) renders this control together with its label,
+  # help text, error message, and full ARIA wiring. Use `ui :input` directly only when
+  # you need a bare control outside a managed form.
   #
   # ## Use when
   # - You are building a one-off search box, filter, or inline editor that lives

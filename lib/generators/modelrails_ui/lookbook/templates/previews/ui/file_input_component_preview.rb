@@ -9,9 +9,9 @@ module UI
   # is the canonical way to render file pickers everywhere in the app.
   #
   # **Normally reached via `f.file_field :attr`.**
-  # The `TailwindFormBuilder` renders this control together with its label, help text,
-  # error message, and full ARIA wiring. Use `ui :file_input` directly only when you
-  # need a bare control outside a managed form.
+  # The form builder (`UI::FormBuilder`) renders this control together with its label,
+  # help text, error message, and full ARIA wiring. Use `ui :file_input` directly only
+  # when you need a bare control outside a managed form.
   #
   # ## Use when
   # - You need users to upload a file: avatars, attachments, imports.

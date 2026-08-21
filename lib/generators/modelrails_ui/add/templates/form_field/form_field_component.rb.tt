@@ -16,8 +16,8 @@ module UI
   #
   # ## Use when
   # - You're composing a single labelled field by hand (a one-off form, or a control
-  #   the `TailwindFormBuilder` doesn't cover). For model-backed forms, prefer the
-  #   builder — it already does this wiring.
+  #   the form builder (`UI::FormBuilder`) doesn't cover). For model-backed forms,
+  #   prefer the builder — it already does this wiring.
   #
   # ## Accessibility contract
   # - **Guarantees:** a `<label for=id>` bound to the control; hint/error rendered with
@@ -60,7 +60,7 @@ module UI
 
     # The wiring the slotted control must spread (`**f.input_attrs`): id +
     # aria-describedby (hint/error ids) + invalid + required. Mirrors exactly what
-    # TailwindFormBuilder injects into the controls it renders itself.
+    # the form builder (`UI::FormBuilder`) injects into the controls it renders itself.
     def input_attrs
       { id: @id, describedby: @describedby, invalid: @error.present?, required: @required }
     end

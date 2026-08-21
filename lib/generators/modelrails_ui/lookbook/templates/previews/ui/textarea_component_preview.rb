@@ -7,9 +7,9 @@ module UI
   # `aria-describedby` wiring baked in.
   #
   # **Normally reached via `f.text_area :attr`.**
-  # The `TailwindFormBuilder` renders this control together with its label, help text,
-  # error message, and full ARIA wiring. Use `ui :textarea` directly only when you need
-  # a bare control outside a managed form.
+  # The form builder (`UI::FormBuilder`) renders this control together with its label,
+  # help text, error message, and full ARIA wiring. Use `ui :textarea` directly only
+  # when you need a bare control outside a managed form.
   #
   # ## Use when
   # - You need a multi-line input — comments, descriptions, free-text notes.
