@@ -54,4 +54,44 @@ class BreadcrumbRenderTest < ViewComponent::TestCase
     assert_no_selector "a", visible: :all
     assert_selector "[aria-current='page']", text: "Room 2100", visible: :all
   end
+
+  # max_items collapses the MIDDLE of a long trail. The dropped crumbs go for everyone —
+  # no visually-hidden copy — so the trail never claims a depth the reader cannot reach.
+  def long_trail
+    [
+      {label: "Home", href: "/"},
+      {label: "Projects", href: "/projects"},
+      {label: "Apollo", href: "/projects/1"},
+      {label: "Write the spec"}
+    ]
+  end
+
+  def test_trail_under_the_limit_is_untouched
+    render_inline(UI::BreadcrumbComponent.new(items: long_trail, max_items: 4))
+
+    assert_no_selector "[data-slot='breadcrumb-ellipsis']", visible: :all
+  end
+
+  # max_items: 3 on a 4-crumb trail keeps the root plus the last two, so exactly the
+  # second crumb is dropped.
+  def test_long_trail_collapses_its_middle
+    render_inline(UI::BreadcrumbComponent.new(items: long_trail, max_items: 3))
+
+    assert_selector "[data-slot='breadcrumb-ellipsis'][aria-hidden='true']", count: 1, visible: :all
+    assert_no_link "Projects"
+    assert_link "Apollo"
+  end
+
+  def test_collapsed_trail_keeps_root_and_current_page
+    render_inline(UI::BreadcrumbComponent.new(items: long_trail, max_items: 2))
+
+    assert_link "Home"
+    assert_selector "[aria-current='page']", text: "Write the spec", visible: :all
+  end
+
+  def test_max_items_below_two_raises
+    error = assert_raises(ArgumentError) { UI::BreadcrumbComponent.new(items: long_trail, max_items: 1) }
+
+    assert_match(/max_items/, error.message)
+  end
 end

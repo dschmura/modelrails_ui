@@ -46,3 +46,14 @@ Creates `app/components/ui/avatar_component.rb`.
 | `fallback` | String | `nil` | Overrides `alt` as the initials source |
 | `size` | Symbol | `:default` | Size variant |
 | `**html_attrs` | Hash | — | Forwarded to the outer `<div>` |
+
+## When the image fails to load
+
+`fallback:` stands in for a **nil** `src`. It does not cover a `src` that 404s — that
+leaves the browser's broken-image glyph, and the `error` event is the only signal for it.
+
+Pass both a `src` and a `fallback` and the component wires an `avatar` controller that
+swaps the initials in on failure. It **removes** the failed `<img>` rather than hiding it:
+a hidden-but-present image keeps announcing a picture that never arrived.
+
+A `src` with no `fallback` renders a bare `<img>`, unchanged.

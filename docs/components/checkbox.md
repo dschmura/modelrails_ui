@@ -54,3 +54,16 @@ Creates `app/components/ui/checkbox_component.rb`.
 | `label` | String | `nil` | Text shown next to the checkbox in a `<label>` |
 | `checked` | Boolean | `false` | Pre-checked state |
 | `**html_attrs` | Hash | — | Forwarded to the `<input type="checkbox">` element |
+
+## Indeterminate (tri-state)
+
+`indeterminate: true` marks a "some children selected" parent. There is no HTML attribute
+for it — `indeterminate` is a DOM property — so the component ships an `indeterminate`
+Stimulus controller that sets it on connect and clears it once the user acts.
+
+```erb
+<%= render(UI::CheckboxComponent.new(label: "Select all", indeterminate: true, name: "all")) %>
+```
+
+It deliberately does **not** also set `checked`: a partially-selected parent must not
+submit as checked. Without JS the box renders unchecked, which is the honest degradation.

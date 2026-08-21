@@ -65,4 +65,25 @@ class CheckboxRenderTest < ViewComponent::TestCase
 
     assert_selector "input[type='checkbox'][aria-describedby='terms_error']"
   end
+
+  # `indeterminate` is a DOM property with no HTML attribute, so the markup can only
+  # DECLARE it; the controller sets the property. Deliberately does not also set
+  # `checked` — a tri-state parent must not win in the form payload.
+  def test_indeterminate_wires_the_controller
+    render_inline(UI::CheckboxComponent.new(label: "Select all", indeterminate: true, name: "all"))
+
+    assert_selector "input[type='checkbox'][data-controller~='indeterminate']", visible: :all
+  end
+
+  def test_indeterminate_does_not_mark_the_input_checked
+    render_inline(UI::CheckboxComponent.new(label: "Select all", indeterminate: true, name: "all"))
+
+    assert_no_selector "input[checked]", visible: :all
+  end
+
+  def test_plain_checkbox_wires_no_indeterminate_controller
+    render_inline(UI::CheckboxComponent.new(label: "Terms", name: "terms"))
+
+    assert_no_selector "[data-controller~='indeterminate']", visible: :all
+  end
 end
