@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Tabs: `orientation: :vertical` (↑/↓ navigation, `aria-orientation`, restacked bar) and `activation: :manual` (arrows move the tab stop; Enter/Space reveals). Both default to the previous behaviour — horizontal and automatic — so existing call sites are unaffected.
+
+### Added
+
 - Generator: shared ES modules. A component can now ship a plain module alongside its Stimulus controller (`Components::SHARED_JS`), copied to `app/javascript/<namespace>/` with the importmap pin added automatically. Needed for behaviour that must be a SINGLE instance across components — a per-component controller copy cannot provide it. First user: `top_layer.js`.
 
 - Overlays reach the browser top layer. `sticky`/`backdrop-blur` chrome establishes a stacking context that no z-index escapes from the inside; promoted panels paint above it. Promotion is gated on the panel already being `position: fixed`, because the top layer re-parents an element's containing block to the viewport — an `absolute`-placed panel would be torn off its trigger.

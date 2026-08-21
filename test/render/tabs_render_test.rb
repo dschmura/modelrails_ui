@@ -98,4 +98,58 @@ class TabsRenderTest < ViewComponent::TestCase
   def test_tab_item_requires_a_title
     assert_raises(ArgumentError) { UI::TabsItemComponent.new }
   end
+
+  # orientation / activation — both default to what this component shipped with, so
+  # existing call sites are unaffected. The controller reads the Stimulus values; the
+  # keyboard behaviour itself is proven by the app browser spec.
+  def test_orientation_defaults_to_horizontal
+    render_tabs
+
+    assert_selector "[data-tabs-orientation-value='horizontal']", visible: :all
+  end
+
+  def test_vertical_orientation_is_declared_and_restacks_the_bar
+    render_inline(UI::TabsComponent.new(label: "Account", orientation: :vertical)) do |t|
+      t.with_tab(title: "Profile") { "profile body" }
+    end
+
+    assert_selector "div[role='tablist'][aria-orientation='vertical'].flex-col", visible: :all
+    assert_selector "[data-tabs-orientation-value='vertical']", visible: :all
+  end
+
+  def test_activation_defaults_to_automatic
+    render_tabs
+
+    assert_selector "[data-tabs-activation-value='automatic']", visible: :all
+  end
+
+  def test_manual_activation_is_declared
+    render_inline(UI::TabsComponent.new(label: "Account", activation: :manual)) do |t|
+      t.with_tab(title: "Profile") { "profile body" }
+    end
+
+    assert_selector "[data-tabs-activation-value='manual']", visible: :all
+  end
+
+  # tablist_class still merges when the bar restacks — the vertical base class set is a
+  # different constant, so this is the case a naive swap would drop.
+  def test_tablist_class_merges_onto_a_vertical_tablist
+    render_inline(UI::TabsComponent.new(label: "Account", orientation: :vertical, tablist_class: "w-48")) do |t|
+      t.with_tab(title: "Profile") { "profile body" }
+    end
+
+    assert_selector "div[role='tablist'].w-48.flex-col.bg-surface-sunken", visible: :all
+  end
+
+  def test_unknown_orientation_raises
+    error = assert_raises(ArgumentError) { UI::TabsComponent.new(label: "Account", orientation: :diagonal) }
+
+    assert_match(/orientation/, error.message)
+  end
+
+  def test_unknown_activation_raises
+    error = assert_raises(ArgumentError) { UI::TabsComponent.new(label: "Account", activation: :telepathic) }
+
+    assert_match(/activation/, error.message)
+  end
 end
