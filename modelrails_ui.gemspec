@@ -31,7 +31,13 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rails", ">= 7.1"
   spec.add_development_dependency "simplecov", "~> 0.21"
   spec.add_development_dependency "appraisal"
-  spec.add_development_dependency "capybara" # render-test assertions (ViewComponent::TestCase matchers)
+  spec.add_development_dependency "capybara" # render-test assertions + the browser lane
+  # Browser lane (test/system): a real Chrome via CDP, plus the Stimulus runtime the
+  # controllers import. Behaviour that only exists once JS runs cannot be proven any
+  # other way — the render lane asserts markup and is blind to it.
+  spec.add_development_dependency "cuprite"
+  spec.add_development_dependency "stimulus-rails"
+  spec.add_development_dependency "axe-core-capybara"
   spec.add_development_dependency "lefthook"
   spec.add_development_dependency "tailwind_merge" # render harness backs cn with real tailwind_merge (host gets it via install generator)
 end

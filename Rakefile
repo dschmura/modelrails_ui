@@ -17,7 +17,16 @@ Minitest::TestTask.create(:"test:render") do |t|
   t.warning = false
 end
 
-task test: [:"test:structural", :"test:render"]
+# Browser lane: real Chrome over CDP, the gem's own controller templates loaded through a
+# real importmap. Proves BEHAVIOUR — the render lane asserts markup and is blind to what
+# only happens once JS runs. Separate process for the same reason as the render lane.
+Minitest::TestTask.create(:"test:system") do |t|
+  t.libs << "test/render" << "test/system"
+  t.test_globs = ["test/system/**/*_test.rb"]
+  t.warning = false
+end
+
+task test: [:"test:structural", :"test:render", :"test:system"]
 
 require "rubocop/rake_task"
 RuboCop::RakeTask.new
