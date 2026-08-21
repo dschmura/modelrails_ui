@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **The `focus-ring` utility now ships.** It is emitted by 47 component templates but was never defined in `modelrails_ui.css`, and Tailwind drops unresolvable classes silently — so in every install the design system's own AAA focus treatment (a 2px offset outline on `:focus-visible`) simply did not exist, and components fell back to the browser default. (#98)
+- `.btn-primary`, `.btn-secondary`, `.btn-danger` and `.form-input` used a box-shadow focus ring (`focus:ring-*`), which the library's own rules forbid: a ring is clipped by any `overflow: hidden` ancestor and vanishes in forced-colors mode (WCAG 2.4.7). They now `@apply focus-ring`, matching the reference app. `.btn-*` also fired on `:focus` rather than `:focus-visible`, so the indicator appeared on mouse click. (#99)
+
+### Added
+
+- `test/test_shipped_stylesheet_completeness.rb` — guards both of the above: every custom class a template emits must be defined in the shipped stylesheet, and no shipped class may use a box-shadow focus ring. This bug class is invisible by construction, so it needs a test rather than a fix.
+
 ### Added
 
 - Browser lane coverage for tabs, popover, combobox and checkbox — 38 tests over the behaviour the render lane cannot reach: arrow-key models, roving tabindex, filtering, `aria-activedescendant` resolving to a real option, runtime-minted ids staying unique across instances, and the `indeterminate` DOM property.
