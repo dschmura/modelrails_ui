@@ -17,6 +17,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Command emitted a constant listbox id, so two palettes on a page produced duplicate ids and the `aria-controls` pointing at one resolved to whichever rendered first. Ids are per-instance now — the same bug fixed in Combobox.
+- Combobox and Command minted option ids from a hardcoded prefix with a per-instance counter, so two instances each produced `-option-0` and `aria-activedescendant` named an ambiguous node. Prefixes derive from the host element's id.
+
 - Popover `side: :left`/`:right` rendered the panel ON its trigger instead of beside it. The old maps emitted both `left-0` and `right-full`, and CSS drops `right` when left, width and right are all set. Anchor positioning replaces the pair with one cell per placement, and every `side` × `align` cell is now covered by a test.
 - Combobox emitted a hardcoded listbox id, so two comboboxes on a page produced duplicate ids and `aria-controls` resolved to whichever rendered first. Ids are now per-instance. **UI::Command still has this bug.**
 - Generator no longer drops unrecognised template files silently — it says which file it skipped. A plain `.js` in a template directory used to vanish with no warning and no pin, leaving a bare-specifier import that throws at runtime.

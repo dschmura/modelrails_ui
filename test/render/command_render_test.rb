@@ -52,7 +52,7 @@ class CommandRenderTest < ViewComponent::TestCase
   def test_input_is_a_combobox_controlling_the_listbox
     render_basic
 
-    assert_selector "input[role='combobox'][aria-controls='command-list'][aria-autocomplete='list'][aria-expanded='true']"
+    assert_selector "input[role='combobox'][aria-autocomplete='list'][aria-expanded='true']"
     assert_selector "input[data-command-target='input']"
   end
 
@@ -65,11 +65,16 @@ class CommandRenderTest < ViewComponent::TestCase
     assert_selector "input[data-action~='keydown->command#navigate']"
   end
 
-  # The list is the listbox the combobox points at — same id, with an accessible name.
+  # The list is the listbox the combobox points at — assert the MATCH, not a literal id.
+  # The id is per-instance now: a constant one collided the moment a page rendered two
+  # palettes, and `aria-controls` then resolved to whichever came first.
   def test_list_is_a_named_listbox_matching_the_combobox
     render_basic
 
-    assert_selector "div#command-list[role='listbox'][aria-label='Commands'][data-command-target='list']"
+    assert_selector "div[role='listbox'][aria-label='Commands'][data-command-target='list'][id]"
+    listbox_id = page.find("[role='listbox']", visible: :all)[:id]
+
+    assert_selector "input[role='combobox'][aria-controls='#{listbox_id}']"
   end
 
   # The dialog is a labelled modal.
