@@ -8,12 +8,12 @@ There are three levels of customization, from lightest to deepest:
 
 ## Level 1 — Design tokens (colors, radius, spacing)
 
-All visual properties are driven by CSS variables defined in `app/assets/stylesheets/view_primitives.css` (exact path depends on your setup — see `rails g modelrails_ui:install`).
+All visual properties are driven by CSS variables defined in `app/assets/stylesheets/modelrails_ui.css` (exact path depends on your setup — see `rails g modelrails_ui:install`).
 
 The `:root` block sets the default light theme. Override any variable there to change it globally:
 
 ```css
-/* app/assets/stylesheets/view_primitives.css */
+/* app/assets/stylesheets/modelrails_ui.css */
 
 :root {
   /* Brand color — all primary buttons, links, active states */
@@ -150,7 +150,7 @@ This works because all components pass `@extra_class` last through the `cn()` he
 Suppose your brand is indigo with rounded corners and a warm dark mode:
 
 ```css
-/* app/assets/stylesheets/view_primitives.css */
+/* app/assets/stylesheets/modelrails_ui.css */
 
 :root {
   --primary:            oklch(0.52 0.22 264);
