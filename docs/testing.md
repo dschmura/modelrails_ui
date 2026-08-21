@@ -27,8 +27,9 @@ browser lane exists.
 ### The browser lane cannot see anything that needs compiled CSS
 
 The harness serves the components and their JavaScript, **but no stylesheet**. The gem
-ships CSS as Tailwind source, which needs a build step the harness does not run. Two
-things therefore cannot be proven here:
+ships CSS as Tailwind source, which needs a build step the harness does not run. Nothing
+whose behaviour is decided by a stylesheet can be proven here. Three cases have come up
+so far; treat them as examples of the rule, not as the whole list:
 
 **1. Colour contrast.** `assert_axe_clean` disables the `color-contrast` rule. Against
 unstyled defaults axe would report on the browser's own colours, so a green result would
@@ -43,9 +44,18 @@ declines to promote, and `:popover-open` is never true here.
 That is the guard working, not a harness bug. Do **not** inject a style to make it fire:
 the assertion would then prove the injected style rather than the component.
 
-Both are proven in **`modelrails_base`**, which generates the components into a real app
-with compiled Tailwind. Anything asserting a computed colour, a stacking context, or
-promotion belongs in that repo's `spec/system/ui/`.
+**3. Escaping a clip.** The sidebar's collapsed-rail hint is `fixed` + anchor-positioned
+precisely so it escapes the nav's `overflow-y-auto` clip. Unstyled it computes to
+`static` and never moves, so its geometry here would prove nothing.
+
+Note also that geometry alone is the wrong assertion for a clip even where CSS *is*
+available: `getBoundingClientRect` reports the unclipped box either way, so such a test
+passes just as happily on the broken version. Assert the computed `position` — the
+mechanism that does the escaping.
+
+All three are proven in **`modelrails_base`**, which generates the components into a real
+app with compiled Tailwind. If an assertion would read a computed style — a colour, a
+position, a stacking context, a size — it belongs in that repo's `spec/system/ui/`.
 
 ## Writing a browser test
 
