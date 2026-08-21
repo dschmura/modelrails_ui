@@ -128,4 +128,36 @@ class DropdownMenuRenderTest < ViewComponent::TestCase
                     "[data-turbo-frame='x']" \
                     "[style*='anchor-name: --m9'][style*='color: red']", visible: :all
   end
+
+  # `trigger_class:` used to REPLACE the trigger's classes, so a caller styling the
+  # trigger silently deleted its focus indicator and target-size floor — on the element
+  # whose own docstring promises "a real <button> trigger". Every other class input in
+  # this component merges via cn(); the trigger was the exception, on the one element
+  # carrying an ARIA contract.
+  def test_trigger_keeps_its_accessibility_floor_when_restyled
+    render_inline(UI::DropdownMenuComponent.new(trigger_class: "text-sm text-text-muted")) do |c|
+      c.with_trigger { "Open" }
+      c.with_item { "Edit" }
+    end
+
+    assert_selector "button[data-menu-target='trigger'].focus-ring", visible: :all
+  end
+
+  def test_trigger_still_applies_the_callers_classes
+    render_inline(UI::DropdownMenuComponent.new(trigger_class: "text-sm text-text-muted")) do |c|
+      c.with_trigger { "Open" }
+      c.with_item { "Edit" }
+    end
+
+    assert_selector "button.text-sm.text-text-muted", visible: :all
+  end
+
+  def test_default_trigger_is_unchanged
+    render_inline(UI::DropdownMenuComponent.new) do |c|
+      c.with_trigger { "Open" }
+      c.with_item { "Edit" }
+    end
+
+    assert_selector "button.btn-secondary", visible: :all
+  end
 end

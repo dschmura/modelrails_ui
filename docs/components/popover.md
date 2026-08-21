@@ -99,7 +99,7 @@ You supply:
 | `id` | String | auto `popover-<hex>` | Panel element ID; wired to `aria-controls` on the trigger |
 | `align` | Symbol | `:start` | `:start`, `:center`, or `:end` |
 | `side` | Symbol | `:bottom` | `:bottom`, `:top`, `:left`, or `:right` |
-| `trigger_class` | String | `"btn-secondary"` | CSS classes applied to the trigger `<button>` |
+| `trigger_class` | String | `"btn-secondary"` | CSS classes **added to** the trigger's accessibility floor (focus ring + 44px target size), which cannot be replaced |
 | `**html_attrs` | Hash | — | Forwarded to the outer `<div>` |
 
 | Slot | Required | Description |
