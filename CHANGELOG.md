@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Checkbox: `indeterminate:` for tri-state parents. Ships an `indeterminate` controller, since the property has no HTML attribute; deliberately does not also set `checked`.
+- Collapsible: `disabled:` — `aria-disabled` + out of the tab order + pointer-inert, no JS. An already-open disclosure stays open.
+- Breadcrumb: `max_items:` collapses the middle of a long trail behind an ellipsis, dropping the collapsed crumbs for every audience rather than hiding them from one.
+- Avatar: initials now take over when the image FAILS to load, not only when `src` is nil. Wired only when both a `src` and a `fallback` are given, so src-only call sites keep their bare `<img>`.
+
+### Added
+
 - Tabs: `orientation: :vertical` (↑/↓ navigation, `aria-orientation`, restacked bar) and `activation: :manual` (arrows move the tab stop; Enter/Space reveals). Both default to the previous behaviour — horizontal and automatic — so existing call sites are unaffected.
 
 ### Added

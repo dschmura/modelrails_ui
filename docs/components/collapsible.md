@@ -44,3 +44,12 @@ Creates `app/components/ui/collapsible_component.rb`.
 | Slot | Required | Description |
 |------|----------|-------------|
 | `trigger` | No | Content of the `<summary>` row |
+
+## Disabled
+
+`disabled: true` announces the disclosure as disabled (`aria-disabled`), removes it from
+the tab order, and makes it pointer-inert. `<details>` has no `disabled` attribute, so
+this is the ARIA equivalent — still no JS.
+
+An already-open disclosure **stays open**: disabling blocks the control, it does not
+collapse content out from under someone reading it.

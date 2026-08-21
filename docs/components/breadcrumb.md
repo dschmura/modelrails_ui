@@ -28,6 +28,18 @@ A **non-last** item without an `href` renders as plain text (never a dead `<a>`)
 "linked for some viewers, plain for others" crumbs — e.g. a parent page whose link is
 policy-gated — stay expressible with the same `items:` array.
 
+## Collapsing a long trail
+
+`max_items:` keeps the root and the tail and stands one ellipsis in for the rest.
+
+```erb
+<%= render(UI::BreadcrumbComponent.new(items: trail, max_items: 3)) %>
+```
+
+The collapsed crumbs are dropped for **everyone** — there is no visually-hidden copy. A
+trail that reads as four levels to a screen reader and two on screen describes a structure
+neither audience can act on, so the rendered trail stays truthful to both.
+
 ## Accessibility
 
 WCAG 2.2 AAA. `<nav>` named by `label:`; an `<ol>` of crumbs; the current page is
