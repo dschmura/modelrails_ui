@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Browser test lane (`rake test:system`). A real Chrome drives the gem's own controller templates through a real importmap, so behaviour that only exists once JS runs is provable here instead of only in a host app. Includes a structural axe audit (colour-contrast deliberately disabled — the stylesheet ships as Tailwind source, so a contrast pass here would be meaningless).
+
+### Fixed
+
+- Avatar's image-error fallback never fired when the image failed FAST — a quick 404 or a cached failure beats ES-module loading, so the `error` event was dispatched before the controller connected and nothing was listening. The controller now also checks `complete && naturalWidth === 0` on connect. Found by the new browser lane on its first run.
+
 ### Fixed
 
 - Avatar was absent from the accessibility tree after its image failed to load. The `<img>` carries the accessible name and is removed on failure, so the standby initials — hardcoded `aria-hidden` — left screen-reader users with nothing where sighted users saw initials. Both nodes are named now; `hidden` keeps only one exposed.
