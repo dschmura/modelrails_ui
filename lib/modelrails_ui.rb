@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require_relative "modelrails_ui/version"
-require_relative "modelrails_ui/class_helper"
 require_relative "modelrails_ui/component_helper"
 
 module ModelrailsUi

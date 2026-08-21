@@ -11,66 +11,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Drawer drag-to-dismiss. The component already rendered a grab handle that ignored the pointer. Drag starts from the handle only (dragging from the body would mean telling a drag from a scroll on every pointerdown, and getting that wrong breaks scrolling inside the drawer); the dismiss threshold is a fraction of the panel's own height rather than a fixed distance, because a bottom-anchored drawer has only its own height of travel below the handle. Drag is an addition — Escape and the close button are untouched, and the handle stays `aria-hidden` and unfocusable rather than advertising a control keyboard users cannot operate. (A8)
 
-### Fixed
-
-- `modal` warned "Stacked modals are not supported" and then called `showModal()` anyway. The browser has always supported it: a second `showModal()` puts that dialog above the first in the top layer, moves the focus trap, and gives it Escape. The warning is gone and browser tests hold the behaviour it was wrong about.
-
-### Added
-
 - Command palette fuzzy ranking. The filter was substring-only and preserved source order; it now scores with cmdk's scorer (vendored, MIT — full notice in the file header) and ranks matches within each group. `data-command-keywords` lets an item be found by a synonym it does not display. Group order is left alone deliberately: it is authored intent, and reordering groups between keystrokes moves the palette's shape under the reader. (A7)
-
-### Fixed
-
-- **Escape never closed the command palette.** The component used `keydown.escape`, which is not in Stimulus's key-filter vocabulary — Stimulus throws "contains unknown key filter" and the action never runs. Every other floating component already used `keydown.esc`. Invisible to the structural and render lanes; found by the browser lane. A new test pins every `keydown.*` filter to one Stimulus recognises.
-
-### Changed
-
-- `ButtonComponent::COMBOS` now names the canonical `.btn-*` classes instead of re-listing their utilities. The stylesheet owns button appearance and the Ruby table is the typed accessor for it — previously the same rules existed in both languages and had already drifted. Rendered output is equivalent; `.btn-primary` carries exactly what the old utility string produced. (#101)
-
-### Fixed
-
-- `.btn-text` used a `focus-visible:ring-*` box-shadow ring, the same defect fixed in `.btn-*` earlier but with a different prefix — so text buttons would have lost their outline focus indicator when COMBOS switched to class names. Now `@apply focus-ring`, matching the reference app. The per-tone `focus-visible:ring-<colour>` declarations on `.btn-text-interactive`/`.btn-text-danger` existed only to colour that ring and are removed.
-
-### Fixed
-
-- `trigger_class:` on Popover and DropdownMenu **replaced** the trigger's classes instead of merging, so a caller restyling the trigger silently removed its focus indicator (WCAG 2.4.11) and 44px target-size floor (2.5.5 AAA) — from the one element the components document as "a real `<button>` trigger". Caller classes are now merged over a non-replaceable `TRIGGER_BASE`. Default rendering is unchanged. (#100)
-
-### Fixed
-
-- **The `focus-ring` utility now ships.** It is emitted by 47 component templates but was never defined in `modelrails_ui.css`, and Tailwind drops unresolvable classes silently — so in every install the design system's own AAA focus treatment (a 2px offset outline on `:focus-visible`) simply did not exist, and components fell back to the browser default. (#98)
-- `.btn-primary`, `.btn-secondary`, `.btn-danger` and `.form-input` used a box-shadow focus ring (`focus:ring-*`), which the library's own rules forbid: a ring is clipped by any `overflow: hidden` ancestor and vanishes in forced-colors mode (WCAG 2.4.7). They now `@apply focus-ring`, matching the reference app. `.btn-*` also fired on `:focus` rather than `:focus-visible`, so the indicator appeared on mouse click. (#99)
-
-### Added
 
 - `test/test_shipped_stylesheet_completeness.rb` — guards both of the above: every custom class a template emits must be defined in the shipped stylesheet, and no shipped class may use a box-shadow focus ring. This bug class is invisible by construction, so it needs a test rather than a fix.
 
-### Added
-
 - Browser lane coverage for tabs, popover, combobox and checkbox — 38 tests over the behaviour the render lane cannot reach: arrow-key models, roving tabindex, filtering, `aria-activedescendant` resolving to a real option, runtime-minted ids staying unique across instances, and the `indeterminate` DOM property.
 - Browser test lane (`rake test:system`). A real Chrome drives the gem's own controller templates through a real importmap, so behaviour that only exists once JS runs is provable here instead of only in a host app. Includes a structural axe audit (colour-contrast deliberately disabled — the stylesheet ships as Tailwind source, so a contrast pass here would be meaningless).
-
-### Fixed
-
-- Avatar's image-error fallback never fired when the image failed FAST — a quick 404 or a cached failure beats ES-module loading, so the `error` event was dispatched before the controller connected and nothing was listening. The controller now also checks `complete && naturalWidth === 0` on connect. Found by the new browser lane on its first run.
-
-### Fixed
-
-- Avatar was absent from the accessibility tree after its image failed to load. The `<img>` carries the accessible name and is removed on failure, so the standby initials — hardcoded `aria-hidden` — left screen-reader users with nothing where sighted users saw initials. Both nodes are named now; `hidden` keeps only one exposed.
-- A caller-supplied `data:` on Avatar clobbered the Stimulus wiring and silently disabled the image-error fallback. The wiring is merged over caller data now.
-- A DropdownMenu submenu stayed open when its parent menu closed — `aria-expanded="true"` while the menu was shut, and already expanded on reopen. The parent now closes its submenus.
-
-### Added
 
 - Checkbox: `indeterminate:` for tri-state parents. Ships an `indeterminate` controller, since the property has no HTML attribute; deliberately does not also set `checked`.
 - Collapsible: `disabled:` — `aria-disabled` + out of the tab order + pointer-inert, no JS. An already-open disclosure stays open.
 - Breadcrumb: `max_items:` collapses the middle of a long trail behind an ellipsis, dropping the collapsed crumbs for every audience rather than hiding them from one.
 - Avatar: initials now take over when the image FAILS to load, not only when `src` is nil. Wired only when both a `src` and a `fallback` are given, so src-only call sites keep their bare `<img>`.
 
-### Added
-
 - Tabs: `orientation: :vertical` (↑/↓ navigation, `aria-orientation`, restacked bar) and `activation: :manual` (arrows move the tab stop; Enter/Space reveals). Both default to the previous behaviour — horizontal and automatic — so existing call sites are unaffected.
-
-### Added
 
 - Generator: shared ES modules. A component can now ship a plain module alongside its Stimulus controller (`Components::SHARED_JS`), copied to `app/javascript/<namespace>/` with the importmap pin added automatically. Needed for behaviour that must be a SINGLE instance across components — a per-component controller copy cannot provide it. First user: `top_layer.js`.
 
@@ -78,7 +31,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Popover, combobox, date_picker, timepicker, navigation_menu and mega_menu now place with CSS anchor positioning (`anchor-name`/`position-anchor` + `position-area` + `position-try-fallbacks`), matching dropdown_menu and menubar_menu. Panels flip to stay on-screen where the old static offsets clipped. Width-tied panels (combobox, mega_menu) take their width from `anchor-size(width)`.
 - DropdownMenu: checkable items (`checkbox:`/`radio:` → `menuitemcheckbox`/`menuitemradio` with `aria-checked`), which toggle in place and keep the menu open; `tone: :danger` for destructive actions; and nested submenus via `with_item(submenu: "…")`.
 
+### Changed
+
+- `ButtonComponent::COMBOS` now names the canonical `.btn-*` classes instead of re-listing their utilities. The stylesheet owns button appearance and the Ruby table is the typed accessor for it — previously the same rules existed in both languages and had already drifted. Rendered output is equivalent; `.btn-primary` carries exactly what the old utility string produced. (#101)
+
+### Removed
+
+- **`ModelrailsUi::ClassHelper` is gone.** It existed only as a test double for the structural lane's stubbed `ViewComponent::Base`, yet it lived in `lib/` and was required by the gem entrypoint, so it shipped as public API. Nothing in generated code used it — generated components get the real `cn` from `application_component.rb.tt`. Worse, it did **not** merge, so the structural lane was asserting class strings under different semantics than production. The stub now lives in the test lane, is tailwind_merge-backed, and a test pins that it merges.
+
+- The shipped stylesheet no longer carries app-specific CSS: Markdowndocs prose styles, the Rouge syntax theme, workspace-branding overrides, Biscuit cookie-banner theming, and the development-only a11y-simulation filters. **1155 → 677 lines (−41%).** No component template referenced any of it. A fork using Markdowndocs or Biscuit now owns that styling — `modelrails_base` already does, in its own `_prose.css` and `_syntax.css`.
+
 ### Fixed
+
+- `modal` warned "Stacked modals are not supported" and then called `showModal()` anyway. The browser has always supported it: a second `showModal()` puts that dialog above the first in the top layer, moves the focus trap, and gives it Escape. The warning is gone and browser tests hold the behaviour it was wrong about.
+
+- **Escape never closed the command palette.** The component used `keydown.escape`, which is not in Stimulus's key-filter vocabulary — Stimulus throws "contains unknown key filter" and the action never runs. Every other floating component already used `keydown.esc`. Invisible to the structural and render lanes; found by the browser lane. A new test pins every `keydown.*` filter to one Stimulus recognises.
+
+- `.btn-text` used a `focus-visible:ring-*` box-shadow ring, the same defect fixed in `.btn-*` earlier but with a different prefix — so text buttons would have lost their outline focus indicator when COMBOS switched to class names. Now `@apply focus-ring`, matching the reference app. The per-tone `focus-visible:ring-<colour>` declarations on `.btn-text-interactive`/`.btn-text-danger` existed only to colour that ring and are removed.
+
+- `trigger_class:` on Popover and DropdownMenu **replaced** the trigger's classes instead of merging, so a caller restyling the trigger silently removed its focus indicator (WCAG 2.4.11) and 44px target-size floor (2.5.5 AAA) — from the one element the components document as "a real `<button>` trigger". Caller classes are now merged over a non-replaceable `TRIGGER_BASE`. Default rendering is unchanged. (#100)
+
+- **The `focus-ring` utility now ships.** It is emitted by 47 component templates but was never defined in `modelrails_ui.css`, and Tailwind drops unresolvable classes silently — so in every install the design system's own AAA focus treatment (a 2px offset outline on `:focus-visible`) simply did not exist, and components fell back to the browser default. (#98)
+- `.btn-primary`, `.btn-secondary`, `.btn-danger` and `.form-input` used a box-shadow focus ring (`focus:ring-*`), which the library's own rules forbid: a ring is clipped by any `overflow: hidden` ancestor and vanishes in forced-colors mode (WCAG 2.4.7). They now `@apply focus-ring`, matching the reference app. `.btn-*` also fired on `:focus` rather than `:focus-visible`, so the indicator appeared on mouse click. (#99)
+
+- Avatar's image-error fallback never fired when the image failed FAST — a quick 404 or a cached failure beats ES-module loading, so the `error` event was dispatched before the controller connected and nothing was listening. The controller now also checks `complete && naturalWidth === 0` on connect. Found by the new browser lane on its first run.
+
+- Avatar was absent from the accessibility tree after its image failed to load. The `<img>` carries the accessible name and is removed on failure, so the standby initials — hardcoded `aria-hidden` — left screen-reader users with nothing where sighted users saw initials. Both nodes are named now; `hidden` keeps only one exposed.
+- A caller-supplied `data:` on Avatar clobbered the Stimulus wiring and silently disabled the image-error fallback. The wiring is merged over caller data now.
+- A DropdownMenu submenu stayed open when its parent menu closed — `aria-expanded="true"` while the menu was shut, and already expanded on reopen. The parent now closes its submenus.
 
 - Command emitted a constant listbox id, so two palettes on a page produced duplicate ids and the `aria-controls` pointing at one resolved to whichever rendered first. Ids are per-instance now — the same bug fixed in Combobox.
 - Combobox and Command minted option ids from a hardcoded prefix with a per-instance counter, so two instances each produced `-option-0` and `aria-activedescendant` named an ambiguous node. Prefixes derive from the host element's id.
@@ -86,6 +66,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Popover `side: :left`/`:right` rendered the panel ON its trigger instead of beside it. The old maps emitted both `left-0` and `right-full`, and CSS drops `right` when left, width and right are all set. Anchor positioning replaces the pair with one cell per placement, and every `side` × `align` cell is now covered by a test.
 - Combobox emitted a hardcoded listbox id, so two comboboxes on a page produced duplicate ids and `aria-controls` resolved to whichever rendered first. Ids are now per-instance. **UI::Command still has this bug.**
 - Generator no longer drops unrecognised template files silently — it says which file it skipped. A plain `.js` in a template directory used to vanish with no warning and no pin, leaving a bare-specifier import that throws at runtime.
+
+- The two status files contradicted each other. README's "Known gaps" and `MODELRAILS_STATUS.md` both said `form_field`, `qr_code`, `input_otp` and `embed` were broken and must not be used, while `COMPONENT_STATUS.md` listed all 82 components as proven or hardened. The pessimistic pair was stale: all four generate and render, verified on Ruby 4.0.5 with 6, 8, 8 and 16 passing render tests.
 
 ## [0.9.0] - 2026-08-16
 
