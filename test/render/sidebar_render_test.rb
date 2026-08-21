@@ -75,6 +75,56 @@ class SidebarRenderTest < ViewComponent::TestCase
     assert_selector "nav a[href='/']", text: "Dashboard"
   end
 
+  # data-collapsed drives the CSS and is invisible to assistive tech; aria-expanded is
+  # the only representation of collapse state a screen reader can perceive.
+  def test_toggle_reports_expanded_state
+    render_basic
+
+    assert_selector "button[aria-label='Toggle sidebar'][aria-expanded='true']"
+  end
+
+  def test_toggle_reports_collapsed_state
+    render_basic(collapsed: true)
+
+    assert_selector "button[aria-label='Toggle sidebar'][aria-expanded='false']"
+  end
+
+  # aria-controls has to resolve to a real element, or it names nothing.
+  def test_toggle_controls_the_nav_it_collapses
+    render_basic(id: "app-sidebar")
+
+    assert_selector "button[aria-controls='app-sidebar-nav']"
+    assert_selector "nav#app-sidebar-nav"
+  end
+
+  # The rail hint is decorative BY CONSTRUCTION: the item's label is clipped to width 0
+  # but stays in the a11y tree, so the link already has its name. Announcing the bubble
+  # too would name every item twice.
+  def test_rail_hint_is_hidden_from_assistive_technology
+    render_basic
+
+    assert_selector "nav a [data-slot='rail-tooltip'][aria-hidden='true']", visible: :all, count: 2
+  end
+
+  # The bubble is anchor-positioned, so each item's anchor-name must be unique or every
+  # hint tethers to the same item.
+  def test_each_item_anchors_its_own_hint
+    render_basic
+    anchors = page.all("nav a", visible: :all).map { |a| a[:style] }
+
+    assert_equal 2, anchors.uniq.size
+  end
+
+  def test_persistence_is_on_by_default_and_opt_outable
+    render_basic
+
+    assert_selector "aside[data-sidebar-remember-value='true']"
+
+    render_basic(remember: false)
+
+    assert_selector "aside[data-sidebar-remember-value='false']"
+  end
+
   # html_attrs pass through onto the root <aside>.
   def test_passes_through_html_attrs_onto_the_root
     render_inline(UI::SidebarComponent.new(id: "app-sidebar", data: {testid: "sb"})) do |s|
