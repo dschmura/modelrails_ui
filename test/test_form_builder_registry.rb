@@ -2,6 +2,8 @@
 
 require "test_helper"
 require "generators/modelrails_ui/components"
+require "rails/generators"
+require_relative "../lib/generators/modelrails_ui/add/add_generator"
 
 # form_builder is the first template whose Ruby file is NOT a ViewComponent.
 # These tests pin the three registry facts that make that safe: routing
@@ -62,5 +64,17 @@ class TestFormBuilderRegistry < Minitest::Test
 
   def test_form_builder_has_a_setup_note_naming_default_form_builder
     assert_includes Components::SETUP_NOTES.fetch("form_builder"), "default_form_builder"
+  end
+
+  def generator = ModelrailsUi::Generators::AddGenerator.allocate
+
+  def test_rb_tt_destination_honours_the_non_component_map
+    assert_equal "app/form_builders/ui/form_builder.rb",
+      generator.send(:rb_tt_destination, "form_builder", "form_builder.rb.tt")
+  end
+
+  def test_rb_tt_destination_defaults_to_app_components_ui
+    assert_equal "app/components/ui/button_component.rb",
+      generator.send(:rb_tt_destination, "button", "button_component.rb.tt")
   end
 end

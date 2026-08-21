@@ -16,7 +16,11 @@ module ModelrailsUi
         @copied = []
         @unknown = []
 
-        components.each do |name|
+        expanded = Components.expand(components)
+        added = expanded - components
+        say "  Also installing dependencies: #{added.join(", ")}", :cyan if added.any?
+
+        expanded.each do |name|
           if Components.supported.include?(name)
             copy_component(name)
             @copied << name
@@ -81,7 +85,7 @@ module ModelrailsUi
 
         case file
         when /\.rb\.tt\z/
-          template source, "app/components/ui/#{file.delete_suffix(".tt")}"
+          template source, rb_tt_destination(component, file)
         when /\.html\.erb\z/
           copy_file source, html_erb_destination(file)
         when /_controller\.js\z/
@@ -101,6 +105,15 @@ module ModelrailsUi
       # app/components/ui/.
       def html_erb_destination(file)
         file.start_with?("_") ? "app/views/shared/#{file}" : "app/components/ui/#{file}"
+      end
+
+      # Non-component Ruby templates (a form builder is not a ViewComponent) are
+      # routed by Components::NON_COMPONENT_RB; everything else keeps the
+      # app/components/ui/ default.
+      def rb_tt_destination(component, file)
+        Components::NON_COMPONENT_RB.fetch("#{component}/#{file}") do
+          "app/components/ui/#{file.delete_suffix(".tt")}"
+        end
       end
 
       def copy_extra_stimulus(name)
