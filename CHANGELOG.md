@@ -11,8 +11,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Generator: shared ES modules. A component can now ship a plain module alongside its Stimulus controller (`Components::SHARED_JS`), copied to `app/javascript/<namespace>/` with the importmap pin added automatically. Needed for behaviour that must be a SINGLE instance across components — a per-component controller copy cannot provide it. First user: `top_layer.js`.
 
+- Overlays reach the browser top layer. `sticky`/`backdrop-blur` chrome establishes a stacking context that no z-index escapes from the inside; promoted panels paint above it. Promotion is gated on the panel already being `position: fixed`, because the top layer re-parents an element's containing block to the viewport — an `absolute`-placed panel would be torn off its trigger.
+- Popover, combobox, date_picker, timepicker, navigation_menu and mega_menu now place with CSS anchor positioning (`anchor-name`/`position-anchor` + `position-area` + `position-try-fallbacks`), matching dropdown_menu and menubar_menu. Panels flip to stay on-screen where the old static offsets clipped. Width-tied panels (combobox, mega_menu) take their width from `anchor-size(width)`.
+- DropdownMenu: checkable items (`checkbox:`/`radio:` → `menuitemcheckbox`/`menuitemradio` with `aria-checked`), which toggle in place and keep the menu open; `tone: :danger` for destructive actions; and nested submenus via `with_item(submenu: "…")`.
+
 ### Fixed
 
+- Popover `side: :left`/`:right` rendered the panel ON its trigger instead of beside it. The old maps emitted both `left-0` and `right-full`, and CSS drops `right` when left, width and right are all set. Anchor positioning replaces the pair with one cell per placement, and every `side` × `align` cell is now covered by a test.
+- Combobox emitted a hardcoded listbox id, so two comboboxes on a page produced duplicate ids and `aria-controls` resolved to whichever rendered first. Ids are now per-instance. **UI::Command still has this bug.**
 - Generator no longer drops unrecognised template files silently — it says which file it skipped. A plain `.js` in a template directory used to vanish with no warning and no pin, leaving a bare-specifier import that throws at runtime.
 
 ## [0.9.0] - 2026-08-16

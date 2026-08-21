@@ -1456,14 +1456,33 @@ class TestPopoverComponent < Minitest::Test
   end
 
   def test_all_aligns_defined
-    %i[start center end].each do |align|
-      assert UI::PopoverComponent::ALIGN.key?(align), "Missing align #{align}"
-    end
+    assert_equal %i[start center end], UI::PopoverComponent::ALIGNS
   end
 
   def test_all_sides_defined
-    %i[bottom top left right].each do |side|
-      assert UI::PopoverComponent::SIDE.key?(side), "Missing side #{side}"
+    assert_equal %i[bottom top left right], UI::PopoverComponent::SIDES
+  end
+
+  # Anchor positioning replaced the separate side/align class maps with one cell per
+  # placement, because the old pair emitted BOTH `left-0` and `right-full` for a left/right
+  # side — CSS drops `right` when left, width and right are all set, so those placements
+  # rendered on top of the trigger. Every cell must exist or `PLACEMENTS.fetch` raises.
+  def test_every_side_align_pair_has_a_placement
+    UI::PopoverComponent::SIDES.each do |side|
+      UI::PopoverComponent::ALIGNS.each do |align|
+        assert UI::PopoverComponent::PLACEMENTS.key?(:"#{side}_#{align}"),
+          "Missing placement #{side}_#{align}"
+      end
+    end
+  end
+
+  # The modern path must be `fixed` — that is the invariant top_layer.js gates on, and an
+  # `absolute` panel promoted to the top layer resolves against the viewport, not its
+  # trigger. The pre-Baseline fallback stays `absolute` and is deliberately not promoted.
+  def test_placements_are_viewport_positioned_on_the_modern_path
+    UI::PopoverComponent::PLACEMENTS.each do |cell, classes|
+      assert_includes classes, "supports-[position-area:bottom]:fixed", "#{cell} is not viewport-positioned"
+      assert_includes classes, "not-supports-[position-area:bottom]:absolute", "#{cell} has no fallback"
     end
   end
 end
