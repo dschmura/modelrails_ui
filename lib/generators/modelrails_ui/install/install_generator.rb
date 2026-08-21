@@ -71,6 +71,16 @@ module ModelrailsUi
         copy_file "modelrails_ui.css", css_dest_path
       end
 
+      def create_locale_file
+        target = "config/locales/modelrails_ui.en.yml"
+
+        if File.exist?(File.join(destination_root, target))
+          say "  #{target} already exists — skipping (host owns its copy).", :yellow
+        else
+          copy_file "modelrails_ui.en.yml", target
+        end
+      end
+
       def inject_css_import
         return if host_defines_design_tokens? # host owns the tokens; nothing to import
 

@@ -46,7 +46,7 @@ class TestFormBuilderRegistry < Minitest::Test
     expanded = Components.expand(%w[form_builder])
 
     assert_equal "form_builder", expanded.first
-    %w[form_field input textarea file_input select label].each do |dep|
+    %w[form_field input textarea file_input select label error_summary].each do |dep|
       assert_includes expanded, dep
     end
     assert_equal expanded.uniq, expanded
@@ -76,5 +76,16 @@ class TestFormBuilderRegistry < Minitest::Test
   def test_rb_tt_destination_defaults_to_app_components_ui
     assert_equal "app/components/ui/button_component.rb",
       generator.send(:rb_tt_destination, "button", "button_component.rb.tt")
+  end
+
+  def test_install_templates_ship_a_consolidated_locale_file
+    locale = File.expand_path("../lib/generators/modelrails_ui/install/templates/modelrails_ui.en.yml", __dir__)
+
+    assert_path_exists locale
+
+    content = File.read(locale)
+
+    assert_includes content, "error_summary"
+    assert_includes content, "%{count} errors prevented this from being saved"
   end
 end

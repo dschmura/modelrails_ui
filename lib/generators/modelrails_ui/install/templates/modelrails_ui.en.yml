@@ -1,0 +1,10 @@
+# All I18n keys used by modelrails_ui components, in one place — the
+# delegate-file pattern: gem-shipped, host-owned, host-edited. Components carry
+# inline English defaults, so deleting a key (or this file) degrades to
+# English, never to "translation missing".
+en:
+  modelrails_ui:
+    error_summary:
+      heading:
+        one: "1 error prevented this from being saved"
+        other: "%{count} errors prevented this from being saved"
