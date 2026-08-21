@@ -52,7 +52,7 @@ module UI
       @hint = hint
       @error = error
       @required = required
-      @id = html_attrs.delete(:id) || "form_field_#{object_id}"
+      @id = html_attrs.key?(:id) ? html_attrs.delete(:id) : "form_field_#{object_id}"
       @describedby = [("#{@id}-error" if @error.present?), ("#{@id}-hint" if @hint.present?)].compact.join(" ").presence
       @extra_class = html_attrs.delete(:class)
       @html_attrs = html_attrs

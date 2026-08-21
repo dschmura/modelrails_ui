@@ -1,7 +1,163 @@
 # frozen_string_literal: true
 
 module UI
-  # Placeholder — real implementation lands with the form_builder tasks in this PR.
+  # # FormBuilder
+  #
+  # Renders model-backed fields through UI::FormFieldComponent, wired to
+  # ActiveModel::Errors.
+  #
+  # ## THE CONTRACT TO KNOW AT 2AM: no native `required` — ever
+  #
+  # Controls get `aria-required="true"` and the label gets a decorative mark,
+  # but the HTML `required` attribute is never emitted on the builder path.
+  # Why: one consistent, server-rendered error path. Native `required` lets the
+  # browser block an empty submit with a transient bubble, so the error summary
+  # and inline errors this builder exists to render never appear. If your
+  # browser is NOT blocking an empty submit — that is this contract working.
+  #
+  # ## Subclass, don't edit
+  #
+  # Re-running `rails g modelrails_ui:add form_builder` OVERWRITES this file.
+  # Put customizations in a subclass and point `default_form_builder` at it.
+  # Supported override surface: the public Rails-named field helpers below.
+  # Private helpers may change without notice between gem versions.
   class FormBuilder < ActionView::Helpers::FormBuilder
+    CHECKBOX_CLASSES = "size-5 rounded border-border-strong text-interactive focus-ring"
+    # One row = ONE ≥44px target (WCAG 2.5.5): the label wraps input + caption.
+    CHECKBOX_ROW_CLASSES = "flex min-h-11 items-center gap-3 text-sm text-text-body"
+    LEGEND_CLASSES = "text-sm font-medium text-text-body"
+
+    def text_field(method, options = {})
+      input_field(method, "text", options)
+    end
+
+    def email_field(method, options = {})
+      input_field(method, "email", options)
+    end
+
+    def password_field(method, options = {})
+      options = {autocomplete: "new-password"}.merge(options)
+      input_field(method, "password", options)
+    end
+
+    def url_field(method, options = {})
+      input_field(method, "url", options)
+    end
+
+    def tel_field(method, options = {})
+      input_field(method, "tel", options)
+    end
+
+    def number_field(method, options = {})
+      input_field(method, "number", options)
+    end
+
+    def date_field(method, options = {})
+      input_field(method, "date", options)
+    end
+
+    def search_field(method, options = {})
+      input_field(method, "search", options)
+    end
+
+    def text_area(method, options = {})
+      options = {rows: 4}.merge(options)
+      wrapped_field(method, options) do |field, opts|
+        name = opts.key?(:name) ? opts.delete(:name) : field_name(method)
+        @template.render(UI::TextareaComponent.new(
+          value: field_value(method, opts),
+          name: name,
+          class: opts.delete(:class),
+          **control_kwargs(field),
+          **opts
+        ))
+      end
+    end
+
+    private
+
+    # The shared wrapped-field cycle: extract the wrapper's options, render
+    # FormFieldComponent, yield (field, remaining-options) for the control.
+    # The field's id is passed INTO the component (never overridden on the
+    # control afterwards) so label[for], hint id and error id stay bound.
+    def wrapped_field(method, options)
+      options = options.dup
+      label = options.key?(:label) ? options.delete(:label) : default_label(method)
+      hint = options.delete(:help)
+      required = !!options.delete(:required)
+      id = options.key?(:id) ? options.delete(:id) : field_id(method)
+
+      field = UI::FormFieldComponent.new(
+        label: label, hint: hint, error: error_for(method), required: required, id: id
+      )
+      @template.render(field) { yield(field, options) }
+    end
+
+    def input_field(method, type, options)
+      wrapped_field(method, options) do |field, opts|
+        name = opts.key?(:name) ? opts.delete(:name) : field_name(method)
+        @template.render(UI::InputComponent.new(
+          type: type,
+          name: name,
+          value: field_value(method, opts),
+          class: opts.delete(:class),
+          **control_kwargs(field),
+          **opts
+        ))
+      end
+    end
+
+    # Component kwargs for a UI control: invalid/describedby from the field,
+    # `required: false` ALWAYS (see the class header), aria-required set
+    # directly. Spread caller opts AFTER this so caller options win.
+    def control_kwargs(field)
+      attrs = field.input_attrs
+      kwargs = {id: attrs[:id], invalid: attrs[:invalid], describedby: attrs[:describedby], required: false}
+      kwargs["aria-required"] = "true" if attrs[:required]
+      kwargs
+    end
+
+    # Caller value (even explicit nil) wins; otherwise *_before_type_cast so a
+    # failed cast re-renders what the user typed ("abc" in a number field must
+    # not vanish on the 422 re-render); otherwise the reader.
+    def field_value(method, opts)
+      return opts.delete(:value) if opts.key?(:value)
+      return nil unless object
+
+      before_type_cast = :"#{method}_before_type_cast"
+      if object.respond_to?(before_type_cast)
+        object.public_send(before_type_cast)
+      elsif object.respond_to?(method)
+        object.public_send(method)
+      end
+    end
+
+    def error_for(method)
+      object&.errors&.[](method)&.first
+    end
+
+    # Matches the wording ErrorSummary's full_messages use, so the name a user
+    # hears in the summary is the name on the field.
+    def default_label(method)
+      if object && object.class.respond_to?(:human_attribute_name)
+        object.class.human_attribute_name(method)
+      else
+        method.to_s.humanize
+      end
+    end
+
+    # Shared with the checkbox/collection paths — same id + class conventions
+    # as FormFieldComponent's own error paragraph (one decision, written once).
+    def field_error_tag(method, id:)
+      message = error_for(method)
+      return if message.blank?
+
+      @template.content_tag(:p, message, id: "#{id}-error",
+        class: UI::FormFieldComponent::ERROR_CLASSES, data: {slot: "description"})
+    end
+
+    def merge_classes(*classes)
+      classes.compact.join(" ").squish
+    end
   end
 end
