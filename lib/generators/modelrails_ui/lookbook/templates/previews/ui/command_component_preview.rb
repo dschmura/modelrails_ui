@@ -40,5 +40,10 @@ module UI
     # The wide (`lg`) panel — same contract, more room for long item labels.
     def large
     end
+
+    # Fuzzy ranking: subsequence matching with cmdk's scorer, plus
+    # `data-command-keywords` so an item is findable by a synonym it does not display.
+    def fuzzy_ranking
+    end
   end
 end
