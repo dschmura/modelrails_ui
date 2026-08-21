@@ -77,7 +77,7 @@ class FormFieldRenderTest < ViewComponent::TestCase
     c = UI::FormFieldComponent.new(id: "f", hint: "h", error: "e", required: true)
 
     assert_equal(
-      {id: "f", "aria-describedby" => "f-error f-hint", "aria-invalid" => "true", "aria-required" => "true"},
+      {:id => "f", "aria-describedby" => "f-error f-hint", "aria-invalid" => "true", "aria-required" => "true"},
       c.html_input_attrs
     )
   end

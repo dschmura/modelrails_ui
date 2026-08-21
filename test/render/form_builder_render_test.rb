@@ -168,4 +168,63 @@ class FormBuilderRenderTest < ViewComponent::TestCase
       assert page.has_css?("input[type='#{type}']"), "expected an input[type=#{type}]"
     end
   end
+
+  # -- file_field ---------------------------------------------------------
+
+  def test_file_field_is_brought_in_line_with_the_no_native_required_rule
+    # Named behavior change: base's old builder passed native required for files.
+    page = page_for(builder.file_field(:title, required: true))
+
+    assert page.has_css?("input[type='file'][aria-required='true']")
+    refute page.has_css?("input[type='file'][required]")
+  end
+
+  def test_file_field_multiple_gets_an_array_name
+    page = page_for(builder.file_field(:title, multiple: true))
+
+    assert page.has_css?("input[type='file'][multiple][name='b1_article[title][]']")
+  end
+
+  # -- select ---------------------------------------------------------------
+
+  def test_select_renders_native_select_with_translated_aria
+    article = B1Article.new
+    article.errors.add(:title, "can't be blank")
+    # `select` renders through native Rails `select` (via `super`), whose choice
+    # pairs are [text, value] (see options_for_select) — the OPPOSITE of
+    # SelectComponent's own [value, label] convention. Confirmed by rendering:
+    # [["a", "A"]] produces <option value="A">a</option>, not the reverse.
+    page = page_for(builder(article).select(:title, [["A", "a"], ["B", "b"]], help: "Pick one"))
+
+    assert page.has_css?("select#b1_article_title[aria-invalid='true']" \
+                         "[aria-describedby='b1_article_title-error b1_article_title-hint']")
+    assert page.has_css?("option[value='a']", text: "A")
+  end
+
+  def test_select_gets_gem_chrome_not_the_host_app_phantom_class
+    page = page_for(builder.select(:title, [["a", "A"], ["b", "B"]]))
+
+    assert page.has_css?("select.ui-select")
+    # SelectComponent::BASE chrome, not the base-app-only `form-field` phantom class:
+    refute page.has_css?("select.form-field")
+  end
+
+  def test_select_required_is_aria_only
+    page = page_for(builder.select(:title, %w[a b], required: true))
+
+    assert page.has_css?("select[aria-required='true']")
+    refute page.has_css?("select[required]")
+  end
+
+  def test_select_honours_caller_html_options
+    page = page_for(builder.select(:title, %w[a b], {}, {"data-controller" => "auto-submit"}))
+
+    assert page.has_css?("select[data-controller='auto-submit']")
+  end
+
+  def test_select_without_required_has_no_aria_required
+    page = page_for(builder.select(:title, %w[a b]))
+
+    refute page.has_css?("select[aria-required]")
+  end
 end

@@ -74,6 +74,46 @@ module UI
       end
     end
 
+    def file_field(method, options = {})
+      wrapped_field(method, options) do |field, opts|
+        multiple = !!opts.delete(:multiple)
+        name = opts.key?(:name) ? opts.delete(:name) : field_name(method, multiple: multiple)
+        @template.render(UI::FileInputComponent.new(
+          accept: opts.delete(:accept),
+          multiple: multiple,
+          name: name,
+          class: opts.delete(:class),
+          **control_kwargs(field),
+          **opts
+        ))
+      end
+    end
+
+    # Native select via super, inside the wrapper. Chrome is the gem's
+    # SelectComponent BASE + the `ui-select` customizable-select hook — never
+    # the host-app-only `form-field` class. ARIA arrives via the field's
+    # html_input_attrs translation (component kwargs are meaningless to Rails
+    # tag helpers and would render as literal attributes).
+    def select(method, choices = nil, options = {}, html_options = {}, &block)
+      options = options.dup
+      html_options = html_options.dup
+
+      field_opts = {}
+      field_opts[:label] = options.delete(:label) if options.key?(:label)
+      field_opts[:help] = options.delete(:help) if options.key?(:help)
+      field_opts[:required] = options.delete(:required) if options.key?(:required)
+      field_opts[:id] = html_options.delete(:id) if html_options.key?(:id)
+
+      wrapped_field(method, field_opts) do |field, _opts|
+        aria = field.html_input_attrs
+        aria.delete("aria-required") unless field.input_attrs[:required]
+        caller_class = html_options.delete(:class)
+        control_attrs = aria.merge(html_options) # caller options win on shared keys
+        control_attrs[:class] = merge_classes("ui-select", UI::SelectComponent::BASE, caller_class)
+        super(method, choices, options, control_attrs, &block)
+      end
+    end
+
     private
 
     # The shared wrapped-field cycle: extract the wrapper's options, render
