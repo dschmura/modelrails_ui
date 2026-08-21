@@ -265,6 +265,45 @@ class FormBuilderRenderTest < ViewComponent::TestCase
     assert_equal builder.checkbox(:terms).to_s, builder.check_box(:terms).to_s
   end
 
+  def test_checkbox_help_renders_a_hint_paragraph_wired_via_describedby_not_a_help_attribute
+    page = page_for(builder.checkbox(:terms, help: "Required before you can submit"))
+
+    assert page.has_css?("p#b1_article_terms-hint", text: "Required before you can submit")
+    assert page.has_css?("input[type='checkbox'][aria-describedby='b1_article_terms-hint']")
+    refute page.has_css?("input[help]")
+  end
+
+  def test_checkbox_help_and_error_together_describedby_lists_error_first
+    article = B1Article.new
+    article.errors.add(:terms, "must be accepted")
+    page = page_for(builder(article).checkbox(:terms, help: "Read the terms first"))
+
+    assert page.has_css?("input[type='checkbox']" \
+                         "[aria-describedby='b1_article_terms-error b1_article_terms-hint']")
+    assert page.has_css?("p#b1_article_terms-hint", text: "Read the terms first")
+    assert page.has_css?("p#b1_article_terms-error", text: "must be accepted")
+  end
+
+  def test_checkbox_explicit_id_nil_skips_describedby_wiring_without_degenerate_ids
+    article = B1Article.new
+    article.errors.add(:terms, "must be accepted")
+    page = page_for(builder(article).checkbox(:terms, id: nil, help: "Read the terms first"))
+
+    refute page.has_css?("[id='-error']")
+    refute page.has_css?("[id='-hint']")
+    refute page.has_css?("input[aria-describedby]")
+  end
+
+  def test_checkbox_explicit_id_nil_still_renders_the_hint_and_error_text
+    # Only the id-derived wiring is skipped — the text itself still renders.
+    article = B1Article.new
+    article.errors.add(:terms, "must be accepted")
+    page = page_for(builder(article).checkbox(:terms, id: nil, help: "Read the terms first"))
+
+    assert page.has_css?("p", text: "must be accepted")
+    assert page.has_css?("p", text: "Read the terms first")
+  end
+
   # -- collections ------------------------------------------------------------
 
   ROLES = [["1", "Admin"], ["2", "Editor"]].freeze
@@ -315,6 +354,15 @@ class FormBuilderRenderTest < ViewComponent::TestCase
 
     assert page.has_css?("fieldset[aria-describedby='b1_article_title-error']")
     assert_equal 2, page.all("fieldset label.min-h-11 input[type='radio'][aria-invalid='true']").size
+  end
+
+  def test_collection_radio_buttons_keeps_checkbox_classes_when_caller_passes_a_class
+    page = page_for(builder.collection_radio_buttons(:title, ROLES, :first, :last, {},
+      {class: "auto-submit"}))
+
+    # Caller class is additive, not a replacement — dropping CHECKBOX_CLASSES here
+    # would leave radio rows unstyled and out of the accent color system.
+    assert_equal 2, page.all("input[type='radio'].auto-submit.text-interactive").size
   end
 
   # -- submit -------------------------------------------------------------
