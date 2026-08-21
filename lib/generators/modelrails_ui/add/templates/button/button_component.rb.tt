@@ -23,21 +23,17 @@ module UI
     # text_interactive, text_danger. When a legacy value is passed, `tone:` is ignored.
     #
     # size: :default | :icon — :icon (A8) is a 44×44 square (WCAG 2.5.5): adds min-w
-    # and drops horizontal padding (min-h is already carried by FILLED/TEXT).
-    FILLED = "inline-flex items-center justify-center px-4 rounded-md font-medium cursor-pointer " \
-             "focus-ring min-h-[var(--form-input-height)]"
+    # and drops horizontal padding (min-h is already carried by the .btn-* classes).
 
-    TEXT = "inline-flex items-center justify-center px-2 min-h-[var(--form-input-height)] min-w-[var(--form-input-height)] " \
-           "font-medium underline rounded focus-ring hover:no-underline"
 
     # The proven (variant, tone) cells. Keys are [variant, tone]; values are the AAA
     # treatments (byte-identical to the former flat VARIANTS values).
     COMBOS = {
-      [:solid, :primary] => "#{FILLED} bg-interactive hover:bg-interactive-hover text-text-on-interactive",
-      [:solid, :danger] => "#{FILLED} bg-danger hover:bg-danger/90 text-text-on-interactive",
-      [:outline, :neutral] => "#{FILLED} border border-border text-text-body hover:bg-surface-sunken",
-      [:text, :primary] => "#{TEXT} text-interactive",
-      [:text, :danger] => "#{TEXT} text-danger"
+      [:solid, :primary] => "btn-primary",
+      [:solid, :danger] => "btn-danger",
+      [:outline, :neutral] => "btn-secondary",
+      [:text, :primary] => "btn-touch-target btn-text btn-text-interactive",
+      [:text, :danger] => "btn-touch-target btn-text btn-text-danger"
     }.freeze
 
     # Legacy flat `variant:` → [variant, tone]. Lets every existing call site keep
