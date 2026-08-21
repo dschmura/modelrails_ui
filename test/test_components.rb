@@ -5,9 +5,19 @@ require "test_helper"
 # ---------------------------------------------------------------------------
 # Minimal stubs — enough to load and instantiate components without Rails
 # ---------------------------------------------------------------------------
+require "tailwind_merge"
+
 module ViewComponent
   class Base
-    include ModelrailsUi::ClassHelper
+    # Mirrors `cn` from install/templates/application_component.rb.tt — tailwind_merge
+    # backed, per-thread Merger. It has to MERGE: a plain join would let this lane assert
+    # class strings that production would dedupe, so the tests would be describing
+    # semantics the generated components do not have. This stub used to live in
+    # lib/ as ModelrailsUi::ClassHelper and did exactly that.
+    def cn(*classes)
+      joined = classes.flatten.compact.reject { |c| c.to_s.empty? }.join(" ")
+      (Thread.current[:modelrails_ui_tw_merge] ||= TailwindMerge::Merger.new).merge(joined)
+    end
 
     def self.renders_many(name, *) = nil
     def self.renders_one(name, *) = nil
@@ -18,6 +28,24 @@ module ViewComponent
 end
 
 class ApplicationComponent < ViewComponent::Base; end
+
+# The harness's own fidelity: if this stub stops merging, every class-string assertion in
+# this file silently starts describing semantics the generated components do not have.
+class TestStructuralHarnessCn < Minitest::Test
+  def setup = @component = ApplicationComponent.new
+
+  def test_conflicting_utilities_are_merged_last_wins
+    assert_equal "px-4", @component.cn("px-2", "px-4")
+  end
+
+  def test_non_conflicting_classes_are_kept
+    assert_equal "rounded px-4", @component.cn("rounded", "px-4")
+  end
+
+  def test_blanks_and_nesting_are_handled_like_the_shipped_helper
+    assert_equal "foo bar", @component.cn(["foo", nil], "", "bar")
+  end
+end
 
 TEMPLATE_ROOT = File.expand_path(
   "../lib/generators/modelrails_ui/add/templates", __dir__

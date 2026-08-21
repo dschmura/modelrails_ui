@@ -153,5 +153,6 @@ view context), where each adopted component is asserted for correct markup and A
 
 ## Known gaps
 
-`form_field`, `qr_code`, `input_otp` don't generate (template bugs); `embed` needs
-`require "cgi"` on Ruby 4.0. See `MODELRAILS_STATUS.md`.
+None outstanding for component generation. `form_field`, `qr_code`, `input_otp` and
+`embed` were listed here as broken; all four generate, render and are covered by
+`test/render/`. The component-hardening program proved all 82.

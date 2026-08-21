@@ -56,14 +56,13 @@ component/a11y spec → adopt via adapter.
 
 ---
 
-## 🔴 BROKEN — do not use until fixed (upstream gem bugs)
+## ✅ RESOLVED — the former BROKEN list
 
-| Component | Bug |
-|---|---|
-| `form_field` | template renders invalid Ruby (SyntaxError at generation) |
-| `qr_code` | template renders invalid Ruby (SyntaxError at generation) |
-| `input_otp` | template calls undefined `ui` helper at generation time |
-| `embed` | calls `CGI.parse` without `require "cgi"` → raises on Ruby 4.0 |
+`form_field`, `qr_code`, `input_otp` and `embed` were listed here as broken (SyntaxError
+at generation; `ui` helper undefined; `CGI.parse` without `require "cgi"` on Ruby 4.0).
+All four generate and render, and each is covered by `test/render/` — verified on Ruby
+4.0.5 (6, 8, 8 and 16 passing runs respectively). `COMPONENT_STATUS.md` had already moved
+them to `proven`; this file simply never caught up, and the two contradicted each other.
 
 ---
 
@@ -94,7 +93,7 @@ general gem would drag app-specific coupling in (the opposite of easy adoption).
    self-contained: components render correctly standalone, and AAA contrast becomes gem-testable.
    On adoption, modelrails_base would get its tokens FROM the gem.
 3. **Pre-release components not visually audited** after the mechanical token-port.
-4. **3 broken templates + 1 runtime bug** (see BROKEN) — upstreamable fixes.
+4. ~~3 broken templates + 1 runtime bug~~ — resolved; see RESOLVED above.
 
 ---
 
