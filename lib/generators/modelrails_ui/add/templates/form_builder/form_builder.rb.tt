@@ -114,7 +114,103 @@ module UI
       end
     end
 
+    # Rails 8.1's canonical name is `checkbox`; `check_box` is an alias bound to
+    # the ORIGINAL method, so overriding only check_box would let f.checkbox walk
+    # straight past this builder. Define the canonical, re-alias the legacy name.
+    def checkbox(method, options = {}, checked_value = "1", unchecked_value = "0")
+      options = options.dup
+      label_text = options.key?(:label) ? options.delete(:label) : default_label(method)
+      required = !!options.delete(:required)
+      error = error_for(method)
+
+      input_id =
+        if options.key?(:id) then options[:id]
+        elsif options[:multiple] then field_id(method, checked_value)
+        else field_id(method)
+        end
+      options[:id] = input_id unless options.key?(:id)
+      options[:class] = merge_classes(CHECKBOX_CLASSES, options[:class])
+      options["aria-required"] = "true" if required
+      if error
+        options["aria-invalid"] = "true"
+        options["aria-describedby"] = merge_classes("#{input_id}-error", options["aria-describedby"])
+      end
+
+      row = @template.content_tag(:label, class: CHECKBOX_ROW_CLASSES) do
+        @template.safe_join([
+          super(method, options, checked_value, unchecked_value),
+          @template.content_tag(:span, label_text),
+          (required_mark if required)
+        ].compact)
+      end
+      @template.safe_join([row, field_error_tag(method, id: input_id)].compact)
+    end
+    alias_method :check_box, :checkbox
+
+    def collection_checkboxes(method, collection, value_method, text_method, options = {}, html_options = {}, &block)
+      collection_group(:checkbox, method, collection, value_method, text_method, options, html_options) do |opts, html_opts|
+        super(method, collection, value_method, text_method, opts, html_opts) do |b|
+          collection_row { @template.safe_join([b.checkbox, @template.content_tag(:span, b.text)]) }
+        end
+      end
+    end
+    alias_method :collection_check_boxes, :collection_checkboxes
+
+    def collection_radio_buttons(method, collection, value_method, text_method, options = {}, html_options = {}, &block)
+      collection_group(:radio, method, collection, value_method, text_method, options, html_options) do |opts, html_opts|
+        super(method, collection, value_method, text_method, opts, html_opts) do |b|
+          collection_row { @template.safe_join([b.radio_button(class: CHECKBOX_CLASSES), @template.content_tag(:span, b.text)]) }
+        end
+      end
+    end
+
     private
+
+    # Shared fieldset scaffolding for both collection helpers: legend, optional
+    # hint, group-level aria-describedby ON THE FIELDSET (announced with the
+    # group name on entry — widest AT support), per-input aria-invalid via
+    # html_options (survives forms-mode arrival at a row), error paragraph via
+    # the shared field_error_tag convention.
+    def collection_group(kind, method, _collection, _value_method, _text_method, options, html_options)
+      options = options.dup
+      html_options = html_options.dup
+      legend_text = options.key?(:label) ? options.delete(:label) : default_label(method)
+      hint = options.delete(:help)
+      required = !!options.delete(:required)
+      error = error_for(method)
+      base_id = field_id(method)
+
+      describedby = [("#{base_id}-error" if error), ("#{base_id}-hint" if hint)].compact.join(" ").presence
+      html_options[:class] = merge_classes(CHECKBOX_CLASSES, html_options[:class]) if kind == :checkbox
+      html_options["aria-invalid"] = "true" if error
+
+      fieldset_attrs = {class: "space-y-2"}
+      fieldset_attrs["aria-describedby"] = describedby if describedby
+
+      @template.content_tag(:fieldset, **fieldset_attrs) do
+        @template.safe_join([
+          @template.content_tag(:legend, class: LEGEND_CLASSES) {
+            @template.safe_join([legend_text, (required_mark if required)].compact)
+          },
+          (hint_paragraph(hint, id: "#{base_id}-hint") if hint),
+          @template.content_tag(:div, class: "space-y-2") { yield(options, html_options) },
+          field_error_tag(method, id: base_id)
+        ].compact)
+      end
+    end
+
+    def collection_row(&block)
+      @template.content_tag(:label, class: CHECKBOX_ROW_CLASSES, &block)
+    end
+
+    def hint_paragraph(text, id:)
+      @template.content_tag(:p, text, id: id,
+        class: UI::FormFieldComponent::HINT_CLASSES, data: {slot: "description"})
+    end
+
+    def required_mark
+      @template.content_tag(:span, "*", class: "text-danger", aria: {hidden: true})
+    end
 
     # The shared wrapped-field cycle: extract the wrapper's options, render
     # FormFieldComponent, yield (field, remaining-options) for the control.

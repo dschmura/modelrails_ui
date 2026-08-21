@@ -227,4 +227,93 @@ class FormBuilderRenderTest < ViewComponent::TestCase
 
     refute page.has_css?("select[aria-required]")
   end
+
+  # -- single checkbox --------------------------------------------------------
+
+  def test_checkbox_row_is_one_44px_label_target_wrapping_input_and_caption
+    page = page_for(builder.checkbox(:terms, label: "I accept the terms"))
+
+    assert page.has_css?("label.min-h-11 input[type='checkbox']#b1_article_terms")
+    assert page.has_css?("label.min-h-11", text: "I accept the terms")
+  end
+
+  def test_checkbox_gains_the_error_path_base_never_had
+    article = B1Article.new
+    article.errors.add(:terms, "must be accepted")
+    page = page_for(builder(article).checkbox(:terms))
+
+    assert page.has_css?("p#b1_article_terms-error", text: "must be accepted")
+    assert page.has_css?("input[type='checkbox'][aria-invalid='true']" \
+                         "[aria-describedby='b1_article_terms-error']")
+  end
+
+  def test_checkbox_required_is_aria_only_with_a_decorative_mark
+    page = page_for(builder.checkbox(:terms, required: true))
+
+    assert page.has_css?("input[type='checkbox'][aria-required='true']")
+    refute page.has_css?("input[type='checkbox'][required]")
+    assert page.has_css?("label span[aria-hidden='true']", text: "*")
+  end
+
+  def test_checkbox_multiple_derives_the_value_suffixed_id_for_its_label
+    page = page_for(builder.checkbox(:terms, {multiple: true}, "admin"))
+
+    assert page.has_css?("input[type='checkbox']#b1_article_terms_admin")
+  end
+
+  def test_check_box_legacy_name_produces_identical_output
+    assert_equal builder.checkbox(:terms).to_s, builder.check_box(:terms).to_s
+  end
+
+  # -- collections ------------------------------------------------------------
+
+  ROLES = [["1", "Admin"], ["2", "Editor"]].freeze
+
+  def test_collection_checkboxes_fieldset_carries_group_describedby
+    article = B1Article.new
+    article.errors.add(:title, "pick at least one")
+    html = builder(article).collection_checkboxes(:title, ROLES, :first, :last, help: "Who can edit")
+    page = page_for(html)
+
+    assert page.has_css?("fieldset[aria-describedby='b1_article_title-error b1_article_title-hint']")
+    assert page.has_css?("fieldset legend", text: "Title")
+  end
+
+  def test_collection_checkboxes_fieldset_carries_hint_and_error_paragraphs
+    article = B1Article.new
+    article.errors.add(:title, "pick at least one")
+    html = builder(article).collection_checkboxes(:title, ROLES, :first, :last, help: "Who can edit")
+    page = page_for(html)
+
+    assert page.has_css?("p#b1_article_title-hint", text: "Who can edit")
+    assert page.has_css?("p#b1_article_title-error", text: "pick at least one")
+  end
+
+  def test_collection_checkboxes_inputs_carry_aria_invalid_so_forms_mode_arrival_hears_the_state
+    article = B1Article.new
+    article.errors.add(:title, "pick at least one")
+    page = page_for(builder(article).collection_checkboxes(:title, ROLES, :first, :last))
+
+    assert_equal 2, page.all("input[type='checkbox'][aria-invalid='true']").size
+  end
+
+  def test_collection_rows_are_44px_label_targets
+    page = page_for(builder.collection_checkboxes(:title, ROLES, :first, :last))
+
+    assert_equal 2, page.all("fieldset label.min-h-11 input[type='checkbox']").size
+  end
+
+  def test_collection_check_boxes_legacy_name_produces_identical_output
+    assert_equal builder.collection_checkboxes(:title, ROLES, :first, :last).to_s,
+      builder.collection_check_boxes(:title, ROLES, :first, :last).to_s
+  end
+
+  def test_collection_radio_buttons_mirror_the_checkbox_group_contract
+    article = B1Article.new
+    article.errors.add(:title, "pick one")
+    page = page_for(builder(article).collection_radio_buttons(:title, ROLES, :first, :last))
+
+    assert page.has_css?("fieldset[aria-describedby='b1_article_title-error']")
+    assert_equal 2, page.all("fieldset label.min-h-11 input[type='radio'][aria-invalid='true']").size
+  end
 end
