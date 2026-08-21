@@ -316,4 +316,61 @@ class FormBuilderRenderTest < ViewComponent::TestCase
     assert page.has_css?("fieldset[aria-describedby='b1_article_title-error']")
     assert_equal 2, page.all("fieldset label.min-h-11 input[type='radio'][aria-invalid='true']").size
   end
+
+  # -- submit -------------------------------------------------------------
+
+  def test_submit_defaults_to_btn_primary
+    page = page_for(builder.submit("Save"))
+
+    assert page.has_css?("input[type='submit'].btn-primary")
+  end
+
+  def test_submit_caller_class_replaces_the_default_not_merges
+    # Replace semantics: predictable, loud failure mode. A merge yields
+    # "btn-primary btn-secondary" with stylesheet order deciding the winner.
+    page = page_for(builder.submit("Save draft", class: "btn-secondary"))
+
+    assert page.has_css?("input[type='submit'].btn-secondary")
+    refute page.has_css?("input[type='submit'].btn-primary")
+  end
+
+  # -- error_summary shim ---------------------------------------------------
+
+  def test_error_summary_renders_nothing_without_errors
+    # ErrorSummaryComponent#render? returns false with no items, and
+    # @template.render of a non-rendering component returns "" (not nil) on
+    # this ViewComponent version — assert blank output, not identity-nil, so
+    # the assertion states what actually happens rather than what would be
+    # convenient.
+    output = builder.error_summary
+
+    assert_predicate output.to_s, :blank?
+  end
+
+  def test_error_summary_links_each_error_to_its_field
+    article = B1Article.new
+    article.errors.add(:title, "can't be blank")
+    article.errors.add(:base, "is a duplicate")
+    page = page_for(builder(article).error_summary)
+
+    assert page.has_css?("div[role='alert'][tabindex='-1'][autofocus]")
+    assert page.has_css?("li a[href='#b1_article_title']", text: "Title can't be blank")
+    assert page.has_css?("li", text: "is a duplicate")
+  end
+
+  def test_error_summary_does_not_link_the_base_error_to_a_field
+    article = B1Article.new
+    article.errors.add(:base, "is a duplicate")
+    page = page_for(builder(article).error_summary)
+
+    refute page.has_css?("li a[href='#b1_article_base']")
+  end
+
+  def test_error_summary_forwards_heading_level
+    article = B1Article.new
+    article.errors.add(:title, "can't be blank")
+    page = page_for(builder(article).error_summary(heading_level: 3))
+
+    assert page.has_css?("h3")
+  end
 end

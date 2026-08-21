@@ -164,6 +164,27 @@ module UI
       end
     end
 
+    def submit(value = nil, options = {})
+      options = options.dup
+      # Caller class: REPLACES the default (never merges): "btn-primary
+      # btn-secondary" would leave stylesheet order to pick the winner.
+      options[:class] = options[:class].presence || "btn-primary"
+      super(value, options)
+    end
+
+    # One-line shim over UI::ErrorSummaryComponent — the component is the real
+    # surface (and the announcement mechanism; see its header). The shim adds
+    # what only the builder knows: each error's field anchor via field_id.
+    def error_summary(options = {})
+      return if object.nil? || object.errors.empty?
+
+      items = object.errors.map do |error|
+        href = (error.attribute == :base) ? nil : "##{field_id(error.attribute)}"
+        {message: error.full_message, href: href}
+      end
+      @template.render(UI::ErrorSummaryComponent.new(items: items, **options))
+    end
+
     private
 
     # Shared fieldset scaffolding for both collection helpers: legend, optional

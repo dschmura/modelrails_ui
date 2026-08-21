@@ -68,6 +68,7 @@ primitive directly when you're outside a form or building something custom.
 |--------------|-------------------------------------------------------------------------------|---------------------------|
 | `label`      | captioning a control via `for:` (self-labelling `checkbox`/`radio_group` don't need it) | —              |
 | `form_field` | hand-composing a one-off labelled field with hint/error ARIA wiring           | `form_with` (the Rails form builder) |
+| `form_builder` | inside `form_with` — `f.text_field`/`f.select`/`f.checkbox`/etc. wire label/hint/error automatically | `form_field` (outside a form, or a custom control) |
 | `file_input` | an upload control with AAA styling + ARIA (inside `form_with`: `f.file_field`) | —                        |
 | `error_summary` | a focusable, autofocused form-level error panel announced on a failed submit | `form_field` (per-field error) |
 
