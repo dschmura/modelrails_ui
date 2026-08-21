@@ -14,10 +14,20 @@
 # Stimulus runtime — the same module graph a host app gets, so a broken import or an
 # unpinned specifier fails here exactly as it would in a fork.
 #
-# SCOPE: behaviour and ARIA, not colour. The stylesheet ships as Tailwind source that
-# needs a build step, so axe runs with colour-contrast disabled here; AAA contrast stays
-# proven in modelrails_base, which has compiled CSS. Anything asserting a *computed
-# colour* belongs there, not here.
+# ── WHAT THIS LANE CANNOT PROVE ──────────────────────────────────────────────────────
+# The harness serves the components and their JavaScript but NO STYLESHEET: the gem ships
+# CSS as Tailwind source, which needs a build step this harness does not run. So:
+#
+#   * COLOUR CONTRAST — assert_axe_clean disables the color-contrast rule. Against
+#     unstyled defaults axe reports on the browser's own colours, so a green result would
+#     mean nothing.
+#   * TOP-LAYER PROMOTION — top_layer.js promotes only what already computes to
+#     `position: fixed`. With no stylesheet nothing does, so it correctly declines and
+#     `:popover-open` is never true here. That is the guard working, not a harness bug.
+#
+# Do NOT inject a style to make either fire — the assertion would prove the injected
+# style. Both are proven in modelrails_base against a real app with compiled CSS.
+# See docs/testing.md. assert_promoted_to_top_layer below fails loudly to say so.
 
 require "render_test_helper"
 require "capybara"
@@ -162,6 +172,24 @@ class BrowserTestCase < Minitest::Test
   end
 
   def press(key) = page.driver.browser.keyboard.type(key)
+
+  # A tripwire, not a helper. Promotion is unprovable here (no compiled CSS — see the
+  # header), and the mistake is easy to make because the assertion LOOKS reasonable. Rather
+  # than let someone write it and watch it fail for an opaque reason, fail with the reason.
+  def assert_promoted_to_top_layer(*)
+    flunk <<~MSG
+      Top-layer promotion cannot be proven in the browser lane.
+
+      This harness serves no compiled stylesheet, so nothing computes to `position: fixed`
+      and top_layer.js correctly declines to promote. `:popover-open` is never true here.
+
+      Do not inject a style to force it — the test would prove the injected style rather
+      than the component. Assert promotion in modelrails_base instead:
+      spec/system/ui/overlay_stacking_context_spec.rb
+
+      See docs/testing.md.
+    MSG
+  end
 
   # A controller that throws in a lifecycle callback renders nothing visibly wrong — it
   # just stops working. Assert explicitly that none did.
