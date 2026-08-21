@@ -50,6 +50,27 @@ via `cn`, and the panels/root are untouched.
 | click | Reveal that tab's panel |
 | `Tab` again | Move into the active panel (it is `tabindex="0"`) |
 
+## Orientation and activation
+
+| Arg | Values | Default |
+|-----|--------|---------|
+| `orientation` | `:horizontal` (←/→), `:vertical` (↑/↓) | `:horizontal` |
+| `activation` | `:automatic`, `:manual` | `:automatic` |
+
+`orientation` also sets `aria-orientation` and restacks the bar. The other arrow axis is
+deliberately inert, per APG — a horizontal tablist ignoring ↑/↓ leaves those keys to the
+page rather than trapping them.
+
+`:automatic` reveals a panel as focus reaches its tab. That is the default because panels
+render inline and eager, so there is no latency to hide. Use `:manual` when a panel is
+expensive to reveal: the arrows move the tab stop, and `Enter`/`Space` commits.
+
+```erb
+<%= render(UI::TabsComponent.new(label: "Settings", orientation: :vertical, activation: :manual)) do |t| %>
+  <% t.with_tab(title: "Profile") { "…" } %>
+<% end %>
+```
+
 ## Accessibility
 
 WCAG 2.2 AAA. `role="tablist"` named by `label:`; each `role="tab"` carries `aria-selected`,
