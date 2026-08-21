@@ -45,19 +45,27 @@ module UI
                "bg-surface-raised px-3 text-sm text-text-heading shadow-xs focus-ring transition " \
                "aria-expanded:border-border-focus"
     ICON_CLS = "size-4 shrink-0 text-text-muted"
-    POPOVER  = "absolute left-0 top-full z-50 mt-1 hidden w-max rounded-lg border border-border " \
-               "bg-surface-overlay p-3 shadow-md data-[open=true]:block"
+    # Placement is CSS anchor positioning: `position: fixed` (containing block = the
+    # viewport) tethered to the trigger via `anchor-name`/`position-anchor`. Being
+    # viewport-positioned is what lets the panel be promoted to the top layer, so a
+    # sticky/backdrop-blur ancestor cannot bury it (app/javascript/overlays/top_layer.js).
+    POPOVER  = "z-50 hidden w-max rounded-lg border border-border bg-surface-overlay p-3 shadow-md data-[open=true]:block mt-1 supports-[position-area:bottom]:fixed supports-[position-area:bottom]:[position-area:bottom_span-right] supports-[position-area:bottom]:[position-try-fallbacks:flip-block] not-supports-[position-area:bottom]:absolute not-supports-[position-area:bottom]:top-full not-supports-[position-area:bottom]:left-0"
     SPINNER_WRAP = "flex items-center justify-center gap-1"
     COL_CLS  = "flex flex-col items-center gap-1"
-    SPIN_BTN = "inline-flex size-7 items-center justify-center rounded-md focus-ring " \
+    # size-11 (44px): steppers are aria-hidden to AT but remain POINTER
+    # targets, and WCAG 2.5.5's floor applies to pointer targets regardless
+    # of AT visibility (caught by the open-state audit, #463).
+    SPIN_BTN = "inline-flex size-11 items-center justify-center rounded-md focus-ring " \
                "text-text-muted hover:bg-surface-sunken hover:text-text-heading transition"
-    NUM_CLS  = "w-10 rounded-md border border-border-strong bg-surface-raised px-1 py-0.5 text-center text-sm focus-ring"
+    # min-h-11 + w-12: the spinbutton fields are the primary targets and must
+    # clear the 44px floor (WCAG 2.5.5 AAA — open-state audit, #463).
+    NUM_CLS  = "w-12 min-h-11 rounded-md border border-border-strong bg-surface-raised px-1 text-center text-sm focus-ring"
     SEP_CLS  = "text-lg font-medium text-text-heading pb-1"
 
     # The human-readable format hint, keyed by `format:`.
     FORMATS = {
-      h24: { hint: "HH:MM (24-hour)" },
-      h12: { hint: "HH:MM AM/PM (12-hour)" }
+      h24: {hint: "HH:MM (24-hour)"},
+      h12: {hint: "HH:MM AM/PM (12-hour)"}
     }.freeze
 
     def initialize(value: nil, name: nil, label: nil, format: :h24, step: 1, **html_attrs)
@@ -75,6 +83,7 @@ module UI
       caller_data = @html_attrs.delete(:data) || {}
       content_tag(:div,
         class: cn(WRAPPER, @extra_class),
+        style: "anchor-name: --#{@id}",
         data: {
           controller: "timepicker",
           timepicker_format_value: @format,
@@ -107,7 +116,7 @@ module UI
     def hidden_input
       tag.input(type: "hidden", name: @name,
         value: @value,
-        data: { timepicker_target: "hidden" })
+        data: {timepicker_target: "hidden"})
     end
 
     def trigger_button
@@ -124,7 +133,7 @@ module UI
           action: "click->timepicker#toggle"
         }) do
         concat clock_icon
-        concat content_tag(:span, @value || @label, data: { timepicker_target: "label" })
+        concat content_tag(:span, @value || @label, data: {timepicker_target: "label"})
       end
     end
 
@@ -134,11 +143,12 @@ module UI
       content_tag(:div,
         id: popover_id,
         class: POPOVER,
+        style: "position-anchor: --#{@id}",
         role: "dialog",
         "aria-label": @label,
         "aria-modal": "true",
         tabindex: "-1",
-        data: { timepicker_target: "popover" }) do
+        data: {timepicker_target: "popover"}) do
         content_tag(:div, class: SPINNER_WRAP) do
           concat hour_column(hour_val)
           concat content_tag(:span, ":", class: SEP_CLS, "aria-hidden": "true")
@@ -153,7 +163,7 @@ module UI
         concat spin_btn("▲", "click->timepicker#hourUp")
         concat spinbutton(:hour, val, 0, hour_max,
           label: I18n.t("modelrails_ui.timepicker.hour", default: "Hour"),
-          action: "change->timepicker#hourChanged")
+          action: "change->timepicker#hourChanged keydown->timepicker#hourKeydown")
         concat spin_btn("▼", "click->timepicker#hourDown")
       end
     end
@@ -163,7 +173,7 @@ module UI
         concat spin_btn("▲", "click->timepicker#minuteUp")
         concat spinbutton(:minute, val, 0, 59,
           label: I18n.t("modelrails_ui.timepicker.minute", default: "Minute"),
-          action: "change->timepicker#minuteChanged")
+          action: "change->timepicker#minuteChanged keydown->timepicker#minuteKeydown")
         concat spin_btn("▼", "click->timepicker#minuteDown")
       end
     end
@@ -177,7 +187,7 @@ module UI
           "aria-label": I18n.t("modelrails_ui.timepicker.meridiem", default: "AM or PM"),
           "aria-valuetext": "AM",
           class: cn(NUM_CLS, "cursor-pointer select-none"),
-          data: { timepicker_target: "ampm", action: "click->timepicker#toggleAmPm keydown->timepicker#ampmKeydown" })
+          data: {timepicker_target: "ampm", action: "click->timepicker#toggleAmPm keydown->timepicker#ampmKeydown"})
         concat spin_btn("▼", "click->timepicker#toggleAmPm")
       end
     end
@@ -195,7 +205,7 @@ module UI
         "aria-valuemax": max,
         "aria-valuenow": val,
         "aria-valuetext": val.to_s.rjust(2, "0"),
-        data: { timepicker_target: target, action: action })
+        data: {timepicker_target: target, action: action})
     end
 
     # The ▲/▼ steppers are decorative: aria-hidden + tabindex=-1 so the spinbutton
@@ -203,7 +213,7 @@ module UI
     def spin_btn(label, action)
       content_tag(:button, label, type: "button",
         class: SPIN_BTN, "aria-hidden": "true",
-        tabindex: "-1", data: { action: action })
+        tabindex: "-1", data: {action: action})
     end
 
     def clock_icon

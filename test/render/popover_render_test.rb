@@ -40,11 +40,33 @@ class PopoverRenderTest < ViewComponent::TestCase
                     "[data-floating-target='panel']", visible: :all
   end
 
-  def test_panel_carries_aaa_tokens_and_positioning
+  # Placement moved from `absolute` + offset classes to CSS anchor positioning, so the
+  # panel is viewport-positioned and can be promoted to the top layer. The old
+  # `.bottom-full.right-0` pair is now only the pre-Baseline fallback.
+  def test_panel_carries_aaa_tokens
     render_popover(side: :top, align: :end)
 
     assert_selector "[data-floating-target='panel'].bg-surface-overlay.text-text-body", visible: :all
-    assert_selector "[data-floating-target='panel'].bottom-full.right-0", visible: :all
+  end
+
+  def test_panel_places_by_anchor_positioning_with_a_fallback
+    render_popover(side: :top, align: :end)
+    classes = page.find("[data-floating-target='panel']", visible: :all)[:class]
+
+    assert_includes classes, "supports-[position-area:bottom]:[position-area:top_span-left]"
+    assert_includes classes, "not-supports-[position-area:bottom]:bottom-full"
+  end
+
+  # The panel is tethered by name, so the anchor and the panel must agree.
+  def test_panel_is_tethered_to_its_wrapper_anchor
+    render_popover(side: :bottom, align: :start)
+
+    anchor = page.find("[data-controller='floating']", visible: :all)[:style]
+    panel = page.find("[data-floating-target='panel']", visible: :all)[:style]
+    name = anchor[/anchor-name:\s*(--[\w-]+)/, 1]
+
+    refute_nil name, "wrapper carries no anchor-name"
+    assert_includes panel, "position-anchor: #{name}"
   end
 
   def test_requires_a_trigger_slot

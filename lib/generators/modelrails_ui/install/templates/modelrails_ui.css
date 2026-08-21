@@ -391,6 +391,30 @@
    — don't override max-width inline; introduce the named variant instead.
    ========================================================================== */
 
+/* ==========================================================================
+   TOP LAYER
+   Overlays promoted by app/javascript/overlays/top_layer.js take the UA's
+   `[popover]` box with them: fixed, inset-0, centred, bordered, opaque. We want
+   only the top layer — the component's own classes keep owning geometry and
+   chrome. In @layer base so it outranks the UA sheet but still loses to Tailwind
+   utilities; `position` is deliberately not reset, since every promoted panel
+   sets its own (and only viewport-positioned panels are promoted at all).
+   ========================================================================== */
+
+@layer base {
+  [data-top-layer] {
+    inset: auto;
+    margin: 0;
+    border: 0;
+    padding: 0;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    background: transparent;
+    color: inherit;
+  }
+}
+
 @layer utilities {
   .page-container {
     @apply max-w-2xl mx-auto px-4;
