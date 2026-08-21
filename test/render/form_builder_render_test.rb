@@ -11,10 +11,13 @@ load_component "select", "select_component.rb.tt"
 load_component "error_summary", "error_summary_component.rb.tt"
 load_component "form_builder", "form_builder.rb.tt"
 
-# NOTE: FormBuilder is not itself a ViewComponent, so these tests exercise
-# its Rails-named field methods directly (`builder.text_field(...)`) rather
-# than ViewComponent::TestCase's render_inline — each field method still
-# renders real UI::* components internally via `@template.render`.
+# NOTE: FormBuilder is an ActionView::Helpers::FormBuilder, not a
+# ViewComponent. These tests call its Rails-named field methods directly
+# and assert on the returned HTML via Capybara, rather than going through
+# ViewComponent's test helpers — each field method still renders real
+# UI::* components internally through the current view context. See
+# test/test_catalog_completeness.rb's NOT_A_VIEWCOMPONENT carve-out for how
+# the catalog's render-test gate accounts for that.
 class B1Article
   include ActiveModel::Model
   include ActiveModel::Attributes
@@ -102,7 +105,8 @@ class FormBuilderRenderTest < ViewComponent::TestCase
     frozen = {required: true, help: "h"}.freeze
 
     builder.text_field(:title, frozen) # raises FrozenError if the builder mutates
-    assert frozen.frozen?
+
+    assert_predicate frozen, :frozen?
   end
 
   def test_caller_id_nil_is_honoured_not_replaced
@@ -128,11 +132,16 @@ class FormBuilderRenderTest < ViewComponent::TestCase
 
   # -- objectless forms -------------------------------------------------------
 
-  def test_objectless_builder_renders_without_errors_values_or_aria_invalid
+  def test_objectless_builder_still_binds_label_and_control
     page = page_for(builder(nil, object_name: :search).text_field(:query))
 
     assert page.has_css?("label[for='search_query']")
     assert page.has_css?("input#search_query[name='search[query]']")
+  end
+
+  def test_objectless_builder_renders_without_errors_values_or_aria_invalid
+    page = page_for(builder(nil, object_name: :search).text_field(:query))
+
     refute page.has_css?("input[aria-invalid]")
     refute page.has_css?("p")
   end
