@@ -45,6 +45,29 @@ Icon-only triggers MUST pass `aria_label:` (the menu button's accessible name):
 <% end %>
 ```
 
+## Options
+
+| Arg | Type | Default | Description |
+|-----|------|---------|-------------|
+| `side` | Symbol | `:bottom` | `:bottom` or `:top` |
+| `align` | Symbol | `:start` | `:start` or `:end` (edge-aligned to the trigger) |
+| `id` | String | auto `dropdown-<hex>` | Menu element ID; wired to `aria-controls` on the trigger |
+| `aria_label` | String | — | Trigger's accessible name. **Required for icon-only triggers** |
+| `trigger_class` | String | `"btn-secondary"` | CSS classes **added to** the trigger's accessibility floor (focus ring + 44px target size), which cannot be replaced |
+| `**html_attrs` | Hash | — | Forwarded to the outer `<div>` |
+
+> **`class:` targets the wrapper, not the trigger.** Passing `class:` styles the outer
+> `<div>`; to restyle the button itself use `trigger_class:`. This is the most common
+> point of confusion with this component.
+
+`.btn-secondary` ships in `modelrails_ui.css`. A fork that strips or renames the `.btn-*`
+layer should pass its own `trigger_class:`.
+
+| Slot | Required | Description |
+|------|----------|-------------|
+| `with_trigger` | Yes | Visible content of the trigger button |
+| `with_item` | — | A menu item; see [Items](#items) |
+
 ## Placement
 
 | Arg | Values | Default |
