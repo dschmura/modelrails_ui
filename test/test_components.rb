@@ -184,25 +184,37 @@ class TestButtonComponent < Minitest::Test
     assert c.instance_variable_get(:@html_attrs)[:disabled]
   end
 
+  # COMBOS names the canonical .btn-* classes rather than re-listing their utilities, so
+  # these assert the CLASS the component selects. The appearance behind each class is the
+  # stylesheet's business, and asserting utilities here is what let the two copies drift
+  # apart in the first place (#101).
   def test_component_classes_primary
     c = UI::ButtonComponent.new
-    classes = c.send(:component_classes)
 
-    assert_includes classes, "bg-interactive"
-    assert_includes classes, "min-h-[var(--form-input-height)]"
+    assert_includes c.send(:component_classes), "btn-primary"
   end
 
   def test_component_classes_danger_variant
     c = UI::ButtonComponent.new(variant: :danger)
 
-    assert_includes c.send(:component_classes), "bg-danger"
+    assert_includes c.send(:component_classes), "btn-danger"
   end
 
   def test_component_classes_text_variant
     c = UI::ButtonComponent.new(variant: :text_interactive)
 
-    assert_includes c.send(:component_classes), "underline"
-    assert_includes c.send(:component_classes), "text-interactive"
+    assert_includes c.send(:component_classes), "btn-text-interactive"
+  end
+
+  # Every cell must name classes the stylesheet actually ships — the failure mode this
+  # change trades into is a typo'd class name silently rendering unstyled.
+  def test_every_combo_names_shipped_classes
+    css = File.read(File.expand_path("../lib/generators/modelrails_ui/install/templates/modelrails_ui.css", __dir__))
+    shipped = css.scan(/^\s*\.([a-z][a-z0-9-]*)\s*\{/).flatten.to_set
+
+    missing = UI::ButtonComponent::COMBOS.values.flat_map(&:split).reject { |c| shipped.include?(c) }
+
+    assert_empty missing, "COMBOS names classes the stylesheet does not define: #{missing.inspect}"
   end
 
   def test_extra_class_appended

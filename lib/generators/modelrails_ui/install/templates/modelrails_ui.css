@@ -471,17 +471,17 @@
      rounded corners, semantic underline). */
   .btn-text {
     @apply font-medium underline rounded;
-    @apply focus-visible:outline-none focus-visible:ring-2;
+    @apply focus-ring;
     @apply hover:no-underline;
   }
 
   /* Color variants of .btn-text. Apply alongside .btn-text. */
   .btn-text-danger {
-    @apply text-danger focus-visible:ring-danger;
+    @apply text-danger;
   }
 
   .btn-text-interactive {
-    @apply text-interactive focus-visible:ring-interactive-focus;
+    @apply text-interactive;
   }
 
   /* Inline flex container for trailing button groups (Resend / Cancel,

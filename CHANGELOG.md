@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `ButtonComponent::COMBOS` now names the canonical `.btn-*` classes instead of re-listing their utilities. The stylesheet owns button appearance and the Ruby table is the typed accessor for it — previously the same rules existed in both languages and had already drifted. Rendered output is equivalent; `.btn-primary` carries exactly what the old utility string produced. (#101)
+
+### Fixed
+
+- `.btn-text` used a `focus-visible:ring-*` box-shadow ring, the same defect fixed in `.btn-*` earlier but with a different prefix — so text buttons would have lost their outline focus indicator when COMBOS switched to class names. Now `@apply focus-ring`, matching the reference app. The per-tone `focus-visible:ring-<colour>` declarations on `.btn-text-interactive`/`.btn-text-danger` existed only to colour that ring and are removed.
+
 ### Fixed
 
 - `trigger_class:` on Popover and DropdownMenu **replaced** the trigger's classes instead of merging, so a caller restyling the trigger silently removed its focus indicator (WCAG 2.4.11) and 44px target-size floor (2.5.5 AAA) — from the one element the components document as "a real `<button>` trigger". Caller classes are now merged over a non-replaceable `TRIGGER_BASE`. Default rendering is unchanged. (#100)

@@ -50,11 +50,11 @@ class TestShippedStylesheetCompleteness < Minitest::Test
   def test_no_shipped_class_uses_a_box_shadow_focus_ring
     offenders = File.read(STYLESHEET)
       .scan(/^\s*\.([a-z][a-z0-9-]*)\s*\{(.*?)^\s*\}/m)
-      .select { |_name, body| body.include?("focus:ring") }
+      .select { |_name, body| body.match?(/focus(-visible)?:ring/) }
       .map(&:first)
 
     assert_empty offenders, <<~MSG
-      These shipped classes use a box-shadow focus ring (focus:ring-*):
+      These shipped classes use a box-shadow focus ring (focus:ring-* / focus-visible:ring-*):
 
         #{offenders.join(", ")}
 
