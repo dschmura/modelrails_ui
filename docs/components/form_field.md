@@ -5,7 +5,7 @@ Wrapper that composes a label, any input component, an optional hint, and an err
 ## Installation
 
 ```bash
-rails g view_primitives:add form_field
+rails g modelrails_ui:add form_field
 ```
 
 Creates `app/components/ui/form_field_component.rb`.
@@ -31,7 +31,7 @@ Creates `app/components/ui/form_field_component.rb`.
 <% end %>
 ```
 
-When `error:` is present the hint is hidden and the error is shown instead.
+Both the hint and error render; `aria-describedby` names the error first so assistive tech announces the error.
 
 ## Required field
 
@@ -64,7 +64,7 @@ FormField works with any input component:
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
 | `label` | String | `nil` | Label text shown above the input |
-| `hint` | String | `nil` | Muted helper text shown below the input (hidden when `error:` is present) |
+| `hint` | String | `nil` | Muted helper text shown below the input |
 | `error` | String | `nil` | Red error message shown below the input |
 | `required` | Boolean | `false` | Appends a red `*` to the label |
 | `**html_attrs` | Hash | — | Forwarded to the outer `<div>` wrapper |

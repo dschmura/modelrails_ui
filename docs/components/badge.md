@@ -5,7 +5,7 @@ Small inline label for status, counts, or categories.
 ## Installation
 
 ```bash
-rails g view_primitives:add badge
+rails g modelrails_ui:add badge
 ```
 
 Creates `app/components/ui/badge_component.rb`.

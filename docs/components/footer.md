@@ -5,7 +5,7 @@ Site footer with optional link columns, block content area, and a copyright row.
 ## Installation
 
 ```bash
-rails g view_primitives:add footer
+rails g modelrails_ui:add footer
 ```
 
 Creates `app/components/ui/footer_component.rb`.

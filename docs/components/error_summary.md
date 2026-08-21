@@ -5,7 +5,7 @@ The form-level error panel — and the announcement mechanism for failed submits
 ## Installation
 
 ```bash
-rails g view_primitives:add error_summary
+rails g modelrails_ui:add error_summary
 ```
 
 Creates `app/components/ui/error_summary_component.rb`.

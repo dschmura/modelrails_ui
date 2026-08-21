@@ -7,7 +7,7 @@ Requires `mega_menu_controller.js` (copied automatically by the generator).
 ## Installation
 
 ```bash
-rails g view_primitives:add mega_menu
+rails g modelrails_ui:add mega_menu
 ```
 
 Creates `app/components/ui/mega_menu_component.rb`.

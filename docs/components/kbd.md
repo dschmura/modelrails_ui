@@ -5,7 +5,7 @@ Keyboard shortcut key display. Renders a `<kbd>` element styled to look like a p
 ## Installation
 
 ```bash
-rails g view_primitives:add kbd
+rails g modelrails_ui:add kbd
 ```
 
 Creates `app/components/ui/kbd_component.rb`.

@@ -5,7 +5,7 @@ Semantic `<figure>` wrapper with an optional `<figcaption>`. Use to pair an imag
 ## Installation
 
 ```bash
-rails g view_primitives:add figure
+rails g modelrails_ui:add figure
 ```
 
 Creates `app/components/ui/figure_component.rb`.

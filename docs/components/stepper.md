@@ -5,7 +5,7 @@ Multi-step progress indicator with horizontal or vertical orientation.
 ## Installation
 
 ```bash
-rails g view_primitives:add stepper
+rails g modelrails_ui:add stepper
 ```
 
 Creates `app/components/ui/stepper_component.rb`.

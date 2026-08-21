@@ -5,7 +5,7 @@ Expandable section built on native `<details>`/`<summary>`. No JavaScript requir
 ## Installation
 
 ```bash
-rails g view_primitives:add collapsible
+rails g modelrails_ui:add collapsible
 ```
 
 Creates `app/components/ui/collapsible_component.rb`.

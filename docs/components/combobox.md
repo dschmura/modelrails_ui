@@ -7,7 +7,7 @@ Requires `combobox_controller.js` (copied automatically by the generator).
 ## Installation
 
 ```bash
-rails g view_primitives:add combobox
+rails g modelrails_ui:add combobox
 ```
 
 Creates `app/components/ui/combobox_component.rb`.

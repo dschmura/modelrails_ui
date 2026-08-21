@@ -5,7 +5,7 @@ Read-only star rating display.
 ## Installation
 
 ```bash
-rails g view_primitives:add rating
+rails g modelrails_ui:add rating
 ```
 
 Creates `app/components/ui/rating_component.rb`.

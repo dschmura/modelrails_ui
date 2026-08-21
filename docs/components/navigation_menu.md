@@ -7,7 +7,7 @@ Requires `navigation_menu_controller.js` (copied automatically by the generator)
 ## Installation
 
 ```bash
-rails g view_primitives:add navigation_menu
+rails g modelrails_ui:add navigation_menu
 ```
 
 Creates `app/components/ui/navigation_menu_component.rb`.

@@ -5,7 +5,7 @@ Clickable element with variant and size support. Renders as a `<button>` by defa
 ## Installation
 
 ```bash
-rails g view_primitives:add button
+rails g modelrails_ui:add button
 ```
 
 Creates `app/components/ui/button_component.rb`.

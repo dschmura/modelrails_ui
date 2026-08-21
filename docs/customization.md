@@ -8,7 +8,7 @@ There are three levels of customization, from lightest to deepest:
 
 ## Level 1 — Design tokens (colors, radius, spacing)
 
-All visual properties are driven by CSS variables defined in `app/assets/stylesheets/view_primitives.css` (exact path depends on your setup — see `rails g view_primitives:install`).
+All visual properties are driven by CSS variables defined in `app/assets/stylesheets/view_primitives.css` (exact path depends on your setup — see `rails g modelrails_ui:install`).
 
 The `:root` block sets the default light theme. Override any variable there to change it globally:
 
@@ -179,7 +179,7 @@ No component files need to change — the design tokens propagate everywhere aut
 If a new version of ViewPrimitives ships improvements to a component, re-run the generator with `--force` to overwrite your local copy:
 
 ```bash
-rails g view_primitives:add button --force
+rails g modelrails_ui:add button --force
 ```
 
 Any customizations you made to that file will be lost. The recommended workflow is to keep local changes minimal (prefer token overrides) or track them in git so you can re-apply them as a patch.

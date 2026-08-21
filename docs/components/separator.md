@@ -5,7 +5,7 @@ Thin divider line for horizontal or vertical layout separation.
 ## Installation
 
 ```bash
-rails g view_primitives:add separator
+rails g modelrails_ui:add separator
 ```
 
 Creates `app/components/ui/separator_component.rb`.

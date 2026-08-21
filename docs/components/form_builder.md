@@ -185,12 +185,12 @@ rendered output references. Verified against
 Plus the `focus-ring` utility (every focusable control, including the
 checkbox) and the `.btn-primary` utility class (`submit`'s default).
 
-`--color-interactive`, `--color-surface-raised`, and `--form-input-height`
-aren't literally written in `form_builder.rb.tt` itself — they're consumed
-by the `input`/`textarea`/`select`/`file_input` components the builder
-renders internally. They're listed here because using the builder means
-rendering all of them; each control's own docs page documents its complete
-token list if you need more detail than this summary.
+`--color-interactive` is literal in the `checkbox` component via the
+`text-interactive` utility. The transitive tokens — `--color-surface-raised`
+and `--form-input-height` — are consumed by the `input`/`textarea`/`select`/
+`file_input` components the builder renders internally. They're listed here
+because using the builder means rendering all of them; each control's own docs
+page documents its complete token list if you need more detail than this summary.
 
 ## `select`: Rails choice-pair order, not the primitive's
 

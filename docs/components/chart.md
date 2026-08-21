@@ -16,7 +16,7 @@ pin "chart.js", to: "https://cdn.jsdelivr.net/npm/chart.js@4/+esm"
 ## Installation
 
 ```bash
-rails g view_primitives:add chart
+rails g modelrails_ui:add chart
 ```
 
 Creates:

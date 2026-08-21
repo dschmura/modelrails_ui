@@ -5,7 +5,7 @@ Single-line text input with consistent focus, invalid, and disabled states.
 ## Installation
 
 ```bash
-rails g view_primitives:add input
+rails g modelrails_ui:add input
 ```
 
 Creates `app/components/ui/input_component.rb`.

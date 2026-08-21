@@ -5,7 +5,7 @@ HTML5 `<video>` element with multiple source formats, track (caption) support, a
 ## Installation
 
 ```bash
-rails g view_primitives:add video
+rails g modelrails_ui:add video
 ```
 
 Creates `app/components/ui/video_component.rb`.

@@ -5,7 +5,7 @@ Wraps multiple buttons into a visually joined row — shared border, collapsed i
 ## Installation
 
 ```bash
-rails g view_primitives:add button_group
+rails g modelrails_ui:add button_group
 ```
 
 Creates `app/components/ui/button_group_component.rb`.

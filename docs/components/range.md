@@ -5,7 +5,7 @@ Styled range slider (`<input type="range">`) with a custom thumb and focus ring.
 ## Installation
 
 ```bash
-rails g view_primitives:add range
+rails g modelrails_ui:add range
 ```
 
 Creates `app/components/ui/range_component.rb`.

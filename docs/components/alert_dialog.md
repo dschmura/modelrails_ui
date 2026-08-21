@@ -7,7 +7,7 @@ Requires `dialog_controller.js` (copied automatically by the generator).
 ## Installation
 
 ```bash
-rails g view_primitives:add alert_dialog
+rails g modelrails_ui:add alert_dialog
 ```
 
 Creates `app/components/ui/alert_dialog_component.rb`.

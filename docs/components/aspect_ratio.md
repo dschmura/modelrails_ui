@@ -5,7 +5,7 @@ Constrains child content to a fixed aspect ratio using the CSS `aspect-ratio` pr
 ## Installation
 
 ```bash
-rails g view_primitives:add aspect_ratio
+rails g modelrails_ui:add aspect_ratio
 ```
 
 Creates `app/components/ui/aspect_ratio_component.rb`.

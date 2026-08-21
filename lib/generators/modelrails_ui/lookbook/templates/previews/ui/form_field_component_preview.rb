@@ -34,8 +34,8 @@ module UI
     def with_hint
     end
 
-    # An error paragraph (role=alert, id #{id}-error) — the control gets aria-invalid
-    # and aria-describedby pointing at it.
+    # An error paragraph (id #{id}-error) — the control gets aria-invalid and aria-describedby
+    # pointing at it. The focused ErrorSummary is the announcement mechanism.
     def with_error
     end
 

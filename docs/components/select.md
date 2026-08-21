@@ -5,7 +5,7 @@ Native `<select>` element with consistent border, focus, and disabled styles.
 ## Installation
 
 ```bash
-rails g view_primitives:add select
+rails g modelrails_ui:add select
 ```
 
 Creates `app/components/ui/select_component.rb`.
