@@ -29,7 +29,14 @@ class TestGeneratorComponents < Minitest::Test
   # test_supported_has_no_extra_directories) stays complete.
   PARTIAL_ONLY = %w[form_draft].freeze
 
-  ALL_COMPONENTS = (PHASE1 + PHASE2 + PHASE3 + PHASE4 + PHASE5 + PHASE6 + PHASE7 + PHASE8 + PHASE9 + PARTIAL_ONLY).freeze
+  # Non-ViewComponent Ruby generators — NOT a phase roster of ViewComponent-backed
+  # components like PHASE1-9 above. They ship a .rb.tt that is NOT a *_component.rb.tt,
+  # routed by NON_COMPONENT_RB. Still folded into ALL_COMPONENTS so the supported-
+  # components accounting (every Components.supported entry must be represented
+  # somewhere in this file, per test_supported_has_no_extra_directories) stays complete.
+  NON_COMPONENT_TEMPLATES = %w[form_builder].freeze
+
+  ALL_COMPONENTS = (PHASE1 + PHASE2 + PHASE3 + PHASE4 + PHASE5 + PHASE6 + PHASE7 + PHASE8 + PHASE9 + PARTIAL_ONLY + NON_COMPONENT_TEMPLATES).freeze
 
   TEMPLATE_ROOT = File.expand_path("../lib/generators/modelrails_ui/add/templates", __dir__)
 
