@@ -42,4 +42,19 @@ class AvatarSystemTest < BrowserTestCase
 
     assert_axe_clean
   end
+
+  # After the swap there is no <img>, so a controller re-connecting over that DOM (a move,
+  # a Turbo restore) must not throw on the missing target. js_errors: true means an
+  # exception here fails the test rather than leaving a quietly dead component.
+  def test_reconnecting_after_the_swap_does_not_throw
+    assert_selector "[data-avatar-target=fallback]", text: "DC"
+
+    page.execute_script(<<~JS)
+      const host = document.querySelector("[data-controller~=avatar]");
+      host.replaceWith(host.cloneNode(true));
+    JS
+
+    assert_selector "[data-avatar-target=fallback]", text: "DC"
+    assert_no_stimulus_errors
+  end
 end

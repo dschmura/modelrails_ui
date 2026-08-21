@@ -114,6 +114,14 @@ module BrowserHarness
         <script type="module">
           import { Application } from "@hotwired/stimulus"
           const application = Application.start()
+          // Stimulus catches errors thrown in lifecycle callbacks and routes them here
+          // rather than letting them reach window.onerror — so `js_errors` never sees a
+          // controller that throws in connect(). Recording them is the only way this lane
+          // can tell a working component from a silently dead one.
+          window.__stimulusErrors = []
+          application.handleError = (error, message, detail) => {
+            window.__stimulusErrors.push(`${message}: ${error && error.message}`)
+          }
           #{registrations}
           window.__stimulusReady = true
         </script>
@@ -154,6 +162,14 @@ class BrowserTestCase < Minitest::Test
   end
 
   def press(key) = page.driver.browser.keyboard.type(key)
+
+  # A controller that throws in a lifecycle callback renders nothing visibly wrong — it
+  # just stops working. Assert explicitly that none did.
+  def assert_no_stimulus_errors
+    errors = page.evaluate_script("window.__stimulusErrors || []")
+
+    assert_empty errors, "Stimulus reported controller errors:\n  #{errors.join("\n  ")}"
+  end
 
   # Structural accessibility only. `color-contrast` is OFF because the stylesheet ships as
   # Tailwind source and this harness serves no compiled CSS — axe would report against
