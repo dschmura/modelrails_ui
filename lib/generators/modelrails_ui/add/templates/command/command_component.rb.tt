@@ -108,7 +108,11 @@ module UI
           role: "dialog",
           "aria-modal": "true",
           "aria-label": I18n.t("modelrails_ui.command.dialog_label", default: "Command palette"),
-          data: {action: "keydown.escape@window->command#close"}) {
+          # `esc`, not `escape` — Stimulus's KeyboardEvent filter vocabulary (every
+          # other floating component here uses keydown.esc). `escape` is an unknown
+          # filter: Stimulus throws "contains unknown key filter" and the documented
+          # Escape-closes behaviour never runs. Only a browser can see this.
+          data: {action: "keydown.esc@window->command#close"}) {
           concat search_bar
           concat content_tag(:div,
             class: LIST,

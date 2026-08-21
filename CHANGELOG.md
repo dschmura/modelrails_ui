@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Command palette fuzzy ranking. The filter was substring-only and preserved source order; it now scores with cmdk's scorer (vendored, MIT — full notice in the file header) and ranks matches within each group. `data-command-keywords` lets an item be found by a synonym it does not display. Group order is left alone deliberately: it is authored intent, and reordering groups between keystrokes moves the palette's shape under the reader. (A7)
+
+### Fixed
+
+- **Escape never closed the command palette.** The component used `keydown.escape`, which is not in Stimulus's key-filter vocabulary — Stimulus throws "contains unknown key filter" and the action never runs. Every other floating component already used `keydown.esc`. Invisible to the structural and render lanes; found by the browser lane. A new test pins every `keydown.*` filter to one Stimulus recognises.
+
 ### Changed
 
 - `ButtonComponent::COMBOS` now names the canonical `.btn-*` classes instead of re-listing their utilities. The stylesheet owns button appearance and the Ruby table is the typed accessor for it — previously the same rules existed in both languages and had already drifted. Rendered output is equivalent; `.btn-primary` carries exactly what the old utility string produced. (#101)
