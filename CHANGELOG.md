@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- `trigger_class:` on Popover and DropdownMenu **replaced** the trigger's classes instead of merging, so a caller restyling the trigger silently removed its focus indicator (WCAG 2.4.11) and 44px target-size floor (2.5.5 AAA) — from the one element the components document as "a real `<button>` trigger". Caller classes are now merged over a non-replaceable `TRIGGER_BASE`. Default rendering is unchanged. (#100)
+
+### Fixed
+
 - **The `focus-ring` utility now ships.** It is emitted by 47 component templates but was never defined in `modelrails_ui.css`, and Tailwind drops unresolvable classes silently — so in every install the design system's own AAA focus treatment (a 2px offset outline on `:focus-visible`) simply did not exist, and components fell back to the browser default. (#98)
 - `.btn-primary`, `.btn-secondary`, `.btn-danger` and `.form-input` used a box-shadow focus ring (`focus:ring-*`), which the library's own rules forbid: a ring is clipped by any `overflow: hidden` ancestor and vanishes in forced-colors mode (WCAG 2.4.7). They now `@apply focus-ring`, matching the reference app. `.btn-*` also fired on `:focus` rather than `:focus-visible`, so the indicator appeared on mouse click. (#99)
 
