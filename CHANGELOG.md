@@ -47,6 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Breaking:** `FormFieldComponent` describedby order is now error-first; field-level error paragraphs are plain `<p>` (no `role="alert"`) — the focused ErrorSummary is the announcement mechanism.
 - SelectComponent invalid state now paints its ring (`aria-invalid:ring-2` added) (#112).
+- **Breaking:** railties floor raised to >= 8.0 — the form builder uses Rails 8's canonical checkbox helpers.
 
 ### Removed
 

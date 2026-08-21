@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     modelrails_ui (0.9.0)
-      railties (>= 7.1)
+      railties (>= 8.0)
       view_component (>= 4.0)
 
 GEM
@@ -329,7 +329,7 @@ DEPENDENCIES
   lefthook
   minitest (>= 5.16)
   modelrails_ui!
-  rails (>= 7.1)
+  rails (>= 8.0)
   rake (~> 13.0)
   rubocop-minitest
   rubocop-performance
