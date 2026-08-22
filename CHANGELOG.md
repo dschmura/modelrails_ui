@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- FormFieldComponent: with neither `id:` nor `label:` the field now renders unwired (no ids) instead of using a constant fallback id that collided when a page rendered two instances (caught by base's no-constant-DOM-ids guard).
+
 ## [0.10.0] - 2026-08-22
 
 ### Added
