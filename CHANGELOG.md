@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Invalid-state ring now paints on all seven templates that set only its color (`aria-invalid:ring-2` added; structural gate pins the class); input/textarea keep the disabled affordance in the error state (#122).
+## [0.10.0] - 2026-08-22
+
 ### Added
 
 - Sidebar: the collapsed rail now explains its icons. Items show a hint bubble on hover or focus, `aria-hidden` by construction — the item's label is clipped to width 0 but stays in the accessibility tree, so the link already has its name and announcing the bubble too would name every item twice. It is `fixed` + anchor-positioned because the nav is `overflow-y-auto`, which makes its overflow-x non-visible as well and would clip an `absolute` bubble at the rail edge. (A5)
@@ -57,6 +61,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - `error_summary` gains `unlinked:` to opt attributes out of derived-id anchors (custom ids, value-suffixed checkboxes, unrendered fields); the anchor contract is documented (#121).
+- Legacy I18n keys (`ui.toaster.*`, `ui.resizable.*`, `modals.close`) migrated to the `modelrails_ui.*` namespace; old keys keep working as fallbacks for hosts that translated them (#116).
 
 - FormFieldComponent: the no-`id:` fallback now derives a stable id from `label` (constant `form_field` when there's none) instead of `object_id`, which changed on every render and broke Turbo morphing. (#113)
 
