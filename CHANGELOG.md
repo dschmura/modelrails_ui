@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.10.0] - 2026-08-22
+
 ### Added
 
 - Sidebar: the collapsed rail now explains its icons. Items show a hint bubble on hover or focus, `aria-hidden` by construction — the item's label is clipped to width 0 but stays in the accessibility tree, so the link already has its name and announcing the bubble too would name every item twice. It is `fixed` + anchor-positioned because the nav is `overflow-y-auto`, which makes its overflow-x non-visible as well and would clip an `absolute` bubble at the rail edge. (A5)
