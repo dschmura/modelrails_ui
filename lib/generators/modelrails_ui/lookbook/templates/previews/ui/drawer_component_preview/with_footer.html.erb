@@ -1,5 +1,6 @@
 <%= render(UI::DrawerComponent.new(
       title: "Share document",
+      id: "drawer-preview-with-footer",
       description: "Choose how to share this document with others.")) do |c| %>
   <% c.with_trigger { "Share" } %>
   <% c.with_footer do %>

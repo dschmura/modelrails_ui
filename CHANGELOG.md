@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `UI::ModalChrome` — the eleven chrome methods shared by dialog, sheet and drawer (wrapper_attrs, header, close_button, body, footer_area, etc.) now live in one concern instead of three hand-copied sets; sheet and drawer adopt it, keeping only their variant-specific bits.
+- Generator: `SHARED_RB` registry — a component template can now declare a shared Ruby module (alongside the existing `SHARED_JS`), copied once to `app/components/ui/`. First user: `modal_chrome.rb`.
+- Dialog/sheet/drawer chrome now carries `data-slot` roles (`header`, `close`, `body`, `footer`) for host styling and test hooks.
+
+### Changed
+
+- **Breaking:** `UI::AlertDialogComponent` is gone — folded into dialog. Use `ui :dialog, role: :alertdialog` instead.
+- **Breaking:** `wrapper: true` without an explicit `id:` or `body_id:` now raises `ArgumentError` in dev/test instead of minting a random body id whose Turbo Stream target silently no-ops in production.
+
+### Fixed
+
+- Sheet applied `extra_class` twice — once on the wrapper, once again on the panel — unlike its three siblings, which apply it once on the wrapper only.
+- `body_id` derivation unified across dialog, sheet and drawer through `ModalChrome`'s shared `setup_modal_chrome`, instead of each template deriving it independently.
+
 ## [0.10.1] - 2026-08-22
 
 ### Fixed

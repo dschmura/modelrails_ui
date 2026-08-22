@@ -55,7 +55,8 @@ class TestLookbookChoosingPages < Minitest::Test
       end.map { |path| File.basename(path, "_component_preview.rb") }.sort
 
       refute_empty siblings, "#{section}: no previews carry this @logical_path"
-      # Backtick-delimited match so `dialog` is not falsely covered by `alert_dialog`.
+      # Backtick-delimited match avoids a false-positive substring hit (e.g. `dialog`
+      # inside a longer component name).
       missing = siblings.reject { |name| source.match?(/`#{Regexp.escape(name)}`/) }
 
       assert_empty missing, "#{rel} is missing: #{missing.join(", ")}"

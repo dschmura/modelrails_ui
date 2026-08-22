@@ -11,7 +11,7 @@ class TestGeneratorComponents < Minitest::Test
   PHASE3 = %w[input textarea checkbox radio_group select switch toggle toggle_group form_field
     file_input search_input number_input range floating_label error_summary].freeze
   PHASE4 = %w[breadcrumb pagination stepper bottom_nav footer tabs navbar navigation_menu mega_menu].freeze
-  PHASE5 = %w[dialog alert_dialog sheet drawer popover tooltip hover_card].freeze
+  PHASE5 = %w[dialog sheet drawer popover tooltip hover_card].freeze
   PHASE6 = %w[dropdown_menu context_menu menubar command combobox].freeze
   PHASE7 = %w[
     collapsible scroll_area chat_bubble device_mockup qr_code
@@ -165,10 +165,10 @@ class TestGeneratorComponents < Minitest::Test
   end
 
   def test_overlays_share_modal_controller_via_extra_stimulus
-    # Wave 4: alert_dialog, drawer, and sheet all wire the single canonical
-    # dialog/modal_controller.js via EXTRA_STIMULUS.
+    # Wave 4: drawer and sheet wire the single canonical dialog/modal_controller.js
+    # via EXTRA_STIMULUS (dialog owns it directly).
     expected = {source: "dialog/modal_controller.js", name: "modal"}
-    %w[alert_dialog drawer sheet].each do |overlay|
+    %w[drawer sheet].each do |overlay|
       cfg = ModelrailsUi::Generators::Components::EXTRA_STIMULUS[overlay]
 
       assert_equal expected, cfg,

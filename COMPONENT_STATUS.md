@@ -56,7 +56,6 @@ ledger is human judgment (Tier + Notes) only.
 | timeline | proven | Display-1b (raw `bg-green-500`/`amber-500` → semantic signal dots; `<ol>`/`<li>` order + decorative aria-hidden dots; `<time datetime>`; fail-loud + destructive alias). 0a + app 0b/AAA CI green (#257) |
 | scroll_area | proven | Display-1b (WCAG 2.1.1: focusable region `tabindex=0`+`role=region`+mandatory name+`focus-ring`; `focusable:false` opt-out; fail-loud orientation + missing-name). 0a + app 0b/AAA CI green (#257) |
 | dialog | proven | Wave 4 overlays exemplar (native <dialog>; 0a + JS-behavior 0b: open/escape/aria-modal + AAA on live modal). Was adopted unverified; now app-adopted + 0b green (#241) |
-| alert_dialog | proven | native `<dialog role=alertdialog>` (Wave 4); shared `modal` controller; 0a render test + role/labelledby/describedby + 44px i18n close |
 | drawer | proven | native bottom `<dialog>` slide-up (Wave 4); shared `modal` controller (translateY); decorative drag-handle + 44px close; 0a |
 | sheet | proven | native side `<dialog>` per-side slide (Wave 4); fail-loud `coerce_side`; shared `modal` controller; 0a |
 | popover | proven | Wave 5a floating exemplar (CSS positioning + shared `floating` controller; real button trigger w/ aria-haspopup/expanded/controls; role=dialog panel named by label:; Escape + outside-click close w/ focus return; fail-loud side/align). 0a render test |
@@ -99,7 +98,7 @@ ledger is human judgment (Tier + Notes) only.
 | toaster | hardened | Final band — **gem-0a-only, SUPERSEDED in this app by `shared/_toasts`** (no app adoption). Template still hardened: 6 raw-palette → tinted signal tokens (alert/banner model); per-severity live region; 44px dismiss + `focus-ring`; fail-loud `severity` (documents the flash-key collision). 0a (21) |
 | form_draft | gem-0a-proven / app-0b-pending | encrypted localStorage form-draft recovery (notice partial + form-mounted controller). 0a render test; app 0b pending. |
 
-**Hardening program COMPLETE** — all 82 components are `proven` (0a + app 0b/AAA), `hardened` (gem 0a; `wysiwyg`/`toaster` are superseded in this host and adopt no app 0b), or `gem-0a-proven / app-0b-pending` (form_draft). No `experimental` components remain.
+**Hardening program COMPLETE** — all 81 components are `proven` (0a + app 0b/AAA), `hardened` (gem 0a; `wysiwyg`/`toaster` are superseded in this host and adopt no app 0b), or `gem-0a-proven / app-0b-pending` (form_draft). No `experimental` components remain.
 
 **Sibling templates to copy:** `alert` is the canonical Wave 1 reference. Copy its render test
 (`test/render/alert_render_test.rb`), template-backed preview, and — for 0b — its preview-host

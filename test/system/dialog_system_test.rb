@@ -2,16 +2,17 @@
 
 require "system_test_helper"
 require "securerandom"
+load_component "dialog", "modal_chrome.rb.tt"
 load_component "dialog", "dialog_component.rb.tt"
 
 # Two dialogs, the second opened from inside the first — the ordinary reason to stack.
 BrowserHarness.scenario("dialog/stacked", controllers: %w[modal]) do
   view = ActionController::Base.new.view_context
-  inner = UI::DialogComponent.new(title: "Discard changes?").render_in(view) do |c|
+  inner = UI::DialogComponent.new(title: "Discard changes?", id: "inner-dialog").render_in(view) do |c|
     c.with_trigger { "Discard" }
     view.tag.p("The confirm sits above the form it was opened from.")
   end
-  UI::DialogComponent.new(title: "Edit project").render_in(view) do |c|
+  UI::DialogComponent.new(title: "Edit project", id: "outer-dialog").render_in(view) do |c|
     c.with_trigger { "Open form" }
     inner
   end

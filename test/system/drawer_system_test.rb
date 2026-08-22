@@ -2,11 +2,12 @@
 
 require "system_test_helper"
 require "securerandom"
+load_component "dialog", "modal_chrome.rb.tt"
 load_component "drawer", "drawer_component.rb.tt"
 
 BrowserHarness.scenario("drawer/basic", controllers: %w[modal drawer-drag]) do
   view = ActionController::Base.new.view_context
-  UI::DrawerComponent.new(title: "More options", description: "Pick one.").render_in(view) do |c|
+  UI::DrawerComponent.new(title: "More options", id: "drawer-basic", description: "Pick one.").render_in(view) do |c|
     c.with_trigger { "Open drawer" }
     view.tag.p("Body content.")
   end

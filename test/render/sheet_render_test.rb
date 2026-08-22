@@ -2,6 +2,7 @@
 
 require "render_test_helper"
 require "securerandom"
+load_component "dialog", "modal_chrome.rb.tt"
 load_component "sheet", "sheet_component.rb.tt"
 
 # STRUCTURE-only render specs. The modal Stimulus controller's BEHAVIOR (showModal
@@ -11,7 +12,7 @@ load_component "sheet", "sheet_component.rb.tt"
 # <dialog> scaffolding the controller relies on (a closed native dialog with full ARIA).
 class SheetRenderTest < ViewComponent::TestCase
   def test_renders_a_native_dialog_with_modal_semantics
-    render_inline(UI::SheetComponent.new(title: "Filters"))
+    render_inline(UI::SheetComponent.new(title: "Filters", id: "s-native"))
 
     assert_selector "dialog[role='dialog'][aria-modal='true']", visible: :all
   end
@@ -37,37 +38,37 @@ class SheetRenderTest < ViewComponent::TestCase
   end
 
   def test_default_side_right_sets_leave_transform
-    render_inline(UI::SheetComponent.new(title: "T"))
+    render_inline(UI::SheetComponent.new(title: "T", id: "s4"))
 
     assert_selector "[data-controller='modal'][data-modal-leave-transform-value='translateX(100%)']", visible: :all
   end
 
   def test_side_left_sets_leave_transform
-    render_inline(UI::SheetComponent.new(title: "T", side: :left))
+    render_inline(UI::SheetComponent.new(title: "T", id: "s5", side: :left))
 
     assert_selector "[data-modal-leave-transform-value='translateX(-100%)']", visible: :all
   end
 
   def test_side_top_sets_leave_transform
-    render_inline(UI::SheetComponent.new(title: "T", side: :top))
+    render_inline(UI::SheetComponent.new(title: "T", id: "s6", side: :top))
 
     assert_selector "[data-modal-leave-transform-value='translateY(-100%)']", visible: :all
   end
 
   def test_side_bottom_sets_leave_transform
-    render_inline(UI::SheetComponent.new(title: "T", side: :bottom))
+    render_inline(UI::SheetComponent.new(title: "T", id: "s7", side: :bottom))
 
     assert_selector "[data-modal-leave-transform-value='translateY(100%)']", visible: :all
   end
 
   def test_right_panel_has_right_edge_class
-    render_inline(UI::SheetComponent.new(title: "T", side: :right))
+    render_inline(UI::SheetComponent.new(title: "T", id: "s8", side: :right))
 
     assert_selector "[data-modal-target='panel'].right-0", visible: :all
   end
 
   def test_left_panel_has_left_edge_class
-    render_inline(UI::SheetComponent.new(title: "T", side: :left))
+    render_inline(UI::SheetComponent.new(title: "T", id: "s9", side: :left))
 
     assert_selector "[data-modal-target='panel'].left-0", visible: :all
   end
@@ -79,13 +80,13 @@ class SheetRenderTest < ViewComponent::TestCase
   end
 
   def test_renders_an_accessible_close_button_wired_to_the_controller
-    render_inline(UI::SheetComponent.new(title: "T"))
+    render_inline(UI::SheetComponent.new(title: "T", id: "s-close"))
 
     assert_selector "button[type='button'][aria-label='Close'][data-action~='click->modal#close']", visible: :all
   end
 
   def test_renders_with_aaa_tokens
-    render_inline(UI::SheetComponent.new(title: "T"))
+    render_inline(UI::SheetComponent.new(title: "T", id: "s-aaa"))
 
     assert_selector "[data-modal-target='panel'].bg-surface-overlay", visible: :all
     assert_selector "h2.text-text-heading", visible: :all
@@ -99,10 +100,19 @@ class SheetRenderTest < ViewComponent::TestCase
   end
 
   def test_footer_slot_renders_in_a_footer_area
-    render_inline(UI::SheetComponent.new(title: "T")) do |sheet|
+    render_inline(UI::SheetComponent.new(title: "T", id: "s-footer")) do |sheet|
       sheet.with_footer { "Apply" }
     end
 
     assert_text "Apply"
+  end
+
+  def test_extra_class_is_applied_exactly_once_on_the_wrapper
+    render_inline(UI::SheetComponent.new(title: "T", id: "s1", class: "zz-probe")) { "body" }
+
+    # Hand-copy drift bug (2026-08-22): sheet applied the caller's class on the
+    # wrapper AND the panel; its three siblings apply it once, on the wrapper.
+    assert_selector "div.zz-probe", count: 1
+    assert_no_selector "dialog .zz-probe"
   end
 end

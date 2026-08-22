@@ -22,16 +22,20 @@ class TestFormBuilderRegistry < Minitest::Test
   end
 
   # The silent-misfile invariant: any .rb.tt that is not a *_component.rb.tt
-  # must be claimed by NON_COMPONENT_RB, or the generator's fallback would
-  # install it into app/components/ui/ where it does not belong.
+  # must be claimed by NON_COMPONENT_RB or as a SHARED_RB source, or the
+  # generator's fallback would install it into app/components/ui/ under the
+  # wrong name. (SHARED_RB sources are copied once via copy_shared_rb;
+  # test_shared_rb_modules.rb carries their own invariants.)
   def test_every_non_component_rb_template_is_registered
+    claimed = Components::NON_COMPONENT_RB.keys +
+      Components::SHARED_RB.values.flatten.map { |m| m.fetch(:source) }
     on_disk = Dir.glob("#{TEMPLATES}/*/*.rb.tt")
       .reject { |p| File.basename(p).end_with?("_component.rb.tt") }
       .map { |p| p.delete_prefix("#{TEMPLATES}/") }
 
-    assert_equal on_disk.sort, (on_disk & Components::NON_COMPONENT_RB.keys).sort,
+    assert_equal on_disk.sort, (on_disk & claimed).sort,
       "unregistered non-component .rb.tt would be misfiled into app/components/ui/: " \
-      "#{(on_disk - Components::NON_COMPONENT_RB.keys).inspect}"
+      "#{(on_disk - claimed).inspect}"
   end
 
   def test_primary_path_for_form_builder_points_at_app_form_builders
