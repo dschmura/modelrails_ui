@@ -2,6 +2,7 @@
 
 require "render_test_helper"
 require "securerandom"
+load_component "dialog", "modal_chrome.rb.tt"
 load_component "dialog", "dialog_component.rb.tt"
 
 # STRUCTURE-only render specs. The modal Stimulus controller's BEHAVIOR (showModal
@@ -11,7 +12,7 @@ load_component "dialog", "dialog_component.rb.tt"
 # scaffolding the controller relies on (a closed native dialog with full ARIA).
 class DialogRenderTest < ViewComponent::TestCase
   def test_renders_a_native_dialog_with_modal_semantics
-    render_inline(UI::DialogComponent.new(title: "Edit profile"))
+    render_inline(UI::DialogComponent.new(title: "Edit profile", id: "d-native"))
 
     assert_selector "dialog[role='dialog'][aria-modal='true']", visible: :all
   end
@@ -37,21 +38,21 @@ class DialogRenderTest < ViewComponent::TestCase
   end
 
   def test_renders_an_accessible_close_button_wired_to_the_controller
-    render_inline(UI::DialogComponent.new(title: "T"))
+    render_inline(UI::DialogComponent.new(title: "T", id: "d-close"))
 
     assert_selector "button[type='button'][aria-label='Close'][data-action~='click->modal#close']", visible: :all
   end
 
   # AAA semantic tokens (the design-token guarantee), not raw Tailwind:
   def test_renders_with_aaa_tokens
-    render_inline(UI::DialogComponent.new(title: "T"))
+    render_inline(UI::DialogComponent.new(title: "T", id: "d-aaa"))
 
     assert_selector "[data-modal-target='panel'].bg-surface-overlay", visible: :all
     assert_selector "h2.text-text-heading", visible: :all
   end
 
   def test_wrapper_renders_the_modal_controller_and_trigger_action
-    render_inline(UI::DialogComponent.new(title: "T")) do |dialog|
+    render_inline(UI::DialogComponent.new(title: "T", id: "d-wrapper")) do |dialog|
       dialog.with_trigger { "Open" }
     end
 
@@ -67,13 +68,13 @@ class DialogRenderTest < ViewComponent::TestCase
   end
 
   def test_size_maps_to_a_max_width_on_the_panel
-    render_inline(UI::DialogComponent.new(title: "T", size: :lg))
+    render_inline(UI::DialogComponent.new(title: "T", id: "d-size", size: :lg))
 
     assert_selector "[data-modal-target='panel'].max-w-2xl", visible: :all
   end
 
   def test_footer_slot_renders_in_a_footer_area
-    render_inline(UI::DialogComponent.new(title: "T")) do |dialog|
+    render_inline(UI::DialogComponent.new(title: "T", id: "d-footer")) do |dialog|
       dialog.with_footer { "Footer actions" }
     end
 
@@ -84,7 +85,7 @@ class DialogRenderTest < ViewComponent::TestCase
   # the legacy key a host may already translate, then to inline English.
   def test_close_label_prefers_the_namespaced_key
     with_translations(modelrails_ui: {modal: {close: "Shut it"}}) do
-      render_inline(UI::DialogComponent.new(title: "T")) { "body" }
+      render_inline(UI::DialogComponent.new(title: "T", id: "d-label-ns")) { "body" }
 
       assert_selector "button[aria-label='Shut it']", visible: :all
     end
@@ -92,14 +93,14 @@ class DialogRenderTest < ViewComponent::TestCase
 
   def test_close_label_falls_back_to_a_legacy_host_translation
     with_translations(modals: {close: "Fermer"}) do
-      render_inline(UI::DialogComponent.new(title: "T")) { "body" }
+      render_inline(UI::DialogComponent.new(title: "T", id: "d-label-legacy")) { "body" }
 
       assert_selector "button[aria-label='Fermer']", visible: :all
     end
   end
 
   def test_close_label_defaults_to_english_with_no_translations
-    render_inline(UI::DialogComponent.new(title: "T")) { "body" }
+    render_inline(UI::DialogComponent.new(title: "T", id: "d-label-default")) { "body" }
 
     assert_selector "button[aria-label='Close']", visible: :all
   end

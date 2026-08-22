@@ -101,6 +101,7 @@ load_tt "command/command_component.rb.tt"
 load_tt "combobox/combobox_component.rb.tt"
 
 # Load Phase 5
+load_tt "dialog/modal_chrome.rb.tt"
 load_tt "dialog/dialog_component.rb.tt"
 load_tt "alert_dialog/alert_dialog_component.rb.tt"
 load_tt "sheet/sheet_component.rb.tt"
