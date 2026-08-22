@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.11.0] - 2026-08-22
+
 ### Added
 
 - `UI::ModalChrome` — the eleven chrome methods shared by dialog, sheet and drawer (wrapper_attrs, header, close_button, body, footer_area, etc.) now live in one concern instead of three hand-copied sets; sheet and drawer adopt it, keeping only their variant-specific bits.
