@@ -15,6 +15,9 @@ module UI
   #
   # ## Use when
   # - You need a focus-trapped modal for a confirmation, form, or detail overlay.
+  # - A choice must be confirmed before proceeding — pass `role: :alertdialog` for an
+  #   assertive confirm gate that screen readers announce immediately (a destructive or
+  #   irreversible action: delete, reset, revoke access).
   # - You are building a custom wrapper around `UI::DialogComponent` (pass `wrapper: false`
   #   and manage the `data-controller="modal"` yourself).
   #
@@ -34,7 +37,7 @@ module UI
   #   a parent element and wire your own trigger.
   #
   # ## Related
-  # `alert_dialog` · `drawer` · `sheet`
+  # `drawer` · `sheet`
   # @logical_path Overlays
   class DialogComponentPreview < ViewComponent::Preview
     include UIHelper

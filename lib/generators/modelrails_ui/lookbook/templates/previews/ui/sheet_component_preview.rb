@@ -13,7 +13,7 @@ module UI
   #   forms that slide in from a screen edge.
   #
   # ## Don't use when
-  # - A centered confirm gate is needed — use `alert_dialog`.
+  # - A centered confirm gate is needed — use `dialog` with `role: :alertdialog`.
   # - A bottom sheet is the right pattern — use `drawer`.
   #
   # ## Accessibility contract

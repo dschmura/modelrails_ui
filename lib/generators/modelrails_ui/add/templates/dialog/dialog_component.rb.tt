@@ -10,6 +10,9 @@ module UI
   #
   # ## Use when
   # - You need a focus-trapped modal for a confirmation, form, or detail overlay.
+  # - A choice must be confirmed before proceeding — pass `role: :alertdialog` for an
+  #   assertive confirm gate that screen readers announce immediately (destructive or
+  #   irreversible actions: delete, reset, revoke access).
   # - You are building a custom wrapper (pass `wrapper: false` and own the
   #   `data-controller="modal"` element + trigger).
   #
@@ -33,6 +36,8 @@ module UI
 
     SIZES = { sm: "max-w-sm", md: "max-w-lg", lg: "max-w-2xl", full: "max-w-4xl" }.freeze
 
+    ROLES = %i[dialog alertdialog].freeze
+
     PANEL = "relative w-full mx-auto rounded-lg bg-surface-overlay border border-border shadow-xl " \
             "max-h-[calc(100vh-3rem)] flex flex-col opacity-0"
 
@@ -47,9 +52,14 @@ module UI
     #              apps that already own the wrapper/trigger).
     # body_id:     id of the scrollable body element (defaults unique; pass a fixed id
     #              when Turbo Streams target it, e.g. "modal-body").
+    # role:        :dialog (default) | :alertdialog — an assertive confirm gate that
+    #              screen readers announce immediately, capped at max-w-md regardless
+    #              of size: (v0.11.0 folded the standalone confirm-dialog component
+    #              into this role).
     def initialize(title:, id: nil, size: :md, description: nil, open: false,
-                   wrapper: true, body_id: nil, **html_attrs)
+                   wrapper: true, body_id: nil, role: :dialog, **html_attrs)
       @size = size.to_sym
+      @role = coerce_role(role.to_sym)
       setup_modal_chrome(title: title, id: id, description: description, open: open,
         wrapper: wrapper, body_id: body_id, html_attrs: html_attrs)
     end
@@ -59,7 +69,7 @@ module UI
     def dialog_attrs
       attrs = {
         id: @id,
-        role: "dialog",
+        role: @role.to_s,
         "aria-modal": "true",
         "aria-labelledby": "#{@id}-title",
         data: { modal_target: "dialog" },
@@ -72,7 +82,23 @@ module UI
     def panel
       content_tag(:div, safe_join([header, body, footer_area].compact),
         data: { modal_target: "panel" },
-        class: cn(PANEL, SIZES.fetch(@size, SIZES[:md])))
+        class: @role == :alertdialog ? cn(PANEL, "max-w-md") : cn(PANEL, SIZES.fetch(@size, SIZES[:md])))
+    end
+
+    # Fail loud on an unknown role in development/test so misuse is caught
+    # immediately; fall back to :dialog in production so a bad role never
+    # 500s a page. Same shape as sheet's coerce_side — see its comment for the
+    # Rails.respond_to?(:env) guard rationale.
+    def coerce_role(role)
+      return role if ROLES.include?(role)
+
+      unless defined?(Rails) && Rails.respond_to?(:env) && Rails.env.production?
+        raise ArgumentError,
+          "UI::DialogComponent: unknown role #{role.inspect}. " \
+          "Expected one of: #{ROLES.join(", ")}."
+      end
+
+      :dialog
     end
   end
 end

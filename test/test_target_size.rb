@@ -26,11 +26,9 @@ class TestTargetSize < Minitest::Test
   def test_modal_panels_drop_scale_95_rest_class
     # TW4 compiles scale-95 to the standalone `scale:` property, which composes
     # with (not overrides) the controller's inline transform → open panels rest
-    # at 95%. The rest class must be gone from all three panel constants.
+    # at 95%. The rest class must be gone from both panel constants.
     refute_includes template("dialog/dialog_component.rb.tt"), "scale-95",
       "dialog PANEL must not carry scale-95"
-    refute_includes template("alert_dialog/alert_dialog_component.rb.tt"), "scale-95",
-      "alert_dialog PANEL must not carry scale-95"
     refute_includes template("gallery/gallery_component.rb.tt"), "scale-95",
       "gallery PANEL_CLS must not carry scale-95"
   end

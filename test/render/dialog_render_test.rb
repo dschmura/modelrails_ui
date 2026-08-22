@@ -105,6 +105,20 @@ class DialogRenderTest < ViewComponent::TestCase
     assert_selector "button[aria-label='Close']", visible: :all
   end
 
+  def test_role_alertdialog_reproduces_the_alert_dialog_contract
+    render_inline(UI::DialogComponent.new(title: "Sure?", id: "d1", role: :alertdialog)) { "body" }
+
+    assert_selector "dialog[role='alertdialog']"
+    assert_selector "dialog [data-modal-target='panel'][class*='max-w-md']"
+  end
+
+  def test_role_defaults_to_dialog_and_unknown_roles_fail_loud
+    render_inline(UI::DialogComponent.new(title: "T", id: "d2")) { "body" }
+
+    assert_selector "dialog[role='dialog']"
+    assert_raises(ArgumentError) { UI::DialogComponent.new(title: "T", id: "d3", role: :banana) }
+  end
+
   private
 
   def with_translations(hash)

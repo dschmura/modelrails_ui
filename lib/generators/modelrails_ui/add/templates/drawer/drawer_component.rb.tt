@@ -14,7 +14,7 @@ module UI
   # - You need a supplemental overlay that doesn't require center-stage emphasis.
   #
   # ## Don't use when
-  # - A centered confirm gate is needed — use `alert_dialog`.
+  # - A centered confirm gate is needed — use `dialog` with `role: :alertdialog`.
   # - A side panel is needed — use `sheet`.
   #
   # ## Accessibility contract

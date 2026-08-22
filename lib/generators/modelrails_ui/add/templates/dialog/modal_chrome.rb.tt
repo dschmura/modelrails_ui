@@ -5,9 +5,10 @@ module UI
   #
   # The markup every native-`<dialog>` modal surface shares: the `data-controller="modal"`
   # wrapper + trigger slot, the `<dialog>` element and its ARIA wiring, the header/close
-  # button, the scrollable body + description, and the footer slot. `dialog`, `sheet`,
-  # `alert_dialog`, and `drawer` differ only in panel shape (size classes vs. side/offset
-  # classes vs. `role="alertdialog"`) — everything else is byte-identical chrome.
+  # button, the scrollable body + description, and the footer slot. `dialog` (including
+  # its `role: :alertdialog` confirm-gate mode), `sheet`, and `drawer` differ only in
+  # panel shape (size classes vs. `role="alertdialog"` vs. side/offset classes) —
+  # everything else is byte-identical chrome.
   #
   # ## Single-writer rationale
   # Before this concern, each of the four templates hand-copied the same eleven methods.
@@ -31,7 +32,7 @@ module UI
       # `component.included_modules` (view_component/compiler.rb#generate_templates) — a
       # `call` reachable only through an included module is invisible to it and every
       # render raises "Couldn't find a template file or inline render method". class_eval
-      # defines `call` directly on the includer (dialog/sheet/alert_dialog/drawer), which
+      # defines `call` directly on the includer (dialog/sheet/drawer), which
       # satisfies that scan; its body still resolves trigger_area/dialog_tag/etc. through
       # ordinary Ruby method lookup, so those stay plain module methods below — only `call`
       # gets this special case.

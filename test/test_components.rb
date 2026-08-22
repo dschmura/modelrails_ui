@@ -103,7 +103,6 @@ load_tt "combobox/combobox_component.rb.tt"
 # Load Phase 5
 load_tt "dialog/modal_chrome.rb.tt"
 load_tt "dialog/dialog_component.rb.tt"
-load_tt "alert_dialog/alert_dialog_component.rb.tt"
 load_tt "sheet/sheet_component.rb.tt"
 load_tt "drawer/drawer_component.rb.tt"
 load_tt "popover/popover_component.rb.tt"
@@ -1380,26 +1379,6 @@ class TestDialogComponent < Minitest::Test
     c = UI::DialogComponent.new(title: "Edit Profile", class: "max-w-sm")
 
     assert_equal "max-w-sm", c.instance_variable_get(:@extra_class)
-  end
-end
-
-class TestAlertDialogComponent < Minitest::Test
-  def test_title_stored
-    c = UI::AlertDialogComponent.new(title: "Are you sure?")
-
-    assert_equal "Are you sure?", c.instance_variable_get(:@title)
-  end
-
-  def test_description_stored
-    c = UI::AlertDialogComponent.new(title: "Are you sure?", description: "This cannot be undone.")
-
-    assert_equal "This cannot be undone.", c.instance_variable_get(:@description)
-  end
-
-  def test_nil_description_default
-    c = UI::AlertDialogComponent.new(title: "Are you sure?")
-
-    assert_nil c.instance_variable_get(:@description)
   end
 end
 
