@@ -16,6 +16,15 @@ class CalendarRenderTest < ViewComponent::TestCase
   # Monday; the 15th is a Monday in the second visible week.
   JUNE = Date.new(2026, 6, 15)
 
+  # `travel_to` a bare Date (or an ActiveSupport::TimeWithZone) round-trips
+  # through Date#to_time / TimeWithZone#to_time, which on Rails <8.1 collapses
+  # back to the HOST's system-local offset (time_helpers.rb: `now.getlocal`).
+  # West of UTC that lands "today" on the day BEFORE JUNE — see #117. Passing
+  # an already-local ::Time (Time.local, not Date/TimeWithZone) skips that
+  # conversion entirely: `getlocal` is a no-op on a Time already in the host's
+  # local zone, so this is same-day regardless of Rails version or host TZ.
+  JUNE_NOON = Time.local(JUNE.year, JUNE.month, JUNE.day, 12)
+
   def render_default(**opts)
     render_inline(UI::CalendarComponent.new(month: JUNE, **opts))
   end
@@ -59,7 +68,7 @@ class CalendarRenderTest < ViewComponent::TestCase
   # `text-text-on-interactive` and put heading text on the bg-interactive fill —
   # a dark-mode contrast failure the app's preview-host axe spec caught.
   def test_today_when_also_selected_keeps_on_interactive_text
-    travel_to(JUNE) do # JUNE is today, so today == the selected day
+    travel_to(JUNE_NOON) do # JUNE is today, so today == the selected day
       render_inline(UI::CalendarComponent.new(month: JUNE, selected: JUNE))
     end
 
@@ -92,10 +101,11 @@ class CalendarRenderTest < ViewComponent::TestCase
   end
 
   def test_today_carries_aria_current_date
-    travel_month = Date.today
-    render_inline(UI::CalendarComponent.new(month: travel_month))
+    travel_to(JUNE_NOON) do
+      render_inline(UI::CalendarComponent.new(month: JUNE))
+    end
 
-    assert_selector "button[aria-current='date']", text: travel_month.day.to_s
+    assert_selector "button[aria-current='date']", text: JUNE.day.to_s
   end
 
   # No selection + a month that is not the current month ⇒ no aria-current/aria-selected.
