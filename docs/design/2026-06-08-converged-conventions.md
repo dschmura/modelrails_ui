@@ -105,11 +105,17 @@ the cross-product already exists in the data).
   `text-on-interactive` pairing — **ship only combos with a 0b CI axe row; raise on the rest until proven.**
 
 **B3 — Compound widgets: keep the un-clobberable render-lambda slots; grow the part vocabulary as
-lambda branches (for the ARIA); import subgrid; shortcuts via hardened `kbd`.** Keep `renders_one :trigger`
-+ `renders_many :items` with the **el-last-splat** lambda (`**attrs, **el` — wiring splats LAST so
-`role`/`tabindex`/`menu_target`/`action` always win; callers can add attrs but can't break the
-menu). This is *more* robust than Catalyst's per-part components (where a caller can pass `role:` and
-break it) and the most Hotwire-native shape.
+lambda branches (for the ARIA); import subgrid; shortcuts via hardened `kbd`.** The operative rule is
+**single writer of the stable-id/ARIA contract**. Keep `renders_one :trigger` + `renders_many :items`
+with the **el-last-splat** lambda (`**attrs, **el` — wiring splats LAST so `role`/`tabindex`/
+`menu_target`/`action` always win; callers can add attrs but can't break the menu). A component that
+owns a stable-id/ARIA contract keeps one render-owning class; slots are a ViewComponent mechanism
+Turbo cannot see — the cross-framework durability rule.
+- **Three-shapes taxonomy:** (a) repeated caller-composed children → **slots** (render-lambda, caller
+  controls the markup loop); (b) a fixed set of independently meaningful parts with no shared id
+  contract → **sub-components** (exemplar: Card's independent `CardHeader`/`CardContent`/`CardFooter`);
+  (c) invariant chrome — **shared plumbing** (concern/base), Rails' own answer for code reuse
+  (exemplar: the 2026-08-22 panel extracted `ModalChrome` concern from dialog/sheet/drawer).
 - Add the Catalyst part *vocabulary* as **lambda branches**, NOT nested namespaces:
   `separator: true` (exists), `heading:` → `role="presentation"`, `section:` → `role="group"` +
   `aria-labelledby`. Adopt the vocab **for the ARIA it unlocks** (flat-list menus are an AT failure).
@@ -118,6 +124,11 @@ break it) and the most Hotwire-native shape.
   guard. Fallback must stay **legible**, not just non-crashing.
 - **Shortcut** → render via the already-hardened `ui :kbd` (decorative mirror of the accelerator the
   Stimulus controller binds).
+- **Cost clause (2026-08-22 panel):** family-chrome-sharing decisions weigh production call sites and
+  a concrete divergence request. Regeneration in this repo is opt-in and diff-reviewed (the B1 seam
+  precedent), which removes the classic fragile-base-under-the-fork risk the doctrine would otherwise
+  forbid. Motivating evidence: sheet applied `@extra_class` twice (hand-copy drift that is
+  invisible without structural guards).
 
 **B4 — Responsive type as density: primitives DO carry it — scoped to focusable text-entry controls.**
 `text-base md:text-sm` (16px mobile → no iOS focus-zoom; 14px at `md+`) on Input/Textarea/Select/
