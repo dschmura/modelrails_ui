@@ -8,8 +8,9 @@
   (turbo_stream.append "modal-body").
 
   Complete (pass trigger:): renders the data-controller="modal" wrapper + a trigger
-  button + the <dialog> as one copy-paste unit (wrapper: true). body_id uses the
-  component's unique default so multiple complete modals on a page don't collide.
+  button + the <dialog> as one copy-paste unit (wrapper: true). Requires an explicit
+  id: or body_id: (dev/test raise otherwise); body_id derives as "#{id}-body".
+  Uniqueness comes from callers choosing distinct ids.
 -%>
 <% if trigger.present? %>
   <%= render UI::DialogComponent.new(

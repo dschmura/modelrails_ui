@@ -57,9 +57,16 @@ The dialog closes automatically when the user presses `Escape`.
 | `title` | String | `nil` | Bold heading rendered inside the panel |
 | `description` | String | `nil` | Muted subtext below the title |
 | `role` | Symbol | `:dialog` | `:dialog` or `:alertdialog` — an assertive confirm gate announced immediately by screen readers, capped at `max-w-md` regardless of `size:` |
+| `id` | String | `nil` | Element id; required (or `body_id:`) when `wrapper: true` in dev/test. `modal-{random}` is minted whenever `id:` is omitted, which under `wrapper: true` produces the silent-no-op bug described below. |
+| `body_id` | String | `nil` | Turbo Stream target id for the dialog body; defaults to `"#{id}-body"`. Required (or `id:`) when `wrapper: true` in dev/test. |
+| `wrapper` | Boolean | `true` | Wraps the dialog in a `data-controller="modal"` div with a trigger slot. Set `false` to render only the `<dialog>` and own the wrapper |
 | `**html_attrs` | Hash | — | Forwarded to the outer `<div>` |
 
 | Slot | Required | Description |
 |------|----------|-------------|
 | `trigger` | No | Element that opens the dialog on click |
 | `footer` | No | Action buttons shown at the bottom of the panel |
+
+## Turbo Stream targeting
+
+When using `wrapper: true` without an explicit `id:` or `body_id:`, the component raises an `ArgumentError` in development and test environments. This fail-loud rule surfaces a silent bug: Turbo Streams aimed at a randomly-generated body id silently no-op in production, leaving the page out of sync. Always provide an explicit `id:` when using `wrapper: true`; `body_id` then derives as `"#{id}-body"`.
