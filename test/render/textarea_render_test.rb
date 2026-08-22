@@ -84,4 +84,11 @@ class TextareaRenderTest < ViewComponent::TestCase
 
     assert_no_selector "textarea[aria-describedby]"
   end
+
+  def test_invalid_state_keeps_the_disabled_affordance
+    render_inline(UI::TextareaComponent.new(invalid: true, disabled: true))
+
+    # disabled: utilities live in BASE so the affordance survives every state (#122).
+    assert_selector "textarea[class*='disabled:cursor-not-allowed'][class*='disabled:opacity-50']"
+  end
 end

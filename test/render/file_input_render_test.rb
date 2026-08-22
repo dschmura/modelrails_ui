@@ -203,4 +203,12 @@ class FileInputRenderTest < ViewComponent::TestCase
 
     assert_selector "div[data-controller='file-input'] input.block.w-full.text-text-body"
   end
+
+  def test_invalid_ring_has_a_width_not_just_a_color
+    render_inline(UI::FileInputComponent.new(invalid: true))
+
+    # aria-invalid:ring-danger without aria-invalid:ring-2 paints nothing —
+    # a ring colour needs a ring width (gem issue #122, same class as #112).
+    assert_selector "input[class*='aria-invalid:ring-2'][class*='aria-invalid:ring-danger']"
+  end
 end
