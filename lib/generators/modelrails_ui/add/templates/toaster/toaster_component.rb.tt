@@ -89,7 +89,7 @@ module UI
 
     # t() is resolved at RENDER time (here, not in initialize — no view context there).
     def region_label
-      @region_label || I18n.t("ui.toaster.label", default: "Notifications")
+      @region_label || I18n.t("modelrails_ui.toaster.label", default: [ :"ui.toaster.label", "Notifications" ])
     end
 
     class ToastComponent < ApplicationComponent
@@ -213,7 +213,7 @@ module UI
       def close_btn
         content_tag(:button, dismiss_icon,
           type: "button",
-          "aria-label": I18n.t("ui.toaster.dismiss", default: "Dismiss"),
+          "aria-label": I18n.t("modelrails_ui.toaster.dismiss", default: [ :"ui.toaster.dismiss", "Dismiss" ]),
           class: CLOSE_CLS,
           data: { action: "click->toaster#dismiss" })
       end
