@@ -46,6 +46,18 @@ module ModelrailsUi
         "command" => [COMMAND_SCORE]
       }.freeze
 
+      # Shared Ruby modules — SHARED_JS, one asset kind over. A plain .rb.tt
+      # several component templates include at render time, copied once to a
+      # fixed destination. test/test_shared_rb_modules.rb pins the misfile
+      # invariant.
+      MODAL_CHROME = {source: "dialog/modal_chrome.rb.tt", dest: "app/components/ui/modal_chrome.rb"}.freeze
+
+      SHARED_RB = {
+        "dialog" => [MODAL_CHROME],
+        "sheet" => [MODAL_CHROME],
+        "drawer" => [MODAL_CHROME]
+      }.freeze
+
       # Post-install instructions for components that require external dependencies.
       SETUP_NOTES = {
         "chart" => <<~TEXT,

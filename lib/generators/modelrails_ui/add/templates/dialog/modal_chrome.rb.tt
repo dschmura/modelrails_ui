@@ -1,0 +1,7 @@
+# frozen_string_literal: true
+
+module UI
+  # Placeholder — real chrome lands in the next task of this branch.
+  module ModalChrome
+  end
+end
