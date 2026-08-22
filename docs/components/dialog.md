@@ -2,6 +2,9 @@
 
 Accessible modal dialog with an overlay, title, description, body, and footer slot.
 
+> **Migration note:** `alert_dialog` was folded into `dialog` — use
+> `ui :dialog, role: :alertdialog` (v0.11.0 breaking change).
+
 Requires `dialog_controller.js` (copied automatically by the generator).
 
 ## Installation
@@ -53,6 +56,7 @@ The dialog closes automatically when the user presses `Escape`.
 |--------|------|---------|-------------|
 | `title` | String | `nil` | Bold heading rendered inside the panel |
 | `description` | String | `nil` | Muted subtext below the title |
+| `role` | Symbol | `:dialog` | `:dialog` or `:alertdialog` — an assertive confirm gate announced immediately by screen readers, capped at `max-w-md` regardless of `size:` |
 | `**html_attrs` | Hash | — | Forwarded to the outer `<div>` |
 
 | Slot | Required | Description |

@@ -2,6 +2,7 @@
 
 require "render_test_helper"
 require "securerandom"
+load_component "dialog", "modal_chrome.rb.tt"
 load_component "drawer", "drawer_component.rb.tt"
 
 # STRUCTURE-only render specs. The modal Stimulus controller's BEHAVIOR (showModal
@@ -11,7 +12,7 @@ load_component "drawer", "drawer_component.rb.tt"
 # <dialog> scaffolding the controller relies on (a closed native dialog with full ARIA).
 class DrawerRenderTest < ViewComponent::TestCase
   def test_renders_a_native_dialog_with_modal_semantics
-    render_inline(UI::DrawerComponent.new(title: "Share item"))
+    render_inline(UI::DrawerComponent.new(title: "Share item", id: "d-native"))
 
     assert_selector "dialog[role='dialog'][aria-modal='true']", visible: :all
   end
@@ -37,27 +38,27 @@ class DrawerRenderTest < ViewComponent::TestCase
   end
 
   def test_renders_an_accessible_close_button_wired_to_the_controller
-    render_inline(UI::DrawerComponent.new(title: "T"))
+    render_inline(UI::DrawerComponent.new(title: "T", id: "d-close"))
 
     assert_selector "button[type='button'][aria-label='Close'][data-action~='click->modal#close']", visible: :all
   end
 
   def test_drag_handle_is_decorative
-    render_inline(UI::DrawerComponent.new(title: "T"))
+    render_inline(UI::DrawerComponent.new(title: "T", id: "d-drag"))
 
     assert_selector "[aria-hidden='true'] .bg-surface-sunken", visible: :all
   end
 
   # AAA semantic tokens (the design-token guarantee), not raw Tailwind:
   def test_renders_with_aaa_tokens
-    render_inline(UI::DrawerComponent.new(title: "T"))
+    render_inline(UI::DrawerComponent.new(title: "T", id: "d-aaa"))
 
     assert_selector "[data-modal-target='panel'].bg-surface-overlay", visible: :all
     assert_selector "h2.text-text-heading", visible: :all
   end
 
   def test_wrapper_passes_slide_transform_values
-    render_inline(UI::DrawerComponent.new(title: "T"))
+    render_inline(UI::DrawerComponent.new(title: "T", id: "d-transform"))
 
     assert_selector "[data-controller='modal'][data-modal-enter-transform-value='translateY(0)']", visible: :all
     assert_selector "[data-modal-leave-transform-value='translateY(100%)']", visible: :all
@@ -71,7 +72,7 @@ class DrawerRenderTest < ViewComponent::TestCase
   end
 
   def test_footer_slot_renders_in_a_footer_area
-    render_inline(UI::DrawerComponent.new(title: "T")) do |drawer|
+    render_inline(UI::DrawerComponent.new(title: "T", id: "d-footer")) do |drawer|
       drawer.with_footer { "Done" }
     end
 

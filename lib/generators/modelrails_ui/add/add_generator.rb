@@ -78,6 +78,7 @@ module ModelrailsUi
         Dir.each_child(dir).sort.each { |file| copy_template_file(name, file) }
         copy_extra_stimulus(name)
         copy_shared_js(name)
+        copy_shared_rb(name)
       end
 
       def copy_template_file(component, file)
@@ -85,7 +86,8 @@ module ModelrailsUi
 
         case file
         when /\.rb\.tt\z/
-          template source, rb_tt_destination(component, file)
+          # Shared modules are copied once via copy_shared_rb, not per-declarer.
+          template source, rb_tt_destination(component, file) unless shared_rb_source?(component, file)
         when /\.html\.erb\z/
           copy_file source, html_erb_destination(file)
         when /_controller\.js\z/
@@ -119,6 +121,16 @@ module ModelrailsUi
       def copy_extra_stimulus(name)
         config = Components::EXTRA_STIMULUS[name]
         copy_js_controller(config[:source], config[:name]) if config
+      end
+
+      def copy_shared_rb(name)
+        Array(Components::SHARED_RB[name]).each do |mod|
+          template mod.fetch(:source), mod.fetch(:dest)
+        end
+      end
+
+      def shared_rb_source?(component, file)
+        Components::SHARED_RB.values.flatten.any? { |m| m.fetch(:source) == "#{component}/#{file}" }
       end
 
       def copy_shared_js(name)
