@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Invalid-state ring now paints on all seven templates that set only its color (`aria-invalid:ring-2` added; structural gate pins the class); input/textarea keep the disabled affordance in the error state (#122).
+## [0.10.0] - 2026-08-22
 
 ### Added
 
