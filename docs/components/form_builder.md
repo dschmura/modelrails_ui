@@ -146,6 +146,20 @@ surface (see `docs/components/error_summary.md` for its full accessibility
 contract). The shim adds the one thing only the builder knows: each error's
 field anchor.
 
+**Anchor contract.** Summary links are *derived* default ids (Rails'
+`field_id` — `user` + `:email` → `#user_email`); the summary renders at the
+top of the form, before the fields, so it cannot see a call site's custom
+`id:`. Three shapes therefore produce a link to nothing: a field rendered
+with a custom `id:`, a `multiple:`/custom-value checkbox (its real id carries
+the value suffix), and an errored attribute the form doesn't render. Keep
+default ids on errored fields — or opt those attributes out explicitly and
+their items render as plain text, like `:base` errors:
+
+```erb
+<%= f.error_summary unlinked: [:roles, :slug] %>
+```
+
+
 ```erb
 <%= form_with model: @article, builder: UI::FormBuilder do |f| %>
   <%= f.error_summary %>

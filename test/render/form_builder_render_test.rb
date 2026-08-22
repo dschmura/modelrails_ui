@@ -421,4 +421,25 @@ class FormBuilderRenderTest < ViewComponent::TestCase
 
     assert page.has_css?("h3")
   end
+
+  def test_error_summary_unlinked_renders_named_attributes_as_plain_items
+    article = B1Article.new
+    article.errors.add(:title, "can't be blank")
+    article.errors.add(:body, "is too short")
+    page = page_for(builder(article).error_summary(unlinked: [:title]))
+
+    # The call site knows its own custom ids / unrendered fields; unlinked:
+    # opts those attributes out of the derived-id anchors (#121).
+    assert page.has_css?("li", text: "Title can't be blank")
+    refute page.has_css?("li a[href='#b1_article_title']")
+    assert page.has_css?("li a[href='#b1_article_body']", text: "Body is too short")
+  end
+
+  def test_error_summary_unlinked_accepts_strings
+    article = B1Article.new
+    article.errors.add(:title, "can't be blank")
+    page = page_for(builder(article).error_summary(unlinked: %w[title]))
+
+    refute page.has_css?("li a")
+  end
 end
