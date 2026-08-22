@@ -60,6 +60,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The shipped stylesheet no longer carries app-specific CSS: Markdowndocs prose styles, the Rouge syntax theme, workspace-branding overrides, Biscuit cookie-banner theming, and the development-only a11y-simulation filters. **1155 → 677 lines (−41%).** No component template referenced any of it. A fork using Markdowndocs or Biscuit now owns that styling — `modelrails_base` already does, in its own `_prose.css` and `_syntax.css`.
 
 ### Fixed
+- Legacy I18n keys (`ui.toaster.*`, `ui.resizable.*`, `modals.close`) migrated to the `modelrails_ui.*` namespace; old keys keep working as fallbacks for hosts that translated them (#116).
 
 - FormFieldComponent: the no-`id:` fallback now derives a stable id from `label` (constant `form_field` when there's none) instead of `object_id`, which changed on every render and broke Turbo morphing. (#113)
 
