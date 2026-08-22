@@ -79,4 +79,37 @@ class DialogRenderTest < ViewComponent::TestCase
 
     assert_text "Footer actions"
   end
+
+  # Key migration (#116): templates read the namespaced key first, fall back to
+  # the legacy key a host may already translate, then to inline English.
+  def test_close_label_prefers_the_namespaced_key
+    with_translations(modelrails_ui: {modal: {close: "Shut it"}}) do
+      render_inline(UI::DialogComponent.new(title: "T")) { "body" }
+
+      assert_selector "button[aria-label='Shut it']", visible: :all
+    end
+  end
+
+  def test_close_label_falls_back_to_a_legacy_host_translation
+    with_translations(modals: {close: "Fermer"}) do
+      render_inline(UI::DialogComponent.new(title: "T")) { "body" }
+
+      assert_selector "button[aria-label='Fermer']", visible: :all
+    end
+  end
+
+  def test_close_label_defaults_to_english_with_no_translations
+    render_inline(UI::DialogComponent.new(title: "T")) { "body" }
+
+    assert_selector "button[aria-label='Close']", visible: :all
+  end
+
+  private
+
+  def with_translations(hash)
+    I18n.backend.store_translations(:en, hash)
+    yield
+  ensure
+    I18n.backend.reload!
+  end
 end
