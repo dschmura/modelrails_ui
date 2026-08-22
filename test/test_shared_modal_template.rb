@@ -24,7 +24,7 @@ class TestSharedModalTemplate < Minitest::Test
     assert_includes source, "if trigger.present?"
     assert_includes source, "wrapper: true"
     assert_includes source, "wrapper: false"
-    assert_includes source, 'body_id: "modal-body"'
+    assert_includes source, 'body_id: body_id || "modal-body"'
     assert_includes source, "d.with_trigger"
   end
 end

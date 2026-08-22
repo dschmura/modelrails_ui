@@ -119,6 +119,23 @@ class DialogRenderTest < ViewComponent::TestCase
     assert_raises(ArgumentError) { UI::DialogComponent.new(title: "T", id: "d3", role: :banana) }
   end
 
+  def test_chrome_carries_data_slot_roles
+    render_inline(UI::DialogComponent.new(title: "T", id: "d4")) { "body" }
+
+    assert_selector "header[data-slot='header']"
+    assert_selector "[data-slot='body']#d4-body"
+    assert_selector "button[data-slot='close']"
+  end
+
+  def test_footer_slot_carries_its_role
+    render_inline(UI::DialogComponent.new(title: "T", id: "d5")) do |d|
+      d.with_footer { "F" }
+      "body"
+    end
+
+    assert_selector "[data-slot='footer']", text: "F"
+  end
+
   private
 
   def with_translations(hash)

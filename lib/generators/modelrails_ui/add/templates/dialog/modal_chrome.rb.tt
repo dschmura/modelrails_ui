@@ -95,7 +95,7 @@ module UI
     end
 
     def header
-      content_tag(:header, class: "flex items-center justify-between px-6 py-4 border-b border-border shrink-0") do
+      content_tag(:header, class: "flex items-center justify-between px-6 py-4 border-b border-border shrink-0", data: { slot: "header" }) do
         safe_join([
           content_tag(:h2, @title, id: "#{@id}-title", class: "text-lg font-semibold text-text-heading"),
           close_button
@@ -107,13 +107,13 @@ module UI
       content_tag(:button, close_icon,
         type: "button",
         "aria-label": close_label,
-        data: { action: "click->modal#close" },
+        data: { action: "click->modal#close", slot: "close" },
         class: "btn-touch-target rounded-md -m-2 hover:bg-surface-sunken text-text-muted hover:text-text-body focus-ring")
     end
 
     def body
       content_tag(:div, safe_join([description_tag, content].compact),
-        id: @body_id, class: "px-6 py-4 overflow-y-auto flex-1")
+        id: @body_id, data: { slot: "body" }, class: "px-6 py-4 overflow-y-auto flex-1")
     end
 
     def description_tag
@@ -125,7 +125,7 @@ module UI
     def footer_area
       return unless footer?
 
-      content_tag(:div, footer, class: "flex justify-end gap-2 px-6 py-4 border-t border-border shrink-0")
+      content_tag(:div, footer, class: "flex justify-end gap-2 px-6 py-4 border-t border-border shrink-0", data: { slot: "footer" })
     end
 
     def close_label
