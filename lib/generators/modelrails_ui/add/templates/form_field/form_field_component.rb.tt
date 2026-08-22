@@ -52,8 +52,10 @@ module UI
     HINT_CLASSES = "text-sm text-text-muted"
     ERROR_CLASSES = "text-sm text-danger"
 
-    # Constant fallback when there's no explicit id and no label to derive one from.
-    FALLBACK_ID = "form_field"
+    # Prefix for label-derived ids. Deliberately NOT a usable id on its own: with
+    # neither an explicit id nor a label there is nothing to wire, and a constant
+    # fallback id would collide as soon as a page rendered two instances.
+    FALLBACK_PREFIX = "form_field"
 
     def initialize(label: nil, hint: nil, error: nil, required: false, **html_attrs)
       @label = label
@@ -61,7 +63,7 @@ module UI
       @error = error
       @required = required
       @id = html_attrs.key?(:id) ? html_attrs.delete(:id) : fallback_id
-      @describedby = [("#{@id}-error" if @error.present?), ("#{@id}-hint" if @hint.present?)].compact.join(" ").presence
+      @describedby = @id && [("#{@id}-error" if @error.present?), ("#{@id}-hint" if @hint.present?)].compact.join(" ").presence
       @extra_class = html_attrs.delete(:class)
       @html_attrs = html_attrs
     end
@@ -70,7 +72,7 @@ module UI
     # aria-describedby (hint/error ids) + invalid + required. Mirrors exactly what
     # the form builder (`UI::FormBuilder`) injects into the controls it renders itself.
     def input_attrs
-      { id: @id, describedby: @describedby, invalid: @error.present?, required: @required }
+      {id: @id, describedby: @describedby, invalid: @error.present?, required: @required}
     end
 
     # input_attrs translated to real HTML attributes, for native (non-ViewComponent)
@@ -78,7 +80,8 @@ module UI
     # kwargs (describedby:/invalid:/required:) are meaningless to Rails tag helpers;
     # spreading input_attrs into one emits literal `describedby=` garbage.
     def html_input_attrs
-      attrs = { id: @id }
+      attrs = {}
+      attrs[:id] = @id if @id
       attrs["aria-describedby"] = @describedby if @describedby
       attrs["aria-invalid"] = "true" if @error.present?
       attrs["aria-required"] = "true" if @required
@@ -89,7 +92,7 @@ module UI
       content_tag(:div, class: cn(WRAPPER, @extra_class), **@html_attrs) do
         safe_join([
           field_label,
-          content_tag(:div, content, data: { slot: "control" }),
+          content_tag(:div, content, data: {slot: "control"}),
           hint_tag,
           error_tag
         ].compact)
@@ -103,10 +106,10 @@ module UI
     # two calls with the same label agree; two same-label fields on one page still
     # need an explicit id: from the caller. UI::FormBuilder always passes one.
     def fallback_id
-      return FALLBACK_ID if @label.blank?
+      return nil if @label.blank?
 
       slug = @label.to_s.downcase.gsub(/[^a-z0-9]+/, "_").gsub(/\A_+|_+\z/, "")
-      slug.present? ? "#{FALLBACK_ID}_#{slug}" : FALLBACK_ID
+      slug.presence && "#{FALLBACK_PREFIX}_#{slug}"
     end
 
     # The caption, via the Label primitive: a real `for=` association + the decorative
@@ -114,19 +117,19 @@ module UI
     def field_label
       return unless @label
 
-      render(UI::LabelComponent.new(@label, for: @id, required: @required, data: { slot: "label" }))
+      render(UI::LabelComponent.new(@label, for: @id, required: @required, data: {slot: "label"}))
     end
 
     def hint_tag
       return unless @hint.present?
 
-      content_tag(:p, @hint, id: "#{@id}-hint", class: HINT_CLASSES, data: { slot: "description" })
+      content_tag(:p, @hint, id: @id && "#{@id}-hint", class: HINT_CLASSES, data: {slot: "description"})
     end
 
     def error_tag
       return unless @error.present?
 
-      content_tag(:p, @error, id: "#{@id}-error", class: ERROR_CLASSES, data: { slot: "description" })
+      content_tag(:p, @error, id: @id && "#{@id}-error", class: ERROR_CLASSES, data: {slot: "description"})
     end
   end
 end

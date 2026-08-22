@@ -101,10 +101,20 @@ class FormFieldRenderTest < ViewComponent::TestCase
     assert_equal first.input_attrs[:id], second.input_attrs[:id]
   end
 
-  def test_fallback_id_with_no_label_and_no_id_is_the_constant_fallback
-    c = UI::FormFieldComponent.new
+  def test_no_label_and_no_id_yields_no_wiring_attrs
+    c = UI::FormFieldComponent.new(hint: "h", error: "e")
 
-    assert_equal "form_field", c.input_attrs[:id]
+    # A constant fallback id collides the moment a page renders two instances;
+    # with neither label nor id there is nothing to wire, so nothing gets an id.
+    assert_nil c.input_attrs[:id]
+    assert_nil c.input_attrs[:describedby]
+    refute c.html_input_attrs.key?(:id)
+  end
+
+  def test_no_label_and_no_id_renders_idless_paragraphs
+    render_inline(UI::FormFieldComponent.new(hint: "h", error: "e")) { "CONTROL" }
+
+    assert_no_selector "p[id]"
   end
 
   def test_explicit_id_wins_over_the_label_derived_fallback
