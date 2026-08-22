@@ -1,5 +1,6 @@
 <%= render(UI::SheetComponent.new(
       title: "Filters",
+      id: "sheet-preview-basic",
       description: "Narrow down the list by applying one or more filters.",
       side: :right)) do |c| %>
   <% c.with_trigger { "Open filters" } %>

@@ -26,4 +26,24 @@ class TestModalChromeOwnership < Minitest::Test
 
     assert_empty missing, "ModalChrome is missing: #{missing.inspect}"
   end
+
+  # wrapper_attrs sits OUTSIDE the CHROME list above on purpose: sheet (transform
+  # values) and drawer (same) must override it. That leaves the override itself
+  # unguarded against the exact failure mode that motivated this refactor — a
+  # hand-rolled re-implementation drifting from ModalChrome instead of extending
+  # it. A delegating override (`base = super; base[...] = ...; base`) is fine; a
+  # from-scratch body is not — it can silently drop @extra_class handling, the
+  # open-value data attr, or html_attrs merging the way sheet's old double
+  # @extra_class bug did.
+  def test_family_wrapper_attrs_overrides_delegate_to_super
+    offenders = FAMILY.filter_map do |rel|
+      src = File.read(File.join(TEMPLATES, rel))
+      match = src.match(/^([ \t]*)def wrapper_attrs\b.*?\n(.*?)^\1end\b/m)
+      next unless match
+
+      "#{rel}: wrapper_attrs does not call super" unless match[2].include?("super")
+    end
+
+    assert_empty offenders, "wrapper_attrs overrides must delegate to ModalChrome via super:\n  #{offenders.join("\n  ")}"
+  end
 end
