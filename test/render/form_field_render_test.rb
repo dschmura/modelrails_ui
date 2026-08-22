@@ -92,4 +92,24 @@ class FormFieldRenderTest < ViewComponent::TestCase
     assert_equal "text-sm text-text-muted", UI::FormFieldComponent::HINT_CLASSES
     assert_equal "text-sm text-danger", UI::FormFieldComponent::ERROR_CLASSES
   end
+
+  def test_fallback_id_is_derived_from_the_label_and_stable_across_instances
+    first = UI::FormFieldComponent.new(label: "Email address")
+    second = UI::FormFieldComponent.new(label: "Email address")
+
+    assert_equal "form_field_email_address", first.input_attrs[:id]
+    assert_equal first.input_attrs[:id], second.input_attrs[:id]
+  end
+
+  def test_fallback_id_with_no_label_and_no_id_is_the_constant_fallback
+    c = UI::FormFieldComponent.new
+
+    assert_equal "form_field", c.input_attrs[:id]
+  end
+
+  def test_explicit_id_wins_over_the_label_derived_fallback
+    c = UI::FormFieldComponent.new(id: "custom_id", label: "Email address")
+
+    assert_equal "custom_id", c.input_attrs[:id]
+  end
 end
