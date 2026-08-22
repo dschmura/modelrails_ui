@@ -57,6 +57,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- FormFieldComponent: the no-`id:` fallback now derives a stable id from `label` (constant `form_field` when there's none) instead of `object_id`, which changed on every render and broke Turbo morphing. (#113)
+
 - Sidebar: the toggle exposed no state to assistive technology. Collapse lived entirely in `data-collapsed`, which drives the CSS and is invisible to a screen reader — the button announced no state before, none after, and no indication anything had happened (WCAG 4.1.2). It now carries `aria-expanded` and `aria-controls` pointing at the nav it collapses, kept in step by the controller. (A5)
 
 - Sidebar: a caller-supplied `id:` stopped reaching the root `<aside>` once `id:` became a named argument for the nav wiring. It is rendered on the root again, and derives the nav's id.
