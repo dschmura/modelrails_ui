@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Badge Lookbook preview gains a `neutral` scenario (`variant: :soft, tone: :neutral`), reachable at `.../badge_component/neutral`, so a consuming app's per-scenario 0b axe row can exercise the `[:soft, :neutral]` cell. (#146)
+
+### Fixed
+
+- Badge docs (docblock, badge.md, preview comment, test comment) no longer claim AAA proof for the `[:soft, :neutral]` cell — restores the review fix (25aa4b0) that missed the v0.12.0 merge: PR #152 landed at 4b78b30 before its follow-up commit was pushed, so the wording correction never shipped. Reworded to "9 AAA-proven, plus `soft`/`neutral` pending the consuming app's 0b axe row" throughout. (#146)
+
 ## [0.12.0] - 2026-08-23
 
 ### Added

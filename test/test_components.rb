@@ -381,7 +381,7 @@ class TestBadgeComponent < Minitest::Test
     assert_equal :primary, c.instance_variable_get(:@tone)
   end
 
-  # Every shipped (variant, tone) cell is an AAA-proven treatment in COMBOS.
+  # Every one of the 10 shipped cells is present in COMBOS.
   def test_all_combos_exist
     [%i[solid primary], %i[soft primary], %i[soft info], %i[soft success],
       %i[soft warning], %i[soft danger], %i[soft neutral], %i[outline neutral],
