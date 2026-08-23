@@ -44,6 +44,18 @@ The `:root` block sets the default light theme. Override any variable there to c
 | `--ring` | Focus ring on interactive elements |
 | `--radius` | Base border radius (sm/md/lg/xl are derived from this) |
 
+### Sizing tokens
+
+| Token | Utility | Used by |
+|-------|---------|---------|
+| `--form-input-height` | `min-h-input` | The 44px form-control floor (WCAG 2.2 AAA target size): inputs, selects, buttons via `.btn-touch-target` |
+
+Write `min-h-input` in app code — it is registered in `@theme inline` and resolves to
+`var(--form-input-height)`. The two legacy spellings, `min-h-11` and
+`min-h-[var(--form-input-height)]`, resolve to the same 2.75rem today but are
+deprecated: with a single named token, changing the input height (or auditing the
+AAA invariant) has exactly one place to look.
+
 ### Colors use OKLCH
 
 OKLCH gives perceptually uniform brightness. The format is `oklch(L C H)`:
