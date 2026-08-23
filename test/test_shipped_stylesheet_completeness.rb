@@ -63,4 +63,16 @@ class TestShippedStylesheetCompleteness < Minitest::Test
       forced-colors mode — both WCAG 2.4.7 failures. Use `@apply focus-ring`.
     MSG
   end
+
+  # The 44px form-control floor is a named token (#142): registering it in
+  # @theme inline gives consumers `min-h-input`, replacing the two legacy
+  # spellings (`min-h-11` and `min-h-[var(--form-input-height)]`) that let the
+  # AAA invariant drift apart. The token must reference --form-input-height,
+  # never restate the value.
+  def test_the_input_height_token_is_registered_as_a_theme_utility
+    theme_block = File.read(STYLESHEET)[/@theme inline \{.*?\n\}/m]
+
+    refute_nil theme_block, "no @theme inline block in the shipped stylesheet"
+    assert_includes theme_block, "--min-height-input: var(--form-input-height);"
+  end
 end
