@@ -46,6 +46,11 @@ module UI
     def secondary
     end
 
+    # Muted chip for draft-style pills — the two-axis `[:soft, :neutral]` cell, pending
+    # the consuming app's 0b axe row (see the class docblock).
+    def neutral
+    end
+
     # Informational signal — tinted info chip.
     def info
     end
