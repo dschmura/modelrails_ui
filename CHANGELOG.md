@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.12.1] - 2026-08-23
+
 ### Added
 
 - Badge Lookbook preview gains a `neutral` scenario (`variant: :soft, tone: :neutral`), reachable at `.../badge_component/neutral`, so a consuming app's per-scenario 0b axe row can exercise the `[:soft, :neutral]` cell. (#146)
