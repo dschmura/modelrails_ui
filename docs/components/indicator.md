@@ -28,10 +28,11 @@ Creates `app/components/ui/indicator_component.rb`.
 
 | Variant | Colour |
 |---------|--------|
-| `default` | Primary |
-| `destructive` | Red |
+| `default` | Primary (interactive fill) |
+| `info` | Info blue |
 | `success` | Green |
-| `warning` | Yellow |
+| `warning` | Amber |
+| `danger` | Red (`destructive` is a non-breaking alias) |
 
 ## Positions
 
@@ -43,7 +44,7 @@ Creates `app/components/ui/indicator_component.rb`.
 | `bottom_left` | Bottom-left corner |
 
 ```erb
-<%= ui :indicator, variant: :destructive, position: :bottom_right do %>
+<%= ui :indicator, variant: :danger, position: :bottom_right do %>
   <%= ui :avatar, fallback: "Bob" %>
 <% end %>
 ```
@@ -53,6 +54,6 @@ Creates `app/components/ui/indicator_component.rb`.
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
 | `count` | Integer / nil | `nil` | When set, renders a numbered badge; otherwise renders a small dot |
-| `variant` | Symbol | `:default` | Colour — `:default`, `:destructive`, `:success`, `:warning` |
+| `variant` | Symbol | `:default` | Colour — `:default`, `:info`, `:success`, `:warning`, `:danger` (`:destructive` is a non-breaking alias for `:danger`) |
 | `position` | Symbol | `:top_right` | Corner — `:top_right`, `:top_left`, `:bottom_right`, `:bottom_left` |
 | `**html_attrs` | Hash | — | Forwarded to the outer wrapper `<span>` |
