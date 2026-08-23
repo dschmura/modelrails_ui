@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.13.0] - 2026-08-23
+
+### Added
+
+- `min-h-input` is registered in `@theme inline` — the named 44px form-control floor (WCAG 2.2 AAA target size), resolving to `var(--form-input-height)`. customization.md documents it and deprecates the two legacy spellings (`min-h-11`, `min-h-[var(--form-input-height)]`); the consumer migration sweep stays tracked on the issue. (#142)
+- Lookbook `@param` playgrounds for alert (tone/title/description/icon) and indicator (variant/count/position) — DoD item 10 backfill. (#19)
+- Browser-lane coverage for form_draft: announce-after-disconnect, discard announcement, and a key-rotation test that decrypts the stored blob with the rotated key. (#74, #73)
+- Guard tests pinning previously untested invariants: COMPONENT_STATUS.md row-set == `Components.supported` (#133); SHARED_RB/NON_COMPONENT_RB source disjointness + a real two-declarer `add dialog` → `add sheet` idempotency run (#132); no `Layout/LineLength` directives in shipped templates (#111); every `primary_path` producible from a shipped template (#75).
+
+### Fixed
+
+- FormBuilder: `required: true` in the `html_options` hash — the documented Rails signature — now converts to aria-only in `select` and in the collection checkbox/radio groups, instead of passing native `required` through to `super` and defeating the no-native-required contract. (#145)
+- form_draft: `disconnect()` cancels the pending announce rAF/timer chain, so an announcement can no longer land on a detached node or a Turbo-cache-restored copy of the element. (#74)
+- form_draft: the module-level key cache re-imports the key when the scope digest rotates; a digest change with no fresh key meta fails closed (feature off) rather than encrypting drafts no fresh page load could decrypt. (#73)
+- `modelrails_ui:list` no longer misreports form_draft (partial-only) as not installed — `PRIMARY_PATHS` gains its notice-partial entry. (#75)
+- Shipped templates no longer carry `rubocop:disable/enable Layout/LineLength` pairs (7 components) — the enable half re-activated a cop rubocop-rails-omakase turns off, surfacing unrelated long lines in every generated host file. (#111)
+
+### Changed
+
+- Badge Lookbook Examples demo the two-axis `variant:`/`tone:` API across all 10 shipped cells; `variant: :destructive` remains as the single, labeled legacy-shim demo. (#154)
+- COMPONENT_STATUS.md reconciled with the generator catalog: form_builder and error_summary rows added as `gem-0a-proven / app-0b-pending`, counts corrected. (#133)
+- Docs: alert.md documents the `**html_attrs` passthrough (#138); indicator.md synced to the shipped 5-tone set (`default/info/success/warning/danger`, `destructive` as alias) (#136).
+
 ## [0.12.1] - 2026-08-23
 
 ### Added
