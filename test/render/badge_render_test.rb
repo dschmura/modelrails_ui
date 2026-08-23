@@ -42,12 +42,12 @@ class BadgeRenderTest < ViewComponent::TestCase
 
   # The canonical `danger` signal uses the TINTED treatment (soft danger-surface +
   # saturated text-danger + danger-border), not a solid fill. Never raw palette /
-  # text-white; focus ring is the uniform focus-ring utility.
+  # text-white. No focus-ring here — a span is not focusable (#147); see
+  # test_span_badge_carries_no_focus_ring_or_invalid_ring below.
   def test_danger_uses_tinted_surface
     render_inline(UI::BadgeComponent.new("Error", variant: :danger))
 
     assert_selector "span.bg-danger-surface.text-danger.border-danger-border"
-    assert_selector "span.focus-ring"
     refute_selector "span.text-white"
   end
 
@@ -116,5 +116,23 @@ class BadgeRenderTest < ViewComponent::TestCase
     assert_raises(ArgumentError) do
       render_inline(UI::BadgeComponent.new("X", variant: :bogus))
     end
+  end
+
+  # BASE hygiene (#147): a span is not focusable and must not carry focus-ring
+  # or the aria-invalid box-shadow ring (both are agent-rules violations —
+  # forced-colors/overflow failure modes; focus-ring belongs only on focusables).
+  def test_span_badge_carries_no_focus_ring_or_invalid_ring
+    render_inline(UI::BadgeComponent.new("Draft", variant: :soft, tone: :success))
+
+    refute_selector "span.focus-ring"
+    refute_selector "span[class*='aria-invalid:ring']"
+  end
+
+  # Link badges (href:) ARE focusable, so they keep focus-ring explicitly via
+  # the href branch's @extra_class, alongside the existing min-h-11 target size.
+  def test_link_badge_carries_focus_ring
+    render_inline(UI::BadgeComponent.new("Docs", variant: :soft, tone: :success, href: "/docs"))
+
+    assert_selector "a.focus-ring.min-h-11"
   end
 end
