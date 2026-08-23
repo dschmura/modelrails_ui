@@ -216,6 +216,15 @@ class FormBuilderRenderTest < ViewComponent::TestCase
     refute page.has_css?("select[required]")
   end
 
+  def test_select_required_in_html_options_is_converted_to_aria_only
+    # The Rails signature a fork author will actually use: required in the
+    # fourth (html_options) hash must not bypass the no-native-required contract.
+    page = page_for(builder.select(:title, %w[a b], {}, {required: true}))
+
+    assert page.has_css?("select[aria-required='true']")
+    refute page.has_css?("select[required]")
+  end
+
   def test_select_honours_caller_html_options
     page = page_for(builder.select(:title, %w[a b], {}, {"data-controller" => "auto-submit"}))
 
@@ -363,6 +372,17 @@ class FormBuilderRenderTest < ViewComponent::TestCase
     # Caller class is additive, not a replacement — dropping CHECKBOX_CLASSES here
     # would leave radio rows unstyled and out of the accent color system.
     assert_equal 2, page.all("input[type='radio'].auto-submit.text-interactive").size
+  end
+
+  def test_collection_group_required_in_html_options_never_reaches_the_inputs
+    # Same contract hole as select: required in the html_options hash would
+    # otherwise emit native required on EVERY input in the group.
+    page = page_for(builder.collection_radio_buttons(:title, ROLES, :first, :last, {},
+      {required: true}))
+
+    refute page.has_css?("input[required]")
+    # It still means "this group is required": the legend gets the mark.
+    assert page.has_css?("legend span[aria-hidden='true']", text: "*")
   end
 
   # -- submit -------------------------------------------------------------
