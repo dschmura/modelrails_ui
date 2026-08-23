@@ -28,6 +28,15 @@ A **non-last** item without an `href` renders as plain text (never a dead `<a>`)
 "linked for some viewers, plain for others" crumbs — e.g. a parent page whose link is
 policy-gated — stay expressible with the same `items:` array.
 
+## Attributes
+
+`class:` targets the `<nav>` root, like every other passthrough attribute on a `UI::*`
+component. Use `list_class:` to style the `<ol>` (precedent: tabs' `tablist_class:`):
+
+```erb
+<%= render(UI::BreadcrumbComponent.new(items: trail, class: "mb-6", list_class: "gap-4")) %>
+```
+
 ## Collapsing a long trail
 
 `max_items:` keeps the root and the tail and stands one ellipsis in for the rest.

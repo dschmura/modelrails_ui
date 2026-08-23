@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Docs: _modal docblock reflects the fail-loud id contract; ModalChrome documents its includer interface (panel, dialog_attrs); dialog.md documents id/body_id/wrapper.
+- BREAKING for hosts styling the list via `class:` — breadcrumb's `class:` now lands on the `<nav>` root like every other passthrough attribute; use the new `list_class:` to style the `<ol>`. (#148)
 
 ### Fixed
 
