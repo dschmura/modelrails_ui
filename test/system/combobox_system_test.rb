@@ -51,6 +51,32 @@ class ComboboxSystemTest < BrowserTestCase
     assert_selector "[data-combobox-target=empty]"
   end
 
+  # Zero-match filter → Escape → ArrowUp must reopen, entering at the LAST
+  # option. close() leaves the zero-match hidden states in place, so with the
+  # reopen branch behind the empty-visible guard no key could ever reopen the
+  # listbox (aria-expanded stuck false; only a printable keystroke recovered).
+  def test_arrow_up_reopens_after_escape_from_a_zero_match_filter
+    visit_scenario("combobox/basic")
+    input.click
+    input.send_keys("zzzz")
+    press(:Escape)
+    press(:Up)
+
+    assert_selector "[role=option]", count: 3
+    assert_equal "Mexico", find("##{input["aria-activedescendant"]}").text
+  end
+
+  def test_arrow_down_reopens_after_escape_from_a_zero_match_filter_at_the_first_option
+    visit_scenario("combobox/basic")
+    input.click
+    input.send_keys("zzzz")
+    press(:Escape)
+    press(:Down)
+
+    assert_selector "[role=option]", count: 3
+    assert_equal "United States", find("##{input["aria-activedescendant"]}").text
+  end
+
   # aria-activedescendant must name a real element — a stale or absent id silently breaks
   # the announcement while looking fine in the DOM.
   def test_arrow_down_points_activedescendant_at_a_real_option
