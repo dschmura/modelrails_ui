@@ -47,6 +47,18 @@ class DropdownMenuSystemTest < BrowserTestCase
     assert_equal "Share", page.evaluate_script("document.activeElement.textContent.trim()")
   end
 
+  # The panel carries tabindex="-1", so clicking its padding or a separator
+  # focuses the PANEL — no item is active and indexOf(activeElement) is -1.
+  # APG: ArrowUp from that state enters at the LAST item; the unguarded modulo
+  # landed on items[n-2], silently skipping the last item. (Focus set via JS —
+  # deterministic stand-in for a padding click, same activeElement state.)
+  def test_arrow_up_with_focus_on_the_panel_enters_at_the_last_item
+    page.execute_script("document.querySelector('[data-menu-target=menu]').focus()")
+    press(:Up)
+
+    assert_equal "Share", page.evaluate_script("document.activeElement.textContent.trim()")
+  end
+
   def test_submenu_opens_on_arrow_right
     press(:Down)
     press(:Right)
