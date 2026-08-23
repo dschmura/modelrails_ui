@@ -135,4 +135,19 @@ class BadgeRenderTest < ViewComponent::TestCase
 
     assert_selector "a.focus-ring.min-h-11"
   end
+
+  # Contract hooks (#149): every badge emits data-variant/data-tone reflecting the
+  # POST-shim axes, so host specs can assert on the two-axis contract instead of
+  # reaching into private class internals.
+  def test_badge_emits_variant_and_tone_hooks
+    render_inline(UI::BadgeComponent.new("Active", variant: :soft, tone: :success))
+
+    assert_selector "span[data-variant='soft'][data-tone='success']"
+  end
+
+  def test_link_badge_emits_hooks_too
+    render_inline(UI::BadgeComponent.new("Docs", variant: :soft, tone: :success, href: "/docs"))
+
+    assert_selector "a[data-variant='soft'][data-tone='success']"
+  end
 end

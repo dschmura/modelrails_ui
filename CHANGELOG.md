@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Badge emits stable `data-variant`/`data-tone` contract hooks so host specs can assert the two-axis contract instead of private class lists. (#149)
+
 ### Changed
 
 - Docs: _modal docblock reflects the fail-loud id contract; ModalChrome documents its includer interface (panel, dialog_attrs); dialog.md documents id/body_id/wrapper.
