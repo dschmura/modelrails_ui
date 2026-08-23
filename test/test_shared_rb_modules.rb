@@ -45,4 +45,69 @@ class TestSharedRbModules < Minitest::Test
     assert_equal on_disk.sort, (on_disk & shared_sources).sort,
       "unclaimed non-component .rb.tt would be misfiled: #{(on_disk - shared_sources).inspect}"
   end
+
+  # Disjointness gate (#132): a source registered in BOTH registries would let
+  # SHARED_RB silently win in copy_template_file's .rb.tt arm, turning the
+  # NON_COMPONENT_RB entry into dead code while both misfile invariants stay
+  # green.
+  def test_shared_rb_and_non_component_rb_sources_are_disjoint
+    shared_sources = Components::SHARED_RB.values.flatten.map { |m| m.fetch(:source) }
+    overlap = shared_sources & Components::NON_COMPONENT_RB.keys
+
+    assert_empty overlap, "sources registered in both SHARED_RB and NON_COMPONENT_RB: #{overlap.inspect}"
+  end
+
+  # Multi-declarer idempotency rests on every declarer agreeing where a shared
+  # source lands; two dests for one source would make the second `add` write a
+  # second copy, and two sources sharing a dest would make it overwrite.
+  def test_shared_rb_source_to_dest_mapping_is_one_to_one
+    pairs = Components::SHARED_RB.values.flatten.map { |m| [m.fetch(:source), m.fetch(:dest)] }.uniq
+
+    pairs.group_by(&:first).each do |source, group|
+      assert_equal 1, group.size, "#{source} is declared with multiple dests: #{group.map(&:last).inspect}"
+    end
+    pairs.group_by(&:last).each do |dest, group|
+      assert_equal 1, group.size, "#{dest} is claimed by multiple sources: #{group.map(&:first).inspect}"
+    end
+  end
+end
+
+# The two-declarer sequence a real app hits: `add dialog` then `add sheet`.
+# Thor no-ops the shared chrome only when the second render is byte-identical —
+# an ERB drift between declarers would surface here as a conflict (#132). This
+# pins the assumption for SHARED_RB and, by the same mechanism, SHARED_JS.
+class TestSharedRbGeneratorIdempotency < Minitest::Test
+  Components = ModelrailsUi::Generators::Components
+  CHROME_DEST = Components::SHARED_RB.fetch("dialog")
+    .find { |m| m.fetch(:source) == "dialog/modal_chrome.rb.tt" }.fetch(:dest)
+
+  def run_add(component, root)
+    out = StringIO.new
+    # Empty stdin: a Thor conflict prompt must EOF-fail the test, never hang it.
+    $stdin = StringIO.new
+    orig_stdout, $stdout = $stdout, out
+    ModelrailsUi::Generators::AddGenerator.start([component], destination_root: root)
+    out.string
+  ensure
+    $stdout = orig_stdout
+    $stdin = STDIN
+  end
+
+  def test_add_dialog_then_add_sheet_no_ops_on_the_shared_chrome
+    root = Dir.mktmpdir
+    run_add("dialog", root)
+    chrome = File.join(root, CHROME_DEST)
+
+    assert_path_exists chrome
+    first = File.read(chrome)
+
+    second_output = run_add("sheet", root)
+
+    assert_equal first, File.read(chrome),
+      "second declarer rewrote the shared chrome — declarers render different content"
+    assert_match(/identical.*#{Regexp.escape(CHROME_DEST)}/o, second_output)
+    refute_match(/conflict/, second_output)
+  ensure
+    FileUtils.remove_entry(root)
+  end
 end
