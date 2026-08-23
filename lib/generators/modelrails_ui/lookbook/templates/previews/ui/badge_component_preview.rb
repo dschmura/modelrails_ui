@@ -20,11 +20,13 @@ module UI
   # - **You supply:** an accessible name when the badge conveys status not already in
   #   the surrounding text, and a valid `variant` (an unknown one raises in development).
   #
-  # ## Variants
-  # Signal levels: `info` · `success` · `warning` · `danger` (tinted chips —
-  # soft `*-surface` + saturated `text-<level>`, matching the alert + toast cards).
-  # Style levels: `default` · `secondary` · `outline` · `ghost` · `link`.
-  # (`destructive` is a non-breaking alias for `danger`.)
+  # ## Cells (variant × tone)
+  # Two-axis API: `variant:` (shape — `solid` · `soft` · `outline` · `ghost` · `link`)
+  # × `tone:` (signal — `primary` · `neutral` · `info` · `success` · `warning` ·
+  # `danger`). Only the 10 shipped cells render; signal tones live on the SOFT
+  # variant as tinted chips (soft `*-surface` + saturated `text-<level>`, matching
+  # the alert + toast cards). Legacy flat `variant:` values still render via a
+  # deprecation shim — write the two axes in new code.
   # @logical_path Feedback & Status
   class BadgeComponentPreview < ViewComponent::Preview
     include UIHelper
@@ -39,11 +41,11 @@ module UI
 
     # @!group Examples
 
-    # The default, high-emphasis label.
+    # The default, high-emphasis label — the `solid`/`primary` cell (a bare call).
     def default
     end
 
-    # Neutral / lower-emphasis label.
+    # Lower-emphasis label — the `soft`/`primary` cell (the legacy `secondary`).
     def secondary
     end
 
@@ -52,35 +54,37 @@ module UI
     def neutral
     end
 
-    # Informational signal — tinted info chip.
+    # Informational signal — the `soft`/`info` tinted chip.
     def info
     end
 
-    # Success / completed status — tinted success chip.
+    # Success / completed status — the `soft`/`success` tinted chip.
     def success
     end
 
-    # Warning status — tinted warning chip (soft amber surface + dark amber text).
+    # Warning status — the `soft`/`warning` tinted chip (soft amber surface + dark amber text).
     def warning
     end
 
-    # Error / removed / failed status — tinted danger chip; keeps a danger focus ring.
+    # Error / removed / failed status — the `soft`/`danger` tinted chip; keeps a danger focus ring.
     def danger
     end
 
-    # `variant: :destructive` is a non-breaking alias for `:danger`.
+    # The legacy-shim demo: historical flat values (here `variant: :destructive`)
+    # still resolve to their cell (`soft`/`danger`) byte-identically. New code
+    # writes the two axes.
     def destructive
     end
 
-    # Outlined label — a border with no fill.
+    # Outlined label — the `outline`/`neutral` cell, a border with no fill.
     def outline
     end
 
-    # Minimal label — no fill, no border; reveals a surface tint on hover when linked.
+    # Minimal label — the `ghost`/`neutral` cell; no fill, no border, surface tint on hover when linked.
     def ghost
     end
 
-    # Link-styled label — pair with `href:` for a clickable tag/filter.
+    # Link-styled label — the `link`/`primary` cell; pair with `href:` for a clickable tag/filter.
     def link
     end
 
