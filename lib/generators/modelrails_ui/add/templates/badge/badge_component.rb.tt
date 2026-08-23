@@ -16,7 +16,8 @@ module UI
   #   A badge is presentational; `href:` is for navigation/filtering, not actions.
   #
   # ## Accessibility contract
-  # - **Guarantees:** AAA-contrast text on every shipped cell's surface, including the
+  # - **Guarantees:** AAA-contrast text on 9 of the 10 shipped cells' surfaces
+  #   (`soft`/`neutral` pending the consuming app's 0b axe row), including the
   #   adaptive signal treatments (`danger`/`success`/`info`/`warning`) which stay
   #   legible in dark mode.
   # - **You supply:** if the badge conveys status that isn't already in the
@@ -30,7 +31,7 @@ module UI
   # - `tone: :primary | :neutral | :info | :success | :warning | :danger` (default `:primary`)
   #
   # Only the 10 cells in `COMBOS` ship — 9 are AAA-proven; the 10th, `[:soft, :neutral]`
-  # (a muted chip for draft-style pills, no colored border/text), has its AAA proof land
+  # (a muted chip for draft-style pills, no colored border/text), whose AAA proof lands
   # with the consuming app's 0b axe row (gem CI disables `color-contrast`; see
   # `docs/testing.md`). Every signal lives on the SOFT variant as a TINTED chip — note
   # `[:soft, :danger]` is the badge "danger" (there is NO solid-danger badge fill;
