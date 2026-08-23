@@ -14,8 +14,9 @@ module UI
   # - It's a real action — use `UI::ButtonComponent` (or `button_to` for non-GET).
   #
   # ## Accessibility contract
-  # - **Guarantees:** AAA-contrast text on every variant, including the adaptive
-  #   signal treatments (`danger`/`success`/`info`/`warning`) that stay legible in dark mode.
+  # - **Guarantees:** AAA-contrast text on 9 of the 10 shipped cells (`soft`/`neutral`
+  #   pending the consuming app's 0b axe row), including the adaptive signal treatments
+  #   (`danger`/`success`/`info`/`warning`) that stay legible in dark mode.
   # - **You supply:** an accessible name when the badge conveys status not already in
   #   the surrounding text, and a valid `variant` (an unknown one raises in development).
   #
@@ -30,7 +31,7 @@ module UI
 
     # @!group Overview
 
-    # Every AAA-proven variant × tone cell on one screen.
+    # Every shipped variant × tone cell on one screen — 9 AAA-proven, soft/neutral pending.
     def showcase
     end
 
