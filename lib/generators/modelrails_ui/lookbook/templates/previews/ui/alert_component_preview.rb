@@ -66,6 +66,17 @@ module UI
 
     # @!group Reference
 
+    # Edit the tone and message live. `danger` announces assertively (role=alert);
+    # every other tone politely (role=status). `icon: false` suppresses the
+    # severity glyph.
+    # @param tone select [neutral, info, success, warning, danger]
+    # @param title text
+    # @param description text
+    # @param icon toggle
+    def playground(tone: :neutral, title: "Heads up", description: "Your trial ends in 3 days.", icon: true)
+      render_with_template(locals: {tone: tone.to_sym, title: title, description: description, icon: icon})
+    end
+
     # ## Don't — an empty alert
     #
     # An alert with no title and no description renders an empty live region —
