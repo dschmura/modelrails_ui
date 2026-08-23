@@ -150,4 +150,13 @@ class BadgeRenderTest < ViewComponent::TestCase
 
     assert_selector "a[data-variant='soft'][data-tone='success']"
   end
+
+  # The 10th cell (#146): a muted chip for draft-style pills, distinct from the
+  # signal-tinted soft chips — no colored border/text, just surface + muted text,
+  # with the same [:ghost, :neutral] hover-to-heading precedent.
+  def test_soft_neutral_cell_renders_muted_chip
+    render_inline(UI::BadgeComponent.new("Draft", variant: :soft, tone: :neutral))
+
+    assert_selector "span.bg-surface.text-text-muted.border-border[data-variant='soft'][data-tone='neutral']"
+  end
 end
