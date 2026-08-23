@@ -384,8 +384,8 @@ class TestBadgeComponent < Minitest::Test
   # Every shipped (variant, tone) cell is an AAA-proven treatment in COMBOS.
   def test_all_combos_exist
     [%i[solid primary], %i[soft primary], %i[soft info], %i[soft success],
-      %i[soft warning], %i[soft danger], %i[outline neutral], %i[ghost neutral],
-      %i[link primary]].each do |cell|
+      %i[soft warning], %i[soft danger], %i[soft neutral], %i[outline neutral],
+      %i[ghost neutral], %i[link primary]].each do |cell|
       assert UI::BadgeComponent::COMBOS.key?(cell), "Missing cell #{cell.inspect}"
     end
   end
