@@ -36,6 +36,21 @@ class CommandSystemTest < BrowserTestCase
   def search(query) = find("[data-command-target=input]").set(query)
   def visible_items = page.all("[data-command-value]:not([hidden])").map(&:text)
 
+  # Invariant pin for navigate's entry-parity branch: the palette's input lives
+  # INSIDE the panel, so once Escape closes it no keyboard path reaches
+  # navigate — ArrowUp must NOT reopen. If a refactor ever routes keys to the
+  # controller while closed (the combobox reopen shape), this turns that
+  # parity branch live and this example catches the contract change.
+  def test_stays_closed_on_arrow_up_after_escape
+    press(:Escape)
+
+    assert_no_selector "[data-command-target=input]"
+
+    press(:Up)
+
+    assert_no_selector "[data-command-target=input]"
+  end
+
   def test_matches_a_subsequence_that_is_not_a_substring
     search("nd")
 

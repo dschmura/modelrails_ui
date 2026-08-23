@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Menu-family keyboard entry, two live bugs: `menu` ArrowUp with no focused item (the panel's `tabindex="-1"` catches padding/separator clicks) now enters at the LAST item instead of silently landing on `items[n-2]` — the one navigation path still missing the entry guard `command`/`combobox` already carry; `combobox` ArrowDown/ArrowUp after Escape on a zero-match filter now reopens the listbox (entering at first/last per APG) instead of locking the keyboard out until a printable keystroke. Browser-lane tests pin both, plus an invariant example pinning that `command` stays closed on ArrowUp after Escape (its parity branch is deliberately unreachable).
+
 ## [0.13.0] - 2026-08-23
 
 ### Added
