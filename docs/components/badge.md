@@ -27,8 +27,10 @@ Creates `app/components/ui/badge_component.rb`.
 ## Cells (variant × tone)
 
 Badge is a **two-axis** component: `variant:` (shape) × `tone:` (signal). Only
-the 10 AAA-proven `(variant, tone)` cells below ship — pairings outside this
-table are unproven and not guaranteed legible.
+the 10 `(variant, tone)` cells below ship — pairings outside this table are
+unproven and not guaranteed legible. 9 of the 10 are AAA-proven; `soft`/`neutral`
+is marked below — its AAA proof lands with the consuming app's 0b axe row (this
+gem's CI disables `color-contrast`; see [Testing](../testing.md)).
 
 | Variant | Tone | Class recipe |
 |---------|------|--------------|
@@ -38,10 +40,12 @@ table are unproven and not guaranteed legible.
 | `soft` | `success` | `bg-success-surface text-success border-success-border [a&]:hover:bg-success-hover` |
 | `soft` | `warning` | `bg-warning-surface text-warning border-warning-border [a&]:hover:bg-warning-hover` |
 | `soft` | `danger` | `bg-danger-surface text-danger border-danger-border [a&]:hover:bg-danger-hover` |
-| `soft` | `neutral` | `bg-surface text-text-muted border-border [a&]:hover:bg-surface-sunken [a&]:hover:text-text-heading` |
+| `soft` | `neutral` † | `bg-surface text-text-muted border-border [a&]:hover:bg-surface-sunken [a&]:hover:text-text-heading` |
 | `outline` | `neutral` | `border-border text-text-heading [a&]:hover:bg-surface-sunken [a&]:hover:text-text-heading` |
 | `ghost` | `neutral` | `[a&]:hover:bg-surface-sunken [a&]:hover:text-text-heading` |
 | `link` | `primary` | `text-interactive underline-offset-4 [a&]:hover:underline` |
+
+† `soft`/`neutral` AAA proof is downstream, not yet CI-verified in this gem — see above.
 
 ```erb
 <%= ui :badge, "Active",  variant: :solid, tone: :primary %>

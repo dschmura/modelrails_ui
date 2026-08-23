@@ -29,11 +29,12 @@ module UI
   # - `variant: :solid | :soft | :outline | :ghost | :link` (default `:solid`)
   # - `tone: :primary | :neutral | :info | :success | :warning | :danger` (default `:primary`)
   #
-  # Only the 10 AAA-proven cells ship (see `COMBOS`). Every signal lives on the SOFT
-  # variant as a TINTED chip — note `[:soft, :danger]` is the badge "danger" (there is
-  # NO solid-danger badge fill; `variant: :solid, tone: :danger` is unproven and raises).
-  # `[:soft, :neutral]` is the one soft cell with no signal color — a muted chip for
-  # draft-style pills (no colored border/text, just surface + muted text).
+  # Only the 10 cells in `COMBOS` ship — 9 are AAA-proven; the 10th, `[:soft, :neutral]`
+  # (a muted chip for draft-style pills, no colored border/text), has its AAA proof land
+  # with the consuming app's 0b axe row (gem CI disables `color-contrast`; see
+  # `docs/testing.md`). Every signal lives on the SOFT variant as a TINTED chip — note
+  # `[:soft, :danger]` is the badge "danger" (there is NO solid-danger badge fill;
+  # `variant: :solid, tone: :danger` is unproven and raises).
   #
   # ## Legacy shim (deprecated flat `variant:` → `[variant, tone]`)
   # The historical flat values still work, byte-identically, via `SHIM`:
@@ -48,7 +49,8 @@ module UI
            "aria-invalid:border-danger-border " \
            "[&>svg]:pointer-events-none [&>svg]:size-3"
 
-    # The 10 AAA-proven cells, keyed `[variant, tone]`. Signal tones use the TINTED
+    # The 10 shipped cells, keyed `[variant, tone]` — 9 AAA-proven, plus `[:soft, :neutral]`
+    # pending the consuming app's 0b axe row (see the class docblock). Signal tones use the TINTED
     # treatment (soft `*-surface` background + saturated `text-<level>` + `*-border`),
     # matching the alert + toast cards. The `--color-<level>` base tokens are TEXT
     # colors (dark in light mode for AAA-on-light readability), so using them as solid

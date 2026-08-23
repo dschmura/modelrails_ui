@@ -86,9 +86,10 @@ module UI
 
     # @!group Reference
 
-    # Edit `label` and the two-axis `variant`/`tone` cell live. Only the 10 AAA-proven
-    # cells are offered (signals live on the SOFT variant as tinted chips; an unproven
-    # pairing raises in dev).
+    # Edit `label` and the two-axis `variant`/`tone` cell live. Only the 10 shipped
+    # cells are offered — 9 AAA-proven, plus `soft/neutral` pending the consuming app's
+    # 0b axe row (signals live on the SOFT variant as tinted chips; an unproven pairing
+    # raises in dev).
     # @param label text
     # @param cell select [solid/primary, soft/primary, soft/info, soft/success, soft/warning, soft/danger, soft/neutral, outline/neutral, ghost/neutral, link/primary]
     def playground(label: "Badge", cell: "soft/primary")
