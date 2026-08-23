@@ -98,6 +98,7 @@ module UI
     def call
       content_tag(@tag || :span, content.presence || @label,
         class: cn(BASE, COMBOS.fetch([@variant, @tone], COMBOS[[:solid, :primary]]), @extra_class),
+        "data-variant": @variant, "data-tone": @tone,
         **@html_attrs)
     end
 
