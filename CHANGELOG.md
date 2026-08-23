@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Badge emits stable `data-variant`/`data-tone` contract hooks so host specs can assert the two-axis contract instead of private class lists. (#149)
+- Badge gains the `[:soft, :neutral]` cell (muted chip: `bg-surface text-text-muted border-border`) for draft-style pills; AAA proof lands with the consuming app's 0b axe row. badge.md rewritten for the two-axis API. (#146, #141)
 
 ### Changed
 
