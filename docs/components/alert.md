@@ -134,6 +134,7 @@ end
 | `role` | Symbol/String | `nil` | Override the tone's role (e.g. `:note` for persistent context); any override drops `aria-live` |
 | `title` | String | `nil` | Plain-text title, alternative to `with_alert_title` slot |
 | `description` | String | `nil` | Plain-text description, alternative to `with_alert_description` slot |
+| `**html_attrs` | Hash | — | Forwarded to the outer `<div>` (e.g. `data:` for Stimulus wiring, `id:`); `class:` merges via `cn` |
 
 | Slot | Required | Description |
 |------|----------|-------------|
