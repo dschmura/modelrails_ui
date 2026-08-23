@@ -1,0 +1,4 @@
+<%# locals: (variant:, count:, position:) -%>
+<%= ui :indicator, variant: variant, count: count.presence&.to_i, position: position do %>
+  <span class="inline-flex size-9 items-center justify-center rounded-md bg-surface-sunken text-text-body">A</span>
+<% end %>

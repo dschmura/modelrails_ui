@@ -43,6 +43,15 @@ module UI
 
     # @!group Reference
 
+    # Edit the variant, count, and corner live. A blank count renders the bare
+    # presence dot. (`destructive` is a non-breaking alias for `danger`.)
+    # @param variant select [default, info, success, warning, danger]
+    # @param count number
+    # @param position select [top_right, top_left, bottom_right, bottom_left]
+    def playground(variant: :default, count: 3, position: :top_right)
+      render_with_template(locals: {variant: variant.to_sym, count: count, position: position.to_sym})
+    end
+
     # ## Don't — color-only signal
     #
     # This destructive dot is the only thing conveying "error" — there's no text or
