@@ -94,4 +94,20 @@ class BreadcrumbRenderTest < ViewComponent::TestCase
 
     assert_match(/max_items/, error.message)
   end
+
+  # `class:` is a passthrough attr like every other UI::* component — it targets the <nav>
+  # root, not the <ol>. (#148)
+  def test_class_lands_on_the_nav_root
+    render_inline(UI::BreadcrumbComponent.new(items: [{label: "Docs", href: "/docs"}, {label: "Here"}], class: "mb-6"))
+
+    assert_selector "nav.mb-6[aria-label]", visible: :all
+    assert_no_selector "ol.mb-6", visible: :all
+  end
+
+  # list_class: is the named sub-element hook for the <ol> (precedent: tabs' tablist_class:).
+  def test_list_class_lands_on_the_ol
+    render_inline(UI::BreadcrumbComponent.new(items: [{label: "Docs", href: "/docs"}, {label: "Here"}], list_class: "gap-4"))
+
+    assert_selector "nav > ol.gap-4", visible: :all
+  end
 end
