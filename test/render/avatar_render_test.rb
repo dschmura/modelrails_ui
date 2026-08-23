@@ -108,6 +108,15 @@ class AvatarRenderTest < ViewComponent::TestCase
     assert_selector "[data-avatar-target='fallback'][role='img'][aria-label='Dave']", visible: :all
   end
 
+  # The recovered initials must render in the CALLER's hue: the standby span carries
+  # the same --hue custom property the initials branch renders, or a 404'd logo for a
+  # custom-color identity silently recovers in the default hue.
+  def test_standby_initials_keep_the_callers_hue
+    render_inline(UI::AvatarComponent.new(src: "/a.png", fallback: "DC", hue: 280))
+
+    assert_selector "[data-avatar-target='fallback'].bg-hue-initials[style*='--hue: 280']", visible: :all
+  end
+
   def test_avatar_is_named_once_among_visible_nodes
     render_inline(UI::AvatarComponent.new(src: "/a.png", fallback: "DC", aria_label: "Dave"))
 
