@@ -120,7 +120,8 @@ module ModelrailsUi
       # Install-status markers for components whose primary file is not
       # app/components/ui/<name>_component.rb (see primary_path below).
       PRIMARY_PATHS = {
-        "form_builder" => "app/form_builders/ui/form_builder.rb"
+        "form_builder" => "app/form_builders/ui/form_builder.rb",
+        "form_draft" => "app/views/shared/_form_draft_notice.html.erb"
       }.freeze
 
       # Components that hard-require sibling components at render time. The add
