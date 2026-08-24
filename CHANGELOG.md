@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- FormBuilder tolerates object-less forms (`form_with url:` sets the builder's object to FALSE, which survives safe navigation): `error_for` and `error_summary` guard with `respond_to?(:errors)`, so enhanced helpers render on model-less forms instead of raising. (#163)
+
 ## [0.13.1] - 2026-08-23
 
 ### Fixed
