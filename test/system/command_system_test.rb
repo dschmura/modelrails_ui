@@ -23,6 +23,30 @@ BrowserHarness.scenario("command/fuzzy", controllers: %w[command], modules: %w[s
   end
 end
 
+# Mirrors the documented separator example (docs/components/command.md): a plain
+# <hr> between groups, inside the role="listbox". An <hr>'s implicit
+# role="separator" is an illegal listbox child (axe aria-required-children,
+# critical), so the controller must neutralize caller-supplied rules.
+BrowserHarness.scenario("command/separator", controllers: %w[command], modules: %w[search/command_score]) do
+  view = ActionController::Base.new.view_context
+  item = ->(value) do
+    view.tag.button(value, type: "button", class: UI::CommandComponent::ITEM,
+      data: {command_value: value})
+  end
+  group = ->(*items) do
+    view.tag.div(view.safe_join(items), class: UI::CommandComponent::GROUP_WRAPPER,
+      data: {command_group: true})
+  end
+  UI::CommandComponent.new.render_in(view) do |c|
+    c.with_trigger { "Open" }
+    view.safe_join([
+      group.call(item.call("Groups")),
+      view.tag.hr(class: UI::CommandComponent::SEPARATOR),
+      group.call(item.call("New document"))
+    ])
+  end
+end
+
 # Ranking only exists at runtime — the render lane sees the authored order and nothing else.
 class CommandSystemTest < BrowserTestCase
   def setup
@@ -78,5 +102,18 @@ class CommandSystemTest < BrowserTestCase
     search("nd")
 
     assert_no_stimulus_errors
+  end
+
+  # A caller-supplied <hr> — the shape the component's own SEPARATOR constant and
+  # docs example instruct — must not reach the a11y tree as a listbox child.
+  def test_a_caller_supplied_separator_is_not_an_illegal_listbox_child
+    visit_scenario("command/separator")
+    find("[data-action='click->command#open']").click
+    find("[data-command-target=input]")
+
+    rule = find("hr", visible: :all)
+
+    assert_equal "presentation", rule[:role]
+    assert_equal "true", rule["aria-hidden"]
   end
 end
