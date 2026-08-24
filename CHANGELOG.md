@@ -7,8 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.13.1] - 2026-08-23
+
 ### Fixed
 
+- Switch off-state presence: the unchecked track carries `border-border-strong` (transparent again once checked) and the thumb gains `shadow-sm` — `bg-surface-sunken` barely separates from a raised card in either theme and the thumb was the card's own surface color, so an off switch rendered as a barely-visible oval. Caught in host-app browser review. (#161)
 - Menu-family keyboard entry, two live bugs: `menu` ArrowUp with no focused item (the panel's `tabindex="-1"` catches padding/separator clicks) now enters at the LAST item instead of silently landing on `items[n-2]` — the one navigation path still missing the entry guard `command`/`combobox` already carry; `combobox` ArrowDown/ArrowUp after Escape on a zero-match filter now reopens the listbox (entering at first/last per APG) instead of locking the keyboard out until a printable keystroke. Browser-lane tests pin both, plus an invariant example pinning that `command` stays closed on ArrowUp after Escape (its parity branch is deliberately unreachable).
 
 ## [0.13.0] - 2026-08-23
