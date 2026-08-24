@@ -55,10 +55,12 @@ class FormBuilderRenderTest < ViewComponent::TestCase
     b = builder(false, object_name: :prefs)
     html = b.select(:retention, [["30 days", 30]], {label: "Retention"})
     doc = Nokogiri::HTML4.fragment(html.to_s)
+
     assert doc.at_css("select.ui-select"), "select should render for an object-less builder"
     assert doc.at_css("label"), "label should render for an object-less builder"
 
     summary = b.error_summary
+
     assert_nil summary, "error_summary must be a no-op with no errors object"
   end
 
