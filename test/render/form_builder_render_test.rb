@@ -48,6 +48,22 @@ class FormBuilderRenderTest < ViewComponent::TestCase
 
   # -- wrapped field wiring ---------------------------------------------------
 
+  # An object-less builder (form_with url: — Rails sets object to FALSE, not
+  # nil, so `object&.` does not short-circuit) must render every enhanced
+  # helper without raising: error state is simply absent.
+  def test_objectless_builder_renders_enhanced_helpers_without_raising
+    b = builder(false, object_name: :prefs)
+    html = b.select(:retention, [["30 days", 30]], {label: "Retention"})
+    doc = Nokogiri::HTML4.fragment(html.to_s)
+
+    assert doc.at_css("select.ui-select"), "select should render for an object-less builder"
+    assert doc.at_css("label"), "label should render for an object-less builder"
+
+    summary = b.error_summary
+
+    assert_nil summary, "error_summary must be a no-op with no errors object"
+  end
+
   def test_text_field_binds_label_control_and_id_together
     page = page_for(builder.text_field(:title))
 
