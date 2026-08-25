@@ -7,9 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.14.0] - 2026-08-25
+
+### Added
+
+- `keyboard/keyboard_nav.js` — a shared ES module holding the two movement algorithms the menu family had inlined four times: `TypeAhead` (buffer + APG idle reset + wrap-scan) and `nextActive` (ArrowDown/Up/Home/End over a visible set). Both are pure movement and never touch focus, aria, or the DOM; each controller keeps its own focus mechanics. Registered in `SHARED_JS` for dropdown_menu, context_menu, menubar, menubar_menu, combobox, and command — consumers need a `keyboard` importmap pin. Net −53/+27 across the four controllers. (#168)
+- Theme-aware hue-ramp tokens: `--hue-initials-l`/`--hue-initials-c` for the fill and `--color-text-on-hue-initials` for its text, redefined under `.dark` the way `interactive` already is. (#144)
+- Browser-lane coverage for menubar's bar-level keyboard contract — type-ahead match/wrap/multi-character-buffer/no-match, the menu-side `enabledItems` filter reached through the bar, and the ←/→ navigation that stays local. menubar previously had render-lane coverage only, and the render lane cannot run JS or Stimulus outlets. (#171, #168)
+- `test_hue_ramp_contrast.rb` — AAA proven across all 360 hues in both themes, reading the shipped values out of the stylesheet and resolving the declared on-color rather than restating either. (#144)
+
 ### Fixed
 
+- `command`: a caller-supplied `<hr>` is neutralized to `role="presentation"` + `aria-hidden` in `_tagOptions()`. An `<hr>`'s implicit `role="separator"` is an illegal child of `role="listbox"` (axe `aria-required-children`, critical) — and the component invited the markup, since `SEPARATOR` is an exposed constant and command.md's example places one inside the list. (#167)
+- `command`: ArrowUp with no active option enters at the LAST item, matching `combobox`. Parity rather than a live path — `filter()` re-seeds the active option on every open and input — but it keeps the duplicated pair identical, which the #168 extraction depends on. (#167)
+- `bg-hue-initials` participates in dark mode. It resolved to a fixed `oklch(0.35 0.2 var(--hue))` in both themes while `AvatarComponent` hardcoded `text-white` on it, so a hue disc stayed dark-with-white-text beside a `bg-interactive` sibling that flips to light-fill-with-dark-text. Dark is now L 0.80 / C 0.10 with `--neutral-900` text: 9.14:1 at the worst hue, and the only candidate that stays inside sRGB gamut at every hue — so that ratio is what renders rather than an estimate of the browser's gamut mapping. Light mode is unchanged (8.82:1 worst hue, verified). (#144)
 - FormBuilder tolerates object-less forms (`form_with url:` sets the builder's object to FALSE, which survives safe navigation): `error_for` and `error_summary` guard with `respond_to?(:errors)`, so enhanced helpers render on model-less forms instead of raising. (#163)
+- `dialog`: focus is restored on disconnect, and a detached opener is guarded. (#165)
+
+### Changed
+
+- `AvatarComponent#color_classes` pairs the hue fill with `text-text-on-hue-initials` instead of a hardcoded `text-white`. **Consumers with an app-side `text-white` on a `bg-hue-initials` element should remove it** — it defeats the adaptive on-color and leaves white text on a re-lit fill. (#144)
 
 ## [0.13.1] - 2026-08-23
 
