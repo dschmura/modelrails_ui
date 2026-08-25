@@ -6,7 +6,7 @@ load_component "command", "command_component.rb.tt"
 # Also an end-to-end check of the `search` shared-module namespace: the controller imports
 # `search/command_score` by bare specifier, so if SHARED_JS did not register it the import
 # would fail here exactly as it would in a fork.
-BrowserHarness.scenario("command/fuzzy", controllers: %w[command], modules: %w[search/command_score]) do
+BrowserHarness.scenario("command/fuzzy", controllers: %w[command], modules: %w[search/command_score keyboard/keyboard_nav]) do
   view = ActionController::Base.new.view_context
   item = ->(value, keywords = nil) do
     attrs = {type: "button", class: UI::CommandComponent::ITEM, data: {command_value: value}}
@@ -27,7 +27,7 @@ end
 # <hr> between groups, inside the role="listbox". An <hr>'s implicit
 # role="separator" is an illegal listbox child (axe aria-required-children,
 # critical), so the controller must neutralize caller-supplied rules.
-BrowserHarness.scenario("command/separator", controllers: %w[command], modules: %w[search/command_score]) do
+BrowserHarness.scenario("command/separator", controllers: %w[command], modules: %w[search/command_score keyboard/keyboard_nav]) do
   view = ActionController::Base.new.view_context
   item = ->(value) do
     view.tag.button(value, type: "button", class: UI::CommandComponent::ITEM,

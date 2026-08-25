@@ -7,7 +7,7 @@ load_component "dropdown_menu", "dropdown_menu_component.rb.tt"
 # Rendering a slotted component needs a view context, so build the HTML the same way the
 # render lane does rather than going through a controller.
 BrowserHarness.scenario("dropdown_menu/submenu",
-  controllers: %w[menu submenu], modules: %w[overlays/top_layer]) do
+  controllers: %w[menu submenu], modules: %w[overlays/top_layer keyboard/keyboard_nav]) do
   view = ActionController::Base.new.view_context
   UI::DropdownMenuComponent.new.render_in(view) do |c|
     c.with_trigger { "Actions" }
