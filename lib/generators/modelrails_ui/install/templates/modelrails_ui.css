@@ -94,6 +94,15 @@
   --color-text-muted:          var(--neutral-700); /* AAA 7:1 on white surface — same darkness as body; visual hierarchy is now via font-size/weight, not lightness */
   --color-text-on-interactive: oklch(100% 0 0);  /* white */
 
+  /* --- Hue ramp (workspace/org initials; caller supplies --hue) ---
+   * A fill, so it follows the fills rule: solid background + adaptive on-color.
+   * Light mode is a dark disc with white text; .dark re-lights it and flips the
+   * on-color, the same way interactive does. AAA is proven for ALL 360 hues by
+   * test/test_hue_ramp_contrast.rb, which reads these values, not copies of them. */
+  --hue-initials-l: 0.35;
+  --hue-initials-c: 0.20;
+  --color-text-on-hue-initials: oklch(100% 0 0);  /* white */
+
   /* --- Interactive (buttons, links, focus rings) ---
    *
    * NOTE on choosing between `interactive` and `interactive-hover`:
@@ -165,6 +174,15 @@
   --color-text-body:           var(--neutral-300);
   --color-text-muted:          var(--neutral-300); /* AAA 7:1 on dark surface — same as body; visual hierarchy via font-size/weight, not lightness (matches light-mode policy) */
   --color-text-on-interactive: var(--neutral-900);  /* dark text on light interactive bg */
+
+  /* --- Hue ramp ---
+   * L/C mirror the palette's own dark interactive shade (primary-300 is L .828 C .111),
+   * so a hue disc reads as the same family as its neighbours. Chosen at 0.80/0.10
+   * because that is IN sRGB gamut at every hue: the computed 9.14:1 worst case is then
+   * what actually renders, rather than an estimate of the browser's gamut mapping. */
+  --hue-initials-l: 0.80;
+  --hue-initials-c: 0.10;
+  --color-text-on-hue-initials: var(--neutral-900);  /* dark text on the re-lit fill */
 
   /* --- Interactive --- */
   --color-interactive:       var(--primary-300); /* was primary-400 (6.7:1 on slate-800) — primary-300 reaches AAA 7:1 */
@@ -319,6 +337,7 @@
   --color-text-body: var(--color-text-body);
   --color-text-muted: var(--color-text-muted);
   --color-text-on-interactive: var(--color-text-on-interactive);
+  --color-text-on-hue-initials: var(--color-text-on-hue-initials);
 
   /* Interactive */
   --color-interactive: var(--color-interactive);
@@ -622,12 +641,13 @@
    OKLCH Hue-based Background Utilities
    Used with style="--hue: <value>" to apply dynamic colors without full
    inline background-color declarations (CSP-safer).
-   bg-hue-initials: L=0.35, C=0.20 — AAA contrast with white text
+   bg-hue-initials: theme-aware via --hue-initials-l/-c; pair with
+     text-text-on-hue-initials, never a hardcoded text color
    bg-hue-interactive: L=0.40, C=0.15 — accent/dot color for workspace branding
    ========================================================================== */
 
 .bg-hue-initials {
-  background-color: oklch(0.35 0.2 var(--hue, 210));
+  background-color: oklch(var(--hue-initials-l) var(--hue-initials-c) var(--hue, 210));
 }
 
 .bg-hue-interactive {
