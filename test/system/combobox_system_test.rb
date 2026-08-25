@@ -10,12 +10,12 @@ OPTIONS = [
   {value: "mx", label: "Mexico"}
 ].freeze
 
-BrowserHarness.scenario("combobox/basic", controllers: %w[combobox], modules: %w[overlays/top_layer]) do
+BrowserHarness.scenario("combobox/basic", controllers: %w[combobox], modules: %w[overlays/top_layer keyboard/keyboard_nav]) do
   view = ActionController::Base.new.view_context
   UI::ComboboxComponent.new(name: "country", label: "Country", options: OPTIONS).render_in(view)
 end
 
-BrowserHarness.scenario("combobox/two", controllers: %w[combobox], modules: %w[overlays/top_layer]) do
+BrowserHarness.scenario("combobox/two", controllers: %w[combobox], modules: %w[overlays/top_layer keyboard/keyboard_nav]) do
   view = ActionController::Base.new.view_context
   UI::ComboboxComponent.new(name: "origin", label: "Origin", options: OPTIONS).render_in(view) +
     UI::ComboboxComponent.new(name: "destination", label: "Destination", options: OPTIONS).render_in(view)

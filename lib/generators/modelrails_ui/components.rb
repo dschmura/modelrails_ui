@@ -31,18 +31,23 @@ module ModelrailsUi
       # and a host reading its importmap should be able to tell what it is.
       COMMAND_SCORE = {source: "command/command_score.js", dir: "search"}.freeze
 
+      # Type-ahead + activedescendant movement, shared by the menu family. Lives in
+      # dropdown_menu/ because the menu engine is its origin; namespaced `keyboard`
+      # because it is movement logic, not a dropdown concern.
+      KEYBOARD_NAV = {source: "dropdown_menu/keyboard_nav.js", dir: "keyboard"}.freeze
+
       SHARED_JS = {
-        "dropdown_menu" => [TOP_LAYER],
-        "context_menu" => [TOP_LAYER],
-        "menubar" => [TOP_LAYER],
-        "menubar_menu" => [TOP_LAYER],
+        "dropdown_menu" => [TOP_LAYER, KEYBOARD_NAV],
+        "context_menu" => [TOP_LAYER, KEYBOARD_NAV],
+        "menubar" => [TOP_LAYER, KEYBOARD_NAV],
+        "menubar_menu" => [TOP_LAYER, KEYBOARD_NAV],
         "popover" => [TOP_LAYER],
-        "combobox" => [TOP_LAYER],
+        "combobox" => [TOP_LAYER, KEYBOARD_NAV],
         "date_picker" => [TOP_LAYER],
         "timepicker" => [TOP_LAYER],
         "navigation_menu" => [TOP_LAYER],
         "mega_menu" => [TOP_LAYER],
-        "command" => [COMMAND_SCORE]
+        "command" => [COMMAND_SCORE, KEYBOARD_NAV]
       }.freeze
 
       # Shared Ruby modules — SHARED_JS, one asset kind over. A plain .rb.tt
