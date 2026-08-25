@@ -49,12 +49,15 @@ class AvatarRenderTest < ViewComponent::TestCase
     assert_selector "span.text-text-on-interactive"
   end
 
-  # The hue fill is the project's own semantic utility (fixed L=0.35, theme-independent),
-  # engineered for AAA white text — that pairing is the documented correct one here.
-  def test_hue_initials_use_the_semantic_hue_fill
+  # The hue fill is the project's own semantic utility, theme-aware since #144: the
+  # lightness comes from --hue-initials-l, which .dark re-lights, and the on-color rides
+  # along in its own token. The pairing is asserted because the bug was a hardcoded
+  # text-white that could not follow the fill.
+  def test_hue_initials_use_the_semantic_hue_fill_with_its_adaptive_on_color
     render_inline(UI::AvatarComponent.new(fallback: "AL", hue: 280))
 
-    assert_selector "span.bg-hue-initials[style*='--hue: 280']"
+    assert_selector "span.bg-hue-initials.text-text-on-hue-initials[style*='--hue: 280']"
+    refute_selector "span.bg-hue-initials.text-white"
   end
 
   def test_applies_the_requested_size
