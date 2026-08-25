@@ -12,7 +12,7 @@ load_component "menubar", "menubar_component.rb.tt"
 #
 # Written as characterization coverage ahead of the shared keyboard primitive: type-ahead
 # is duplicated between `menu` and `menubar`, and extracting it needs a net on both sides.
-BrowserHarness.scenario("menubar/bar", controllers: %w[menubar menu], modules: %w[overlays/top_layer]) do
+BrowserHarness.scenario("menubar/bar", controllers: %w[menubar menu], modules: %w[overlays/top_layer keyboard/keyboard_nav]) do
   view = ActionController::Base.new.view_context
   UI::MenubarComponent.new(label: "Main").render_in(view) do |bar|
     bar.with_menu(label: "File") do |m|
