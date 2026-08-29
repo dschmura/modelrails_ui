@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- `agent_rules` template: replace the phantom `bg-page` with `bg-surface`/`bg-surface-raised`; same phantom in the `bottom_nav` lookbook preview template.
+- `agent_rules` template: the overlay-container rule keeps the live region on the container — the per-item-only shape it prescribed silences appended toasts.
+- `agent_rules` template: point component docs at the gem's `docs/components/` path.
+- `house-rules` template: system specs bypass CSP via Cuprite, not Playwright.
+
 ## [0.14.0] - 2026-08-25
 
 ### Added
