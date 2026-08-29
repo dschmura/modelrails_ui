@@ -5,14 +5,15 @@ Defer to it instead of inventing UI from scratch.
 
 ## Before you build any UI
 - **Check what exists first.** `bin/rails g modelrails_ui:list` shows installed primitives;
-  `docs/components/<name>.md` documents usage; `/lookbook` shows live previews.
+  the gem's `docs/components/<name>.md` (`bundle show modelrails_ui`) documents usage;
+  `/lookbook` shows live previews.
 - **Prefer a documented `UI::*` primitive** over a hand-rolled utility stack. Build bespoke
   markup only when no primitive fits — and say so explicitly.
 - `UI::*` **is** the shared component library — use it freely.
 
 ## Color, type, tokens — never raw
 - **No raw hex, arbitrary color utilities, or off-system fonts.** Use semantic tokens:
-  `bg-page`/`bg-surface`, `text-text-body`/`text-text-heading`, `bg-hue-*`, `.btn-*`.
+  `bg-surface`/`bg-surface-raised`, `text-text-body`/`text-text-heading`, `bg-hue-*`, `.btn-*`.
 - **Signals** are canonical `info · success · warning · danger`. Chips (alert/badge/toast)
   are *tinted* (`bg-*-surface` + `text-*` + `*-border`); fills (button, indicator dot) are
   *solid* with adaptive on-color. Base signal tokens are TEXT colors — never a solid fill,
@@ -38,17 +39,19 @@ Defer to it instead of inventing UI from scratch.
   box-shadow ring is clipped by `overflow:hidden` ancestors and vanishes in forced-colors mode
   (a 2.4.7 failure). The one exception is a menu item's full-surface
   `focus-visible:bg-surface-sunken` highlight (a stronger indicator where an outline is clipped).
-- **A fixed-position overlay container with `aria-label` is a live region OR a landmark — never
-  bare, never `role="group"`.** Such a container (toast stack, notification tray) must clear two
-  axe rules at once: `aria-prohibited-attr` (`aria-label` needs a role) and `region` (its content
-  must sit in a live region or landmark, since it lives outside `<main>`). Two valid shapes:
-  (a) make the container the live region — `role="status"` + `aria-live="polite"` (or
-  `role="alert"`/`assertive` for errors) — when the container announces its own children; or
-  (b) make it a landmark — `role="region"`, with the `aria-label` as its name — when the live
-  regions live on the individual items (per-item `role="status"`, so the container must *not*
-  also be a live region). `role="group"` clears `aria-prohibited-attr` but is neither, so it
-  trips `region`. (`ToasterComponent` uses shape (a); an app's own `shared/_toasts` per-toast
-  stack uses shape (b).)
+- **A fixed-position overlay container with `aria-label` is a live region — and, when it needs
+  a name, a landmark too. Never bare, never `role="group"`.** Such a container (toast stack,
+  notification tray) must clear two axe rules at once: `aria-prohibited-attr` (`aria-label`
+  needs a role) and `region` (its content must sit in a live region or landmark, since it lives
+  outside `<main>`). The live region is the **container**, present and empty from first render:
+  either `role="status"` + `aria-live="polite"` (or `role="alert"`/`assertive` for errors), or
+  `role="region"` + `aria-label` + `aria-live="…"` when it also needs a landmark name — both
+  are valid; axe's `region` rule accepts live *or* landmark, and ARIA does not forbid both.
+  What does NOT work is a live region only on the items: a toast appended already carrying
+  its text and its own `aria-live` is inserted-with-content, and assistive tech drops it.
+  Per-item `role="status"`/`"alert"` is fine — implicit and harmless — but it is not what
+  announces. `role="group"` clears `aria-prohibited-attr` only. (`ToasterComponent` and an
+  app's own `shared/_toasts` both keep the live region on the container.)
 
 ## Before you call UI work done
 - **Check both themes** — light *and* dark (class-based dark mode).
