@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.14.1] - 2026-08-29
+
 ### Fixed
 
 - `calendar`: arrow keys cross the month boundary — a target past the grid's edge pages to the adjacent month and lands on that date instead of dead-ending (APG date-grid). Paging renders synchronously so PageUp/PageDown focus the NEW grid, and a re-render keeps the roving stop on the focused day. (#177)
