@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.14.2] - 2026-08-30
+
 ### Fixed
 
 - `form_builder`: a field for an attribute loaded from the database renders the reader's value, not `*_before_type_cast` — for an Active Record encrypted attribute that was the ciphertext. The raw pre-cast value is used only when the attribute came from the user this request (the guard ActionView's own field helpers apply), so a failed cast still re-renders what was typed.
