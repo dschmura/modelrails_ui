@@ -37,6 +37,19 @@ class B1Article
   end
 end
 
+# A record loaded from the database reports its attributes as NOT from the
+# user, and its *_before_type_cast is the stored bytes — for an Active Record
+# encrypted attribute, the ciphertext. The shim mirrors that pair of readers.
+class B1LoadedArticle < B1Article
+  def title_before_type_cast
+    '{"p":"ciphertext"}'
+  end
+
+  def title_came_from_user?
+    false
+  end
+end
+
 class FormBuilderRenderTest < ViewComponent::TestCase
   def builder(object = B1Article.new, object_name: :b1_article)
     UI::FormBuilder.new(object_name, object, vc_test_controller.view_context, {})
@@ -99,6 +112,14 @@ class FormBuilderRenderTest < ViewComponent::TestCase
   end
 
   # -- value resolution -------------------------------------------------------
+
+  def test_value_renders_the_reader_when_the_attribute_did_not_come_from_the_user
+    article = B1LoadedArticle.new(title: "Hello")
+    page = page_for(builder(article, object_name: :b1_article).text_field(:title))
+
+    assert page.has_css?("input[value='Hello']"), "a loaded record's field must show the reader's value"
+    refute page.has_css?("input[value='{\"p\":\"ciphertext\"}']"), "never the stored bytes"
+  end
 
   def test_value_uses_before_type_cast_so_failed_numeric_input_survives_rerender
     article = B1Article.new
