@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `copy`: copy-to-clipboard field — a readonly `UI::Input` value with a real label, a 44px `[:outline, :neutral]` trigger whose visible text never changes, polite (copied) and assertive (failed) regions present from first render, honest failure without `execCommand`, `data-state` + `copy:copied`/`copy:failed` hooks, and four `modelrails_ui.copy.*` strings. Closes #139.
+
+### Fixed
+
+- `add` generator: the "already exists — overwriting" message was false — Thor prompts on a differing file; the message now names the prompt and `--force`/`--skip`.
+- `button` docs: variants, sizes and the API table now describe the shipped two-axis cells and `SIZES` (`default`, `icon`), and the Links example no longer uses the unshipped `:ghost` variant.
+
 ## [0.14.2] - 2026-08-30
 
 ### Fixed

@@ -63,7 +63,7 @@ Pass `href:` to render an `<a>` tag automatically:
 
 ```erb
 <%= ui :button, "Go home",      href: root_path %>
-<%= ui :button, "Edit profile", href: edit_profile_path, variant: :ghost %>
+<%= ui :button, "Edit profile", href: edit_profile_path, variant: :text, tone: :primary %>
 <%= ui :button, "Delete",       href: item_path(@item), variant: :destructive,
                                  data: { turbo_method: :delete, turbo_confirm: "Are you sure?" } %>
 ```
