@@ -20,40 +20,41 @@ Creates `app/components/ui/button_component.rb`.
 <%= ui :button do %>Save changes<% end %>
 ```
 
-## Variants
+## Variants (variant × tone)
 
-| Variant | Description |
-|---------|-------------|
-| `default` | Primary action — filled with `--primary` colour |
-| `destructive` | Dangerous action — filled with `--destructive` colour |
-| `outline` | Bordered, transparent background |
-| `secondary` | Lower-emphasis filled button |
-| `ghost` | No background, hover only |
-| `link` | Looks like a text link, no border or background |
+Two axes — `variant:` (shape) × `tone:` (signal). Only the AAA-proven cells ship; an
+unproven combination raises in development and falls back to `[:solid, :primary]` in
+production.
+
+| Cell | Class | Reach for it when |
+| --- | --- | --- |
+| `variant: :solid, tone: :primary` (default) | `btn-primary` | the primary action |
+| `variant: :solid, tone: :danger` | `btn-danger` | a destructive action |
+| `variant: :outline, tone: :neutral` | `btn-secondary` | a secondary action |
+| `variant: :text, tone: :primary` | `btn-touch-target btn-text btn-text-interactive` | a link-styled action |
+| `variant: :text, tone: :danger` | `btn-touch-target btn-text btn-text-danger` | a link-styled destructive action |
 
 ```erb
-<%= ui :button, "Save",   variant: :default %>
-<%= ui :button, "Delete", variant: :destructive %>
-<%= ui :button, "Cancel", variant: :outline %>
-<%= ui :button, "Draft",  variant: :secondary %>
-<%= ui :button, "Skip",   variant: :ghost %>
-<%= ui :button, "More",   variant: :link %>
+<%= ui :button, "Save" %>
+<%= ui :button, "Delete", variant: :solid, tone: :danger %>
+<%= ui :button, "Cancel", variant: :outline, tone: :neutral %>
+<%= ui :button, "Skip", variant: :text, tone: :primary %>
 ```
+
+Legacy flat values still work via `SHIM` and ignore `tone:` — `primary`, `secondary`,
+`danger`, `destructive`, `text`, `text_interactive`, `text_danger`. Write the two axes
+in new code.
 
 ## Sizes
 
 | Size | Description |
-|------|-------------|
-| `default` | Standard height (`h-9`), auto-reduces padding when an SVG is present |
-| `sm` | Compact (`h-8`, smaller gap), auto-reduces padding when an SVG is present |
-| `lg` | Large (`h-10`), auto-reduces padding when an SVG is present |
-| `icon` | Square (`size-9`), for icon-only buttons |
+| --- | --- |
+| `default` | standard horizontal padding; the 44px min-height comes from the `.btn-*` class |
+| `icon` | a 44×44 square (`px-0 min-w-[var(--form-input-height)]`) for icon-only buttons — give it an `aria-label` |
 
 ```erb
-<%= ui :button, "Small",  size: :sm %>
-<%= ui :button, "Normal", size: :default %>
-<%= ui :button, "Large",  size: :lg %>
-<%= ui :button, size: :icon do %><!-- svg --><% end %>
+<%= ui :button, "Normal" %>
+<%= ui :button, size: :icon, "aria-label": "Close" do %><!-- svg --><% end %>
 ```
 
 ## Links
@@ -62,8 +63,8 @@ Pass `href:` to render an `<a>` tag automatically:
 
 ```erb
 <%= ui :button, "Go home",      href: root_path %>
-<%= ui :button, "Edit profile", href: edit_profile_path, variant: :ghost %>
-<%= ui :button, "Delete",       href: item_path(@item), variant: :destructive,
+<%= ui :button, "Edit profile", href: edit_profile_path, variant: :text, tone: :primary %>
+<%= ui :button, "Delete",       href: item_path(@item), variant: :solid, tone: :danger,
                                  data: { turbo_method: :delete, turbo_confirm: "Are you sure?" } %>
 ```
 
@@ -86,10 +87,11 @@ Any extra keyword arguments are forwarded to the element:
 ## API
 
 | Option | Type | Default | Description |
-|--------|------|---------|-------------|
+| --- | --- | --- | --- |
 | `label` | String | `nil` | Plain-text label — positional (`"text"`) or keyword (`label: "text"`), alternative to block |
-| `variant` | Symbol | `:default` | Visual style — see Variants table |
-| `size` | Symbol | `:default` | Size — see Sizes table |
+| `variant` | Symbol | `:solid` | Shape axis — `:solid`, `:outline`, `:text` (see Variants) |
+| `tone` | Symbol | `:primary` | Signal axis — `:primary`, `:neutral`, `:danger` (see Variants) |
+| `size` | Symbol | `:default` | `:default` or `:icon` (see Sizes) |
 | `href` | String | `nil` | Renders `<a>` with this href; sets `tag: :a` automatically |
 | `tag` | Symbol | `:button` | Override HTML element |
 | `type` | String | `"button"` | Set automatically for `<button>`; pass `type: "submit"` for form submit |

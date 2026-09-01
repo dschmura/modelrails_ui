@@ -99,8 +99,9 @@ ledger is human judgment (Tier + Notes) only.
 | form_draft | gem-0a-proven / app-0b-pending | encrypted localStorage form-draft recovery (notice partial + form-mounted controller). 0a render test; app 0b pending. |
 | form_builder | gem-0a-proven / app-0b-pending | UI::FormBuilder (v0.10.0, B1): wrapped inputs wired to ActiveModel::Errors, aria-only required contract. Not a ViewComponent (render tests via the NOT_A_VIEWCOMPONENT carve-out). App still routes through its TailwindFormBuilder adapter (adoption handoff D1) — no app 0b yet. |
 | error_summary | gem-0a-proven / app-0b-pending | focusable autofocused error summary (v0.10.0, B1 sibling); unlinked: opt-out + anchor contract (#121/#126). 0a render test; app 0b pending. |
+| copy | hardened | Copy-to-clipboard field (2026-09-01): readonly `input` value with a real label, `[:outline, :neutral]` trigger, polite (copied) + assertive (failed) regions present from first render, honest failure without `execCommand`, `data-state` + `copy:copied`/`copy:failed` hooks. 0a + browser lane; app 0b lands with adoption. |
 
-**Hardening program COMPLETE** — all 84 components are `proven` (0a + app 0b/AAA), `hardened` (gem 0a; `wysiwyg`/`toaster` are superseded in this host and adopt no app 0b), or `gem-0a-proven / app-0b-pending` (form_draft, form_builder, error_summary). No `experimental` components remain. (84 counts the `menubar_menu` sub-component row; the generator catalog itself is 83.)
+**Hardening program COMPLETE** — all 85 components are `proven` (0a + app 0b/AAA), `hardened` (gem 0a; `wysiwyg`/`toaster` are superseded in this host and adopt no app 0b), or `gem-0a-proven / app-0b-pending` (form_draft, form_builder, error_summary). No `experimental` components remain. (85 counts the `menubar_menu` sub-component row; the generator catalog itself is 84.)
 
 **Sibling templates to copy:** `alert` is the canonical Wave 1 reference. Copy its render test
 (`test/render/alert_render_test.rb`), template-backed preview, and — for 0b — its preview-host

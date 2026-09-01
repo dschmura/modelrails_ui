@@ -125,4 +125,15 @@ class TestTargetSize < Minitest::Test
     assert_includes js, 'style.scale = "1"',
       "modal_controller must neutralize the TW4 scale: property"
   end
+
+  # copy composes the 44px cells rather than hand-rolling either control: the value
+  # is UI::InputComponent (BASE carries min-h-[var(--form-input-height)]) and the
+  # trigger is the button cell [:outline, :neutral] (btn-secondary carries the same).
+  def test_copy_composes_the_44px_input_and_button_cells
+    src = template("copy/copy_component.rb.tt")
+
+    assert_includes src, "UI::InputComponent.new(", "copy VALUE must be UI::InputComponent"
+    assert_includes src, "UI::ButtonComponent.new(variant: :outline, tone: :neutral",
+      "copy TRIGGER must be the outline/neutral button cell"
+  end
 end

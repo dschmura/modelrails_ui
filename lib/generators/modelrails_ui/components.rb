@@ -133,7 +133,8 @@ module ModelrailsUi
       # generator installs these transitively — without this, `add form_builder`
       # in a bare app installs a file that NameErrors on the first field.
       DEPENDENCIES = {
-        "form_builder" => %w[form_field input textarea file_input select label error_summary]
+        "form_builder" => %w[form_field input textarea file_input select label error_summary],
+        "copy" => %w[button input]
       }.freeze
 
       # Transitive dependency expansion, input order first, no duplicates.
