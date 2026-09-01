@@ -186,7 +186,7 @@ module ModelrailsUi
       def warn_overwrite(destination)
         return unless File.exist?(File.join(destination_root, destination))
 
-        say "  #{destination} already exists — overwriting.", :yellow
+        say "  #{destination} already exists — Thor will prompt; pass --force to overwrite or --skip to keep yours.", :yellow
       end
     end
   end
