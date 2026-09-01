@@ -7,15 +7,26 @@ load_component "copy", "copy_component.rb.tt"
 
 COPY_URL = "https://example.test/invitations/abc123/accept"
 
+# A 60s duration keeps [data-state=copied]/[data-state=failed] from self-expiring mid-assertion
+# on a loaded machine — every test except the two that specifically exercise the timer wants
+# the feedback state to sit still. Those two use copy/default_short below, at the real 2000ms.
 BrowserHarness.scenario("copy/default", controllers: %w[copy]) do
+  view = ActionController::Base.new.view_context
+  UI::CopyComponent.new(value: COPY_URL, label: "Invitation link",
+    data: {copy_duration_value: 60_000}).render_in(view)
+end
+
+BrowserHarness.scenario("copy/default_short", controllers: %w[copy]) do
   view = ActionController::Base.new.view_context
   UI::CopyComponent.new(value: COPY_URL, label: "Invitation link").render_in(view)
 end
 
 BrowserHarness.scenario("copy/two_on_one_page", controllers: %w[copy]) do
   view = ActionController::Base.new.view_context
-  UI::CopyComponent.new(value: "first", label: "First link", id: "copy-a").render_in(view) +
-    UI::CopyComponent.new(value: "second", label: "Second link", id: "copy-b").render_in(view)
+  UI::CopyComponent.new(value: "first", label: "First link", id: "copy-a",
+    data: {copy_duration_value: 60_000}).render_in(view) +
+    UI::CopyComponent.new(value: "second", label: "Second link", id: "copy-b",
+      data: {copy_duration_value: 60_000}).render_in(view)
 end
 
 # The whole contract is runtime: what the clipboard receives, what each region says and
@@ -60,7 +71,7 @@ class CopySystemTest < BrowserTestCase
   def status_text = find("[data-copy-target=status]", visible: :all).text(:all).strip
   def error_text = find("[data-copy-target=error]", visible: :all).text(:all).strip
 
-  def test_click_writes_the_value_and_confirms_in_the_status_region_only # rubocop:disable Minitest/MultipleAssertions -- one browser round-trip proving several facets of the same click; splitting would just multiply Chrome launches
+  def test_click_writes_the_value_and_confirms_in_the_status_region_only
     open_scenario
     trigger.click
 
@@ -81,8 +92,8 @@ class CopySystemTest < BrowserTestCase
     assert_selector "button[aria-label='Copy Invitation link']"
   end
 
-  def test_the_icon_reverts_on_the_timer_but_the_status_text_persists # rubocop:disable Minitest/MultipleAssertions -- one browser round-trip proving several facets of the same click; splitting would just multiply Chrome launches
-    open_scenario
+  def test_the_icon_reverts_on_the_timer_but_the_status_text_persists
+    open_scenario("default_short")
     trigger.click
 
     assert_selector "[data-controller=copy][data-state=copied]"
@@ -95,7 +106,7 @@ class CopySystemTest < BrowserTestCase
   # Clear-on-press: the second announcement is a fresh "" → text mutation, never a
   # same-text rewrite assistive technology might de-duplicate.
   def test_a_second_copy_clears_the_region_before_writing_it_again
-    open_scenario
+    open_scenario("default_short")
     page.execute_script(<<~JS)
       window.__writes = []
       const node = document.querySelector("[data-copy-target=status]")
@@ -115,7 +126,31 @@ class CopySystemTest < BrowserTestCase
     assert_equal [COPIED, "", COPIED], page.evaluate_script("window.__writes")
   end
 
-  def test_a_rejected_write_selects_the_value_and_announces_failure_assertively # rubocop:disable Minitest/MultipleAssertions -- one browser round-trip proving several facets of the same click; splitting would just multiply Chrome launches
+  # The empty-value/no-clipboard failure paths throw synchronously, with no await between
+  # the start-of-press clear and the failure write — without a yield in between, the two
+  # land in the same mutation batch and a second failure reads as a same-text rewrite.
+  def test_a_second_failure_is_its_own_mutation_too
+    open_scenario("default_short", stub: STUB_ABSENT)
+    page.execute_script(<<~JS)
+      window.__writes = []
+      const node = document.querySelector("[data-copy-target=error]")
+      new MutationObserver(() => window.__writes.push(node.textContent))
+        .observe(node, { childList: true, characterData: true, subtree: true })
+    JS
+
+    trigger.click
+
+    assert_selector "[data-controller=copy][data-state=failed]"
+    assert_selector "[data-controller=copy][data-state=idle]", wait: 4
+
+    trigger.click
+
+    assert_selector "[data-controller=copy][data-state=failed]"
+
+    assert_equal [FAILED, "", FAILED], page.evaluate_script("window.__writes")
+  end
+
+  def test_a_rejected_write_selects_the_value_and_announces_failure_assertively
     open_scenario(stub: STUB_REJECT)
     trigger.click
 
@@ -149,7 +184,7 @@ class CopySystemTest < BrowserTestCase
     assert_equal [], page.evaluate_script("window.__copied")
   end
 
-  def test_two_instances_are_independent # rubocop:disable Minitest/MultipleAssertions -- one browser round-trip proving several facets of the same click; splitting would just multiply Chrome launches
+  def test_two_instances_are_independent
     open_scenario("two_on_one_page")
     first, second = all("[data-controller=copy]")
 
@@ -167,7 +202,7 @@ class CopySystemTest < BrowserTestCase
 
   # Turbo snapshots the page with cloneNode(true) just before rendering the next one;
   # the listener resets before the clone, and connect() resets after a restore.
-  def test_turbo_before_cache_and_reconnect_both_reset_mid_feedback_state # rubocop:disable Minitest/MultipleAssertions -- one browser round-trip proving several facets of the same click; splitting would just multiply Chrome launches
+  def test_turbo_before_cache_and_reconnect_both_reset_mid_feedback_state
     open_scenario
     trigger.click
 

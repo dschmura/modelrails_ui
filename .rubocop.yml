@@ -21,5 +21,12 @@ AllCops:
 Minitest:
   Enabled: true
 
+# A browser-lane test is one Chrome round-trip per method; asserting several
+# facets of one visit is the point. The render and structural lanes keep the default.
+Minitest/MultipleAssertions:
+  Include:
+    - test/system/**/*_test.rb
+  Max: 6
+
 Performance:
   Enabled: true
