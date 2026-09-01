@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- `copy`: copy-to-clipboard field — a readonly `UI::Input` value with a real label, a 44px `[:outline, :neutral]` trigger whose visible text never changes, polite (copied) and assertive (failed) regions present from first render, honest failure without `execCommand`, `data-state` + `copy:copied`/`copy:failed` hooks, and four `modelrails_ui.copy.*` strings. Closes #139.
+- `copy`: copy-to-clipboard field — a readonly `input` value with a real label, a 44px `[:outline, :neutral]` trigger whose visible text never changes, polite (copied) and assertive (failed) regions present from first render, honest failure without `execCommand`, `data-state` + `copy:copied`/`copy:failed` hooks, and four `modelrails_ui.copy.*` strings. Closes #139.
 
 ### Fixed
 

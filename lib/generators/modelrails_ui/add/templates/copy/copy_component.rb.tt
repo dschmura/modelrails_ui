@@ -132,6 +132,8 @@ module UI
       svg(target: "successIcon", hidden: true) { content_tag(:path, nil, d: CHECK) }
     end
 
+    # [hidden] on an <svg> hides only through the stylesheet's [hidden]{display:none} rule
+    # (Tailwind preflight ships it); the UA stylesheet leaves SVG inline.
     def svg(target:, hidden:, &)
       content_tag(:svg, capture(&),
         xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 24 24", fill: "none",

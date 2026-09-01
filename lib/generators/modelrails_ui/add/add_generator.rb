@@ -20,15 +20,7 @@ module ModelrailsUi
         added = expanded - components
         say "  Also installing dependencies: #{added.join(", ")}", :cyan if added.any?
 
-        expanded.each do |name|
-          if Components.supported.include?(name)
-            copy_component(name)
-            @copied << name
-          else
-            @unknown << name
-            say "  Unknown component: #{name}. Supported: #{Components.supported.join(", ")}", :red
-          end
-        end
+        expanded.each { |name| copy_or_skip(name, added) }
       end
 
       def report_summary
@@ -71,6 +63,42 @@ module ModelrailsUi
       end
 
       private
+
+      # A dependency (not explicitly requested) that is already on disk is left
+      # alone rather than copied over — a customised app/components/ui/button_component.rb
+      # should not hit the overwrite prompt just because some other component needs
+      # button. An explicitly requested name always copies, matching today's behaviour.
+      def copy_or_skip(name, added)
+        unless Components.supported.include?(name)
+          @unknown << name
+          say "  Unknown component: #{name}. Supported: #{Components.supported.join(", ")}", :red
+          return
+        end
+
+        if added.include?(name) && Components.installed?(name, destination_root)
+          say "  #{name} already installed — left alone (dependency of #{dependency_parent(name)})", :cyan
+          return
+        end
+
+        copy_component(name)
+        @copied << name
+      end
+
+      # Which explicitly requested component pulled `name` in, for the
+      # already-installed message. Walks DEPENDENCIES transitively so a
+      # dependency-of-a-dependency still attributes back to something the
+      # caller actually typed.
+      def dependency_parent(name)
+        components.find { |requested| depends_on?(requested, name) }
+      end
+
+      def depends_on?(component, target, seen = [])
+        return false if seen.include?(component)
+
+        seen << component
+        deps = Components::DEPENDENCIES.fetch(component, [])
+        deps.include?(target) || deps.any? { |dep| depends_on?(dep, target, seen) }
+      end
 
       def copy_component(name)
         # source_root is a class-level macro; reference it via the class.
@@ -186,7 +214,7 @@ module ModelrailsUi
       def warn_overwrite(destination)
         return unless File.exist?(File.join(destination_root, destination))
 
-        say "  #{destination} already exists — Thor will prompt; pass --force to overwrite or --skip to keep yours.", :yellow
+        say "  #{destination} already exists — identical files are left alone; a differing file prompts (pass --force to overwrite, --skip to keep yours).", :yellow
       end
     end
   end

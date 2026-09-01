@@ -12,9 +12,11 @@ rails g modelrails_ui:add copy
 ```
 
 Creates `app/components/ui/copy_component.rb` and `app/javascript/controllers/copy_controller.js`,
-and installs `button` and `input` if they are missing (the trigger and the value are
-those components). If your app already has a controller named `copy`, Thor will
-prompt — pass `--force` to take the gem's copy or `--skip` to keep yours.
+and installs `button` and `input` (the trigger and the value are those components).
+A dependency that is already installed is left alone — a customised `button` or
+`input` is never touched. For a file you explicitly asked for (say, a controller
+named `copy`), an identical file is left alone too; a differing one prompts —
+pass `--force` to take the gem's copy or `--skip` to keep yours.
 
 Previews are installed separately: `rails g modelrails_ui:lookbook --skip` adds the
 `copy` preview and leaves your existing preview files alone.
