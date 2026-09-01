@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - `add` generator: the "already exists — overwriting" message was false — Thor prompts on a differing file; the message now names the prompt and `--force`/`--skip`.
+- `add` generator: a dependency of a requested component is copied only when missing — an already-installed (even customised) `button`/`input`/form-builder dependency is left alone, and only explicitly named components can prompt.
 - `button` docs: variants, sizes and the API table now describe the shipped two-axis cells and `SIZES` (`default`, `icon`), and the Links example no longer uses the unshipped `:ghost` variant.
 
 ## [0.14.2] - 2026-08-30
