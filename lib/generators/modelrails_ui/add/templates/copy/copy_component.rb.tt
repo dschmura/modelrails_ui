@@ -77,7 +77,9 @@ module UI
 
     private
 
-    # Caller data: is merged LAST so a data-testid never clobbers the controller wiring.
+    # The caller's `data:` is merged after the controller wiring so a passed-through
+    # data attribute is never clobbered by the wiring — on a colliding key the caller
+    # wins, deliberately (the toaster precedent: toaster_component.rb.tt:67-69,85).
     def wrapper_attrs
       data = {
         controller: "copy",

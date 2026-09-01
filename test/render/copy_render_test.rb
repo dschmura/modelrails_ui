@@ -67,6 +67,12 @@ class CopyRenderTest < ViewComponent::TestCase
     assert_equal "Copied Invitation link to the clipboard", wrapper["data-copy-copied-value"]
     assert_equal "Couldn't copy automatically. Invitation link is selected — use your browser or device copy command.",
       wrapper["data-copy-failed-value"]
+  end
+
+  def test_announcement_strings_name_no_keystroke_and_never_the_value
+    render_copy
+    wrapper = page.find("div[data-controller='copy'][data-slot='control'][data-state='idle']")
+
     refute_includes wrapper["data-copy-failed-value"], "Ctrl"
     refute_includes wrapper["data-copy-copied-value"], "https://"
   end
