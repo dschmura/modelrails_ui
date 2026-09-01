@@ -9,7 +9,7 @@ class TestGeneratorComponents < Minitest::Test
     spinner kbd rating rating_input indicator list_group banner button_group
   ].freeze
   PHASE3 = %w[input textarea checkbox radio_group select switch toggle toggle_group form_field
-    file_input search_input number_input range floating_label error_summary].freeze
+    file_input search_input number_input range floating_label error_summary copy].freeze
   PHASE4 = %w[breadcrumb pagination stepper bottom_nav footer tabs navbar navigation_menu mega_menu].freeze
   PHASE5 = %w[dialog sheet drawer popover tooltip hover_card].freeze
   PHASE6 = %w[dropdown_menu context_menu menubar command combobox].freeze
