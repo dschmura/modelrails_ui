@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- `select`: floor the width at 44px (`min-w-[var(--form-input-height)]`, the same spelling as the existing height floor). `w-full` pins nothing, so a select sharing a flex row with a submit button takes only the leftover space — a host app's inline role editor measured 29px at phone width and 43px in CI, failing WCAG 2.5.5 (AAA) target size on the width axis while its height was never at risk.
+
 ## [0.15.0] - 2026-09-01
 
 ### Added
