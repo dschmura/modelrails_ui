@@ -41,4 +41,13 @@ class TestTemplateHeadersArePointers < Minitest::Test
       assert_path_exists File.join(DOCS_ROOT, "#{H.doc_name(name)}.md"), "#{name}: no doc to point at"
     end
   end
+
+  def test_no_markdown_heading_comments_survive_in_migrated_templates
+    offenders = templates.reject { |name, _| PENDING.include?(name) }.select do |_, file| # rubocop:disable Style/HashExcept
+      File.readlines(file).any? { |l| l.match?(/\A\s*#\s*##?\s+\S/) }
+    end
+
+    assert_empty offenders.map(&:first),
+      "A markdown heading comment survived migration (locate() missed it): #{offenders.map(&:first).join(", ")}"
+  end
 end

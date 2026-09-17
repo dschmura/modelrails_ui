@@ -24,7 +24,7 @@ Creates `app/components/ui/button_component.rb`.
 
 Two axes — `variant:` (shape) × `tone:` (signal). Only the AAA-proven cells ship; an
 unproven combination raises in development and falls back to `[:solid, :primary]` in
-production.
+production — the combo-guard exists because a new fill is an untested text-on-* pairing.
 
 | Cell | Class | Reach for it when |
 | --- | --- | --- |

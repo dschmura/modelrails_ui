@@ -1,6 +1,6 @@
 # Switch
 
-Toggle switch built from a styled checkbox. Thumb slides on check; no JavaScript required.
+Toggle switch built from a styled checkbox. Thumb slides on check; no JavaScript required. The visually-hidden checkbox is the `peer`; a clickable track `<label>` and an `aria-hidden` thumb render the visual switch and react via `peer-checked:` / `peer-focus-visible:` / `peer-disabled:`.
 
 ## Installation
 

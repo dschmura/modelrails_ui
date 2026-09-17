@@ -58,7 +58,8 @@ gem's CI disables `color-contrast`; see [Testing](../testing.md)).
 Every signal (`info`/`success`/`warning`/`danger`) lives on the **soft**
 variant as a tinted chip (soft `*-surface` background + saturated
 `text-<level>` + `*-border`), matching the alert and toast cards — there is
-**no solid-danger fill**; `variant: :solid, tone: :danger` is unproven.
+**no solid-danger fill**; `[:soft, :danger]` is the badge "danger,"
+and `variant: :solid, tone: :danger` is unproven.
 `[:soft, :neutral]` is the one soft cell with no signal color: a muted chip
 (`bg-surface` + `text-text-muted` + `border-border`) for draft-style pills
 that shouldn't read as a status signal.
@@ -111,6 +112,12 @@ The historical flat `variant:` values (`default`, `secondary`, `info`,
 still render byte-identical output via a deprecation shim that maps each to
 its `[variant, tone]` cell — write the two axes in new code.
 
+The exact mapping, byte-identically via `SHIM`: `default`→`[solid,primary]`,
+`secondary`→`[soft,primary]`, `info`→`[soft,info]`, `success`→`[soft,success]`,
+`warning`→`[soft,warning]`, `danger`→`[soft,danger]`, `destructive`→`[soft,danger]`,
+`outline`→`[outline,neutral]`, `ghost`→`[ghost,neutral]`, `link`→`[link,primary]`.
+(`danger`/`destructive` map to the SOFT chip — NOT solid.)
+
 ## API
 
 | Option | Type | Default | Description |
@@ -141,11 +148,3 @@ its `[variant, tone]` cell — write the two axes in new code.
   surrounding text (e.g. a color-coded "danger" pill), give it an accessible
   name so screen-reader users get the same signal. A valid `(variant, tone)`
   cell is required — an unproven one raises in development.
-
-## Legacy shim (deprecated flat `variant:` → `[variant, tone]`)
-
-The historical flat values still work, byte-identically, via `SHIM`:
-`default`→`[solid,primary]`, `secondary`→`[soft,primary]`, `info`→`[soft,info]`,
-`success`→`[soft,success]`, `warning`→`[soft,warning]`, `danger`→`[soft,danger]`,
-`destructive`→`[soft,danger]`, `outline`→`[outline,neutral]`, `ghost`→`[ghost,neutral]`,
-`link`→`[link,primary]`. (`danger`/`destructive` map to the SOFT chip — NOT solid.)

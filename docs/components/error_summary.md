@@ -103,16 +103,11 @@ the key — or the whole file — degrades to the English default, never to
 ## Accessibility contract
 
 - **Guarantees:** a focusable, autofocused `role="alert"` container; a
-  count-pluralized heading at a configurable level; items rendered as real
-  links to `#<field_id>` when `href` is given; a decorative severity icon
-  marked `aria-hidden="true"` (WCAG 1.4.1 — color is never the only cue).
-- **You supply:** `items:` — build it yourself, or let the form builder's
-  `error_summary` shim do it from `ActiveModel::Errors`.
-
-- **Guarantees:** a focusable, autofocused `role="alert"` container; a
   count-pluralized heading at a configurable level (default h2 — pass
   `heading_level:` when the form sits under deeper headings, 1.3.1/2.4.10);
-  items as real links to `#<field_id>` when `href` is given.
+  items as real links to `#<field_id>` when `href` is given; a decorative
+  severity icon marked `aria-hidden="true"` (WCAG 1.4.1 — color is never the
+  only cue).
 - **You supply:** `items` — `[{message:, href:}]`; omit `href` for
   object-level (`:base`) errors.
 

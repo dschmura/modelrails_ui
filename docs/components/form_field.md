@@ -18,6 +18,16 @@ Creates `app/components/ui/form_field_component.rb`.
 <% end %>
 ```
 
+The control arrives as a block, so the component yields its field context
+(`input_attrs`) and the caller spreads it onto any control:
+
+```erb
+<%= ui :form_field, label: "Email", hint: "We'll never share it.",
+      error: @user.errors[:email].first, required: true do |f| %>
+  <%= ui :input, type: "email", name: "user[email]", **f.input_attrs %>
+<% end %>
+```
+
 ## With hint and error
 
 ```erb

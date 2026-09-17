@@ -1,6 +1,6 @@
 # Checkbox
 
-Styled checkbox input with optional inline label.
+Styled checkbox input with optional inline label. Renders a native `<input type="checkbox">` so it inherits the browser's keyboard operability and form semantics for free.
 
 ## Installation
 

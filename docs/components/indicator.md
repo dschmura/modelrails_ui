@@ -1,6 +1,6 @@
 # Indicator
 
-Status dot or count badge overlaid on another element. Wraps any content and renders a small badge in one corner.
+Status dot or count badge overlaid on another element. Wraps any content and renders a small badge in one corner. Signals presence/state (online, unread) or a count (notifications); it is presentational and conveys nothing on its own to assistive tech.
 
 ## Installation
 
