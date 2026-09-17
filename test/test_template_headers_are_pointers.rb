@@ -12,8 +12,7 @@ class TestTemplateHeadersArePointers < Minitest::Test
   H = ModelrailsUi::ComponentHeader
 
   PENDING = %w[
-    audio embed figure iframe image
-    map_area picture sidebar video
+    sidebar
   ].freeze
 
   def templates

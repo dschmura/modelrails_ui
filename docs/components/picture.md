@@ -50,9 +50,9 @@ Sources are rendered in declaration order. Browsers use the first format they su
 |--------|------|---------|-------------|
 | `src` | String | required | Fallback `<img>` URL |
 | `alt` | String | required | Alternative text on the fallback `<img>` |
-| `loading` | Symbol | `:lazy` | `:lazy` or `:eager` |
-| `width` | Integer | `nil` | Width applied to the fallback `<img>` |
-| `height` | Integer | `nil` | Height applied to the fallback `<img>` |
+| `loading` | Symbol | `:lazy` | `:lazy`, `:eager`, or `:auto` |
+| `width` | Integer | `nil` | Width applied to the fallback `<img>` — native dimensions prevent layout shift |
+| `height` | Integer | `nil` | Height applied to the fallback `<img>` — native dimensions prevent layout shift |
 | `**html_attrs` | Hash | — | Forwarded to the `<picture>` element |
 
 ### SourceComponent (via `with_source`)
@@ -65,3 +65,23 @@ Sources are rendered in declaration order. Browsers use the first format they su
 | `sizes` | String | No | Sizes attribute |
 | `width` | Integer | No | Source width |
 | `height` | Integer | No | Source height |
+
+## When to use
+
+- You need format fallbacks (AVIF/WebP → JPEG) or art direction (a different
+  crop per viewport) that `srcset`/`sizes` on a plain `<img>` can't express.
+
+## When not to use
+
+- You only need resolution switching — a single `image` with `srcset:`/`sizes:`
+  is simpler and sufficient.
+
+## Accessibility contract
+
+- **Guarantees:** `alt:` is REQUIRED on the base `<img>`, forcing an explicit
+  decision at every call site; an invalid `loading:` falls back to `:lazy`.
+  `<source>`s carry no `alt` — a `<picture>`'s accessible name comes solely from
+  its `<img>`, so the requirement lives there.
+- **You supply:** real `alt:` text for meaningful images, or `alt: ""` (the
+  correct decorative signal) for purely decorative ones. `alt` is NOT a caption —
+  keep it a terse equivalent; use `figure` for captions.

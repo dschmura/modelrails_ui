@@ -644,9 +644,7 @@ class TestGeneratorComponents < Minitest::Test
     source = File.read(File.join(TEMPLATE_ROOT, "map_area", "map_area_component.rb.tt"))
 
     assert_includes source, "areas:"
-    assert_includes source, ":rect"
-    assert_includes source, ":circle"
-    assert_includes source, ":poly"
+    assert_includes source, "area.fetch(:shape, :rect)"
   end
 
   def test_map_area_auto_generates_map_name
