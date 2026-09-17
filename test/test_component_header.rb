@@ -42,6 +42,58 @@ class TestComponentHeader < Minitest::Test
     end
   RUBY
 
+  # A title-led header severed from the class line by constants in between
+  # (card_title's real shape: header, then LEVELS/DEFAULT_LEVEL, then class).
+  TITLE_LED_SEVERED = <<~RUBY.lines
+    # frozen_string_literal: true
+
+    module UI
+      # # Card title
+      #
+      # The heading inside a card, defaulting to h3.
+      LEVELS = (1..6).freeze
+      DEFAULT_LEVEL = 3
+
+      class CardTitleComponent < ApplicationComponent
+        def call = nil
+      end
+    end
+  RUBY
+
+  # An already-migrated pointer above the class, next to a longer below-class
+  # implementation comment that would otherwise win a naive size comparison.
+  POINTER_ABOVE_LONGER_BELOW = <<~RUBY.lines
+    # frozen_string_literal: true
+
+    module UI
+      # A labelled radio group.
+      # Usage, options and the accessibility contract: docs/components/radio_group.md in the
+      # modelrails_ui gem (`bundle show modelrails_ui`); live examples in Lookbook.
+      class RadioGroupComponent < ApplicationComponent
+        # items: [{ value:, label:, checked: (optional), disabled: (optional) }]
+        #
+        # Group accessibility/form params, mirroring the shared form-control API:
+        #   label:       sets the group's accessible name via `aria-label`
+        #   labelledby:  sets `aria-labelledby` (point at a visible heading's id instead)
+        def initialize(name:); end
+      end
+    end
+  RUBY
+
+  COLON_HEADING_SOURCE = <<~RUBY.lines
+    # frozen_string_literal: true
+
+    module UI
+      # A single accordion row, rendered as a native <details>/<summary> disclosure.
+      #
+      # Accessibility contract:
+      # - Native <details>/<summary> carries the disclosure semantics.
+      class AccordionItemComponent < ApplicationComponent
+        def call = nil
+      end
+    end
+  RUBY
+
   def test_locate_finds_a_block_above_the_class_line
     block = ModelrailsUi::ComponentHeader.locate(ABOVE)
 
@@ -62,6 +114,39 @@ class TestComponentHeader < Minitest::Test
 
   def test_locate_ignores_the_magic_comment_and_returns_nil_without_a_block
     assert_nil ModelrailsUi::ComponentHeader.locate(NONE)
+  end
+
+  def test_locate_finds_a_title_led_header_severed_from_the_class_by_constants
+    block = ModelrailsUi::ComponentHeader.locate(TITLE_LED_SEVERED)
+
+    assert_equal :above, block.position
+    assert_equal 3, block.start
+    assert_equal 3, block.length
+    assert_equal "# Card title", block.text.first
+  end
+
+  def test_locate_prefers_an_above_pointer_over_a_longer_below_class_comment
+    block = ModelrailsUi::ComponentHeader.locate(POINTER_ABOVE_LONGER_BELOW)
+
+    assert_equal :above, block.position
+    assert_equal 3, block.start
+    assert_equal 3, block.length
+    assert_includes block.text[1], "docs/components/radio_group.md"
+  end
+
+  def test_sections_recognizes_a_colon_style_heading_without_markdown
+    intro, sections = ModelrailsUi::ComponentHeader.sections(ModelrailsUi::ComponentHeader.locate(COLON_HEADING_SOURCE))
+
+    assert_equal ["A single accordion row, rendered as a native <details>/<summary> disclosure."], intro
+    assert_equal ["Accessibility contract"], sections.map(&:heading)
+    assert_equal ["- Native <details>/<summary> carries the disclosure semantics."], sections.first.lines
+  end
+
+  def test_summary_does_not_truncate_on_an_abbreviation_period
+    intro = ["Wraps `f.email_field`/etc. into a labelled control."]
+
+    assert_equal "Wraps `f.email_field`/etc. into a labelled control.",
+      ModelrailsUi::ComponentHeader.summary(intro)
   end
 
   def test_sections_split_intro_from_headed_sections

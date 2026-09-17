@@ -25,6 +25,16 @@ module ModelrailsUi
       "tabs_item" => "tabs"
     }.freeze
 
+    # The fixed prefix of a migrated pointer's second line — the one string every
+    # pointer carries regardless of doc name. `pointer` builds line 2 from it;
+    # `locate` looks for it to recognize an already-migrated header.
+    POINTER_MARKER = "Usage, options and the accessibility contract: docs/components/"
+
+    # Plain-text section headings some hand-written headers used instead of the
+    # markdown `## Heading` form (e.g. `Accessibility contract:` with no `##`) —
+    # `sections` treats these the same as their markdown equivalent.
+    COLON_HEADING = /\A(Use when|Don't use when|Accessibility contract|Parameters|Keyboard):?\z/i
+
     module_function
 
     def doc_name(component) = DOC_PARENT.fetch(component, component)
@@ -32,6 +42,23 @@ module ModelrailsUi
     # Returns a Block, or nil when the file has no class-level comment.
     def locate(lines)
       i = lines.index { |l| l.match?(/\A\s*class\s+\S/) } or return nil
+
+      mod_idx = lines[0...i].rindex { |l| l.match?(/\A\s*module\s+\S/) }
+      region_start = mod_idx ? mod_idx + 1 : 0
+
+      # A header can be severed from the class line by constants or blank lines
+      # in between (e.g. card_title's title-led header, then LEVELS/DEFAULT_LEVEL,
+      # then the class). Search the whole module-to-class region first: an
+      # already-migrated pointer always wins outright, and a title-led (markdown
+      # H1) header wins over any other comment block in the region — both can
+      # otherwise lose a naive adjacent-block size comparison.
+      blocks = comment_blocks(lines, region_start, i)
+      marked = blocks.find { |r| lines[r].any? { |l| l.include?(POINTER_MARKER) } } ||
+        blocks.find { |r| lines[r].first.match?(/\A\s*#\s*#\s+\S/) }
+      if marked
+        seg = lines[marked]
+        return Block.new(start: marked.begin, length: seg.size, lines: seg, position: :above, indent: seg.first[/\A\s*/])
+      end
 
       up_start = i
       up_start -= 1 while up_start.positive? && lines[up_start - 1].match?(/\A\s*#/)
@@ -42,14 +69,6 @@ module ModelrailsUi
       down_end += 1 while down_end < lines.size && lines[down_end].match?(/\A\s*#/)
       down = lines[(i + 1)...down_end]
 
-      # An already-migrated pointer is always ≤3 lines above the class — shorter than
-      # an unrelated below-class implementation comment (e.g. documenting an
-      # `initialize` param shape) can be. Once a pointer is in place, it wins outright
-      # rather than losing the general above-vs-below size comparison below.
-      if up.any? { |l| l.include?("Usage, options and the accessibility contract: docs/components/") }
-        return Block.new(start: up_start, length: up.size, lines: up, position: :above, indent: up.first[/\A\s*/])
-      end
-
       if up.size >= down.size
         return nil if up.empty?
 
@@ -57,6 +76,23 @@ module ModelrailsUi
       else
         Block.new(start: i + 1, length: down.size, lines: down, position: :below, indent: down.first[/\A\s*/])
       end
+    end
+
+    # Contiguous `#` runs within lines[from...to], as Ranges — excludes any run
+    # that carries the magic comment (never a real header).
+    def comment_blocks(lines, from, to)
+      ranges = []
+      start = nil
+      (from...to).each do |idx|
+        if lines[idx].match?(/\A\s*#/)
+          start ||= idx
+        elsif start
+          ranges << (start...idx)
+          start = nil
+        end
+      end
+      ranges << (start...to) if start
+      ranges.reject { |r| lines[r].any? { |l| l.include?("frozen_string_literal") } }
     end
 
     # Splits the block into [intro_lines, [Section]]. Drops a leading "# Title"
@@ -73,7 +109,7 @@ module ModelrailsUi
         body = []
       end
       text.each do |line|
-        if (m = line.match(/\A##\s+(.+)\z/))
+        if (m = line.match(/\A##\s+(.+)\z/) || line.match(COLON_HEADING))
           flush.call
           heading = m[1].strip
         elsif heading
@@ -86,17 +122,20 @@ module ModelrailsUi
       [trim(intro), out]
     end
 
-    # First sentence of the intro's first paragraph.
+    # First sentence of the intro's first paragraph. A `.` doesn't end the
+    # sentence when it's followed by a space and a lowercase letter (`e.g. foo`,
+    # `etc. and`, `i.e. bar`) — only `!`/`?`, or a `.` followed by whitespace-or-end
+    # with no lowercase letter after, count as the terminator.
     def summary(intro)
       para = intro.drop_while(&:empty?).take_while { |l| !l.empty? }.join(" ")
-      para[/\A.*?[.!?](?=\s|\z)/] || para
+      para[/\A.*?(?:[!?](?=\s|\z)|\.(?=\s|\z)(?!\s[a-z]))/] || para
     end
 
     # The three-line header every component carries after migration.
     def pointer(summary:, doc:)
       [
         summary,
-        "Usage, options and the accessibility contract: docs/components/#{doc}.md in the",
+        "#{POINTER_MARKER}#{doc}.md in the",
         "modelrails_ui gem (`bundle show modelrails_ui`); live examples in Lookbook."
       ]
     end
