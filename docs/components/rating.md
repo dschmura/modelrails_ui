@@ -1,6 +1,7 @@
 # Rating
 
-Read-only star rating display.
+Read-only star rating display. For an *interactive* score the user sets, use
+`rating_input` instead.
 
 ## Installation
 

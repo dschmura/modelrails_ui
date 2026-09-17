@@ -1,6 +1,8 @@
 # Separator
 
-Thin divider line for horizontal or vertical layout separation.
+Thin divider line for horizontal or vertical layout separation. It is decorative by
+default (`role="none"`); mark it semantic when the divide conveys real grouping that
+assistive tech must perceive.
 
 ## Installation
 

@@ -2,7 +2,7 @@
 
 Accessible modal dialog with an overlay, title, description, body, and footer slot. The
 native element is chosen over a div so focus-trapping and the inert background come for
-free.
+free. Behavior lives in the `modal` Stimulus controller shipped alongside this component.
 
 > **Migration note:** `alert_dialog` was folded into `dialog` — use
 > `ui :dialog, role: :alertdialog` (v0.11.0 breaking change).

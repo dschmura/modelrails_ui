@@ -2,7 +2,8 @@
 
 Full-width dropdown panel anchored to a trigger button, organised into titled columns.
 
-Requires `mega_menu_controller.js` (copied automatically by the generator).
+Requires `mega_menu_controller.js` (copied automatically by the generator). Open/close is
+owned by the component's own `mega-menu` Stimulus controller (a simple disclosure toggle).
 
 ## Installation
 
