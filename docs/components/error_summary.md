@@ -27,6 +27,14 @@ page load, and **Turbo Drive re-honours it on every render** — including the
 422 re-render after a failed submit. The failed submit becomes an actual
 focus + announcement event, not a silent DOM swap.
 
+A further refinement separates the two roles: some hosts of this component
+put `role="alert"` on an inner element instead of the focused container
+itself (GOV.UK's shape) — when the focused element and the alert are the
+same element, a reader can announce it twice (the alert, then the focused
+element). Splitting them lets focus land on a role-less container that reads
+its contents once, while the alert inside keeps its semantics for readers
+that use it.
+
 Each error additionally renders as a real link to `#<field_id>`, so the
 summary doubles as a working task list: activate an item, land on the field.
 
