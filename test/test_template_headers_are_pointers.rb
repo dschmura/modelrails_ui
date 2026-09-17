@@ -32,7 +32,8 @@ class TestTemplateHeadersArePointers < Minitest::Test
     offenders = templates.reject { |name, _| PENDING.include?(name) }.reject do |name, file| # rubocop:disable Style/HashExcept
       H.pointer?(H.locate(File.readlines(file)), doc: H.doc_name(name))
     end
-    assert_empty offenders.map(&:first), # rubocop:disable Minitest/EmptyLineBeforeAssertionMethods
+
+    assert_empty offenders.map(&:first),
       "Header is prose, not the three-line pointer — run bin/migrate-component-header: #{offenders.map(&:first).join(", ")}"
   end
 
