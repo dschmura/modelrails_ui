@@ -223,4 +223,25 @@ class TestComponentHeader < Minitest::Test
     assert ModelrailsUi::ComponentHeader.stated_in?("live region.", "The panel is a live region.")
     refute ModelrailsUi::ComponentHeader.stated_in?("live region.", "unrelated text")
   end
+
+  def test_stated_in_bag_mode_matches_a_reordered_table_fold
+    line = "- `src:` image URL (required)"
+    corpus = "| `src` | String | required | Image URL |"
+
+    refute ModelrailsUi::ComponentHeader.stated_in?(line, corpus), "same words, reordered columns — ordered mode has zero four-word overlap"
+    assert ModelrailsUi::ComponentHeader.stated_in?(line, corpus, mode: :bag)
+  end
+
+  def test_stated_in_bag_mode_matches_the_folded_table_row_example
+    line = "- `type:` `:single` (one active) or `:multiple` (many active)"
+    corpus = "| `type` | Symbol | `:single` | `:single` (one active) or `:multiple` (many active) |"
+
+    assert ModelrailsUi::ComponentHeader.stated_in?(line, corpus, mode: :bag)
+  end
+
+  def test_stated_in_bag_mode_is_false_for_an_unrelated_line
+    corpus = "| `type` | Symbol | `:single` | `:single` (one active) or `:multiple` (many active) |"
+
+    refute ModelrailsUi::ComponentHeader.stated_in?("An entirely unrelated sentence about widgets and gadgets.", corpus, mode: :bag)
+  end
 end

@@ -70,18 +70,23 @@ module ModelrailsUi
       # The 25-char floor matches bin/header-fidelity's own filter (and the
       # intro branch's, below) so the tripwire and the audit judge the same
       # line set — a hard-wrapped tail too short to shingle (e.g.
-      # "controller.") is never substantive enough to flag on its own. A
-      # fact the doc restates as prose, a bullet, or folds into a table row
-      # still counts as covered. The literal string "intro" is included
-      # alongside headings when an intro sentence is missing.
+      # "controller.") is never substantive enough to flag on its own.
+      # Checked with `mode: :bag` (order-independent): a fact the doc
+      # restates as prose, a bullet, or folds into a table row — including
+      # one whose columns reorder the header's own words — still counts as
+      # covered. `bin/header-fidelity` stays on the stricter `:ordered`
+      # default; this tripwire is deliberately more forgiving so a fork's
+      # rewrite isn't blocked by a fold the gem doc already accepts. The
+      # literal string "intro" is included alongside headings when an intro
+      # sentence is missing.
       def missing_from_doc(block, doc_text)
         intro, sections = ComponentHeader.sections(block)
-        missing = sections.select { |s| s.lines.any? { |l| l.strip.length >= 25 && !ComponentHeader.stated_in?(l.strip, doc_text) } }
+        missing = sections.select { |s| s.lines.any? { |l| l.strip.length >= 25 && !ComponentHeader.stated_in?(l.strip, doc_text, mode: :bag) } }
           .map(&:heading)
 
         sentences = intro.join(" ").split(/(?<=[.!?])\s+/).map(&:strip).reject(&:empty?)
         rest = sentences.drop(1).reject { |s| s.length < 25 }
-        missing << "intro" if rest.any? { |s| !ComponentHeader.stated_in?(s, doc_text) }
+        missing << "intro" if rest.any? { |s| !ComponentHeader.stated_in?(s, doc_text, mode: :bag) }
 
         missing
       end

@@ -148,20 +148,38 @@ module ModelrailsUi
     # verbatim: both are normalized (backtick/`*`/`_`/`#`/`|`/`[`/`]`/`(`/`)`
     # to spaces, whitespace collapsed, downcased). A normalized line under
     # four words (a hard-wrapped tail like "controller." or "live region.")
-    # can never equal a four-word corpus shingle, so it falls back to plain
-    # substring containment instead. Otherwise: split into four-word
-    # shingles, true when at least half of `line`'s shingles are also among
-    # `corpus`'s shingles — so a fact restated as prose, a bullet, or folded
-    # into a table row still counts. The same rule `bin/header-fidelity`
-    # uses, shared here so both tools agree on what "stated in the doc"
-    # means.
-    def stated_in?(line, corpus)
+    # can never satisfy either mode below, so it falls back to plain
+    # substring containment instead.
+    #
+    # `mode: :ordered` (default; what `bin/header-fidelity` audits with):
+    # split into four-word shingles, true when at least half of `line`'s
+    # shingles are also among `corpus`'s shingles — a fact restated as
+    # prose or a bullet still counts, but word ORDER must roughly hold.
+    #
+    # `mode: :bag`: order-independent, for a fact folded into a table row
+    # whose columns don't read in the header's original phrase order (same
+    # words, reordered columns — zero four-word overlap under `:ordered`).
+    # Content words = each remaining word after stripping every non-
+    # alphanumeric character (so `` `src:` `` and `` `src` `` are the same
+    # word), kept when 4+ characters, deduplicated. True when at least
+    # three-quarters of them occur as whole words anywhere in `corpus`. A
+    # line with no content words also falls back to substring containment.
+    def stated_in?(line, corpus, mode: :ordered)
       normalized_line = normalize(line)
-      return normalize(corpus).include?(normalized_line) if normalized_line.split(" ").size < 4
+      words = normalized_line.split(" ")
+      return normalize(corpus).include?(normalized_line) if words.size < 4
 
-      shingles = shingles_of(line)
-      corpus_shingles = shingles_of(corpus)
-      shingles.count { |sh| corpus_shingles.include?(sh) } >= (shingles.size * 0.5).ceil
+      if mode == :bag
+        content = words.map { |w| w.gsub(/[^a-z0-9]/, "") }.select { |w| w.length >= 4 }.uniq
+        return normalize(corpus).include?(normalized_line) if content.empty?
+
+        corpus_words = normalize(corpus).split(" ").map { |w| w.gsub(/[^a-z0-9]/, "") }
+        content.count { |w| corpus_words.include?(w) } >= (content.size * 0.75).ceil
+      else
+        shingles = shingles_of(line)
+        corpus_shingles = shingles_of(corpus)
+        shingles.count { |sh| corpus_shingles.include?(sh) } >= (shingles.size * 0.5).ceil
+      end
     end
 
     def normalize(text)

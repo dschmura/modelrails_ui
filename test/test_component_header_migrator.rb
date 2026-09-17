@@ -138,6 +138,38 @@ class TestComponentHeaderMigrator < Minitest::Test
     Unrelated content only.
   MD
 
+  # A section line whose fact lands in a table row whose COLUMNS reorder the
+  # header's own words ("src: image URL required" vs. "src | String |
+  # required | Image URL") — same words, zero four-word overlap, so this only
+  # passes under :bag mode.
+  REORDERED_FOLD_SOURCE = <<~RUBY.lines
+    # frozen_string_literal: true
+
+    module UI
+      # # Toggle group
+      #
+      # A grouping of related toggle buttons.
+      #
+      # ## Parameters
+      # - `src:` image URL (required)
+      class ToggleGroupComponent < ApplicationComponent
+        def call = nil
+      end
+    end
+  RUBY
+
+  REORDERED_FOLD_DOC = <<~MD
+    # Toggle group
+
+    Intro paragraph.
+
+    ## API
+
+    | Option | Type | Required | Description |
+    |---|---|---|---|
+    | `src` | String | required | Image URL |
+  MD
+
   # A section whose only unmatched line is a short (<25 char) hard-wrapped
   # tail — too short to ever shingle-match, so it must not flag on its own.
   SHORT_TAIL_SOURCE = <<~RUBY.lines
@@ -247,6 +279,12 @@ class TestComponentHeaderMigrator < Minitest::Test
     block = ModelrailsUi::ComponentHeader.locate(TWO_SENTENCE_INTRO_SOURCE)
 
     assert_includes M.missing_from_doc(block, INTRO_MISSING_SECOND_SENTENCE_DOC), "intro"
+  end
+
+  def test_missing_from_doc_recognizes_a_fact_folded_into_a_reordered_table_row
+    block = ModelrailsUi::ComponentHeader.locate(REORDERED_FOLD_SOURCE)
+
+    assert_empty M.missing_from_doc(block, REORDERED_FOLD_DOC)
   end
 
   def test_map_heading_keeps_a_parenthetical_suffix
