@@ -1,6 +1,6 @@
 # KBD
 
-Keyboard shortcut key display. Renders a `<kbd>` element styled to look like a physical key.
+Keyboard shortcut key display. Renders a `<kbd>` element styled to look like a physical key. Purely presentational and non-interactive.
 
 ## Installation
 

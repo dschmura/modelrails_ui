@@ -4,6 +4,11 @@ Rich-text editor wrapper. Defaults to **Trix** (bundled with Rails via ActionTex
 
 Superseded in the reference app (modelrails_base) by Lexxy (Lexical-based rich text) — this app composes Lexxy directly and does not adopt this gem component; see COMPONENT_STATUS.md.
 
+This app composes Lexxy directly, so it does NOT adopt this component — much like
+pagination defers to Pagy and toasts to `shared/_toasts`. The gem template is kept
+correct + button-tier accessible for OTHER consumers that still use Trix/Quill; it
+is hardened gem-side only (no app adoption / no app 0b).
+
 ## Setup
 
 ### Trix (default)
@@ -43,6 +48,16 @@ pin "quill", to: "https://cdn.jsdelivr.net/npm/quill@2/+esm"
 <%= ui :wysiwyg, name: "notes", adapter: :quill, toolbar: false %>
 ```
 
+The original header's usage examples, verbatim:
+
+```
+Usage:
+  ui :wysiwyg, name: "body"                            # Trix (default)
+  ui :wysiwyg, name: "body", adapter: :quill
+  ui :wysiwyg, name: "body", adapter: :quill,
+    placeholder: "Write something...", height: 400
+```
+
 ## Parameters
 
 | Parameter     | Type    | Default  | Description                                              |
@@ -55,6 +70,16 @@ pin "quill", to: "https://cdn.jsdelivr.net/npm/quill@2/+esm"
 | `height`      | Integer | `200`    | Editor content area height in px (Quill only)            |
 | `label`       | String  | `nil`    | Accessible name for the editor region (default: i18n "Rich text editor") |
 | `class`       | String  | `nil`    | Extra classes on the wrapper `<div>`                     |
+
+The original header's option list, verbatim:
+
+- `name:`        form field name (required)
+- `adapter:`     :trix (default) | :quill
+- `value:`       initial HTML content
+- `placeholder:` placeholder text
+- `toolbar:`     show editor toolbar (default: true)
+- `height:`      editor content area height in px (default: 200; Quill only)
+- `label:`       accessible name for the editor region (default: i18n "Rich text editor")
 
 ## How it works
 

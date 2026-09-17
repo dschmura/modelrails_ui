@@ -1,6 +1,6 @@
 # Spinner
 
-Animated loading indicator for in-progress states.
+Animated loading indicator for in-progress states. Carries `role="status"` and an sr-only label so screen-reader users are told something is loading.
 
 ## Installation
 

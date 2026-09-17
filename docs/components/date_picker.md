@@ -81,3 +81,4 @@ The trigger button displays the selected date formatted as "Month D, YYYY". On c
   `focus-ring` (never a box-shadow ring).
 - **You supply:** an optional `label:` (the field caption / popover name; defaults
   to an i18n string) and a `name:` if the value must post back.
+- `min/max:` Date bounds passed to the calendar

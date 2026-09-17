@@ -1,6 +1,6 @@
 # Toggle
 
-Pressable button that tracks an on/off state via `aria-pressed` and a Stimulus controller.
+Pressable button that tracks an on/off state via `aria-pressed` and a Stimulus controller. Use it for a standalone on/off control (bold, mute, pin), not as a checkbox replacement in a form.
 
 Requires `toggle_controller.js` (copied automatically by the generator).
 

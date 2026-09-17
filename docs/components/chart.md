@@ -92,6 +92,9 @@ Pass any Chart.js `options` hash to override defaults:
 | `label` | String | `nil` | One-line summary of what the chart shows (REQUIRED for AT — see the accessibility contract). Falls back to an i18n default |
 | `**html_attrs` | Hash | — | Forwarded to the `<canvas>` element |
 
+Series with no explicit color are auto-assigned from an AAA-tuned
+OKLCH palette (DEFAULT_SERIES) — never a raw hex.
+
 ## Accessibility contract
 
 A `<canvas>` is an opaque bitmap — pixels carry no semantics, so a chart drawn

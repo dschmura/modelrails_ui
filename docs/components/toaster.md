@@ -4,6 +4,10 @@ Fixed-position toast stack for transient notifications. Place once in your appli
 
 Superseded in the reference app (modelrails_base) — this host app has its own flash/toast pipeline (`shared/_toasts`) and does not adopt this gem component; see COMPONENT_STATUS.md.
 
+This host app has its own flash/toast pipeline (`shared/_toasts`) — like pagination →
+Pagy, the gem `toaster` is NOT adopted here. It is hardened gem-side (0a render test +
+preview) only; there is no app adoption and no app-side 0b.
+
 Requires `toaster_controller.js` (copied automatically by the generator).
 
 ## Installation

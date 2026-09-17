@@ -1,6 +1,6 @@
 # Alert
 
-Informational banner for surfacing status messages, warnings, and errors. Accepts plain-text content via kwargs or rich HTML via slots.
+Informational banner for surfacing status messages, warnings, and errors. Accepts plain-text content via kwargs or rich HTML via slots. Renders a `<div>` live region with semantics matched to its urgency and an AAA-tuned color treatment.
 
 ## Installation
 

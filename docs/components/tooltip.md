@@ -56,6 +56,11 @@ element on-screen rather than performing a full flip, because the bubble is nest
 its trigger element. On browsers without anchor positioning (pre-Baseline 2026) the
 component falls back to `absolute` offsets relative to the wrapper.
 
+Placement uses CSS anchor positioning: the bubble is `position: fixed` (so its
+containing block is the viewport, letting it float free of the wrapper) and tethered
+to the wrapper via `anchor-name`/`position-anchor`; `position-area` places it and
+`position-try-fallbacks` auto-flips it on viewport overflow — no JS.
+
 ## Dismiss on Escape
 
 The tooltip hides automatically when the user presses `Escape`

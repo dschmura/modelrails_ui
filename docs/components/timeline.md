@@ -1,6 +1,6 @@
 # Timeline
 
-Vertical list of dated events with coloured dot indicators.
+Vertical list of dated events with coloured dot indicators. Rendered as a semantic ordered list because the order is meaningful.
 
 ## Installation
 
@@ -88,3 +88,8 @@ Add any HTML via a block after the named options:
 - **You supply:** the event `title:` (and optional `date:`/`datetime:`,
   `description:`, or block body) per item; titles are plain text, so the
   surrounding heading outline stays yours to control.
+
+```
+t.with_item(date: "Feb 2025", datetime: "2025-02", title: "Milestone reached",
+            description: "Foundation phase complete", variant: :success)
+```

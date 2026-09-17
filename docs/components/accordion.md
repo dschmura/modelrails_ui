@@ -124,3 +124,11 @@ Each item renders a `<details>` element with `class="group"`. The chevron SVG us
 |--------|------|---------|-------------|
 | `title` | String | required | Text shown in the summary bar |
 | `open` | Boolean | `false` | Whether the item is expanded on page load |
+
+## Accordion item: Accessibility contract
+
+- Native <details>/<summary> carries the disclosure semantics — the summary is
+  focusable and toggles on Enter/Space, and the browser manages aria-expanded.
+- The summary owns the AAA focus indicator via `focus-ring` (an offset outline,
+  never a box-shadow ring: a ring is clipped by overflow-hidden ancestors and
+  vanishes in forced-colors mode — a 2.4.7 failure).

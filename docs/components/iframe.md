@@ -59,6 +59,11 @@ The default sandbox permits scripts, same-origin, forms, and popups. Supply a st
 | `height` | Integer | `nil` | Explicit pixel height |
 | `**html_attrs` | Hash | — | Forwarded to the `<iframe>` element |
 
+- `sandbox:` space-separated token string, or `true` for strict defaults;
+  pass `false` to disable sandboxing entirely (not recommended)
+- `aspect:`  CSS aspect-ratio value, e.g. "16/9", "4/3" (wraps in a div);
+  omit if you set explicit width/height
+
 ## When to use
 
 - Embedding external content (a map, video, document, or third-party widget)

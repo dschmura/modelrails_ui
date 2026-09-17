@@ -1,6 +1,6 @@
 # SearchInput
 
-Text input with a built-in search icon on the left. Renders `<input type="search">`.
+Text input with a built-in search icon on the left. Renders `<input type="search">`. Use it for one-off search boxes, filters, and command bars that live **outside** a managed `form_with`.
 
 ## Installation
 

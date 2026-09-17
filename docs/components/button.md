@@ -45,12 +45,29 @@ Legacy flat values still work via `SHIM` and ignore `tone:` — `primary`, `seco
 `danger`, `destructive`, `text`, `text_interactive`, `text_danger`. Write the two axes
 in new code.
 
+The proven cells:
+
+```
+[:solid,   :primary]  filled brand
+[:solid,   :danger]   filled danger
+[:outline, :neutral]  bordered neutral
+[:text,    :primary]  text/link brand
+[:text,    :danger]   text/link danger
+```
+
+Legacy flat `variant:` values are still accepted via SHIM (back-compat,
+byte-identical output): primary, secondary, danger, destructive, text,
+text_interactive, text_danger. When a legacy value is passed, `tone:` is ignored.
+
 ## Sizes
 
 | Size | Description |
 | --- | --- |
 | `default` | standard horizontal padding; the 44px min-height comes from the `.btn-*` class |
 | `icon` | a 44×44 square (`px-0 min-w-[var(--form-input-height)]`) for icon-only buttons — give it an `aria-label` |
+
+size: :default | :icon — :icon (A8) is a 44×44 square (WCAG 2.5.5): adds min-w
+and drops horizontal padding (min-h is already carried by the .btn-* classes).
 
 ```erb
 <%= ui :button, "Normal" %>

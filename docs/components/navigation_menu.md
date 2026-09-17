@@ -1,7 +1,7 @@
 # NavigationMenu
 
 Horizontal navigation bar with plain links and optional flyout dropdown panels. The panel is
-hover/click managed with outside-click dismissal.
+hover/click managed with outside-click dismissal. A horizontal site-navigation bar (the WAI-ARIA APG **navigation-menu**, i.e. a `<nav>` of links where some entries open a **disclosure** flyout — NOT a `role="menu"` widget). Each flyout trigger is a real `<button>` whose `aria-expanded` is kept in sync (and `aria-controls` points at its panel) by the component-owned `navigation-menu` Stimulus controller; the panel is hover/click managed with outside-click dismissal.
 
 Requires `navigation_menu_controller.js` (copied automatically by the generator).
 

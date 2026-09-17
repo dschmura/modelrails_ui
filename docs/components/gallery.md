@@ -12,6 +12,15 @@ standalone-renderable for bespoke consumers).
 
 Requires `gallery_controller.js` (copied automatically by the generator) when `lightbox: true`.
 
+Usage:
+
+```
+ui :gallery, cols: 3 do |g|
+  g.with_image(src: "/img/a.jpg", alt: "Photo A")
+  g.with_image(src: "/img/b.jpg", alt: "The coast", caption: "The coast")
+end
+```
+
 ## Installation
 
 ```bash

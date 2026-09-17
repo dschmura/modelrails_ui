@@ -1,6 +1,6 @@
 # Progress
 
-Horizontal progress bar with accessible ARIA attributes.
+Horizontal progress bar with accessible ARIA attributes. For indeterminate waits, use `spinner` instead.
 
 ## Installation
 

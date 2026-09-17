@@ -1,6 +1,6 @@
 # InputOtp
 
-One-time-password digit input group. Renders N individual single-character inputs that auto-advance on entry and support paste.
+One-time-password digit input group. Renders N individual single-character inputs that auto-advance on entry and support paste. Each cell is `inputmode="numeric"` + `autocomplete="one-time-code"` so mobile keyboards stay numeric and the browser / OS can autofill an SMS code.
 
 Requires `input_otp_controller.js` (copied automatically by the generator).
 

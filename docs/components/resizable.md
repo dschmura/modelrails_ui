@@ -6,6 +6,15 @@ the user can grab with the mouse OR move with the keyboard.
 
 Requires `resizable_controller.js` (copied automatically by the generator).
 
+Usage:
+
+```
+ui :resizable, direction: :horizontal do |r|
+  r.with_panel(min: 20, default: 30) { left_content }
+  r.with_panel { right_content }
+end
+```
+
 ## Installation
 
 ```bash

@@ -64,6 +64,11 @@ translate (the host's delegate file is `config/locales/modelrails_ui.en.yml`).
 Per call, `copy_label:`, `copied_label:` and `failed_label:` override them. The failure
 string deliberately names no keystroke — macOS has no Ctrl, touch has no keyboard.
 
+`modelrails_ui.copy.action` ("Copy", the visible text), `.button_label`
+("%{action} %{label}"), `.copied` ("Copied %{label} to the clipboard"), `.failed`
+(a device-neutral instruction that names no key). Override per call with
+`copy_label:` / `copied_label:` / `failed_label:`.
+
 ## Data hooks (`data-state`, `copy:copied`, `copy:failed`)
 
 Assert on these, not on internals:

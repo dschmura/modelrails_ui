@@ -47,6 +47,11 @@ gem's CI disables `color-contrast`; see [Testing](../testing.md)).
 
 † `soft`/`neutral` AAA proof is downstream, not yet CI-verified in this gem — see above.
 
+Only the 10 cells in `COMBOS` ship — 9 are AAA-proven; the 10th, `[:soft, :neutral]`
+(a muted chip for draft-style pills, no colored border/text), whose AAA proof lands
+with the consuming app's 0b axe row (gem CI disables `color-contrast`; see
+`docs/testing.md`).
+
 ```erb
 <%= ui :badge, "Active",  variant: :solid, tone: :primary %>
 <%= ui :badge, "Note",    variant: :soft,  tone: :info %>

@@ -1,6 +1,6 @@
 # Calendar
 
-Month-grid calendar with selectable days, today highlight, min/max bounds, and prev/next navigation.
+Month-grid calendar with selectable days, today highlight, min/max bounds, and prev/next navigation. Selected/today dates are highlighted; `min`/`max` disable days outside the range. The month label and grid contents are kept in sync by the `calendar` Stimulus controller (prev/next paging + roving-tabindex arrow-key navigation across the grid).
 
 Requires `calendar_controller.js` (copied automatically by the generator).
 
@@ -83,3 +83,4 @@ Days outside `min`/`max` are rendered as disabled.
   ends), PageUp/PageDown (month); prev/next are i18n-labelled `<button>`s (not
   icon-only-unlabelled); and every control carries the AAA offset `focus-ring`.
 - **You supply:** `selected:`/`month:` Dates and optional `min:`/`max:` bounds.
+- `month:` Date — controls which month is shown (defaults to today)

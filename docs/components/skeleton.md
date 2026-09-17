@@ -1,6 +1,6 @@
 # Skeleton
 
-Animated loading placeholder. Size is controlled entirely by classes passed by the caller.
+Animated loading placeholder. Size is controlled entirely by classes passed by the caller. Purely decorative — it is hidden from assistive tech so screen readers don't announce a series of empty boxes.
 
 ## Installation
 

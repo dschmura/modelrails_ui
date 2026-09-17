@@ -59,6 +59,8 @@ Always supply `width:` and `height:` for images with known dimensions:
 | `height` | Integer | `nil` | Native height — prevents layout shift |
 | `**html_attrs` | Hash | — | Forwarded to the `<img>` element |
 
+- `srcset:` responsive set, e.g. "img-sm.jpg 640w, img-lg.jpg 1280w"
+
 ## When to use
 
 - You're rendering content imagery and want lazy-loading + responsive sources

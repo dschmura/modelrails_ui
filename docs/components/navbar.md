@@ -2,7 +2,7 @@
 
 A responsive top navigation bar (a `<nav>` landmark) — a brand, inline desktop links, an
 optional right-aligned action area, and a mobile disclosure (a hamburger toggles a stacked
-menu). The disclosure follows the WAI-ARIA APG disclosure pattern.
+menu). The disclosure follows the WAI-ARIA APG disclosure pattern. The disclosure follows the WAI-ARIA APG disclosure pattern (aria-expanded/controls + Escape + outside-click), driven by the `navbar` Stimulus controller.
 
 Requires `navbar_controller.js` (copied by the generator).
 

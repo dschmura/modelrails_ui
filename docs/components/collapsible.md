@@ -2,6 +2,10 @@
 
 Expandable section built on native `<details>`/`<summary>`. No JavaScript required.
 
+trigger slot: content for the summary row (button, icon, label, etc.)
+open:         render pre-expanded (default: false)
+disabled:     the disclosure is announced as disabled and cannot be operated.
+
 ## Installation
 
 ```bash

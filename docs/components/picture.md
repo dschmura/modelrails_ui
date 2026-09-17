@@ -1,6 +1,6 @@
 # Picture
 
-Renders a `<picture>` element with multiple `<source>` formats and a fallback `<img>`. Use to serve modern formats (AVIF, WebP) with a JPEG/PNG fallback.
+Renders a `<picture>` element with multiple `<source>` formats and a fallback `<img>`. Use to serve modern formats (AVIF, WebP) with a JPEG/PNG fallback. The browser picks the first matching `<source>`; the `<img>` is both the final fallback and the element that carries the accessible name and intrinsic dimensions.
 
 ## Installation
 
@@ -65,6 +65,12 @@ Sources are rendered in declaration order. Browsers use the first format they su
 | `sizes` | String | No | Sizes attribute |
 | `width` | Integer | No | Source width |
 | `height` | Integer | No | Source height |
+
+Each source is declared via the `sources` slot:
+
+```
+ui(:picture, src:, alt:) { |p| p.with_source(srcset:, type:, media:, sizes:) }
+```
 
 ## When to use
 

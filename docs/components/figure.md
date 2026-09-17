@@ -1,6 +1,6 @@
 # Figure
 
-Semantic `<figure>` wrapper with an optional `<figcaption>`. Use to pair an image, code block, or diagram with a caption.
+Semantic `<figure>` wrapper with an optional `<figcaption>`. Use to pair an image, code block, or diagram with a caption. The caption supplements the content; it does not replace the content's own accessible name.
 
 ## Installation
 
@@ -42,6 +42,8 @@ Creates `app/components/ui/figure_component.rb`.
 | `caption` | String | `nil` | Text rendered in `<figcaption>` — omit to skip the caption |
 | `caption_class` | String | `nil` | Additional CSS classes for `<figcaption>` |
 | `**html_attrs` | Hash | — | Forwarded to the `<figure>` element |
+
+- `caption:` text shown in `<figcaption>` (optional; omit to render none)
 
 ## When to use
 
