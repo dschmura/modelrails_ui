@@ -37,7 +37,9 @@ Nest Toggle components inside the group:
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
 | `type` | Symbol | `:single` | `:single` (one active) or `:multiple` (many active) |
-| `value` | String or Array | `nil` | Currently active value(s) |
+| `value` | String or Array | `nil` | Currently active value (String) for `:single`, or an array of active values for `:multiple` |
+| `aria_label` | String | `nil` | Accessible name for the group |
+| `aria_labelledby` | String | `nil` | Id of an existing element that names the group |
 | `**html_attrs` | Hash | — | Forwarded to the `<div role="group">` wrapper |
 
 ## When to use
@@ -72,12 +74,3 @@ an ARIA lie that breaks AT. So `:single` keeps `role="group"` (a single-select
 cluster of pressed buttons — APG toolbar-adjacent) rather than masquerading as a
 radiogroup. FOLLOW-UP: a true radiogroup variant (role="radio" items +
 arrow-key roving) is a larger change — out of scope for this hardening pass.
-
-## Parameters
-
-- `type:`            `:single` (one active) | `:multiple` (many active)
-- `value:`           currently active value (String) for `:single`, or an array
-                     of active values for `:multiple`
-- `aria_label:`      accessible name for the group
-- `aria_labelledby:` id of an existing element that names the group
-- `**html_attrs`     forwarded to the `<div role="group">` wrapper

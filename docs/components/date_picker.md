@@ -52,6 +52,7 @@ The trigger button displays the selected date formatted as "Month D, YYYY". On c
 |--------|------|---------|-------------|
 | `name` | String | `nil` | Form field name for the hidden input |
 | `value` | Date | `nil` | Initially selected date |
+| `label` | String | `nil` | The field caption / popover name; defaults to an i18n string |
 | `placeholder` | String | `"Pick a date"` | Text shown when no date is selected |
 | `min` | Date | `nil` | Earliest selectable date |
 | `max` | Date | `nil` | Latest selectable date |

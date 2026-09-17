@@ -2,6 +2,8 @@
 
 Rich-text editor wrapper. Defaults to **Trix** (bundled with Rails via ActionText). Switch to **Quill** by passing `adapter: :quill`.
 
+Superseded in this app by Lexxy (Lexical-based rich text) — this app composes Lexxy directly and does not adopt this gem component; see COMPONENT_STATUS.md.
+
 ## Setup
 
 ### Trix (default)

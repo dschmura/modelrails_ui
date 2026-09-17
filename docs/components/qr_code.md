@@ -29,6 +29,16 @@ Add `gem "rqrcode"` to your Gemfile, then generate SVG inline:
 <% end %>
 ```
 
+In an ERB view:
+
+```erb
+ui :qr_code, src: qr_url, alt: "QR code linking to example.com"
+
+ui :qr_code, alt: "QR code linking to example.com" do
+  RQRCode::QRCode.new("https://example.com").as_svg(viewbox: true).html_safe
+end
+```
+
 ## Custom size
 
 `size:` applies only when using `src:` — it sets the `width` and `height` on the `<img>`.
@@ -42,7 +52,7 @@ Add `gem "rqrcode"` to your Gemfile, then generate SVG inline:
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
 | `src` | String | `nil` | Pre-rendered image URL; renders an `<img>` when provided |
-| `alt` | String | `"QR code"` | Accessible label for the `<img>` |
+| `alt` | String | `"QR code"` | Accessible name for the code — describe what it encodes |
 | `size` | Integer | `200` | Pixel dimensions of the `<img>` (ignored when using block content) |
 | `**html_attrs` | Hash | — | Forwarded to the outer `<div>` |
 
@@ -68,18 +78,3 @@ Add `gem "rqrcode"` to your Gemfile, then generate SVG inline:
   accessible name (mirrors `chart`/`rating`).
 - **You supply:** a meaningful `alt:` that describes what the code encodes
   (e.g. "QR code linking to example.com"), not a bare "QR code".
-
-## Parameters
-
-- `src:` pre-rendered image URL; renders an `<img>` when provided (optional)
-- `alt:` accessible name for the code — describe what it encodes (default: "QR code")
-- `size:` pixel dimensions of the `<img>` (ignored for block content; default: 200)
-- `**html_attrs:` forwarded to the wrapper `<div>`
-
-## Usage (in an ERB view)
-
-  ui :qr_code, src: qr_url, alt: "QR code linking to example.com"
-
-  ui :qr_code, alt: "QR code linking to example.com" do
-    RQRCode::QRCode.new("https://example.com").as_svg(viewbox: true).html_safe
-  end

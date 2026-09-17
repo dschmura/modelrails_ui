@@ -2,6 +2,8 @@
 
 Fixed-position toast stack for transient notifications. Place once in your application layout.
 
+Superseded in this app — this host app has its own flash/toast pipeline (`shared/_toasts`) and does not adopt this gem component; see COMPONENT_STATUS.md.
+
 Requires `toaster_controller.js` (copied automatically by the generator).
 
 ## Installation
