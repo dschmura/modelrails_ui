@@ -1,6 +1,8 @@
 # Carousel
 
 Scrollable slide container with previous/next controls and optional dot indicators.
+Autoplay (when > 0) is WCAG 2.2.2 compliant — a pause/play toggle, pause on
+hover/focus, disabled under prefers-reduced-motion.
 
 Requires `carousel_controller.js` (copied automatically by the generator).
 

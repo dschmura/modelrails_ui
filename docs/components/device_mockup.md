@@ -53,3 +53,23 @@ Pass `url:` when using `:browser` to display a fake address bar:
 | `variant` | Symbol | `:phone` | `:phone`, `:browser`, or `:tablet` |
 | `url` | String | `nil` | Address bar text (`:browser` variant only) |
 | `**html_attrs` | Hash | — | Forwarded to the outer `<div>` |
+
+## When to use
+
+- You're showing a product screenshot or demo inside a recognizable device
+  shell for marketing/docs context.
+
+## When not to use
+
+- The frame would imply interactivity the content doesn't have — the mockup is
+  a static decorative wrapper, not a live device.
+
+## Accessibility contract
+
+- **Guarantees:** the frame is a plain `<div>` (no bogus role), and every purely
+  decorative chrome bit (notch, traffic-light dots, fake address bar) is
+  `aria-hidden` so assistive tech sees ONLY the slotted content. AAA semantic
+  tokens throughout (`bg-surface-sunken`/`border-border`/`text-text-*`) — no raw
+  palette colors. A valid `variant` is required (an unknown one raises in dev).
+- **You supply:** the framed content via the block, with its own a11y — real
+  `alt` text on a meaningful screenshot, or `alt: ""` for a decorative one.

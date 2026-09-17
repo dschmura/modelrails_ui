@@ -448,7 +448,7 @@ class TestGeneratorComponents < Minitest::Test
     assert_includes source, "weekday_start"
     assert_includes source, "calendar"
     # Hardened: an APG date grid.
-    assert_includes source, 'role="grid"'
+    assert_includes source, 'role: "grid"'
   end
 
   def test_calendar_controller_has_select_and_nav

@@ -2,7 +2,13 @@
 
 Responsive image grid with an optional click-to-enlarge lightbox. With more
 than one image, the lightbox gains prev/next buttons, a caption, and a
-counter ("1 / 3"); Left/Right arrow keys navigate too.
+counter ("1 / 3"); Left/Right arrow keys navigate too. With lightbox: true
+(default) each cell is a focusable `<button>` that opens a single shared
+native `<dialog>` (the `modal` controller — focus-trap/escape/restore for
+free). The `gallery` controller swaps the dialog image's src/alt/caption
+before `modal#open` runs, and — with more than one image — the dialog gains
+prev/next buttons and a counter bar (see `LightboxComponent`,
+standalone-renderable for bespoke consumers).
 
 Requires `gallery_controller.js` (copied automatically by the generator) when `lightbox: true`.
 
