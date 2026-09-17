@@ -1,6 +1,6 @@
 # FileInput
 
-Styled `<input type="file">` with support for MIME-type filtering and multiple file selection.
+Styled `<input type="file">` with support for MIME-type filtering and multiple file selection. It also accepts `invalid:`/`describedby:` a11y params so the form builder can wire `aria-invalid`/`aria-describedby` — closing the gap where the app's plain `file_field` skipped ARIA.
 
 ## Installation
 

@@ -64,6 +64,11 @@ translate (the host's delegate file is `config/locales/modelrails_ui.en.yml`).
 Per call, `copy_label:`, `copied_label:` and `failed_label:` override them. The failure
 string deliberately names no keystroke — macOS has no Ctrl, touch has no keyboard.
 
+`modelrails_ui.copy.action` ("Copy", the visible text), `.button_label`
+("%{action} %{label}"), `.copied` ("Copied %{label} to the clipboard"), `.failed`
+(a device-neutral instruction that names no key). Override per call with
+`copy_label:` / `copied_label:` / `failed_label:`.
+
 ## Data hooks (`data-state`, `copy:copied`, `copy:failed`)
 
 Assert on these, not on internals:
@@ -130,3 +135,25 @@ both themes. Do not claim AAA from the gem alone.
 | `describedby` | String | `nil` | The **button's** `aria-describedby` |
 | `autofocus` | Boolean | `false` | Autofocus the **button** |
 | `**html_attrs` | Hash | — | Forwarded to the wrapper `<div>`; caller `data:` is merged after the controller wiring |
+
+## When to use
+
+- The user needs to take a value with them: an invitation URL, an API token, an
+  identifier they will paste somewhere else.
+
+## When not to use
+
+- The value must be read or transcribed by a person rather than pasted — this
+  single-line input scrolls a long value; a readable display is a different shape.
+- The value is editable — this control is readonly by contract.
+
+## Accessibility contract
+
+- **Guarantees:** a real `<label for>` on the value; the trigger's accessible name is
+  "<action> <label>" so the visible "Copy" is a substring in every state (WCAG 2.5.3)
+  and never changes; two live regions — polite for success, assertive for failure —
+  exist empty from first render; 44 px targets from the input and button cells;
+  `focus-ring` outlines; no motion on the icon swap.
+- **You supply:** `label:` as the NOUN for the value ("Invitation link") — it is
+  interpolated into the accessible name and both announcements — and, if you
+  translate, the four `modelrails_ui.copy.*` keys in your locale file.

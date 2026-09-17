@@ -42,6 +42,14 @@ module ModelrailsUi
       down_end += 1 while down_end < lines.size && lines[down_end].match?(/\A\s*#/)
       down = lines[(i + 1)...down_end]
 
+      # An already-migrated pointer is always ≤3 lines above the class — shorter than
+      # an unrelated below-class implementation comment (e.g. documenting an
+      # `initialize` param shape) can be. Once a pointer is in place, it wins outright
+      # rather than losing the general above-vs-below size comparison below.
+      if up.any? { |l| l.include?("Usage, options and the accessibility contract: docs/components/") }
+        return Block.new(start: up_start, length: up.size, lines: up, position: :above, indent: up.first[/\A\s*/])
+      end
+
       if up.size >= down.size
         return nil if up.empty?
 

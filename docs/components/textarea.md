@@ -1,6 +1,6 @@
 # Textarea
 
-Multi-line text input that grows to fit its content via CSS `field-sizing: content`.
+Multi-line text input that grows to fit its content via CSS `field-sizing: content`. Styling matches the form builder's (`UI::FormBuilder`) field rendering (shared with `UI::InputComponent`) so `f.text_area` delegates to it invisibly.
 
 ## Installation
 

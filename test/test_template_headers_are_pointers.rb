@@ -12,13 +12,11 @@ class TestTemplateHeadersArePointers < Minitest::Test
   H = ModelrailsUi::ComponentHeader
 
   PENDING = %w[
-    audio bottom_nav breadcrumb calendar carousel chart chat_bubble checkbox collapsible combobox
-    command context_menu copy data_table date_picker device_mockup dialog drawer dropdown_menu
-    embed error_summary figure file_input floating_label footer form_field gallery hover_card
-    iframe image input input_otp map_area mega_menu menubar menubar_menu navbar navigation_menu
-    number_input pagination picture popover qr_code radio_group range resizable scroll_area
-    search_input select sheet sidebar speed_dial stepper switch tabs tabs_item textarea timeline
-    timepicker toaster toggle toggle_group tooltip video wysiwyg
+    audio bottom_nav breadcrumb calendar carousel chart chat_bubble collapsible combobox command
+    context_menu data_table date_picker device_mockup dialog drawer dropdown_menu embed figure
+    footer gallery hover_card iframe image input_otp map_area mega_menu menubar menubar_menu
+    navbar navigation_menu pagination picture popover qr_code resizable scroll_area sheet sidebar
+    speed_dial stepper tabs tabs_item timeline timepicker toaster tooltip video wysiwyg
   ].freeze
 
   def templates

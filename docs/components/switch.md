@@ -42,3 +42,26 @@ Creates `app/components/ui/switch_component.rb`.
 | `label` | String | `nil` | Visible label rendered beside the switch |
 | `checked` | Boolean | `false` | Initial on/off state |
 | `**html_attrs` | Hash | — | Forwarded to the hidden `<input type="checkbox">` |
+
+## When to use
+
+- You need an immediate on/off setting (notifications on, dark mode on) that takes
+  effect on toggle — not a value collected for later form submission.
+
+## When not to use
+
+- The choice is part of a form the user submits, or it isn't strictly binary —
+  use a checkbox or radio group instead.
+
+## Accessibility contract
+
+- **Guarantees:** a real `role="switch"` checkbox whose **native `checked` state**
+  conveys on/off to assistive tech (no JS, no stale ARIA), and a >=44px clickable
+  target (AAA 2.5.5) even though the visual track is smaller.
+- **You supply:** an accessible name via `label:` (or `aria-label:` on a label-less
+  switch), the initial `checked:` state, and a `name:` so the value posts.
+
+## State
+
+`checked:` (default `false`) sets the initial on/off; the native checkbox tracks
+the rest. No variant axis, so no fail-loud guard is needed.
