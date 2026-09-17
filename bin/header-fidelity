@@ -1,10 +1,13 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 # Fidelity audit for the component-docs migration. Usage (from the gem root):
 #   ruby -Ilib <this file> BASE_SHA NAME [NAME...]
 # For each NAME, reads the template header as it was at BASE_SHA, drops the first
 # sentence (it became the pointer), and reports every substantive line (>=25
 # chars) — intro sentences and section lines — that has under 50% four-word
 # phrase overlap with the component's current doc. Empty output = nothing lost.
+require "set"
 require_relative "../lib/modelrails_ui/component_header"
 H = ModelrailsUi::ComponentHeader
 base = ARGV.shift or abort("usage: header-fidelity BASE_SHA NAME...")
@@ -14,9 +17,10 @@ sh = ->(t, n = 4) {
   (w.size < n) ? [norm.call(t)] : (0..w.size - n).map { |i| w[i, n].join(" ") }
 }
 missing = 0
+processed = 0
 ARGV.each do |n|
-  f = Dir["lib/generators/modelrails_ui/add/templates/*/#{n}_component.rb.tt"].first or (warn "no template: #{n}"
-                                                                                         next)
+  f = Dir["lib/generators/modelrails_ui/add/templates/*/#{n}_component.rb.tt"].first or abort("no template: #{n}")
+  processed += 1
   before = `git show #{base}:#{f}`.lines
   blk = H.locate(before) or next
   intro, sections = H.sections(blk)
@@ -31,5 +35,5 @@ ARGV.each do |n|
     puts "#{n}\t#{line}"
   end
 end
-warn "#{missing} unplaced line(s)"
+warn "#{processed} component(s) audited, #{missing} unplaced line(s)"
 exit(missing.zero? ? 0 : 1)

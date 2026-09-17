@@ -183,6 +183,22 @@ class TestComponentHeader < Minitest::Test
     refute ModelrailsUi::ComponentHeader.pointer?(nil, doc: "toggle_group")
   end
 
+  def test_pointer_predicate_requires_exactly_three_lines
+    two_line = ModelrailsUi::ComponentHeader::Block.new(
+      start: 0, length: 2,
+      lines: ["  # A thing.\n", "  # docs/components/toggle_group.md in the modelrails_ui gem.\n"],
+      position: :above, indent: "  "
+    )
+    one_line = ModelrailsUi::ComponentHeader::Block.new(
+      start: 0, length: 1,
+      lines: ["  # docs/components/toggle_group.md in the modelrails_ui gem.\n"],
+      position: :above, indent: "  "
+    )
+
+    refute ModelrailsUi::ComponentHeader.pointer?(two_line, doc: "toggle_group")
+    refute ModelrailsUi::ComponentHeader.pointer?(one_line, doc: "toggle_group")
+  end
+
   def test_doc_name_maps_sub_components_to_their_parent
     assert_equal "accordion", ModelrailsUi::ComponentHeader.doc_name("accordion_item")
     assert_equal "tabs", ModelrailsUi::ComponentHeader.doc_name("tabs_item")

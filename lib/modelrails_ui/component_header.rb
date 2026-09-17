@@ -141,7 +141,7 @@ module ModelrailsUi
     end
 
     def pointer?(block, doc:)
-      !block.nil? && block.length <= 3 && block.text.any? { |t| t.include?("docs/components/#{doc}.md") }
+      !block.nil? && block.length == 3 && block.text.any? { |t| t.include?("docs/components/#{doc}.md") }
     end
 
     def trim(lines)

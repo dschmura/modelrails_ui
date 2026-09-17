@@ -43,6 +43,61 @@ class TestComponentHeaderMigrator < Minitest::Test
     |---|---|
   MD
 
+  # A section whose first body line is in the doc but whose second is not.
+  TWO_LINE_SECTION_SOURCE = <<~RUBY.lines
+    # frozen_string_literal: true
+
+    module UI
+      # # Toggle group
+      #
+      # A grouping of related toggle buttons.
+      #
+      # ## Accessibility contract
+      # - First guarantee line is in the doc.
+      # - Second guarantee line is not in the doc.
+      class ToggleGroupComponent < ApplicationComponent
+        def call = nil
+      end
+    end
+  RUBY
+
+  PARTIAL_SECTION_DOC = <<~MD
+    # Toggle group
+
+    Intro paragraph.
+
+    ## Accessibility contract
+
+    - First guarantee line is in the doc.
+  MD
+
+  # An intro whose second sentence (>=25 chars) is missing from the doc.
+  TWO_SENTENCE_INTRO_SOURCE = <<~RUBY.lines
+    # frozen_string_literal: true
+
+    module UI
+      # # Toggle group
+      #
+      # A grouping of related toggle buttons wired to a controller. This second sentence is long enough to count.
+      #
+      # ## Accessibility contract
+      # - Some guarantee line here.
+      class ToggleGroupComponent < ApplicationComponent
+        def call = nil
+      end
+    end
+  RUBY
+
+  INTRO_MISSING_SECOND_SENTENCE_DOC = <<~MD
+    # Toggle group
+
+    A grouping of related toggle buttons wired to a controller.
+
+    ## Accessibility contract
+
+    - Some guarantee line here.
+  MD
+
   def test_migrate_replaces_the_header_with_the_pointer_and_keeps_the_rest
     lines, = M.migrate("toggle_group", SOURCE, DOC)
 
@@ -101,5 +156,24 @@ class TestComponentHeaderMigrator < Minitest::Test
     _, doc = M.migrate("toggle_group", SOURCE, DOC)
 
     assert_empty M.missing_from_doc(block, doc)
+  end
+
+  def test_missing_from_doc_flags_a_section_whose_second_line_is_absent
+    block = ModelrailsUi::ComponentHeader.locate(TWO_LINE_SECTION_SOURCE)
+
+    assert_equal ["Accessibility contract"], M.missing_from_doc(block, PARTIAL_SECTION_DOC)
+  end
+
+  def test_missing_from_doc_flags_a_missing_intro_sentence
+    block = ModelrailsUi::ComponentHeader.locate(TWO_SENTENCE_INTRO_SOURCE)
+
+    assert_includes M.missing_from_doc(block, INTRO_MISSING_SECOND_SENTENCE_DOC), "intro"
+  end
+
+  def test_map_heading_keeps_a_parenthetical_suffix
+    assert_equal "Accessibility contract (WAI-ARIA APG combobox + listbox)",
+      M.map_heading("Accessibility contract (WAI-ARIA APG combobox + listbox)", component: "combobox", doc: "combobox")
+    assert_equal "When to use (foo)",
+      M.map_heading("Use when (foo)", component: "combobox", doc: "combobox")
   end
 end

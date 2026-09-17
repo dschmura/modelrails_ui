@@ -44,8 +44,9 @@ module ModelrailsUi
       end
 
       def map_heading(heading, component:, doc:)
+        suffix = heading[/\s*\(.*\)\z/].to_s
         key = heading.downcase.sub(/\s*\(.*\)\z/, "").strip
-        mapped = HEADING_MAP.fetch(key, heading)
+        mapped = HEADING_MAP.fetch(key, heading.sub(/\s*\(.*\)\z/, "").strip) + suffix
         (component == doc) ? mapped : "#{component.tr("_", " ").capitalize}: #{mapped}"
       end
 
@@ -62,12 +63,21 @@ module ModelrailsUi
         end
       end
 
-      # Section headings whose first non-blank line is absent from the doc —
-      # the check --rewrite-only relies on so nothing is dropped silently.
+      # Section headings whose doc coverage is incomplete — every non-blank
+      # section line must appear in the doc, and every intro sentence after
+      # the summary (the first) must too — the check --rewrite-only relies on
+      # so nothing is dropped silently. The literal string "intro" is included
+      # alongside headings when an intro sentence is missing.
       def missing_from_doc(block, doc_text)
-        _, sections = ComponentHeader.sections(block)
-        sections.reject { |s| (first = s.lines.find { |l| !l.strip.empty? }).nil? || doc_text.include?(first.strip) }
+        intro, sections = ComponentHeader.sections(block)
+        missing = sections.select { |s| s.lines.any? { |l| !l.strip.empty? && !doc_text.include?(l.strip) } }
           .map(&:heading)
+
+        sentences = intro.join(" ").split(/(?<=[.!?])\s+/).map(&:strip).reject(&:empty?)
+        rest = sentences.drop(1).reject { |s| s.length < 25 }
+        missing << "intro" if rest.any? { |s| !doc_text.include?(s) }
+
+        missing
       end
 
       def comment_lines(text_lines, indent)
