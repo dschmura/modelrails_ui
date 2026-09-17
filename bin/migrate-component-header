@@ -23,7 +23,12 @@ OptionParser.new do |o|
   o.on("--root DIR") { |d| root = File.expand_path(d) }
   o.on("--docs DIR") { |d| docs = File.expand_path(d) }
   o.on("--rewrite-only") { rewrite_only = true }
-  o.on("--extra-doc PATH") { |p| extra_docs << File.expand_path(p) }
+  o.on("--extra-doc PATH") { |p|
+    expanded = File.expand_path(p)
+    abort("no such extra doc: #{p}") unless File.exist?(expanded)
+
+    extra_docs << expanded
+  }
 end.parse!
 abort("usage: bin/migrate-component-header [--rewrite-only --root DIR --docs DIR [--extra-doc PATH...]] NAME...") if ARGV.empty?
 

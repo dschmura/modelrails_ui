@@ -63,16 +63,20 @@ module ModelrailsUi
         end
       end
 
-      # Section headings whose doc coverage is incomplete — every non-blank
-      # section line must be ComponentHeader.stated_in? the doc, and every
-      # intro sentence after the summary (the first) must too — the check
-      # --rewrite-only relies on so nothing is dropped silently. A fact the
-      # doc restates as prose, a bullet, or folds into a table row still
-      # counts as covered. The literal string "intro" is included alongside
-      # headings when an intro sentence is missing.
+      # Section headings whose doc coverage is incomplete — every substantive
+      # (>=25 char) section line must be ComponentHeader.stated_in? the doc,
+      # and every intro sentence after the summary (the first) must too —
+      # the check --rewrite-only relies on so nothing is dropped silently.
+      # The 25-char floor matches bin/header-fidelity's own filter (and the
+      # intro branch's, below) so the tripwire and the audit judge the same
+      # line set — a hard-wrapped tail too short to shingle (e.g.
+      # "controller.") is never substantive enough to flag on its own. A
+      # fact the doc restates as prose, a bullet, or folds into a table row
+      # still counts as covered. The literal string "intro" is included
+      # alongside headings when an intro sentence is missing.
       def missing_from_doc(block, doc_text)
         intro, sections = ComponentHeader.sections(block)
-        missing = sections.select { |s| s.lines.any? { |l| !l.strip.empty? && !ComponentHeader.stated_in?(l.strip, doc_text) } }
+        missing = sections.select { |s| s.lines.any? { |l| l.strip.length >= 25 && !ComponentHeader.stated_in?(l.strip, doc_text) } }
           .map(&:heading)
 
         sentences = intro.join(" ").split(/(?<=[.!?])\s+/).map(&:strip).reject(&:empty?)

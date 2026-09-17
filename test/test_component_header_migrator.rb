@@ -138,6 +138,45 @@ class TestComponentHeaderMigrator < Minitest::Test
     Unrelated content only.
   MD
 
+  # A section whose only unmatched line is a short (<25 char) hard-wrapped
+  # tail — too short to ever shingle-match, so it must not flag on its own.
+  SHORT_TAIL_SOURCE = <<~RUBY.lines
+    # frozen_string_literal: true
+
+    module UI
+      # # Toggle group
+      #
+      # A grouping of related toggle buttons.
+      #
+      # ## Accessibility contract
+      # Wired to the toggle-group Stimulus
+      # controller.
+      class ToggleGroupComponent < ApplicationComponent
+        def call = nil
+      end
+    end
+  RUBY
+
+  SHORT_TAIL_DOC = <<~MD
+    # Toggle group
+
+    Intro paragraph.
+
+    ## Accessibility contract
+
+    Wired to the toggle-group Stimulus.
+  MD
+
+  SHORT_TAIL_DOC_WITHOUT_THE_LONG_LINE = <<~MD
+    # Toggle group
+
+    Intro paragraph.
+
+    ## Accessibility contract
+
+    Something else entirely, unrelated to Stimulus wiring choices made here.
+  MD
+
   def test_migrate_replaces_the_header_with_the_pointer_and_keeps_the_rest
     lines, = M.migrate("toggle_group", SOURCE, DOC)
 
@@ -227,5 +266,17 @@ class TestComponentHeaderMigrator < Minitest::Test
     block = ModelrailsUi::ComponentHeader.locate(FOLDED_LINE_SOURCE)
 
     assert_equal ["Parameters"], M.missing_from_doc(block, FOLDED_LINE_DOC_WITHOUT_THE_FACT)
+  end
+
+  def test_missing_from_doc_ignores_a_short_wrapped_tail
+    block = ModelrailsUi::ComponentHeader.locate(SHORT_TAIL_SOURCE)
+
+    assert_empty M.missing_from_doc(block, SHORT_TAIL_DOC)
+  end
+
+  def test_missing_from_doc_still_flags_an_absent_substantive_line_alongside_a_short_tail
+    block = ModelrailsUi::ComponentHeader.locate(SHORT_TAIL_SOURCE)
+
+    assert_equal ["Accessibility contract"], M.missing_from_doc(block, SHORT_TAIL_DOC_WITHOUT_THE_LONG_LINE)
   end
 end

@@ -218,4 +218,9 @@ class TestComponentHeader < Minitest::Test
 
     refute ModelrailsUi::ComponentHeader.stated_in?("An entirely unrelated sentence about widgets and gadgets.", corpus)
   end
+
+  def test_stated_in_falls_back_to_containment_for_a_line_under_four_words
+    assert ModelrailsUi::ComponentHeader.stated_in?("live region.", "The panel is a live region.")
+    refute ModelrailsUi::ComponentHeader.stated_in?("live region.", "unrelated text")
+  end
 end
