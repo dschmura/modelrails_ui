@@ -144,6 +144,29 @@ module ModelrailsUi
       !block.nil? && block.length == 3 && block.text.any? { |t| t.include?("docs/components/#{doc}.md") }
     end
 
+    # True when `line`'s facts are covered by `corpus` — not necessarily
+    # verbatim: both are normalized (backtick/`*`/`_`/`#`/`|`/`[`/`]`/`(`/`)`
+    # to spaces, whitespace collapsed, downcased) and split into four-word
+    # shingles (a line under four words is one shingle: the whole normalized
+    # line). True when at least half of `line`'s shingles are also among
+    # `corpus`'s shingles — so a fact restated as prose, a bullet, or folded
+    # into a table row still counts. The same rule `bin/header-fidelity`
+    # uses, shared here so both tools agree on what "stated in the doc"
+    # means.
+    def stated_in?(line, corpus)
+      shingles = shingles_of(line)
+      corpus_shingles = shingles_of(corpus)
+      shingles.count { |sh| corpus_shingles.include?(sh) } >= (shingles.size * 0.5).ceil
+    end
+
+    # Four-word sliding-window phrases of `text`, normalized first (see
+    # `stated_in?`) — a line under four words is one shingle: the whole line.
+    def shingles_of(text)
+      normalize = ->(s) { s.gsub(/[`*_#|\[\]()]/, " ").gsub(/\s+/, " ").strip.downcase }
+      words = normalize.call(text).split(" ")
+      (words.size < 4) ? [normalize.call(text)] : (0..words.size - 4).map { |i| words[i, 4].join(" ") }
+    end
+
     def trim(lines)
       lines.drop_while(&:empty?).reverse.drop_while(&:empty?).reverse
     end

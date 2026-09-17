@@ -98,6 +98,46 @@ class TestComponentHeaderMigrator < Minitest::Test
     - Some guarantee line here.
   MD
 
+  # A section line stated as prose in the header but folded into an API table
+  # row in the doc — phrase overlap, not a verbatim substring.
+  FOLDED_LINE_SOURCE = <<~RUBY.lines
+    # frozen_string_literal: true
+
+    module UI
+      # # Toggle group
+      #
+      # A grouping of related toggle buttons.
+      #
+      # ## Parameters
+      # - `type`: `:single` (one active) or `:multiple` (many active)
+      class ToggleGroupComponent < ApplicationComponent
+        def call = nil
+      end
+    end
+  RUBY
+
+  FOLDED_LINE_DOC = <<~MD
+    # Toggle group
+
+    Intro paragraph.
+
+    ## API
+
+    | Option | Type | Values |
+    |---|---|---|
+    | `type` | Symbol | `:single` (one active) or `:multiple` (many active) |
+  MD
+
+  FOLDED_LINE_DOC_WITHOUT_THE_FACT = <<~MD
+    # Toggle group
+
+    Intro paragraph.
+
+    ## API
+
+    Unrelated content only.
+  MD
+
   def test_migrate_replaces_the_header_with_the_pointer_and_keeps_the_rest
     lines, = M.migrate("toggle_group", SOURCE, DOC)
 
@@ -175,5 +215,17 @@ class TestComponentHeaderMigrator < Minitest::Test
       M.map_heading("Accessibility contract (WAI-ARIA APG combobox + listbox)", component: "combobox", doc: "combobox")
     assert_equal "When to use (foo)",
       M.map_heading("Use when (foo)", component: "combobox", doc: "combobox")
+  end
+
+  def test_missing_from_doc_recognizes_a_fact_folded_into_a_table_row
+    block = ModelrailsUi::ComponentHeader.locate(FOLDED_LINE_SOURCE)
+
+    assert_empty M.missing_from_doc(block, FOLDED_LINE_DOC)
+  end
+
+  def test_missing_from_doc_still_names_the_section_when_the_fact_is_absent
+    block = ModelrailsUi::ComponentHeader.locate(FOLDED_LINE_SOURCE)
+
+    assert_equal ["Parameters"], M.missing_from_doc(block, FOLDED_LINE_DOC_WITHOUT_THE_FACT)
   end
 end

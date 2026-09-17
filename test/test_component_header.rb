@@ -205,4 +205,17 @@ class TestComponentHeader < Minitest::Test
     assert_equal "button", ModelrailsUi::ComponentHeader.doc_name("button")
     assert_equal "card", ModelrailsUi::ComponentHeader.doc_name("card_footer")
   end
+
+  def test_stated_in_recognizes_a_fact_folded_into_a_markdown_table_row
+    line = "`type`: `:single` (one active) or `:multiple` (many active)"
+    corpus = "| `type` | Symbol | `:single` | `:single` (one active) or `:multiple` (many active) |"
+
+    assert ModelrailsUi::ComponentHeader.stated_in?(line, corpus)
+  end
+
+  def test_stated_in_is_false_for_an_unrelated_line
+    corpus = "| `type` | Symbol | `:single` | `:single` (one active) or `:multiple` (many active) |"
+
+    refute ModelrailsUi::ComponentHeader.stated_in?("An entirely unrelated sentence about widgets and gadgets.", corpus)
+  end
 end

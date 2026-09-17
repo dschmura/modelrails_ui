@@ -64,18 +64,20 @@ module ModelrailsUi
       end
 
       # Section headings whose doc coverage is incomplete — every non-blank
-      # section line must appear in the doc, and every intro sentence after
-      # the summary (the first) must too — the check --rewrite-only relies on
-      # so nothing is dropped silently. The literal string "intro" is included
-      # alongside headings when an intro sentence is missing.
+      # section line must be ComponentHeader.stated_in? the doc, and every
+      # intro sentence after the summary (the first) must too — the check
+      # --rewrite-only relies on so nothing is dropped silently. A fact the
+      # doc restates as prose, a bullet, or folds into a table row still
+      # counts as covered. The literal string "intro" is included alongside
+      # headings when an intro sentence is missing.
       def missing_from_doc(block, doc_text)
         intro, sections = ComponentHeader.sections(block)
-        missing = sections.select { |s| s.lines.any? { |l| !l.strip.empty? && !doc_text.include?(l.strip) } }
+        missing = sections.select { |s| s.lines.any? { |l| !l.strip.empty? && !ComponentHeader.stated_in?(l.strip, doc_text) } }
           .map(&:heading)
 
         sentences = intro.join(" ").split(/(?<=[.!?])\s+/).map(&:strip).reject(&:empty?)
         rest = sentences.drop(1).reject { |s| s.length < 25 }
-        missing << "intro" if rest.any? { |s| !doc_text.include?(s) }
+        missing << "intro" if rest.any? { |s| !ComponentHeader.stated_in?(s, doc_text) }
 
         missing
       end

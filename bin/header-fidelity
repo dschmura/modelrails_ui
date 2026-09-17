@@ -5,17 +5,12 @@
 #   ruby -Ilib <this file> BASE_SHA NAME [NAME...]
 # For each NAME, reads the template header as it was at BASE_SHA, drops the first
 # sentence (it became the pointer), and reports every substantive line (>=25
-# chars) — intro sentences and section lines — that has under 50% four-word
-# phrase overlap with the component's current doc. Empty output = nothing lost.
-require "set"
+# chars) — intro sentences and section lines — that ComponentHeader.stated_in?
+# judges absent from the component's current doc (the same phrase-overlap rule
+# the --rewrite-only tripwire uses). Empty output = nothing lost.
 require_relative "../lib/modelrails_ui/component_header"
 H = ModelrailsUi::ComponentHeader
 base = ARGV.shift or abort("usage: header-fidelity BASE_SHA NAME...")
-norm = ->(s) { s.gsub(/[`*_#|\[\]()]/, " ").gsub(/\s+/, " ").strip.downcase }
-sh = ->(t, n = 4) {
-  w = norm.call(t).split(" ")
-  (w.size < n) ? [norm.call(t)] : (0..w.size - n).map { |i| w[i, n].join(" ") }
-}
 missing = 0
 processed = 0
 ARGV.each do |n|
@@ -24,13 +19,12 @@ ARGV.each do |n|
   before = `git show #{base}:#{f}`.lines
   blk = H.locate(before) or next
   intro, sections = H.sections(blk)
-  docsh = sh.call(File.read("docs/components/#{H.doc_name(n)}.md")).to_set
+  doc_text = File.read("docs/components/#{H.doc_name(n)}.md")
   first = H.summary(intro)
   rest = intro.join(" ").sub(first, "").split(/(?<=[.!?])\s+/).map(&:strip).reject { |s| s.size < 25 }
   sec = sections.flat_map(&:lines).map(&:strip).reject { |s| s.size < 25 }
   (rest + sec).each do |line|
-    shs = sh.call(line)
-    next if shs.count { |x| docsh.include?(x) } >= (shs.size * 0.5).ceil
+    next if H.stated_in?(line, doc_text)
     missing += 1
     puts "#{n}\t#{line}"
   end

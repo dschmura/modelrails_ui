@@ -4,10 +4,13 @@
 # Moves a component's header prose into docs/components/<name>.md and leaves the
 # three-line pointer behind.
 #   bin/migrate-component-header NAME...                       # gem templates + docs
-#   bin/migrate-component-header --rewrite-only --root DIR --docs DIR NAME...
+#   bin/migrate-component-header --rewrite-only --root DIR --docs DIR [--extra-doc PATH...] NAME...
 #       DIR holds NAME_component.rb (a host app's vendored copies); the doc is
 #       not written, and the run aborts if the doc lacks any section the header
-#       carries — port those lines into the gem doc first.
+#       carries (ComponentHeader.stated_in?, the same phrase-overlap rule
+#       bin/header-fidelity uses — a fact restated as prose or folded into a
+#       table still counts) — port those lines into the gem doc first, or pass
+#       --extra-doc (repeatable) to also search a fork's own doc for the fact.
 require "optparse"
 require_relative "../lib/modelrails_ui/component_header/migrator"
 
@@ -15,12 +18,14 @@ H = ModelrailsUi::ComponentHeader
 root = File.expand_path("../lib/generators/modelrails_ui/add/templates", __dir__)
 docs = File.expand_path("../docs/components", __dir__)
 rewrite_only = false
+extra_docs = []
 OptionParser.new do |o|
   o.on("--root DIR") { |d| root = File.expand_path(d) }
   o.on("--docs DIR") { |d| docs = File.expand_path(d) }
   o.on("--rewrite-only") { rewrite_only = true }
+  o.on("--extra-doc PATH") { |p| extra_docs << File.expand_path(p) }
 end.parse!
-abort("usage: bin/migrate-component-header [--rewrite-only --root DIR --docs DIR] NAME...") if ARGV.empty?
+abort("usage: bin/migrate-component-header [--rewrite-only --root DIR --docs DIR [--extra-doc PATH...]] NAME...") if ARGV.empty?
 
 ARGV.each do |name|
   source = Dir[File.join(root, name, "#{name}_component.rb.tt")].first ||
@@ -33,7 +38,8 @@ ARGV.each do |name|
   lines = File.readlines(source)
   doc_text = File.read(doc_path)
   if rewrite_only && (block = H.locate(lines)) && !H.pointer?(block, doc: H.doc_name(name))
-    missing = H::Migrator.missing_from_doc(block, doc_text)
+    corpus = ([doc_text] + extra_docs.map { |p| File.read(p) }).join("\n")
+    missing = H::Migrator.missing_from_doc(block, corpus)
     abort("#{name}: doc lacks #{missing.join(', ')} — port those lines into #{doc_path} first") if missing.any?
   end
 

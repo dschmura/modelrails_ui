@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `bin/prose-stats`, `bin/migrate-component-header` and `bin/header-fidelity` (the migration's nothing-lost audit), plus `ModelrailsUi::ComponentHeader` and `ModelrailsUi::ProseStats`, and `test/test_template_headers_are_pointers.rb`, the guard that keeps every template header a pointer.
 - The gem now packages `docs/` and the three migration scripts, so the host-app command above runs straight out of the installed gem.
+- `bin/migrate-component-header --rewrite-only` gained a repeatable `--extra-doc PATH` for facts a fork's own doc already states; its tripwire (and `bin/header-fidelity`) now judges a line "stated in the doc" by the same four-word phrase-overlap rule instead of requiring a verbatim substring, so a fact the doc restates as prose or folds into a table row no longer aborts the rewrite.
 
 ### Fixed
 
