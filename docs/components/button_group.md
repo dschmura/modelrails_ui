@@ -1,6 +1,6 @@
 # Button Group
 
-Wraps multiple buttons into a visually joined row — shared border, collapsed inner radii.
+Wraps multiple buttons into a visually joined row — shared border, collapsed inner radii. `aria_label:` is optional: a group benefits from an accessible name, but a button group is often already labelled by surrounding context, so it is left to the caller rather than required.
 
 ## Installation
 

@@ -120,3 +120,32 @@ its `[variant, tone]` cell — write the two axes in new code.
 | `tone` | Symbol | `:primary` | Signal axis — see Cells table; ignored when `variant:` is a legacy flat value |
 | `href` | String | `nil` | Renders `<a>` instead of `<span>`; sets `tag: :a`, adds `min-h-11 focus-ring` |
 | `**html_attrs` | Hash | — | Forwarded to the rendered element |
+
+## When to use
+
+- You need a short inline label that classifies or annotates nearby content:
+  a status pill ("Active"), a category tag, a small count.
+
+## When not to use
+
+- It's a real action — use `UI::ButtonComponent` (or `button_to` for non-GET).
+  A badge is presentational; `href:` is for navigation/filtering, not actions.
+
+## Accessibility contract
+
+- **Guarantees:** AAA-contrast text on 9 of the 10 shipped cells' surfaces
+  (`soft`/`neutral` pending the consuming app's 0b axe row), including the
+  adaptive signal treatments (`danger`/`success`/`info`/`warning`) which stay
+  legible in dark mode.
+- **You supply:** if the badge conveys status that isn't already in the
+  surrounding text (e.g. a color-coded "danger" pill), give it an accessible
+  name so screen-reader users get the same signal. A valid `(variant, tone)`
+  cell is required — an unproven one raises in development.
+
+## Legacy shim (deprecated flat `variant:` → `[variant, tone]`)
+
+The historical flat values still work, byte-identically, via `SHIM`:
+`default`→`[solid,primary]`, `secondary`→`[soft,primary]`, `info`→`[soft,info]`,
+`success`→`[soft,success]`, `warning`→`[soft,warning]`, `danger`→`[soft,danger]`,
+`destructive`→`[soft,danger]`, `outline`→`[outline,neutral]`, `ghost`→`[ghost,neutral]`,
+`link`→`[link,primary]`. (`danger`/`destructive` map to the SOFT chip — NOT solid.)

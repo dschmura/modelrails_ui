@@ -1,6 +1,6 @@
 # Card
 
-Bordered container with composable header, title, description, content, and footer sub-components.
+Bordered container with composable header, title, description, content, and footer sub-components. The card itself is a plain `<div>` — it carries no document structure; any heading lives inside, supplied by `card_title` (or your own markup), so the card never hijacks the outline.
 
 ## Installation
 
@@ -44,3 +44,22 @@ Creates 6 files under `app/components/ui/`: `card_component.rb`, `card_header_co
 
 All sub-components accept `**html_attrs` forwarded to their root element.
 `CardTitleComponent` also accepts a positional `title` argument or `label:` / `title:` keywords.
+
+## When to use
+
+- Grouping related content into a bordered, raised surface (a settings panel,
+  a summary tile, a media object).
+
+## When not to use
+
+- The whole card should be a link/button — a card is a static container by
+  contract. Put a real focusable `link`/`button` inside it instead of making
+  the `<div>` interactive (a clickable `<div>` is not keyboard-reachable).
+
+## Accessibility contract
+
+- **Guarantees:** AAA-contrast `text-text-body` on `bg-surface-raised`, a
+  semantic `border-border` rule, and a system `shadow-sm` (no raw color/shadow).
+  The container is non-interactive and adds no ARIA role — it is a neutral box.
+- **You supply:** the heading (via `card_title`, whose level you set with
+  `level:`) and any focusable controls inside `card_content` / `card_footer`.
