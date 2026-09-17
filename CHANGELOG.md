@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.16.0] - 2026-09-17
+
+### Changed
+
+- Component templates now carry a three-line class comment pointing at `docs/components/<name>.md`; the "Use when", "Don't use when" and "Accessibility contract" prose moved into the docs as `## When to use`, `## When not to use` and `## Accessibility contract`. Host apps: rewrite vendored copies in place with `bin/migrate-component-header --rewrite-only --root app/components/ui --docs $(bundle show modelrails_ui)/docs/components <names>`; do not regenerate.
+
+### Added
+
+- `bin/prose-stats` and `bin/migrate-component-header`, plus `ModelrailsUi::ComponentHeader` and `ModelrailsUi::ProseStats`, and `test/test_template_headers_are_pointers.rb`, the guard that keeps every template header a pointer.
+
 ### Fixed
 
 - `select`: floor the width at 44px (`min-w-[var(--form-input-height)]`, the same spelling as the existing height floor). `w-full` pins nothing, so a select sharing a flex row with a submit button takes only the leftover space — a host app's inline role editor measured 29px at phone width and 43px in CI, failing WCAG 2.5.5 (AAA) target size on the width axis while its height was never at risk.
