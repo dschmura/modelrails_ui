@@ -11,7 +11,7 @@ class TestTemplateHeadersArePointers < Minitest::Test
   DOCS_ROOT = File.expand_path("../docs/components", __dir__)
   H = ModelrailsUi::ComponentHeader
 
-  PENDING = %w[].freeze
+  PENDING = [].freeze
 
   def templates
     Dir[File.join(TEMPLATE_ROOT, "*", "*_component.rb.tt")].sort.map { |f| [File.basename(f, "_component.rb.tt"), f] }
@@ -47,5 +47,9 @@ class TestTemplateHeadersArePointers < Minitest::Test
 
     assert_empty offenders.map(&:first),
       "A markdown heading comment survived migration (locate() missed it): #{offenders.map(&:first).join(", ")}"
+  end
+
+  def test_nothing_is_pending
+    assert_empty PENDING, "the migration landed; PENDING is retired"
   end
 end
