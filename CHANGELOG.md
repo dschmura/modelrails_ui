@@ -11,11 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Component templates now carry a three-line class comment pointing at `docs/components/<name>.md`; the "Use when", "Don't use when" and "Accessibility contract" prose moved into the docs as `## When to use`, `## When not to use` and `## Accessibility contract`. Host apps: rewrite vendored copies in place with `bin/migrate-component-header --rewrite-only --root app/components/ui --docs $(bundle show modelrails_ui)/docs/components <names>`; do not regenerate.
+- Component templates now carry a three-line class comment pointing at `docs/components/<name>.md`; the "Use when", "Don't use when" and "Accessibility contract" prose moved into the docs as `## When to use`, `## When not to use` and `## Accessibility contract`. Host apps: rewrite vendored copies in place with `$(bundle show modelrails_ui)/bin/migrate-component-header --rewrite-only --root app/components/ui --docs $(bundle show modelrails_ui)/docs/components <names>`; do not regenerate.
 
 ### Added
 
 - `bin/prose-stats`, `bin/migrate-component-header` and `bin/header-fidelity` (the migration's nothing-lost audit), plus `ModelrailsUi::ComponentHeader` and `ModelrailsUi::ProseStats`, and `test/test_template_headers_are_pointers.rb`, the guard that keeps every template header a pointer.
+- The gem now packages `docs/` and the three migration scripts, so the host-app command above runs straight out of the installed gem.
 
 ### Fixed
 
