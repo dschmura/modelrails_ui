@@ -32,11 +32,11 @@ Add `gem "rqrcode"` to your Gemfile, then generate SVG inline:
 In an ERB view:
 
 ```erb
-ui :qr_code, src: qr_url, alt: "QR code linking to example.com"
+<%= ui :qr_code, src: qr_url, alt: "QR code linking to example.com" %>
 
-ui :qr_code, alt: "QR code linking to example.com" do
-  RQRCode::QRCode.new("https://example.com").as_svg(viewbox: true).html_safe
-end
+<%= ui :qr_code, alt: "QR code linking to example.com" do %>
+  <%= RQRCode::QRCode.new("https://example.com").as_svg(viewbox: true).html_safe %>
+<% end %>
 ```
 
 ## Custom size

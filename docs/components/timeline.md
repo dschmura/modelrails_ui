@@ -18,7 +18,7 @@ Creates `app/components/ui/timeline_component.rb`.
   <% t.with_item(date: "Feb 2025",  title: "Alpha release",
                  description: "Core features complete.", variant: :success) %>
   <% t.with_item(date: "Mar 2025",  title: "Performance issue found",
-                 variant: :destructive) %>
+                 variant: :danger) %>
   <% t.with_item(date: "Apr 2025",  title: "v1.0 shipped", variant: :success) %>
 <% end %>
 ```
@@ -28,10 +28,13 @@ Creates `app/components/ui/timeline_component.rb`.
 | Variant | Dot colour |
 |---------|-----------|
 | `:default` | Primary |
+| `:info` | Blue |
 | `:success` | Green |
 | `:warning` | Amber |
-| `:destructive` | Destructive |
+| `:danger` | Red |
 | `:muted` | Muted foreground |
+
+`:destructive` is a deprecated, non-breaking alias for `:danger`.
 
 ## Rich item content
 

@@ -79,7 +79,7 @@ Placement uses CSS anchor positioning with an `absolute`-offset fallback on
 pre-Baseline-2026 browsers; `position-try-fallbacks: flip-block` keeps the menu
 on-screen. Placement is CSS anchor positioning: the panel is `position: fixed`
 (so its containing block is the viewport), tethered to the trigger via
-`anchor-name`/ `position-anchor`; `position-area` places it and
+`anchor-name`/`position-anchor`; `position-area` places it and
 `position-try-fallbacks` keeps it on-screen.
 
 ## Keyboard
