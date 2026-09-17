@@ -11,9 +11,7 @@ class TestTemplateHeadersArePointers < Minitest::Test
   DOCS_ROOT = File.expand_path("../docs/components", __dir__)
   H = ModelrailsUi::ComponentHeader
 
-  PENDING = %w[
-    sidebar
-  ].freeze
+  PENDING = %w[].freeze
 
   def templates
     Dir[File.join(TEMPLATE_ROOT, "*", "*_component.rb.tt")].sort.map { |f| [File.basename(f, "_component.rb.tt"), f] }
@@ -40,7 +38,11 @@ class TestTemplateHeadersArePointers < Minitest::Test
 
   def test_no_markdown_heading_comments_survive_in_migrated_templates
     offenders = templates.reject { |name, _| PENDING.include?(name) }.select do |_, file| # rubocop:disable Style/HashExcept
-      File.readlines(file).any? { |l| l.match?(/\A\s*#\s*##?\s+\S/) }
+      # A nested `#` inside a commented code sample (e.g. sidebar's
+      # `#              # app/helpers/application_helper.rb`) is not a heading —
+      # every real header title/section line has exactly one space after the
+      # comment marker (`# # Title`, `# ## Use when`), so the space is literal here.
+      File.readlines(file).any? { |l| l.match?(/\A\s*# ##?\s+\S/) }
     end
 
     assert_empty offenders.map(&:first),
