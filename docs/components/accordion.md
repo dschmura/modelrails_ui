@@ -2,7 +2,7 @@
 
 Collapsible content sections. Built on native `<details>`/`<summary>` — no JavaScript required. The chevron rotates on open via Tailwind's `group-open:` modifier.
 
-Each summary carries the AAA `focus-ring` outline, and the chevron is a decorative `aria-hidden` icon — the open/closed state is conveyed by the native disclosure.
+Each `<summary>` is focusable and toggles on Enter/Space, and the browser manages `aria-expanded`. Each summary carries the AAA `focus-ring` outline, and the chevron is a decorative `aria-hidden` icon — the open/closed state is conveyed by the native disclosure.
 
 ## Installation
 

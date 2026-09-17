@@ -12,8 +12,8 @@ class TestTemplateHeadersArePointers < Minitest::Test
   H = ModelrailsUi::ComponentHeader
 
   PENDING = %w[
-    accordion accordion_item alert aspect_ratio audio avatar badge banner bottom_nav breadcrumb
-    button button_group calendar card card_content card_description card_footer card_header
+    aspect_ratio audio avatar badge banner bottom_nav breadcrumb
+    button_group calendar card card_content card_description card_footer card_header
     card_title carousel chart chat_bubble checkbox collapsible combobox command context_menu copy
     data_table date_picker device_mockup dialog drawer dropdown_menu embed error_summary figure
     file_input floating_label footer form_field gallery hover_card iframe image indicator input

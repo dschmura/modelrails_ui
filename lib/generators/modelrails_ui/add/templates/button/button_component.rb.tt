@@ -2,28 +2,9 @@
 
 module UI
   class ButtonComponent < ApplicationComponent
-    # Reproduces the host app's .btn-* button system (app/assets/tailwind/application.css
-    # @layer components). Two-axis API (converged-conventions B2):
-    #
-    #   variant: :solid | :outline | :text   (shape, default :solid)
-    #   tone:    :primary | :neutral | :danger  (signal, default :primary)
-    #
-    # Only AAA-proven (variant, tone) cells exist (COMBOS) — an unproven cell raises
-    # in dev/test and falls back to [:solid, :primary] in prod (the combo-guard: a new
-    # fill is an untested text-on-* pairing). The proven cells:
-    #
-    #   [:solid,   :primary]  filled brand
-    #   [:solid,   :danger]   filled danger
-    #   [:outline, :neutral]  bordered neutral
-    #   [:text,    :primary]  text/link brand
-    #   [:text,    :danger]   text/link danger
-    #
-    # Legacy flat `variant:` values are still accepted via SHIM (back-compat,
-    # byte-identical output): primary, secondary, danger, destructive, text,
-    # text_interactive, text_danger. When a legacy value is passed, `tone:` is ignored.
-    #
-    # size: :default | :icon — :icon (A8) is a 44×44 square (WCAG 2.5.5): adds min-w
-    # and drops horizontal padding (min-h is already carried by the .btn-* classes).
+    # Reproduces the host app's .btn-* button system (app/assets/tailwind/application.css @layer components).
+    # Usage, options and the accessibility contract: docs/components/button.md in the
+    # modelrails_ui gem (`bundle show modelrails_ui`); live examples in Lookbook.
 
 
     # The proven (variant, tone) cells. Keys are [variant, tone]; values are the AAA

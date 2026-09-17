@@ -1,6 +1,6 @@
 # Button
 
-Clickable element with variant and size support. Renders as a `<button>` by default and can be switched to any HTML tag via the `href:` shorthand or `tag:` option.
+Clickable element with variant and size support. Renders as a `<button>` by default and can be switched to any HTML tag via the `href:` shorthand or `tag:` option. Reproduces the host app's `.btn-*` button system (`app/assets/tailwind/application.css` `@layer components`).
 
 ## Installation
 

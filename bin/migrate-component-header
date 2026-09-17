@@ -23,7 +23,9 @@ end.parse!
 abort("usage: bin/migrate-component-header [--rewrite-only --root DIR --docs DIR] NAME...") if ARGV.empty?
 
 ARGV.each do |name|
-  source = Dir[File.join(root, name, "#{name}_component.rb.tt")].first || Dir[File.join(root, "#{name}_component.rb")].first
+  source = Dir[File.join(root, name, "#{name}_component.rb.tt")].first ||
+           Dir[File.join(root, H.doc_name(name), "#{name}_component.rb.tt")].first ||
+           Dir[File.join(root, "#{name}_component.rb")].first
   abort("#{name}: no source under #{root}") unless source
   doc_path = File.join(docs, "#{H.doc_name(name)}.md")
   abort("#{name}: no doc at #{doc_path}") unless File.exist?(doc_path)
