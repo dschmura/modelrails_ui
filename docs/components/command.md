@@ -1,6 +1,9 @@
 # Command
 
 Command palette dialog with a search input and filterable item list. Opens over an overlay on trigger click.
+Opened on a `with_trigger` click or the global `⌘K` / `Ctrl+K` shortcut; filtering and
+keyboard navigation live in the `command` Stimulus controller shipped alongside this
+component.
 
 Requires `command_controller.js` (copied automatically by the generator).
 
@@ -60,3 +63,33 @@ The search input filters visible items client-side. Any item whose text content 
 | Slot | Required | Description |
 |------|----------|-------------|
 | `trigger` | No | Element that opens the command palette on click |
+
+## When to use
+
+- You need a keyboard-first launcher to jump to pages or fire actions
+  (the spotlight / ⌘K pattern).
+
+## When not to use
+
+- A trigger opens a short list of *actions* with no search — use
+  `dropdown_menu` (the APG menu-button pattern).
+- You're selecting a value to submit in a form — use a `select`/listbox.
+
+## Accessibility contract
+
+- **Guarantees:** the search input is a `role="combobox"` with
+  `aria-expanded`, `aria-controls` (→ the list) and `aria-autocomplete="list"`;
+  the list is a named `role="listbox"`; the controller promotes each
+  `[data-command-value]` item to `role="option"` with a stable id and tracks
+  the highlighted option via `aria-activedescendant` (DOM focus stays on the
+  input — ↑/↓ move the active option, Enter activates it, Escape closes).
+  The input and items carry the AAA `focus-ring`; the empty-state message is
+  an i18n-labelled live region.
+- **You supply:** an optional `with_trigger` slot and the grouped item markup
+  (use the exposed `GROUP_WRAPPER` / `GROUP` / `ITEM` / `SHORTCUT` /
+  `SEPARATOR` constants). Each actionable item must carry a
+  `data-command-value` (the text the filter matches on).
+
+## Sizes
+
+`sm` · `md` · `lg` — the centered panel's max width.
