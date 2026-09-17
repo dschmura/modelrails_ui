@@ -75,7 +75,7 @@ The component renders a hidden `<input type="hidden">` (submitted with the form)
 - The list is short and needs no search — use a native `select`.
 - It's a keyboard-first launcher for *actions* (the ⌘K pattern) — use `command`.
 
-## Accessibility contract
+## Accessibility contract (WAI-ARIA APG combobox + listbox)
 
 - **Guarantees:** the text input is a `role="combobox"` with `aria-expanded`,
   `aria-controls` (→ the list) and `aria-autocomplete="list"`, named by an i18n

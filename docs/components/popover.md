@@ -1,13 +1,12 @@
 # Popover
 
-Non-modal floating panel anchored to a trigger button. Positioning is CSS (a
-`relative` wrapper + `absolute` panel — the author picks `side` and `align`);
-open/close behavior lives in the `floating` Stimulus controller shipped with
-this component. Placement is CSS anchor positioning: the panel is `position: fixed` (so
-its containing block is the viewport), tethered to the trigger via
-`anchor-name`/`position-anchor`; `position-area` places it and `position-try-fallbacks`
-keeps it on-screen. Being viewport-positioned is also what lets it be promoted to the
-browser top layer, so a `sticky`/`backdrop-blur` ancestor cannot bury it.
+Non-modal floating panel anchored to a trigger button. Open/close behavior lives in
+the `floating` Stimulus controller shipped with this component. Placement is CSS
+anchor positioning: the panel is `position: fixed` (so its containing block is the
+viewport), tethered to the trigger via `anchor-name`/`position-anchor`;
+`position-area` places it and `position-try-fallbacks` keeps it on-screen. Being
+viewport-positioned is also what lets it be promoted to the browser top layer, so a
+`sticky`/`backdrop-blur` ancestor cannot bury it.
 
 Requires `floating_controller.js` (copied automatically by the generator).
 
@@ -70,9 +69,10 @@ trigger button.
 
 ## Limitation
 
-The panel has no top layer — it is `position: absolute` inside its wrapper. A
-popover placed inside an `overflow: hidden` or CSS-transformed ancestor can be
-clipped. Restructure the markup to avoid the clipping context, or use `dialog`
+The `position: absolute` fallback applies only on browsers without CSS anchor
+positioning support (pre-Baseline-2026): on those browsers the panel has no top
+layer, so a popover placed inside an `overflow: hidden` or CSS-transformed ancestor
+can be clipped. Restructure the markup to avoid the clipping context, or use `dialog`
 instead.
 
 ## Accessibility contract
@@ -80,8 +80,8 @@ instead.
 - **Guarantees:** a real `<button>` trigger with `aria-haspopup="dialog"`,
   `aria-expanded` (kept in sync), and `aria-controls` to the panel; the panel is
   `role="dialog"` named by `label:`; Escape and outside-click close and return
-  focus to the trigger. Non-modal — focus is NOT trapped. The `aria-expanded`
-  sync is kept in sync by the `floating` controller; the panel also carries
+  focus to the trigger. Non-modal — focus is NOT trapped. `aria-expanded` is
+  kept in sync by the `floating` controller; the panel also carries
   `tabindex="-1"` so it receives focus on open, and is hidden (`hidden`
   attribute) until opened, with `aria-expanded` `"false"` on load; Tab can
   leave the panel freely.

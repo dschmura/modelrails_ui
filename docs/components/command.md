@@ -75,7 +75,7 @@ The search input filters visible items client-side. Any item whose text content 
   `dropdown_menu` (the APG menu-button pattern).
 - You're selecting a value to submit in a form — use a `select`/listbox.
 
-## Accessibility contract
+## Accessibility contract (WAI-ARIA APG combobox + listbox)
 
 - **Guarantees:** the search input is a `role="combobox"` with
   `aria-expanded`, `aria-controls` (→ the list) and `aria-autocomplete="list"`;
