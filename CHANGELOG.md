@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- `bin/prose-stats` and `bin/migrate-component-header`, plus `ModelrailsUi::ComponentHeader` and `ModelrailsUi::ProseStats`, and `test/test_template_headers_are_pointers.rb`, the guard that keeps every template header a pointer.
+- `bin/prose-stats`, `bin/migrate-component-header` and `bin/header-fidelity` (the migration's nothing-lost audit), plus `ModelrailsUi::ComponentHeader` and `ModelrailsUi::ProseStats`, and `test/test_template_headers_are_pointers.rb`, the guard that keeps every template header a pointer.
 
 ### Fixed
 
