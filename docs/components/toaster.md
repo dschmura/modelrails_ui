@@ -86,3 +86,40 @@ window.dispatchEvent(new CustomEvent("toaster:add", {
 | `title` | String | `nil` | Optional bold heading above the message |
 | `variant` | Symbol | `:default` | Colour scheme — see Variants table |
 | `duration` | Integer | `4000` | Auto-dismiss delay in milliseconds; `0` = no auto-dismiss |
+
+## When to use
+
+- You need a stack of transient, self-dismissing confirmations layered over the
+  page ("Profile saved", "Copied to clipboard") — fired server-side via the
+  `with_toast` slot or client-side via a `toaster:add` window event.
+
+## When not to use
+
+- It's an inline message tied to surrounding content — use `alert`.
+- It's a standing page-level announcement — use `banner`.
+
+## Accessibility contract
+
+- **Guarantees:** the stack is a live region — `role="status"`/`aria-live="polite"`
+  for ordinary toasts, `role="alert"`/`aria-live="assertive"` for the `danger`
+  severity (so an error interrupts) — with each toast carrying AAA-contrast text on
+  a tinted signal surface, and a real focusable dismiss `<button>` with a 44px
+  target, an i18n accessible name ("Dismiss"), and the `focus-ring` utility.
+- **You supply:** a `message` (and optional `title`) per toast, a valid `severity`
+  (an unknown one raises in development), and the `toaster` Stimulus controller
+  (ships co-located, auto-registered by the generator).
+
+## Severity
+
+The canonical signal axis — `default` · `info` · `success` · `warning` · `danger`.
+Each signal severity uses the tinted-surface treatment shared with `alert` and
+`banner` (`bg-<signal>-surface` + `border-<signal>-border` + `text-<signal>`),
+never a solid signal fill (base signal tokens are TEXT colors).
+
+### Severity-naming collision (vs the app toast pipeline)
+The app's `shared/_toasts` flash pipeline names its severities after Rails flash
+keys — there, `:alert` means *warning* and `:error`/`:alert` map to danger. This
+gem component instead names severities after the canonical SIGNAL axis, so
+`:warning` is warning and `:danger` is danger. To smooth that mismatch, the flash
+names `:alert` (→ `:warning`) and `:error` (→ `:danger`) are accepted as aliases.
+The legacy gem name `:destructive` is also accepted as an alias for `:danger`.

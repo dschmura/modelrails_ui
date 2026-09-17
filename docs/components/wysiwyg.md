@@ -51,6 +51,7 @@ pin "quill", to: "https://cdn.jsdelivr.net/npm/quill@2/+esm"
 | `placeholder` | String  | `nil`    | Placeholder text shown in the empty editor               |
 | `toolbar`     | Boolean | `true`   | Show the editor toolbar (Quill only)                     |
 | `height`      | Integer | `200`    | Editor content area height in px (Quill only)            |
+| `label`       | String  | `nil`    | Accessible name for the editor region (default: i18n "Rich text editor") |
 | `class`       | String  | `nil`    | Extra classes on the wrapper `<div>`                     |
 
 ## How it works
