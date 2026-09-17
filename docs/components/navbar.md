@@ -43,6 +43,15 @@ hamburger that discloses a stacked menu.
 
 ## Accessibility
 
-WCAG 2.2 AAA. `<nav>` named by `label:`; the hamburger is a `<button>` with synced
-`aria-expanded` + `aria-controls`; the active link is `aria-current="page"`. Proven by
-`spec/system/ui/navbar_component_spec.rb` in the host app (at a mobile viewport).
+WCAG 2.2 AAA. Proven by `spec/system/ui/navbar_component_spec.rb` in the host app (at a
+mobile viewport).
+
+## Accessibility contract
+
+- **Guarantees:** `<nav>` named by `label:` (i18n default "Main"); the hamburger is a
+  `<button>` with synced `aria-expanded` + `aria-controls`; the mobile panel toggles
+  `hidden`; Escape closes it (focus returns to the toggle); an outside click closes it; the
+  active link carries `aria-current="page"`.
+- **You supply:** `items:` (`[{ label:, href:, active: }]`); optional `brand:`/`brand_href:`;
+  optional block content for the right action area.
+- **Scope:** the action-area block is desktop-only; the mobile menu shows `items:` only.

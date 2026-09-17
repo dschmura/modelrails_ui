@@ -44,3 +44,11 @@ Pass `active: true` on one item. It receives `text-primary` styling and `aria-cu
 | `href` | String | Yes | Link destination |
 | `active` | Boolean | No | Marks the current page |
 | `icon` | String | No | Raw HTML/SVG string displayed above the label |
+
+## Accessibility contract
+
+- **Guarantees:** a named `<nav>` landmark (i18n default "Bottom navigation",
+  override via `label:`), the AAA `focus-ring` on every item, and
+  `aria-current="page"` on the active item.
+- **You supply:** `items:` (`[{ label:, href:, active: (optional),
+  icon: (optional HTML string) }]`).

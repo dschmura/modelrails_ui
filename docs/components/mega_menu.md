@@ -54,3 +54,23 @@ By default the panel uses as many columns as slots. Override with `cols:`:
 |--------|------|---------|-------------|
 | `heading` | String | `nil` | Optional column heading shown in small uppercase text |
 | `items` | Array | `[]` | Array of `{ title:, description:, href: }` hashes |
+
+## Menu-vs-nav semantics (deliberate)
+
+This is a **disclosure + navigation region**, NOT the WAI-ARIA `menu` pattern,
+so it does NOT reuse the shared `menu` controller (which `dropdown_menu`/`menubar`
+consume). `role="menu"`/`menuitem` is for a list of *commands* with a roving-tabindex
+arrow-key model; this panel holds ordinary `<a>` navigation links that must keep
+native Tab/anchor behavior. Forcing `role=menu` here would impose a keyboard model
+the links don't honour and remove them from the link/landmark trees. So: a real
+`<button>` disclosure (`aria-expanded` + `aria-haspopup` + `aria-controls`) reveals a
+named `<nav>` region of links.
+
+## Accessibility contract
+
+- **Guarantees:** a real `<button>` trigger with `aria-haspopup`, synced
+  `aria-expanded`, and `aria-controls` pointing at the panel; the panel is a named
+  `<nav>` landmark (`aria-label` ← the trigger label); the AAA `focus-ring` on the
+  trigger and every link; outside-click dismissal; the chevron is decorative
+  (`aria-hidden`).
+- **You supply:** a `label:` (trigger text) and one or more `with_column` blocks.

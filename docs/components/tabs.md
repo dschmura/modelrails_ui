@@ -34,7 +34,8 @@ Creates `app/components/ui/tabs_component.rb`, `app/components/ui/tabs_item_comp
 `label:` is the tablist's accessible name (required; pass a translated string). Each
 `with_tab(title:)` is a tab; its block is the panel content. `disabled: true` makes a tab
 `aria-disabled` (skipped by the keyboard). `selected:` (default `0`) sets the initially-active
-tab.
+tab. `UI::TabsItemComponent` is always used inside `UI::TabsComponent` via `with_tab`, never
+standalone.
 
 `tablist_class:` merges extra classes onto the tablist bar itself for placement/styling
 cases (e.g. a tablist floated over a media stage); conflicts resolve in the caller's favor
@@ -73,6 +74,20 @@ expensive to reveal: the arrows move the tab stop, and `Enter`/`Space` commits.
 
 ## Accessibility
 
-WCAG 2.2 AAA. `role="tablist"` named by `label:`; each `role="tab"` carries `aria-selected`,
-`aria-controls`, and roving tabindex; each `role="tabpanel"` carries `aria-labelledby` and is
-focusable. Proven by `spec/system/ui/tabs_component_spec.rb` in the host app.
+WCAG 2.2 AAA. Proven by `spec/system/ui/tabs_component_spec.rb` in the host app.
+
+## When to use
+
+- Several peer sections share space and the user switches between them in place.
+
+## When not to use
+
+- Navigating between URLs/pages — use links/`navbar`.
+
+## Accessibility contract
+
+- **Guarantees:** `role="tablist"` (named by `label:`); each `role="tab"` carries `id`,
+  `aria-selected`, `aria-controls`, and roving tabindex; each `role="tabpanel"` carries
+  `id`, `aria-labelledby`, `tabindex="0"` (focusable), and is `hidden` unless active. Full
+  keyboard (←/→ activate + wrap, Home/End, skip-disabled, click).
+- **You supply:** one or more `with_tab(title:)` slots, each with the panel content block.

@@ -1,6 +1,8 @@
 # Stepper
 
-Multi-step progress indicator with horizontal or vertical orientation.
+Multi-step progress indicator with horizontal or vertical orientation. It communicates
+*where you are* in a multi-step flow — it is NOT interactive navigation (the steps are not
+links/buttons).
 
 ## Installation
 
@@ -59,3 +61,29 @@ Each step requires a `status:` of `:complete`, `:current`, or `:pending`.
 | `label` | String | Yes | Step name |
 | `status` | Symbol | Yes | `:complete`, `:current`, or `:pending` |
 | `description` | String | No | Supporting text (vertical orientation only) |
+
+## When to use
+
+- Showing progress through a known, ordered sequence (checkout, onboarding,
+  a wizard) where the count of steps is fixed and visible.
+
+## When not to use
+
+- Steps are clickable destinations — that is navigation; use links/tabs.
+- Progress is a single continuous percentage — use `progress` instead.
+
+## Accessibility contract
+
+- **Guarantees:** an `<ol>` with an i18n `aria-label` ("Progress" by default,
+  via the `modelrails_ui.stepper.progress` locale key) so the list announces
+  its purpose. The current step carries `aria-current="step"`; complete and
+  pending circles carry an i18n `aria-label` ("Completed" / "Pending") so the
+  status is named, not conveyed by the decorative glyph alone. The check icon
+  and the `●`/`○` glyphs are decorative — the check `<svg>` is
+  `aria-hidden="true"` and the glyph spans carry their own accessible name.
+- **You supply:** a `label:` per step, and a `status:` of `:complete`,
+  `:current`, or `:pending` (defaults to `:pending`).
+
+## Modes
+
+`orientation: :horizontal` (default) · `orientation: :vertical`.

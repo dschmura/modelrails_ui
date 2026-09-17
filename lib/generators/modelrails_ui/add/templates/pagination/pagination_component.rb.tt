@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 module UI
+  # **Use Pagy's built-in `@pagy.series_nav`.** This app paginates with [Pagy](https://ddnexus.github.io/pagy/) (43.x), whose `series_nav` already renders an accessible navigation bar (`aria-label`, `role="link" aria-current="page"` on the current page, `rel="prev"`/`rel="next"`, gap separators).
+  # Usage, options and the accessibility contract: docs/components/pagination.md in the
+  # modelrails_ui gem (`bundle show modelrails_ui`); live examples in Lookbook.
   class PaginationComponent < ApplicationComponent
     ITEM   = "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium " \
              "transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-interactive-focus " \

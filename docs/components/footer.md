@@ -54,3 +54,23 @@ Place any HTML inside the footer between the columns grid and the copyright row:
 |-----|------|----------|-------------|
 | `title` | String | Yes | Column heading |
 | `links` | Array | Yes | Array of `{ label:, href: }` hashes |
+
+## When to use
+
+- Closing a page with site-wide navigation (product / company / legal columns),
+  social/legal links, and a copyright line.
+
+## When not to use
+
+- You only need an inline list of links inside an article — that isn't the
+  page's contentinfo landmark. Use a plain `<ul>`.
+
+## Accessibility contract
+
+- **Guarantees:** a `<footer>` (contentinfo landmark); each column is a real
+  heading + `<ul>`/`<li>`/`<a>`; links carry the `focus-ring` utility (a visible
+  AAA focus outline); AAA-contrast text on `bg-surface-raised`. Pass `label:`
+  (i18n) to name the landmark when a page has more than one footer.
+- **You supply:** `columns:` (`[{ title:, links: [{ label:, href: }] }]`) and/or
+  block content and/or `copyright:`. Every link needs a human-readable `label:`
+  (its accessible name) and an `href:`.

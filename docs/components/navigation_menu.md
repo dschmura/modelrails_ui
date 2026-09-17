@@ -1,6 +1,7 @@
 # NavigationMenu
 
-Horizontal navigation bar with plain links and optional flyout dropdown panels.
+Horizontal navigation bar with plain links and optional flyout dropdown panels. The panel is
+hover/click managed with outside-click dismissal.
 
 Requires `navigation_menu_controller.js` (copied automatically by the generator).
 
@@ -56,3 +57,22 @@ Omit `href:` to render a trigger button. Add any HTML content to the block — i
 | `href` | String | `nil` | Present → plain link; absent → trigger with flyout |
 | `active` | Boolean | `false` | Applies `aria-current="page"` styling |
 | `**html_attrs` | Hash | — | Forwarded to the `<a>` or `<button>` element |
+
+## When to use
+
+- Top-level site navigation where some sections reveal a small set of links.
+
+## When not to use
+
+- You need a *command/action menu* (Edit, Delete…) — use `dropdown_menu`.
+- You need an application rail with grouped sections — use `sidebar`.
+
+## Accessibility contract
+
+- **Guarantees:** a **named** `<nav>` landmark (i18n default, override via `label:`);
+  flyout triggers are real `<button>`s carrying `aria-expanded` (synced) +
+  `aria-controls` → their `id`'d panel (the disclosure pattern); the AAA offset
+  `focus-ring` on every trigger, link and panel link; `aria-current="page"` on the
+  active link; the chevron is decorative (`aria-hidden`).
+- **You supply:** items (label, optional href, optional active) and — for flyout
+  items — the panel links via the slot block.
