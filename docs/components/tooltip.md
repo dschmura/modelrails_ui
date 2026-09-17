@@ -95,21 +95,14 @@ classes for the given side (default `:top`); an unknown side raises `KeyError`.
 
 ## Accessibility contract
 
-The component guarantees:
-
-- The outer `<span>` is focusable (`tabindex="0"`) and carries
-  `aria-describedby` pointing to the bubble's `id`.
-- The bubble has `role="tooltip"` and the `id` referenced above.
-- The bubble is `pointer-events-none` — it never traps the pointer.
-- Hover (`group-hover/tooltip:opacity-100`) and keyboard focus
-  (`group-focus-within/tooltip:opacity-100`) both reveal the bubble — scoped to
-  the tooltip's own named group, never another `.group` ancestor.
-- `Escape` dismisses without moving focus (WCAG 1.4.13 — content on hover).
-
-You supply:
-
-- `text:` — the hint string (required).
-- Block content — the visible trigger (icon, word, or any inline element).
+- **Guarantees:** shows on hover AND focus; `role="tooltip"` bubble wired via
+  `aria-describedby`; Escape dismisses without moving focus; `pointer-events-none`
+  so the bubble never traps the pointer. The outer `<span>` is focusable
+  (`tabindex="0"`) and carries that `aria-describedby` pointing to the bubble's
+  `id`; the hover/focus reveal is scoped to the tooltip's own named group,
+  never another `.group` ancestor.
+- **You supply:** `text:` (the hint) and the trigger content (icon/word, or
+  any inline element).
 
 ## API
 
@@ -119,3 +112,14 @@ You supply:
 | `id` | String | auto `tooltip-<hex>` | Bubble element ID; wired to `aria-describedby` on the wrapper |
 | `side` | Symbol | `:top` | `:top`, `:bottom`, `:left`, or `:right` |
 | `**html_attrs` | Hash | — | Forwarded to the outer `<span>` wrapper |
+
+## When to use
+
+- You need a short, non-interactive hint describing a single focusable trigger
+  (an icon button, a truncated label).
+
+## When not to use
+
+- The content is interactive or rich — use `hover_card`.
+- You wrap an already-interactive control — put `aria-describedby` on that control
+  instead (this component makes its own wrapper the focusable trigger).

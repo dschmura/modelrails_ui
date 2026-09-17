@@ -13,10 +13,10 @@ class TestTemplateHeadersArePointers < Minitest::Test
 
   PENDING = %w[
     audio calendar carousel chart chat_bubble collapsible combobox command
-    context_menu data_table date_picker device_mockup dialog drawer dropdown_menu embed figure
-    gallery hover_card iframe image input_otp map_area menubar menubar_menu
-    picture popover qr_code resizable scroll_area sheet sidebar
-    speed_dial timeline timepicker toaster tooltip video wysiwyg
+    context_menu data_table date_picker device_mockup dropdown_menu embed figure
+    gallery iframe image input_otp map_area menubar menubar_menu
+    picture qr_code resizable scroll_area sidebar
+    speed_dial timeline timepicker toaster video wysiwyg
   ].freeze
 
   def templates

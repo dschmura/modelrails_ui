@@ -1,6 +1,8 @@
 # Dialog
 
-Accessible modal dialog with an overlay, title, description, body, and footer slot.
+Accessible modal dialog with an overlay, title, description, body, and footer slot. The
+native element is chosen over a div so focus-trapping and the inert background come for
+free.
 
 > **Migration note:** `alert_dialog` was folded into `dialog` — use
 > `ui :dialog, role: :alertdialog` (v0.11.0 breaking change).
@@ -70,3 +72,30 @@ The dialog closes automatically when the user presses `Escape`.
 ## Turbo Stream targeting
 
 When using `wrapper: true` without an explicit `id:` or `body_id:`, the component raises an `ArgumentError` in development and test environments. This fail-loud rule surfaces a silent bug: Turbo Streams aimed at a randomly-generated body id silently no-op in production, leaving the page out of sync. Always provide an explicit `id:` when using `wrapper: true`; `body_id` then derives as `"#{id}-body"`.
+
+## When to use
+
+- You need a focus-trapped modal for a confirmation, form, or detail overlay.
+- A choice must be confirmed before proceeding — pass `role: :alertdialog` for an
+  assertive confirm gate that screen readers announce immediately (destructive or
+  irreversible actions: delete, reset, revoke access).
+- You are building a custom wrapper (pass `wrapper: false` and own the
+  `data-controller="modal"` element + trigger).
+
+## When not to use
+
+- The action is a destructive non-GET — keep the submit in a `button_to` form;
+  the dialog is the container, not the action mechanism.
+- You need a non-blocking notification — use the toast / notification system.
+
+## Accessibility contract
+
+- **Guarantees:** native `<dialog>` semantics (`role="dialog"`, `aria-modal="true"`),
+  `aria-labelledby` wired to the heading, `aria-describedby` when `description:` is
+  given, an accessible close button, and focus trap + restore via the `modal`
+  controller.
+- **You supply:** a `title:` (required — it is the accessible name). With
+  `wrapper: true` (default) the `trigger` slot is the open button; `wrapper: false`
+  requires you to wire `data-controller="modal"` and a trigger yourself.
+
+Chrome lives in UI::ModalChrome — single owner.

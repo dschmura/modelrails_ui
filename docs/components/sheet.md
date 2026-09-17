@@ -1,6 +1,7 @@
 # Sheet
 
 Slide-in panel attached to one edge of the viewport. Use for secondary content, filters, or navigation drawers on desktop.
+Behavior lives in the `modal` Stimulus controller with per-side slide transform values.
 
 Requires `sheet_controller.js` (copied automatically by the generator).
 
@@ -59,3 +60,29 @@ Clicking the backdrop or pressing `Escape` closes the sheet.
 |------|----------|-------------|
 | `trigger` | No | Element that opens the sheet on click |
 | `footer` | No | Action buttons at the bottom of the panel |
+
+## When to use
+
+- A side panel is the right pattern for navigation, filters, or secondary
+  forms that slide in from a screen edge.
+- You need a supplemental overlay anchored to the left, right, top, or
+  bottom edge of the viewport.
+
+## When not to use
+
+- A centered confirm gate is needed — use `dialog` with `role: :alertdialog`.
+- A bottom sheet is the right pattern — use `drawer`.
+
+## Accessibility contract
+
+- **Guarantees:** native `<dialog>` with `role="dialog"` and `aria-modal="true"`,
+  `aria-labelledby` wired to the heading, `aria-describedby` when `description:`
+  is given, a 44px accessible close button (`btn-touch-target`), focus trap +
+  restore via the `modal` controller, and native Escape via the controller's
+  cancel handler.
+- **You supply:** a `title:` (required — ViewComponent raises if omitted; it is
+  the accessible name). Actions belong in the `footer` slot. With `wrapper: true`
+  (default) the `trigger` slot is the open button; `wrapper: false` renders ONLY
+  the `<dialog>` for embedding in an existing `data-controller="modal"` structure.
+
+Chrome lives in UI::ModalChrome — single owner.
