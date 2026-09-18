@@ -7,30 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
-
-- `table`: a server-rendered table primitive — the counterpart to `data_table`, for rows sorted, filtered and paged on the server. A required `caption:` (blank raises — a nameless table is the defect it prevents), toolbar/header/body/footer slots inside one bordered card, `size:` exposed as `data-size` for row partials, and `scroll: :horizontal` that wraps only the `<table>` so the toolbar's controls and the footer's pager stay reachable at phone width. Ported from the reference app. Closes #201.
-
-- `popover`: a `trigger_attrs:` hash for attributes on the trigger button (`**html_attrs` go to the wrapper), so a popover standing in for one option of a control group can carry `aria-current`. Merged under the component's own contract, with `data:` merged one level deeper so a caller's hooks survive alongside the Stimulus wiring. Closes #204.
-
-### Fixed
-
-- `data_table`: both branches of the header cell emit `scope="col"`, so a data cell's header association is stated rather than left to the browser's heuristic. Closes #200.
-
-- Every list-emitting component now carries an explicit `role="list"` on its `<ul>`/`<ol>`: `list_group`, `timeline`, `stepper`, `breadcrumb`, `pagination`, `navigation_menu`, `mega_menu`, `footer` and `file_input`. Tailwind's preflight sets `list-style: none`, and Safari/VoiceOver drop the implicit list role once the marker is gone — no item count, no per-item set position, no rotor entry. `error_summary` keeps its marker (`list-disc list-inside`) and is the one documented exemption. WCAG 2.2 1.3.1. Closes #190. Closes #195.
-- `list_group`, `timeline` and `stepper` normalize attribute keys before merging a caller's `**html_attrs`, so a `role:`/`"role"` override replaces the default instead of emitting a second `role` attribute (`content_tag` de-duplicates neither, and the winner is browser-dependent). For `stepper` this also applies to its default `aria-label`, which a caller could previously only duplicate.
-
-### Added
-
-- `test/test_lists_carry_the_list_role.rb`: a guard that derives the set of list-emitting templates from the templates themselves, so a new component cannot reopen the gap by not being on a list. Exemptions must name the utility that restores the marker, and are re-checked against the markup.
-
-- `combobox`: the visible text input carries an `id` derived from the wrapper's (`my-combobox` → `my-combobox-input`), overridable with `input_id:`, so a `<label for>` can target it and `fill_in` can reach it without aria-label matching. Closes #202.
-
-### Fixed
-
-- `combobox`: selecting an option dispatches a bubbling `change` event on the hidden input, so a form that submits on change hears the selection. Closes #203.
-
-## [0.16.0] - 2026-09-17
+## [0.16.0] - 2026-09-18
 
 ### Changed
 
@@ -38,12 +15,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `table`: a server-rendered table primitive — the counterpart to `data_table`, for rows sorted, filtered and paged on the server. A required `caption:` (blank raises — a nameless table is the defect it prevents), toolbar/header/body/footer slots inside one bordered card, `size:` exposed as `data-size` for row partials, and `scroll: :horizontal` that wraps only the `<table>` so the toolbar's controls and the footer's pager stay reachable at phone width. Ported from the reference app. Closes #201.
+- `popover`: a `trigger_attrs:` hash for attributes on the trigger button (`**html_attrs` go to the wrapper), so a popover standing in for one option of a control group can carry `aria-current`. Merged under the component's own contract, with `data:` merged one level deeper so a caller's hooks survive alongside the Stimulus wiring. Closes #204.
+- `combobox`: the visible text input carries an `id` derived from the wrapper's (`my-combobox` → `my-combobox-input`), overridable with `input_id:`, so a `<label for>` can target it and `fill_in` can reach it without aria-label matching. Closes #202.
 - `bin/prose-stats`, `bin/migrate-component-header` and `bin/header-fidelity` (the migration's nothing-lost audit), plus `ModelrailsUi::ComponentHeader` and `ModelrailsUi::ProseStats`, and `test/test_template_headers_are_pointers.rb`, the guard that keeps every template header a pointer.
+- `test/test_lists_carry_the_list_role.rb`: a guard that derives the set of list-emitting templates from the templates themselves, so a new component cannot reopen the gap by not being on a list. Exemptions must name the utility that restores the marker, and are re-checked against the markup.
 - The gem now packages `docs/` and the three migration scripts, so the host-app command above runs straight out of the installed gem.
 - `bin/migrate-component-header --rewrite-only` gained a repeatable `--extra-doc PATH` for facts a fork's own doc already states. Its tripwire judges a line "stated in the doc" order-independently (bag-of-words: most of the line's own words occur anywhere in the doc), so a fact restated as prose or folded into a table row — including one whose columns reorder the header's own words — no longer aborts the rewrite; `bin/header-fidelity` stays on the stricter word-order-sensitive audit.
 
 ### Fixed
 
+- Every list-emitting component now carries an explicit `role="list"` on its `<ul>`/`<ol>`: `list_group`, `timeline`, `stepper`, `breadcrumb`, `pagination`, `navigation_menu`, `mega_menu`, `footer` and `file_input`. Tailwind's preflight sets `list-style: none`, and Safari/VoiceOver drop the implicit list role once the marker is gone — no item count, no per-item set position, no rotor entry. `error_summary` keeps its marker (`list-disc list-inside`) and is the one documented exemption. WCAG 2.2 1.3.1. Closes #190. Closes #195.
+- `list_group`, `timeline` and `stepper` normalize attribute keys before merging a caller's `**html_attrs`, so a `role:`/`"role"` override replaces the default instead of emitting a second `role` attribute (`content_tag` de-duplicates neither, and the winner is browser-dependent). For `stepper` this also applies to its default `aria-label`, which a caller could previously only duplicate.
+- `combobox`: selecting an option dispatches a bubbling `change` event on the hidden input, so a form that submits on change hears the selection. Closes #203.
+- `data_table`: both branches of the header cell emit `scope="col"`, so a data cell's header association is stated rather than left to the browser's heuristic. Closes #200.
 - `select`: floor the width at 44px (`min-w-[var(--form-input-height)]`, the same spelling as the existing height floor). `w-full` pins nothing, so a select sharing a flex row with a submit button takes only the leftover space — a host app's inline role editor measured 29px at phone width and 43px in CI, failing WCAG 2.5.5 (AAA) target size on the width axis while its height was never at risk.
 
 ## [0.15.0] - 2026-09-01
