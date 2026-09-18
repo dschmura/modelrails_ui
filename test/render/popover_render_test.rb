@@ -111,4 +111,65 @@ class PopoverRenderTest < ViewComponent::TestCase
 
     assert_selector "button.btn-secondary", visible: :all
   end
+
+  # --- trigger_attrs (#204) -------------------------------------------------
+
+  def render_trigger(**attrs)
+    render_inline(UI::PopoverComponent.new(label: "Range", trigger_attrs: attrs)) { |c| c.with_trigger { "Open" } }
+  end
+
+  # The case that motivated this: a popover standing in for one option of a
+  # control group must be able to announce that it is the current choice, the
+  # way its sibling buttons do.
+  def test_trigger_attrs_land_on_the_trigger
+    caller_attrs = {"aria-current" => "true"}
+    render_trigger(**caller_attrs)
+
+    assert_selector "button[aria-current=true]", visible: :all
+  end
+
+  # The component's own a11y wiring is a floor, not a default: a caller cannot
+  # lie about the expanded state the controller actually maintains.
+  def test_trigger_attrs_cannot_overwrite_the_components_own_contract
+    caller_attrs = {"aria-expanded" => "true", "type" => "submit", "aria-controls" => "elsewhere"}
+    render_trigger(**caller_attrs)
+
+    assert_selector "button[aria-expanded=false]", visible: :all
+    assert_selector "button[type=button]", visible: :all
+    assert_no_selector "button[aria-controls=elsewhere]", visible: :all
+  end
+
+  # THE TRAP. The trigger builder merges its own `data:` hash, so a naive
+  # `**trigger_attrs` splat drops a caller's `data:` entirely and silently —
+  # the caller's hook simply never appears, with no error to explain it.
+  def test_caller_data_survives_alongside_the_components_own_wiring
+    render_trigger(data: {testid: "range-trigger"})
+
+    assert_selector "button[data-testid='range-trigger']", visible: :all
+    assert_selector "button[data-floating-target=trigger]", visible: :all
+  end
+
+  # ...and the wiring still wins where the two genuinely collide.
+  def test_component_wiring_wins_over_a_caller_data_key_that_collides
+    render_trigger(data: {floating_target: "panel"})
+
+    assert_selector "button[data-floating-target=trigger]", visible: :all
+  end
+
+  # A caller passing a key the component also sets must not end up with two of
+  # it: content_tag de-duplicates neither :sym against "string" nor the reverse.
+  def test_no_attribute_is_emitted_twice
+    caller_attrs = {"aria-expanded" => "true"}
+    render_trigger(**caller_attrs)
+    button = rendered_content[/<button[^>]*>/]
+
+    assert_equal 1, button.scan(/\saria-expanded=/).length, button
+  end
+
+  def test_trigger_attrs_defaults_to_no_extra_attributes
+    render_inline(UI::PopoverComponent.new(label: "Range")) { |c| c.with_trigger { "Open" } }
+
+    assert_selector "button[data-floating-target=trigger]", visible: :all
+    assert_no_selector "button[aria-current]", visible: :all
+  end
 end
