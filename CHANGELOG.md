@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `table`: a server-rendered table primitive — the counterpart to `data_table`, for rows sorted, filtered and paged on the server. A required `caption:` (blank raises — a nameless table is the defect it prevents), toolbar/header/body/footer slots inside one bordered card, `size:` exposed as `data-size` for row partials, and `scroll: :horizontal` that wraps only the `<table>` so the toolbar's controls and the footer's pager stay reachable at phone width. Ported from the reference app. Closes #201.
+
 - `popover`: a `trigger_attrs:` hash for attributes on the trigger button (`**html_attrs` go to the wrapper), so a popover standing in for one option of a control group can carry `aria-current`. Merged under the component's own contract, with `data:` merged one level deeper so a caller's hooks survive alongside the Stimulus wiring. Closes #204.
 
 ### Fixed
