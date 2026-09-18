@@ -2,6 +2,10 @@
 
 Expandable section built on native `<details>`/`<summary>`. No JavaScript required.
 
+trigger slot: content for the summary row (button, icon, label, etc.)
+open:         render pre-expanded (default: false)
+disabled:     the disclosure is announced as disabled and cannot be operated.
+
 ## Installation
 
 ```bash
@@ -53,3 +57,13 @@ this is the ARIA equivalent — still no JS.
 
 An already-open disclosure **stays open**: disabling blocks the control, it does not
 collapse content out from under someone reading it.
+
+## Accessibility contract
+
+- Native <details>/<summary> carries the disclosure semantics — the summary is
+  focusable and toggles on Enter/Space, and the browser manages aria-expanded.
+- The summary owns the AAA focus indicator via `focus-ring` (an offset outline,
+  never a box-shadow ring: a ring is clipped by overflow-hidden ancestors and
+  vanishes in forced-colors mode — a 2.4.7 failure).
+- The native webkit disclosure marker is hidden so caller-supplied trigger markup
+  owns the open/closed affordance.

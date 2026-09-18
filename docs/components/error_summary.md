@@ -27,6 +27,14 @@ page load, and **Turbo Drive re-honours it on every render** — including the
 422 re-render after a failed submit. The failed submit becomes an actual
 focus + announcement event, not a silent DOM swap.
 
+A further refinement separates the two roles: some hosts of this component
+put `role="alert"` on an inner element instead of the focused container
+itself (GOV.UK's shape) — when the focused element and the alert are the
+same element, a reader can announce it twice (the alert, then the focused
+element). Splitting them lets focus land on a role-less container that reads
+its contents once, while the alert inside keeps its semantics for readers
+that use it.
+
 Each error additionally renders as a real link to `#<field_id>`, so the
 summary doubles as a working task list: activate an item, land on the field.
 
@@ -103,14 +111,21 @@ the key — or the whole file — degrades to the English default, never to
 ## Accessibility contract
 
 - **Guarantees:** a focusable, autofocused `role="alert"` container; a
-  count-pluralized heading at a configurable level; items rendered as real
-  links to `#<field_id>` when `href` is given; a decorative severity icon
-  marked `aria-hidden="true"` (WCAG 1.4.1 — color is never the only cue).
-- **You supply:** `items:` — build it yourself, or let the form builder's
-  `error_summary` shim do it from `ActiveModel::Errors`.
+  count-pluralized heading at a configurable level (default h2 — pass
+  `heading_level:` when the form sits under deeper headings, 1.3.1/2.4.10);
+  items as real links to `#<field_id>` when `href` is given; a decorative
+  severity icon marked `aria-hidden="true"` (WCAG 1.4.1 — color is never the
+  only cue).
+- **You supply:** `items` — `[{message:, href:}]`; omit `href` for
+  object-level (`:base`) errors.
 
 ## Related
 
 - `form_field` — the per-field label/hint/error wrapper.
 - `alert` — the general-purpose inline message banner (error_summary is a
   purpose-built specialization for form-level errors, not a use of `alert`).
+
+## When to use
+
+- Rendering `ActiveModel::Errors` at the top of a form. The form builder's
+  `error_summary` shim builds `items` (with per-field anchors) for you.

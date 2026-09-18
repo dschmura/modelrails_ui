@@ -34,6 +34,15 @@ Creates:
        ] %>
 ```
 
+```ruby
+ui :chart, type: :bar, label: "Quarterly revenue vs. costs",
+  labels: ["Jan", "Feb", "Mar"],
+  datasets: [
+    { label: "Revenue", data: [100, 200, 150] },
+    { label: "Costs",   data: [80,  140, 110] }
+  ]
+```
+
 ## Chart types
 
 | Type | Description |
@@ -76,8 +85,33 @@ Pass any Chart.js `options` hash to override defaults:
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `type` | Symbol | `:bar` | Chart type — see Chart types table |
+| `type` | Symbol | `:bar` | Chart type — see Chart types table. An unknown type FAILS LOUD (raises `ArgumentError`) — no silent fallback |
 | `labels` | Array | `[]` | X-axis or category labels |
 | `datasets` | Array | `[]` | Array of dataset hashes (snake_case keys are camelized) |
 | `options` | Hash | `{}` | Merged into the Chart.js `options` object |
+| `label` | String | `nil` | One-line summary of what the chart shows (REQUIRED for AT — see the accessibility contract). Falls back to an i18n default |
 | `**html_attrs` | Hash | — | Forwarded to the `<canvas>` element |
+
+Series with no explicit color are auto-assigned from an AAA-tuned
+OKLCH palette (DEFAULT_SERIES) — never a raw hex.
+
+## Accessibility contract
+
+A `<canvas>` is an opaque bitmap — pixels carry no semantics, so a chart drawn
+to it is invisible to assistive tech (a WCAG 1.1.1 non-text-content failure).
+We give AT TWO things, mirroring the WAI/APG "complex image" pattern:
+
+- **Guarantees:**
+  1. The canvas is a labelled graphic: `role="img"` + an `aria-label` summary
+     (from `label:`, i18n-defaulted) so AT announces *what the chart is*, not an
+     anonymous canvas. The component owns this — a caller can't clobber it.
+  2. A **visually-hidden data table** (`.sr-only`) renders the same numbers as
+     a real `<table>` (caption + `<th scope>` row/column headers), wired to the
+     canvas via `aria-describedby`. Screen-reader users get the actual data, not
+     just the summary — the textual equivalent the bitmap can't provide.
+  - Decorative SVG/canvas chrome is `aria-hidden`; the only AT-visible content
+    is the label + the table.
+- **You supply:** a meaningful `label:` and well-formed `datasets:` (each with a
+  `label:` so the table columns are named). Color is optional — the palette is
+  AAA-tuned by default; if you override, keep series ≥3:1 against the surface
+  (WCAG 1.4.11, graphics) and don't rely on color alone to distinguish series.

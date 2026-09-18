@@ -29,6 +29,16 @@ Add `gem "rqrcode"` to your Gemfile, then generate SVG inline:
 <% end %>
 ```
 
+In an ERB view:
+
+```erb
+<%= ui :qr_code, src: qr_url, alt: "QR code linking to example.com" %>
+
+<%= ui :qr_code, alt: "QR code linking to example.com" do %>
+  <%= RQRCode::QRCode.new("https://example.com").as_svg(viewbox: true).html_safe %>
+<% end %>
+```
+
 ## Custom size
 
 `size:` applies only when using `src:` — it sets the `width` and `height` on the `<img>`.
@@ -42,6 +52,29 @@ Add `gem "rqrcode"` to your Gemfile, then generate SVG inline:
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
 | `src` | String | `nil` | Pre-rendered image URL; renders an `<img>` when provided |
-| `alt` | String | `"QR code"` | Accessible label for the `<img>` |
+| `alt` | String | `"QR code"` | Accessible name for the code — describe what it encodes |
 | `size` | Integer | `200` | Pixel dimensions of the `<img>` (ignored when using block content) |
 | `**html_attrs` | Hash | — | Forwarded to the outer `<div>` |
+
+## When to use
+
+- You need to display a scannable QR code and you already have the image URL or
+  the gem-generated SVG markup.
+
+## When not to use
+
+- You want a decorative graphic — a QR code is meaningful content (it encodes a
+  payload), so it always carries an accessible name; use `image`/`figure` for
+  ordinary imagery.
+
+## Accessibility contract
+
+- **Guarantees:** the wrapper is a single labelled graphic (`role="img"` +
+  `aria-label`), so BOTH the `src:` and the block (raw-SVG) paths announce a real
+  name to assistive tech — not a silent, unlabelled `<svg>` (WCAG 1.1.1 / 4.1.2).
+  The inner `<img>` is marked decorative (`alt=""`) because the wrapper already
+  carries the name, avoiding a double announcement. Caller `html_attrs` merge
+  first; the `role`/`aria-label` apply as overrides so a caller can't strip the
+  accessible name (mirrors `chart`/`rating`).
+- **You supply:** a meaningful `alt:` that describes what the code encodes
+  (e.g. "QR code linking to example.com"), not a bare "QR code".

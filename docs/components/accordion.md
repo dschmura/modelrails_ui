@@ -2,7 +2,7 @@
 
 Collapsible content sections. Built on native `<details>`/`<summary>` — no JavaScript required. The chevron rotates on open via Tailwind's `group-open:` modifier.
 
-Each summary carries the AAA `focus-ring` outline, and the chevron is a decorative `aria-hidden` icon — the open/closed state is conveyed by the native disclosure.
+Each `<summary>` is focusable and toggles on Enter/Space, and the browser manages `aria-expanded`. Each summary carries the AAA `focus-ring` outline (an offset outline, never a box-shadow ring: a ring is clipped by overflow-hidden ancestors and vanishes in forced-colors mode — a 2.4.7 failure), and the chevron is a decorative `aria-hidden` icon — the open/closed state is conveyed by the native disclosure; the native webkit marker is hidden so it doesn't double up.
 
 ## Installation
 
@@ -70,7 +70,7 @@ Use the slot API when items contain HTML, links, or other components:
 
 ## Exclusive mode (one open at a time)
 
-Pass `exclusive: true` to close all other items when one opens. Powered by a Stimulus controller that is copied into your app by the generator.
+Pass `exclusive: true` to close all other items when one opens. Powered by a Stimulus controller that is copied into your app by the generator — progressive enhancement, so without JS every row still opens and closes independently.
 
 ```erb
 <%# items: array %>
@@ -124,3 +124,11 @@ Each item renders a `<details>` element with `class="group"`. The chevron SVG us
 |--------|------|---------|-------------|
 | `title` | String | required | Text shown in the summary bar |
 | `open` | Boolean | `false` | Whether the item is expanded on page load |
+
+## Accordion item: Accessibility contract
+
+- Native <details>/<summary> carries the disclosure semantics — the summary is
+  focusable and toggles on Enter/Space, and the browser manages aria-expanded.
+- The summary owns the AAA focus indicator via `focus-ring` (an offset outline,
+  never a box-shadow ring: a ring is clipped by overflow-hidden ancestors and
+  vanishes in forced-colors mode — a 2.4.7 failure).

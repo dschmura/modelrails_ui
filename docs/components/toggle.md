@@ -1,6 +1,6 @@
 # Toggle
 
-Pressable button that tracks an on/off state via `aria-pressed` and a Stimulus controller.
+Pressable button that tracks an on/off state via `aria-pressed` and a Stimulus controller. Use it for a standalone on/off control (bold, mute, pin), not as a checkbox replacement in a form.
 
 Requires `toggle_controller.js` (copied automatically by the generator).
 
@@ -41,6 +41,8 @@ Creates `app/components/ui/toggle_component.rb`.
 <%= ui :toggle, "B", size: :lg %>
 ```
 
+`default` · `sm` · `lg` — all rendered >=44px tall (the AAA target-size floor).
+
 ## With a value
 
 Use `value:` when toggling options in a group or form:
@@ -60,3 +62,18 @@ Use `value:` when toggling options in a group or form:
 | `size` | Symbol | `:default` | `:default`, `:sm`, or `:lg` |
 | `value` | String | `nil` | Value attribute passed to the `<button>` |
 | `**html_attrs` | Hash | — | Forwarded to the `<button>` element |
+
+## When to use
+
+- You need a single, instantly-applied on/off action with no separate submit.
+
+## When not to use
+
+- It's a form field whose value posts on submit — use a checkbox/switch input.
+
+## Accessibility contract
+
+- **Guarantees:** a real interactive element with `aria-pressed` reflecting the
+  pressed state, and a 44px-minimum touch target at every size (AAA 2.5.5).
+- **You supply:** an accessible name — visible text/content, or an `aria-label:`
+  for an icon-only toggle — and a valid `size` (an unknown one raises in development).

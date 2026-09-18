@@ -1,6 +1,6 @@
 # Card
 
-Bordered container with composable header, title, description, content, and footer sub-components.
+Bordered container with composable header, title, description, content, and footer sub-components. The card itself is a plain `<div>` — it carries no document structure; any heading lives inside, supplied by `card_title` (or your own markup), so the card never hijacks the outline.
 
 ## Installation
 
@@ -36,7 +36,7 @@ Creates 6 files under `app/components/ui/`: `card_component.rb`, `card_header_co
 | `card` | `<div>` | Outer container |
 | `card_header` | `<div>` | Top area with padding |
 | `card_title` | `<h3>` | Heading — positional, `label:`, or block |
-| `card_description` | `<div>` | Muted subtitle text |
+| `card_description` | `<p>` | Muted subtitle text |
 | `card_content` | `<div>` | Main body area |
 | `card_footer` | `<div>` | Bottom action bar |
 
@@ -44,3 +44,34 @@ Creates 6 files under `app/components/ui/`: `card_component.rb`, `card_header_co
 
 All sub-components accept `**html_attrs` forwarded to their root element.
 `CardTitleComponent` also accepts a positional `title` argument or `label:` / `title:` keywords.
+
+## When to use
+
+- Grouping related content into a bordered, raised surface (a settings panel,
+  a summary tile, a media object).
+
+## When not to use
+
+- The whole card should be a link/button — a card is a static container by
+  contract. Put a real focusable `link`/`button` inside it instead of making
+  the `<div>` interactive (a clickable `<div>` is not keyboard-reachable).
+
+## Accessibility contract
+
+- **Guarantees:** AAA-contrast `text-text-body` on `bg-surface-raised`, a
+  semantic `border-border` rule, and a system `shadow-sm` (no raw color/shadow).
+  The container is non-interactive and adds no ARIA role — it is a neutral box.
+- **You supply:** the heading (via `card_title`, whose level you set with
+  `level:`) and any focusable controls inside `card_content` / `card_footer`.
+
+## Card title: Accessibility contract
+
+- **Guarantees:** renders a real `<h1>`–`<h6>` (never a styled `<div>`) using
+  the `text-text-heading` token — it is a real heading element so it
+  participates in the document outline, which means the caller owns its
+  level; an out-of-range `level:` fails loud in dev and falls back to `<h3>`
+  in production rather than emitting invalid markup.
+- **You supply:** the correct `level:` for where this card sits in the
+  outline. It defaults to `<h3>` (a card usually sits under an `<h2>`
+  section), but you MUST pass `level:` whenever that default would skip or
+  misorder the page's heading hierarchy.

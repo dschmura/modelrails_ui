@@ -77,7 +77,10 @@ layer should pass its own `trigger_class:`.
 
 Placement uses CSS anchor positioning with an `absolute`-offset fallback on
 pre-Baseline-2026 browsers; `position-try-fallbacks: flip-block` keeps the menu
-on-screen.
+on-screen. Placement is CSS anchor positioning: the panel is `position: fixed`
+(so its containing block is the viewport), tethered to the trigger via
+`anchor-name`/`position-anchor`; `position-area` places it and
+`position-try-fallbacks` keeps it on-screen.
 
 ## Keyboard
 
@@ -94,7 +97,25 @@ on-screen.
 
 ## Accessibility
 
-WCAG 2.2 AAA. The menu is named by its trigger (`aria-labelledby`); the trigger
-exposes `aria-haspopup="menu"` and a synced `aria-expanded`. Roving tabindex keeps
-exactly one item focusable at a time. Proven by `spec/system/ui/dropdown_menu_component_spec.rb`
-in the host app (keyboard + axe AAA in both themes).
+WCAG 2.2 AAA. Proven by `spec/system/ui/dropdown_menu_component_spec.rb` in the host app
+(keyboard + axe AAA in both themes).
+
+## When to use
+
+- A trigger opens a list of *commands/actions* (Edit, Duplicate, Delete…).
+
+## When not to use
+
+- You need *selection from a list* of values — use a listbox/`select`.
+- The content is a non-menu overlay (a form, rich detail) — use `popover`.
+
+## Accessibility contract
+
+- **Guarantees:** a real `<button>` trigger with `aria-haspopup="menu"`,
+  `aria-expanded` (kept in sync) and `aria-controls`; a `role="menu"` panel named by
+  the trigger (`aria-labelledby`); items are `role="menuitem"` with roving tabindex;
+  keyboard nav (↑/↓ wrap skipping disabled, Home/End, type-ahead, Enter/Space
+  activate, Escape/Tab/outside-click close) with focus restored to the trigger.
+- **You supply:** a `with_trigger` slot (the button's visible label) and one or more
+  `with_item` slots. Icon-only triggers MUST pass `aria_label:` (the 0b axe proves
+  the accessible name).

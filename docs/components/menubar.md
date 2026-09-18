@@ -37,6 +37,11 @@ Creates `app/components/ui/menubar_component.rb`, `app/components/ui/menubar_men
 its `with_item` slots become the submenu's `role="menuitem"`s (same options as `dropdown_menu`:
 `disabled:`, `separator:`, `href:`). Single-level submenus only.
 
+`UI::MenubarMenuComponent` is always used inside `UI::MenubarComponent` via `with_menu`,
+never standalone. The submenu is a `menu` controller (reused via `EXTRA_STIMULUS`) — same
+item model and behavior as `dropdown_menu`; positioning is CSS anchor positioning, the panel
+tethered to the bar item.
+
 ## Keyboard
 
 | Key | Action |
@@ -53,6 +58,21 @@ its `with_item` slots become the submenu's `role="menuitem"`s (same options as `
 
 ## Accessibility
 
-WCAG 2.2 AAA. `role="menubar"` named by `label:`; bar items `role="menuitem"` +
-`aria-haspopup="menu"` + synced `aria-expanded`; roving tabindex keeps one bar item tabbable.
-Proven by `spec/system/ui/menubar_component_spec.rb` in the host app.
+WCAG 2.2 AAA. Proven by `spec/system/ui/menubar_component_spec.rb` in the host app.
+
+## When to use
+
+- An app-level command bar (File / Edit / View …) where one row exposes several menus.
+
+## When not to use
+
+- A single trigger opens one menu — use `dropdown_menu`.
+
+## Accessibility contract
+
+- **Guarantees:** `role="menubar"` (named by `label:`); bar items `role="menuitem"` +
+  `aria-haspopup="menu"` + synced `aria-expanded` + `aria-controls`, roving tabindex (one
+  tab stop); full keyboard (←/→ wrap, Home/End, type-ahead, ↓/Enter opens submenu,
+  ↑ opens to last, Escape closes to the bar item, ←/→ from a submenu follows to the
+  adjacent menu). Submenus are `role="menu"` with roving menuitems.
+- **You supply:** one or more `with_menu(label:)` slots, each with `with_item` slots.

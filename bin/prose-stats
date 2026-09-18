@@ -1,0 +1,33 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Before/after numbers for the component-docs single-home migration.
+#   bin/prose-stats                       # this gem: templates, preview templates, docs
+#   bin/prose-stats --root ../modelrails_base   # a host app: vendored components + previews
+require "optparse"
+require_relative "../lib/modelrails_ui/prose_stats"
+
+root = nil
+OptionParser.new { |o| o.on("--root DIR") { |d| root = File.expand_path(d) } }.parse!
+
+S = ModelrailsUi::ProseStats
+rows =
+  if root
+    [
+      S.component_row("app/components/ui", Dir[File.join(root, "app/components/ui/*_component.rb")]),
+      S.preview_row("spec/components/previews/ui", Dir[File.join(root, "spec/components/previews/ui/*_preview.rb")])
+    ]
+  else
+    gem_root = File.expand_path("..", __dir__)
+    docs = Dir[File.join(gem_root, "docs/components/*.md")]
+    [
+      S.component_row("templates", Dir[File.join(gem_root, "lib/generators/modelrails_ui/add/templates/*/*_component.rb.tt")]),
+      S.preview_row("preview templates", Dir[File.join(gem_root, "lib/generators/modelrails_ui/lookbook/templates/previews/ui/*_preview.rb")])
+    ].tap do
+      puts format("%-28s files=%d words=%d with_when_to_use=%d with_a11y_contract=%d", "docs/components", docs.size,
+        docs.sum { |f| File.read(f).split.size },
+        docs.count { |f| File.read(f).match?(/^## When to use/) },
+        docs.count { |f| File.read(f).match?(/^## (.*: )?Accessibility contract/) })
+    end
+  end
+puts S.table(rows)

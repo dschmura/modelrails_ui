@@ -1,6 +1,6 @@
 # Figure
 
-Semantic `<figure>` wrapper with an optional `<figcaption>`. Use to pair an image, code block, or diagram with a caption.
+Semantic `<figure>` wrapper with an optional `<figcaption>`. Use to pair an image, code block, or diagram with a caption. The caption supplements the content; it does not replace the content's own accessible name.
 
 ## Installation
 
@@ -42,3 +42,24 @@ Creates `app/components/ui/figure_component.rb`.
 | `caption` | String | `nil` | Text rendered in `<figcaption>` — omit to skip the caption |
 | `caption_class` | String | `nil` | Additional CSS classes for `<figcaption>` |
 | `**html_attrs` | Hash | — | Forwarded to the `<figure>` element |
+
+- `caption:` text shown in `<figcaption>` (optional; omit to render none)
+
+## When to use
+
+- You have referenced/standalone content that benefits from a visible caption
+  (a captioned image, a diagram, a quoted block).
+
+## When not to use
+
+- You're relying on the caption to describe an image that has no `alt`. The
+  figcaption is a supplement, not a substitute — the image still needs its own
+  `alt` (use `alt: ""` only if it is genuinely decorative).
+
+## Accessibility contract
+
+- **Guarantees:** semantic `<figure>`/`<figcaption>` association; the caption is
+  rendered only when provided. The caption uses `text-text-muted`, which in this
+  token system is the SAME neutral as body text (AAA 7:1) — de-emphasis is by
+  size/weight, not lightness.
+- **You supply:** real `alt` on any inner image (the figcaption does not replace it).

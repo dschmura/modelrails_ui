@@ -1,0 +1,55 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Moves a component's header prose into docs/components/<name>.md and leaves the
+# three-line pointer behind.
+#   bin/migrate-component-header NAME...                       # gem templates + docs
+#   bin/migrate-component-header --rewrite-only --root DIR --docs DIR [--extra-doc PATH...] NAME...
+#       DIR holds NAME_component.rb (a host app's vendored copies); the doc is
+#       not written, and the run aborts if the doc lacks any section the header
+#       carries (ComponentHeader.stated_in?, the same phrase-overlap rule
+#       bin/header-fidelity uses — a fact restated as prose or folded into a
+#       table still counts) — port those lines into the gem doc first, or pass
+#       --extra-doc (repeatable) to also search a fork's own doc for the fact.
+require "optparse"
+require_relative "../lib/modelrails_ui/component_header/migrator"
+
+H = ModelrailsUi::ComponentHeader
+root = File.expand_path("../lib/generators/modelrails_ui/add/templates", __dir__)
+docs = File.expand_path("../docs/components", __dir__)
+rewrite_only = false
+extra_docs = []
+OptionParser.new do |o|
+  o.on("--root DIR") { |d| root = File.expand_path(d) }
+  o.on("--docs DIR") { |d| docs = File.expand_path(d) }
+  o.on("--rewrite-only") { rewrite_only = true }
+  o.on("--extra-doc PATH") { |p|
+    expanded = File.expand_path(p)
+    abort("no such extra doc: #{p}") unless File.exist?(expanded)
+
+    extra_docs << expanded
+  }
+end.parse!
+abort("usage: bin/migrate-component-header [--rewrite-only --root DIR --docs DIR [--extra-doc PATH...]] NAME...") if ARGV.empty?
+
+ARGV.each do |name|
+  source = Dir[File.join(root, name, "#{name}_component.rb.tt")].first ||
+           Dir[File.join(root, H.doc_name(name), "#{name}_component.rb.tt")].first ||
+           Dir[File.join(root, "#{name}_component.rb")].first
+  abort("#{name}: no source under #{root}") unless source
+  doc_path = File.join(docs, "#{H.doc_name(name)}.md")
+  abort("#{name}: no doc at #{doc_path}") unless File.exist?(doc_path)
+
+  lines = File.readlines(source)
+  doc_text = File.read(doc_path)
+  if rewrite_only && (block = H.locate(lines)) && !H.pointer?(block, doc: H.doc_name(name))
+    corpus = ([doc_text] + extra_docs.map { |p| File.read(p) }).join("\n")
+    missing = H::Migrator.missing_from_doc(block, corpus)
+    abort("#{name}: doc lacks #{missing.join(', ')} — port those lines into #{doc_path} first") if missing.any?
+  end
+
+  new_lines, new_doc = H::Migrator.migrate(name, lines, doc_text)
+  File.write(source, new_lines.join)
+  File.write(doc_path, new_doc) unless rewrite_only
+  puts "#{name}: header → pointer#{rewrite_only ? '' : ', doc updated'}"
+end

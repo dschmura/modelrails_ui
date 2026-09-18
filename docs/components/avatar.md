@@ -1,6 +1,6 @@
 # Avatar
 
-Circular image or initials fallback for user representation.
+Circular image or initials fallback for user representation. The app's `avatar_for` helper keeps the model logic (`avatar_source` / Active Storage / gravatar / `primary_color`) and renders this component.
 
 ## Installation
 

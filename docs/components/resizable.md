@@ -1,8 +1,19 @@
 # Resizable
 
 Two-panel layout with a draggable handle that resizes the panels at runtime.
+The handle is the APG window-splitter pattern: a focusable `role="separator"`
+the user can grab with the mouse OR move with the keyboard.
 
 Requires `resizable_controller.js` (copied automatically by the generator).
+
+Usage:
+
+```
+ui :resizable, direction: :horizontal do |r|
+  r.with_panel(min: 20, default: 30) { left_content }
+  r.with_panel { right_content }
+end
+```
 
 ## Installation
 
@@ -62,3 +73,14 @@ Creates `app/components/ui/resizable_component.rb`.
 | `min` | Integer | `10` | Minimum panel size as a percentage |
 | `max` | Integer | `90` | Maximum panel size as a percentage |
 | `default` | Integer | `nil` | Initial size as a percentage; unset panels share remaining space equally |
+
+## Accessibility contract
+
+- **Guarantees (WCAG 2.1.1 keyboard):** every handle is a focusable
+  `role="separator"` tab stop carrying the `focus-ring` indicator (the offset
+  outline, never `focus:ring-*`), a named splitter (`aria-label`, i18n default),
+  the `aria-orientation` it splits across, and the `aria-valuenow/valuemin/
+  valuemax` range its controller keeps in sync. Arrow keys (← → for a
+  horizontal split, ↑ ↓ for a vertical one) resize it; Home/End jump to the
+  min/max. Pointer users still drag it.
+- **You supply:** panels (each with optional `min`/`max`/`default` percentages).

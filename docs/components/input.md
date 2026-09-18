@@ -1,6 +1,6 @@
 # Input
 
-Single-line text input with consistent focus, invalid, and disabled states.
+Single-line text input with consistent focus, invalid, and disabled states. Styling matches the form builder's (`UI::FormBuilder`) field rendering exactly, so `f.text_field`/`f.email_field`/etc. and this component render identically.
 
 ## Installation
 

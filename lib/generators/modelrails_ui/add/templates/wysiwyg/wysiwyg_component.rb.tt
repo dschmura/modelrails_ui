@@ -3,37 +3,8 @@
 module UI
   class WysiwygComponent < ApplicationComponent
     # Rich-text editor wrapper — picks between Trix and Quill via adapter:.
-    #
-    # NOTE (this app): SUPERSEDED by Lexxy (Lexical-based rich text). This app
-    # composes Lexxy directly, so it does NOT adopt this component — much like
-    # pagination defers to Pagy and toasts to `shared/_toasts`. The gem template
-    # is kept correct + button-tier accessible for OTHER consumers that still use
-    # Trix/Quill; it is hardened gem-side only (no app adoption / no app 0b).
-    #
-    # Usage:
-    #   ui :wysiwyg, name: "body"                            # Trix (default)
-    #   ui :wysiwyg, name: "body", adapter: :quill
-    #   ui :wysiwyg, name: "body", adapter: :quill,
-    #     placeholder: "Write something...", height: 400
-    #
-    # Trix setup (ActionText):
-    #   bundle add actiontext
-    #   rails action_text:install
-    #
-    # Quill setup:
-    #   # config/importmap.rb
-    #   pin "quill", to: "https://cdn.jsdelivr.net/npm/quill@2/+esm"
-    #   # In your CSS entry point:
-    #   @import url("https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css");
-    #
-    # Options:
-    #   name:        form field name (required)
-    #   adapter:     :trix (default) | :quill
-    #   value:       initial HTML content
-    #   placeholder: placeholder text
-    #   toolbar:     show editor toolbar (default: true)
-    #   height:      editor content area height in px (default: 200; Quill only)
-    #   label:       accessible name for the editor region (default: i18n "Rich text editor")
+    # Usage, options and the accessibility contract: docs/components/wysiwyg.md in the
+    # modelrails_ui gem (`bundle show modelrails_ui`); live examples in Lookbook.
 
     ADAPTERS = %w[trix quill].freeze
 

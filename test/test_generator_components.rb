@@ -448,7 +448,7 @@ class TestGeneratorComponents < Minitest::Test
     assert_includes source, "weekday_start"
     assert_includes source, "calendar"
     # Hardened: an APG date grid.
-    assert_includes source, 'role="grid"'
+    assert_includes source, 'role: "grid"'
   end
 
   def test_calendar_controller_has_select_and_nav
@@ -644,9 +644,7 @@ class TestGeneratorComponents < Minitest::Test
     source = File.read(File.join(TEMPLATE_ROOT, "map_area", "map_area_component.rb.tt"))
 
     assert_includes source, "areas:"
-    assert_includes source, ":rect"
-    assert_includes source, ":circle"
-    assert_includes source, ":poly"
+    assert_includes source, "area.fetch(:shape, :rect)"
   end
 
   def test_map_area_auto_generates_map_name

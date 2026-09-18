@@ -1,6 +1,6 @@
 # Progress
 
-Horizontal progress bar with accessible ARIA attributes.
+Horizontal progress bar with accessible ARIA attributes. For indeterminate waits, use `spinner` instead.
 
 ## Installation
 
@@ -36,3 +36,20 @@ Creates `app/components/ui/progress_component.rb`.
 | `value` | Numeric | `0` | Current progress value |
 | `max` | Numeric | `100` | Maximum value |
 | `**html_attrs` | Hash | — | Forwarded to the outer track `<div>` |
+
+## When to use
+
+- You can express progress as a value between 0 and `max` (upload %, steps done).
+
+## When not to use
+
+- The wait is indeterminate — use `spinner`.
+- The bar has no accessible name and no nearby text — pass `label:` so screen
+  readers can announce what is progressing.
+
+## Accessibility contract
+
+- **Guarantees:** `role="progressbar"` with `aria-valuenow`/`min`/`max`, the
+  value clamped to 0–100% so a bad value never overflows the track.
+- **You supply:** `label:` when no visible text names the bar (it becomes the
+  `aria-label` / accessible name).

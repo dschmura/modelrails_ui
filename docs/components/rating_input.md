@@ -69,3 +69,33 @@ The `rating_controller.js` manages three interactions:
 | `preview` | `mouseenter` on a star | Highlights stars up to the hovered index |
 | `resetPreview` | `mouseleave` on a star | Restores the committed value |
 | `select` | `click` on a star | Commits the value, updates hidden input, optionally POSTs to `url` |
+
+## When to use
+
+- You need a quick 1..max star score (a product review, a satisfaction score)
+  either posted in a form (`name:`) or sent straight to an endpoint (`url:`).
+
+## When not to use
+
+- The scale isn't ordinal stars, or you need half/decimal precision — use a
+  `ui :select` or a numeric input.
+- The choice is binary on/off — use `ui :toggle` or `ui :switch`.
+
+## Accessibility contract
+
+- **Guarantees:** the star group exposes an accessible name (`role="group"` +
+  `aria-label`, default "Rating"), each star is a labelled
+  (`aria-label "Rate N of max"`) `<button>` with a >=44px hit target (AAA 2.5.5)
+  even though the visual star is 24px, and the hidden input (when `name:` is
+  given) carries the value so it posts with the form.
+- **You supply:** an optional group `label:` (overrides the default), the
+  initial `value:`, `max:` star count, and either `name:` (form post) or
+  `url:` (direct submit).
+
+No fail-loud guard — there is no enum axis to validate; `value` is clamped to
+0..max and `max` is a plain integer count.
+
+Future enhancement (intentionally not done here): a full
+`role="radiogroup"`/`role="radio"` restructure with roving-tabindex keyboard
+selection. That is a larger redesign; today the group is announced as a named
+group of labelled buttons, which is the accessible baseline.

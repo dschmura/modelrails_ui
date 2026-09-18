@@ -1,0 +1,33 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Fidelity audit for the component-docs migration. Usage (from the gem root):
+#   ruby -Ilib <this file> BASE_SHA NAME [NAME...]
+# For each NAME, reads the template header as it was at BASE_SHA, drops the first
+# sentence (it became the pointer), and reports every substantive line (>=25
+# chars) — intro sentences and section lines — that ComponentHeader.stated_in?
+# judges absent from the component's current doc (the same phrase-overlap rule
+# the --rewrite-only tripwire uses). Empty output = nothing lost.
+require_relative "../lib/modelrails_ui/component_header"
+H = ModelrailsUi::ComponentHeader
+base = ARGV.shift or abort("usage: header-fidelity BASE_SHA NAME...")
+missing = 0
+processed = 0
+ARGV.each do |n|
+  f = Dir["lib/generators/modelrails_ui/add/templates/*/#{n}_component.rb.tt"].first or abort("no template: #{n}")
+  processed += 1
+  before = `git show #{base}:#{f}`.lines
+  blk = H.locate(before) or next
+  intro, sections = H.sections(blk)
+  doc_text = File.read("docs/components/#{H.doc_name(n)}.md")
+  first = H.summary(intro)
+  rest = intro.join(" ").sub(first, "").split(/(?<=[.!?])\s+/).map(&:strip).reject { |s| s.size < 25 }
+  sec = sections.flat_map(&:lines).map(&:strip).reject { |s| s.size < 25 }
+  (rest + sec).each do |line|
+    next if H.stated_in?(line, doc_text)
+    missing += 1
+    puts "#{n}\t#{line}"
+  end
+end
+warn "#{processed} component(s) audited, #{missing} unplaced line(s)"
+exit(missing.zero? ? 0 : 1)

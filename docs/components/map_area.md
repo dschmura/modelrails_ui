@@ -1,6 +1,9 @@
 # Map / Area
 
 Renders an `<img usemap>` + `<map>` + `<area>` elements. Use it for image maps with clickable regions — floor plans, world maps, diagrams.
+Image maps are a legacy mechanism — prefer overlaid links/buttons or an inline
+SVG with `<a>` regions when you can. When you genuinely need an `<area>`-based
+map, this component enforces the accessibility contract that makes one usable.
 
 ## Usage
 
@@ -55,3 +58,12 @@ Renders an `<img usemap>` + `<map>` + `<area>` elements. Use it for image maps w
 - The `<map name>` attribute is auto-generated with a random suffix so multiple maps on the same page don't conflict.
 - Provide meaningful `alt` text on each area with a `href` — screen readers announce it as link text.
 - Combine with the **Aspect Ratio** component to keep the image responsive while preserving proportions.
+
+## Accessibility contract
+
+- **Guarantees:** the base `<img>` carries `alt:` and a `usemap` wired to the
+  `<map name>`; every interactive `<area href>` is forced to carry a non-blank
+  `alt` (its accessible name) — an unnamed hotspot raises rather than ship a
+  nameless link to assistive tech (WCAG 2.4.4 / 4.1.2).
+- **You supply:** real `alt:` for the image, and an `alt:` for every linked
+  area. Non-interactive areas (no `href`) may omit `alt`.

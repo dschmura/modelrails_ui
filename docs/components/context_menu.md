@@ -3,7 +3,9 @@
 A menu of actions opened by right-clicking (or Shift+F10 / the ContextMenu key on the
 keyboard) a host region, implementing the WAI-ARIA APG menu pattern. Behavior is the
 shared `menu` Stimulus controller (the same one `dropdown_menu` uses); positioning is JS
-(the panel is `fixed`, placed at the pointer or near the host).
+(the panel is `fixed`, placed at the pointer or near the host). Positioning is JS: the
+panel is `fixed` and the controller's `openAt` sets `top`/`left` from the pointer (or the
+host's rect for the keyboard path).
 
 Requires `menu_controller.js` (copied automatically by the generator).
 
@@ -47,6 +49,9 @@ the host region (`aria-labelledby`) — prefer `label:` when the host is large.
 
 ## Keyboard
 
+The keyboard model (roving tabindex, type-ahead, Escape/Tab/outside-click dismissal with
+focus restore) is identical to `dropdown_menu`.
+
 | Key | Action |
 |-----|--------|
 | right-click on host | Open at the pointer |
@@ -60,6 +65,22 @@ the host region (`aria-labelledby`) — prefer `label:` when the host is large.
 
 ## Accessibility
 
-WCAG 2.2 AAA. Keyboard parity (Shift+F10) is mandatory — right-click is pointer-only
-(WCAG 2.1.1). Roving tabindex keeps one item focusable at a time. Proven by
-`spec/system/ui/context_menu_component_spec.rb` in the host app.
+WCAG 2.2 AAA. Proven by `spec/system/ui/context_menu_component_spec.rb` in the host app.
+
+## When to use
+
+- A region (a row, a card, a canvas, a file tile) exposes contextual actions on right-click.
+
+## When not to use
+
+- A visible trigger button should open the menu — use `dropdown_menu`.
+
+## Accessibility contract
+
+- **Guarantees:** the host is focusable (`tabindex="0"`) with `aria-haspopup="menu"`,
+  `aria-expanded` (kept in sync) and `aria-controls`; opens on `contextmenu` AND
+  Shift+F10 / the ContextMenu key (WCAG 2.1.1 keyboard parity); a `role="menu"` panel
+  named by the host (or `label:`); `role="menuitem"` items with roving tabindex;
+  Escape/Tab/outside-click close with focus restored to the host.
+- **You supply:** a `with_trigger` slot (the right-clickable region) and one or more
+  `with_item` slots.

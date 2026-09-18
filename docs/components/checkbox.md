@@ -1,6 +1,6 @@
 # Checkbox
 
-Styled checkbox input with optional inline label.
+Styled checkbox input with optional inline label. Renders a native `<input type="checkbox">` so it inherits the browser's keyboard operability and form semantics for free.
 
 ## Installation
 
@@ -67,3 +67,25 @@ Stimulus controller that sets it on connect and clears it once the user acts.
 
 It deliberately does **not** also set `checked`: a partially-selected parent must not
 submit as checked. Without JS the box renders unchecked, which is the honest degradation.
+
+## When to use
+
+- A single on/off choice tied to a label: "Accept terms", "Remember me",
+  "Email me about updates".
+
+## When not to use
+
+- It's an immediate-effect setting toggle with no form submit — use `switch`.
+- You have a mutually-exclusive set of options — use `radio_group`.
+
+## Accessibility contract
+
+- **Guarantees:** a labelled, keyboard-operable checkbox with an AAA focus ring.
+  The control always carries an `id` (falling back from `id` → sanitized `name`
+  → object-based id) so the `<label for=...>` association never breaks, and the
+  clickable label provides the larger pointer target (AAA 2.5.5 target-size).
+- **You supply:** a `label` and, on error, `invalid: true` (sets `aria-invalid`)
+  plus `describedby:` pointing at the error message's id.
+
+No variant axis (single appearance), so there is no `coerce_variant` fail-loud
+guard here — unlike the enum-driven components (alert, button).

@@ -1,6 +1,8 @@
 # Carousel
 
 Scrollable slide container with previous/next controls and optional dot indicators.
+Autoplay (when > 0) is WCAG 2.2.2 compliant — a pause/play toggle, pause on
+hover/focus, disabled under prefers-reduced-motion.
 
 Requires `carousel_controller.js` (copied automatically by the generator).
 
@@ -55,4 +57,5 @@ Creates `app/components/ui/carousel_component.rb`.
 | `loop` | Boolean | `true` | Wrap from the last slide to the first (and vice versa) |
 | `indicators` | Boolean | `true` | Show dot indicators below the slides |
 | `autoplay` | Integer | `0` | Auto-advance interval in milliseconds; `0` disables autoplay |
+| `label` | String | `nil` | Accessible name for the carousel region (i18n default "Carousel") |
 | `**html_attrs` | Hash | — | Forwarded to the outer `<div>` |

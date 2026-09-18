@@ -1,6 +1,6 @@
 # Alert
 
-Informational banner for surfacing status messages, warnings, and errors. Accepts plain-text content via kwargs or rich HTML via slots.
+Informational banner for surfacing status messages, warnings, and errors. Accepts plain-text content via kwargs or rich HTML via slots. Renders a `<div>` live region with semantics matched to its urgency and an AAA-tuned color treatment.
 
 ## Installation
 
@@ -128,7 +128,7 @@ end
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `tone` | Symbol | `:neutral` | Severity level — see Tones table |
+| `tone` | Symbol | `:neutral` | Severity level — see Tones table. Alert is always a filled banner; it has no shape axis, only a tone |
 | `variant` | Symbol | `nil` | Deprecated alias for `tone:` (`default`→`neutral`, `destructive`→`danger`) |
 | `icon` | Boolean | `true` | Render the tone's severity icon. `false` suppresses it |
 | `role` | Symbol/String | `nil` | Override the tone's role (e.g. `:note` for persistent context); any override drops `aria-live` |
@@ -140,3 +140,22 @@ end
 |------|----------|-------------|
 | `alert_title` | No | Rich title — renders as `<h5>`. Takes precedence over `title:` kwarg |
 | `alert_description` | No | Rich description — renders as `<div>`. Takes precedence over `description:` kwarg |
+
+## When to use
+
+- You need an inline, in-page message tied to surrounding content: a form-level
+  error summary, a destructive-action warning, an empty-state notice.
+
+## When not to use
+
+- It's an ephemeral flash/notice — that's the app's toast system (`shared/_toasts`).
+
+## Accessibility contract
+
+- **Guarantees:** a live region matched to urgency — `role="status"`/`aria-live="polite"`
+  for the neutral tone (and `info`/`success`/`warning`), `role="alert"`/
+  `aria-live="assertive"` for `danger` — AAA-contrast text on the banner surface,
+  and a tone-matched severity icon (`aria-hidden`, a redundant non-color cue per
+  WCAG 1.4.1 — pass `icon: false` to suppress it).
+- **You supply:** a title and/or description (kwargs or the `alert_title` /
+  `alert_description` slots) and a valid `tone` (an unknown one raises in development).

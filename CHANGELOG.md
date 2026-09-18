@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.16.0] - 2026-09-17
+
+### Changed
+
+- Component templates now carry a three-line class comment pointing at `docs/components/<name>.md`; the "Use when", "Don't use when" and "Accessibility contract" prose moved into the docs as `## When to use`, `## When not to use` and `## Accessibility contract`. Host apps: rewrite vendored copies in place with `$(bundle show modelrails_ui)/bin/migrate-component-header --rewrite-only --root app/components/ui --docs $(bundle show modelrails_ui)/docs/components <names>`; do not regenerate.
+
+### Added
+
+- `bin/prose-stats`, `bin/migrate-component-header` and `bin/header-fidelity` (the migration's nothing-lost audit), plus `ModelrailsUi::ComponentHeader` and `ModelrailsUi::ProseStats`, and `test/test_template_headers_are_pointers.rb`, the guard that keeps every template header a pointer.
+- The gem now packages `docs/` and the three migration scripts, so the host-app command above runs straight out of the installed gem.
+- `bin/migrate-component-header --rewrite-only` gained a repeatable `--extra-doc PATH` for facts a fork's own doc already states. Its tripwire judges a line "stated in the doc" order-independently (bag-of-words: most of the line's own words occur anywhere in the doc), so a fact restated as prose or folded into a table row — including one whose columns reorder the header's own words — no longer aborts the rewrite; `bin/header-fidelity` stays on the stricter word-order-sensitive audit.
+
 ### Fixed
 
 - `select`: floor the width at 44px (`min-w-[var(--form-input-height)]`, the same spelling as the existing height floor). `w-full` pins nothing, so a select sharing a flex row with a submit button takes only the leftover space — a host app's inline role editor measured 29px at phone width and 43px in CI, failing WCAG 2.5.5 (AAA) target size on the width axis while its height was never at risk.

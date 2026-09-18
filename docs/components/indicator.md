@@ -1,6 +1,6 @@
 # Indicator
 
-Status dot or count badge overlaid on another element. Wraps any content and renders a small badge in one corner.
+Status dot or count badge overlaid on another element. Wraps any content and renders a small badge in one corner. Signals presence/state (online, unread) or a count (notifications); it is presentational and conveys nothing on its own to assistive tech.
 
 ## Installation
 
@@ -57,3 +57,20 @@ Creates `app/components/ui/indicator_component.rb`.
 | `variant` | Symbol | `:default` | Colour — `:default`, `:info`, `:success`, `:warning`, `:danger` (`:destructive` is a non-breaking alias for `:danger`) |
 | `position` | Symbol | `:top_right` | Corner — `:top_right`, `:top_left`, `:bottom_right`, `:bottom_left` |
 | `**html_attrs` | Hash | — | Forwarded to the outer wrapper `<span>` |
+
+## When to use
+
+- You need a corner dot or count overlaid on an icon/avatar/button.
+
+## When not to use
+
+- The dot is the ONLY carrier of meaning (a color-only signal) — give the
+  anchored element an accessible name/text so AT users get the same signal.
+
+## Accessibility contract
+
+- **Guarantees:** AAA-contrast variant treatments (`text-text-on-interactive` on
+  filled dots, never raw `text-white`), and a valid `variant` is required — an
+  unknown one raises in development.
+- **You supply:** an accessible name/text on the anchored element when the dot
+  conveys state by color alone; the count text via `count:`.

@@ -22,6 +22,13 @@ Creates `app/components/ui/speed_dial_component.rb`.
 <% end %>
 ```
 
+```ruby
+ui :speed_dial do |dial|
+  dial.with_action(label: "New document", href: "/docs/new")
+  dial.with_action(label: "Upload", data: { action: "..." })
+end
+```
+
 ## Position
 
 | Position | Description |
@@ -62,3 +69,16 @@ Pass a block with `data-*` attributes instead of `href:` for JavaScript-triggere
 | `label` | String | Yes | Button text |
 | `href` | String | No | Renders `<a>` when present; otherwise renders `<button>` |
 | `**html_attrs` | Hash | — | Forwarded to the `<a>` or `<button>` |
+
+## Accessibility contract
+
+- The FAB is a **disclosure trigger**: it carries `aria-expanded` (synced to the
+  open state by the `speed-dial` controller) + `aria-controls` pointing at the
+  hidden action panel, and an i18n accessible name (it's an icon-only button).
+- The FAB and every action carry the AAA offset `focus-ring` (never a box-shadow
+  `ring`, which is clipped by `overflow:hidden` ancestors and vanishes in
+  forced-colors mode).
+- The `+` glyph is decorative (`aria-hidden`); the accessible name comes from
+  `aria-label`.
+- `position:` is fail-loud — an unknown value raises in dev rather than silently
+  falling back.

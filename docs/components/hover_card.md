@@ -95,22 +95,10 @@ pointer can move onto the card and click its content. Opening sets
 
 ## Accessibility contract
 
-The component guarantees:
-
-- Hover and keyboard focus both open the card (the controller sets
-  `data-state="open"`; `group-data-[state=open]` reveals it).
-- The hover-intent close-delay keeps the card reachable, so its interactive
-  content is clickable with the pointer and Tab-reachable for the keyboard.
-- `Escape` closes the card and returns focus to the trigger (WCAG 1.4.13 —
-  content on hover or focus, dismissible without losing your place).
-- When `label:` is given, the card element receives `role="group"` and
-  `aria-label` for a named landmark region.
-
-You supply:
-
-- `with_trigger` slot — a focusable link or button (required).
-- Block content — the card's body (text, links, arbitrary markup).
-- `label:` — optional accessible name for the card region.
+- **Guarantees:** opens on hover AND focus; the hover-intent close-delay keeps the
+  card reachable, so its content is clickable and Tab-reachable; Escape closes and
+  returns focus to the trigger; `role="group"` + `aria-label` when `label:` is given.
+- **You supply:** a `with_trigger` slot (a focusable link/button) and the card content.
 
 ## API
 
@@ -124,3 +112,13 @@ You supply:
 | Slot | Required | Description |
 |------|----------|-------------|
 | `with_trigger` | Yes | Focusable element (link/button) that triggers the card — omitting raises `ArgumentError` |
+
+## When to use
+
+- A link/avatar benefits from a supplemental preview (profile, definition) whose
+  content is ALSO reachable elsewhere (the card is an enhancement, not the only path).
+
+## When not to use
+
+- The content is a primary interactive surface — use `popover` (click) or a `dialog`.
+- It's a short text hint — use `tooltip`.

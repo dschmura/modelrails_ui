@@ -69,3 +69,24 @@ Pass `href:` to render each item as an `<a>` tag:
 | `active` | Boolean | `false` | Applies the active variant |
 | `variant` | Symbol | `:default` | `:default`, `:active`, `:muted` |
 | `**html_attrs` | Hash | — | Forwarded to the rendered element |
+
+## Accessibility contract
+
+- **Guarantees:** a semantic `<ul>` on a token surface (`bg-surface`,
+  `border-border`, `divide-border` between rows). Row semantics and focus
+  handling live in `list_group_item`.
+- **You supply:** the rows, via `list_group_item` (slot/block content).
+
+## List group item: Accessibility contract
+
+- **Guarantees:** AAA-contrast tokens (`text-text-heading`/`text-text-muted` on
+  `bg-surface`; the active row is a solid `bg-interactive` fill with adaptive
+  `text-text-on-interactive`). Semantics follow interactivity: a static row is
+  a plain `<li>`; a navigable row is an `<a>` wrapped in its `<li>` (an `<a>`
+  is not a valid direct child of `<ul>`). Link rows are real `<a>` elements
+  inside `<li>`, carry the `focus-ring` utility, and — when active —
+  `aria-current="page"`. A clickable row is a real focusable element, never a
+  `<div>` with a click handler; a non-interactive row is never made focusable.
+  An unknown `variant` raises in development.
+- **You supply:** the row text (positional arg, `label:`, or slot content); an
+  `href:` to make the row a link; `active: true` to mark the current row.

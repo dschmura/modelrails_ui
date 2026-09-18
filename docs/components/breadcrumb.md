@@ -51,6 +51,12 @@ neither audience can act on, so the rendered trail stays truthful to both.
 
 ## Accessibility
 
-WCAG 2.2 AAA. `<nav>` named by `label:`; an `<ol>` of crumbs; the current page is
-`aria-current="page"` and not a link; separators are `aria-hidden="true"`; links carry a
-`:focus-visible` ring. Proven by `spec/system/ui/breadcrumb_component_spec.rb` in the host app.
+WCAG 2.2 AAA. Proven by `spec/system/ui/breadcrumb_component_spec.rb` in the host app.
+
+## Accessibility contract
+
+- **Guarantees:** `<nav>` named by `label:` (i18n, default "Breadcrumb"); an `<ol>` of crumbs;
+  the current page is `aria-current="page"` and not a link; separators are `aria-hidden`;
+  links get a visible `:focus-visible` ring.
+- **You supply:** `items:` (`[{ label:, href: }, …, { label: }]` — the LAST item, with no
+  `href`, is the current page).

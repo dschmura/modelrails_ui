@@ -1,6 +1,6 @@
 # Button
 
-Clickable element with variant and size support. Renders as a `<button>` by default and can be switched to any HTML tag via the `href:` shorthand or `tag:` option.
+Clickable element with variant and size support. Renders as a `<button>` by default and can be switched to any HTML tag via the `href:` shorthand or `tag:` option. Reproduces the host app's `.btn-*` button system (`app/assets/tailwind/application.css` `@layer components`).
 
 ## Installation
 
@@ -24,7 +24,7 @@ Creates `app/components/ui/button_component.rb`.
 
 Two axes — `variant:` (shape) × `tone:` (signal). Only the AAA-proven cells ship; an
 unproven combination raises in development and falls back to `[:solid, :primary]` in
-production.
+production — the combo-guard exists because a new fill is an untested text-on-* pairing.
 
 | Cell | Class | Reach for it when |
 | --- | --- | --- |
@@ -45,12 +45,29 @@ Legacy flat values still work via `SHIM` and ignore `tone:` — `primary`, `seco
 `danger`, `destructive`, `text`, `text_interactive`, `text_danger`. Write the two axes
 in new code.
 
+The proven cells:
+
+```
+[:solid,   :primary]  filled brand
+[:solid,   :danger]   filled danger
+[:outline, :neutral]  bordered neutral
+[:text,    :primary]  text/link brand
+[:text,    :danger]   text/link danger
+```
+
+Legacy flat `variant:` values are still accepted via SHIM (back-compat,
+byte-identical output): primary, secondary, danger, destructive, text,
+text_interactive, text_danger. When a legacy value is passed, `tone:` is ignored.
+
 ## Sizes
 
 | Size | Description |
 | --- | --- |
 | `default` | standard horizontal padding; the 44px min-height comes from the `.btn-*` class |
 | `icon` | a 44×44 square (`px-0 min-w-[var(--form-input-height)]`) for icon-only buttons — give it an `aria-label` |
+
+size: :default | :icon — :icon (A8) is a 44×44 square (WCAG 2.5.5): adds min-w
+and drops horizontal padding (min-h is already carried by the .btn-* classes).
 
 ```erb
 <%= ui :button, "Normal" %>
