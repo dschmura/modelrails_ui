@@ -36,7 +36,7 @@ Creates 6 files under `app/components/ui/`: `card_component.rb`, `card_header_co
 | `card` | `<div>` | Outer container |
 | `card_header` | `<div>` | Top area with padding |
 | `card_title` | `<h3>` | Heading — positional, `label:`, or block |
-| `card_description` | `<div>` | Muted subtitle text |
+| `card_description` | `<p>` | Muted subtitle text |
 | `card_content` | `<div>` | Main body area |
 | `card_footer` | `<div>` | Bottom action bar |
 

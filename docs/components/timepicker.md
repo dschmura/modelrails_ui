@@ -49,7 +49,7 @@ Common steps are 5, 15, and 30 minutes:
 | `value` | String | `nil` | Initial time as `"HH:MM"` |
 | `label` | String | `nil` | Visible trigger + popover accessible name (i18n default) |
 | `format` | Symbol | `:h24` | `:h24` (24-hour) or `:h12` (12-hour with AM/PM); drives the hour spinbutton range AND the format hint shown to the user (fail-loud on an unknown key) |
-| `step` | Integer | `1` | Minute increment (1–60) |
+| `step` | Integer | `1` | Minute increment, clamped to 1–60 |
 | `**html_attrs` | Hash | — | Forwarded to the outer `<div>` |
 
 ## When to use
