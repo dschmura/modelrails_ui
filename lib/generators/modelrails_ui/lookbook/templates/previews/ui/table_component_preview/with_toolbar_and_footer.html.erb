@@ -1,0 +1,23 @@
+<%= ui :table, caption: "Widgets in this workspace", caption_visible: false do |t| %>
+  <% t.with_toolbar do %>
+    <p class="text-sm text-text-body">2 widgets · filtered by <strong>owner</strong></p>
+    <a href="#" class="text-sm underline text-text-body focus-ring">Clear filters</a>
+  <% end %>
+  <% t.with_header do %>
+    <th scope="col" class="<%= UI::TableComponent::TH %>">Name</th>
+    <th scope="col" class="<%= UI::TableComponent::TH %>">Owner</th>
+  <% end %>
+  <% t.with_body do %>
+    <tr class="border-t border-border">
+      <td class="px-4 py-3 text-text-body">Sprocket</td>
+      <td class="px-4 py-3 text-text-body">Ada Lovelace</td>
+    </tr>
+    <tr class="border-t border-border">
+      <td class="px-4 py-3 text-text-body">Flywheel</td>
+      <td class="px-4 py-3 text-text-body">Charles Babbage</td>
+    </tr>
+  <% end %>
+  <% t.with_footer do %>
+    <div class="border-t border-border px-4 py-3">Showing 1–2 of 2</div>
+  <% end %>
+<% end %>

@@ -75,6 +75,10 @@ en:
       open: "Open actions"
     spinner:
       loading: "Loading…"
+    table:
+      # %{name} is the table's caption. Named distinctly from the caption itself so
+      # a screen reader does not announce the same words twice.
+      scroll_region: "%{name}, scrolls sideways"
     stepper:
       progress: "Progress"
       completed: "Completed"

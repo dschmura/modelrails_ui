@@ -37,7 +37,7 @@ class TestLookbookLogicalPaths < Minitest::Test
     "alert" => "Feedback & Status", "banner" => "Feedback & Status", "badge" => "Feedback & Status",
     "progress" => "Feedback & Status", "spinner" => "Feedback & Status", "skeleton" => "Feedback & Status",
     "indicator" => "Feedback & Status", "stepper" => "Feedback & Status", "toaster" => "Feedback & Status",
-    "card" => "Data Display", "list_group" => "Data Display", "data_table" => "Data Display",
+    "card" => "Data Display", "list_group" => "Data Display", "data_table" => "Data Display", "table" => "Data Display",
     "timeline" => "Data Display", "accordion" => "Data Display", "collapsible" => "Data Display",
     "chat_bubble" => "Data Display", "avatar" => "Data Display", "kbd" => "Data Display",
     "rating" => "Data Display", "chart" => "Data Display",

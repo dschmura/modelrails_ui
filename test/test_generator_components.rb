@@ -16,7 +16,7 @@ class TestGeneratorComponents < Minitest::Test
   PHASE7 = %w[
     collapsible scroll_area chat_bubble device_mockup qr_code
     speed_dial gallery carousel input_otp sidebar resizable calendar
-    date_picker timepicker data_table
+    date_picker timepicker data_table table
   ].freeze
   PHASE8 = %w[timeline toaster chart wysiwyg].freeze
   PHASE9 = %w[image figure picture video audio iframe map_area embed].freeze

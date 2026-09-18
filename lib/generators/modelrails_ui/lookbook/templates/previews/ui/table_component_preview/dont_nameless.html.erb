@@ -1,0 +1,15 @@
+<%# A caption is required: UI::TableComponent raises without one, so the wrong %>
+<%# form cannot be rendered here. This shows the RIGHT form — a caption that %>
+<%# says what the rows are — with caption_visible: true so it is legible. %>
+<%= ui :table, caption: "Widgets awaiting review", caption_visible: true do |t| %>
+  <% t.with_header do %>
+    <th scope="col" class="<%= UI::TableComponent::TH %>">Name</th>
+    <th scope="col" class="<%= UI::TableComponent::TH %>">Status</th>
+  <% end %>
+  <% t.with_body do %>
+    <tr class="border-t border-border">
+      <td class="px-4 py-3 text-text-body">Sprocket</td>
+      <td class="px-4 py-3 text-text-body">Awaiting review</td>
+    </tr>
+  <% end %>
+<% end %>
