@@ -26,7 +26,7 @@ module UI
       return "" if @total <= 1
 
       content_tag(:nav, "aria-label": "Pagination", **@html_attrs) do
-        content_tag(:ul, class: cn("flex items-center gap-1", @extra_class)) do
+        content_tag(:ul, role: "list", class: cn("flex items-center gap-1", @extra_class)) do
           safe_join([prev_item, *page_items, next_item])
         end
       end

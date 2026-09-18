@@ -66,4 +66,14 @@ class FooterRenderTest < ViewComponent::TestCase
 
     assert_selector "footer.mt-12"
   end
+
+  # --- list semantics (#195) ------------------------------------------------
+
+  def test_link_column_is_an_explicit_list
+    render_inline(UI::FooterComponent.new(columns: [
+      {title: "Product", links: [{label: "Pricing", href: "/pricing"}]}
+    ]))
+
+    assert_selector "ul[role=list]"
+  end
 end

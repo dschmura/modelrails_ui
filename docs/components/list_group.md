@@ -58,7 +58,12 @@ Pass `href:` to render each item as an `<a>` tag:
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
+| `role` | String | `"list"` | Role on the `<ul>`; pass your own to override |
 | `**html_attrs` | Hash | — | Forwarded to the `<ul>` element |
+
+`role:` and `"role" =>` are equivalent — keys are normalized before the merge,
+so an override replaces the default instead of emitting a second `role`
+attribute.
 
 ## API — ListGroupItemComponent
 
@@ -72,9 +77,15 @@ Pass `href:` to render each item as an `<a>` tag:
 
 ## Accessibility contract
 
-- **Guarantees:** a semantic `<ul>` on a token surface (`bg-surface`,
-  `border-border`, `divide-border` between rows). Row semantics and focus
-  handling live in `list_group_item`.
+- **Guarantees:** a semantic `<ul>` carrying an explicit `role="list"`, on a
+  token surface (`bg-surface`, `border-border`, `divide-border` between rows).
+  The explicit role is load-bearing: Tailwind's preflight sets
+  `list-style: none`, and Safari/VoiceOver drop the implicit list role once the
+  marker is gone — taking "list, N items", per-row set position, and the rotor
+  entry with it. In that degraded state the element computes as `generic`, which
+  ARIA 1.2 prohibits from having a name, so a caller's `aria-label` is discarded
+  too. No axe rule covers this, so a green audit is not evidence either way.
+  Row semantics and focus handling live in `list_group_item`.
 - **You supply:** the rows, via `list_group_item` (slot/block content).
 
 ## List group item: Accessibility contract

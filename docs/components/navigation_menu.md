@@ -74,5 +74,9 @@ Omit `href:` to render a trigger button. Add any HTML content to the block — i
   `aria-controls` → their `id`'d panel (the disclosure pattern); the AAA offset
   `focus-ring` on every trigger, link and panel link; `aria-current="page"` on the
   active link; the chevron is decorative (`aria-hidden`).
+  The `<ul>` carries an explicit `role="list"`: Tailwind's preflight sets
+  `list-style: none`, and Safari/VoiceOver drop the implicit list role once the
+  marker is gone — taking the item count and per-item set position with it. No
+  axe rule covers this.
 - **You supply:** items (label, optional href, optional active) and — for flyout
   items — the panel links via the slot block.

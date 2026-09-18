@@ -110,4 +110,12 @@ class BreadcrumbRenderTest < ViewComponent::TestCase
 
     assert_selector "nav > ol.gap-4", visible: :all
   end
+
+  # --- list semantics (#195) ------------------------------------------------
+
+  def test_crumb_list_is_an_explicit_list
+    render_crumbs
+
+    assert_selector "ol[role=list]"
+  end
 end

@@ -58,5 +58,9 @@ WCAG 2.2 AAA. Proven by `spec/system/ui/breadcrumb_component_spec.rb` in the hos
 - **Guarantees:** `<nav>` named by `label:` (i18n, default "Breadcrumb"); an `<ol>` of crumbs;
   the current page is `aria-current="page"` and not a link; separators are `aria-hidden`;
   links get a visible `:focus-visible` ring.
+  The `<ol>` carries an explicit `role="list"`: Tailwind's preflight sets
+  `list-style: none`, and Safari/VoiceOver drop the implicit list role once the
+  marker is gone — taking the item count and per-item set position with it. No
+  axe rule covers this.
 - **You supply:** `items:` (`[{ label:, href: }, …, { label: }]` — the LAST item, with no
   `href`, is the current page).

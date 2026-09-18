@@ -89,3 +89,10 @@ semantics.
 | `show_selection` | Boolean | `false` | Also render the selected file names as pills plus an sr-only announcement (Stimulus `file-input` controller); default is the bare input, unchanged |
 | `selection_labels` | Hash | `{}` | Selection strings merged over the English defaults (i18n; defaults to `one: "1 file selected: %{names}"`, `many: "%{count} files selected: %{names}"`, `none: "No files selected"`) |
 | `**html_attrs` | Hash | — | Forwarded to the `<input type="file">` element |
+
+## Accessibility
+
+The selection pill list (`show_selection: true`) carries an explicit `role="list"`.
+Tailwind's preflight sets `list-style: none`, and Safari/VoiceOver drop the implicit list
+role once the marker is gone, taking the "N items" count with it — which here is the count
+of files the user just chose. No axe rule covers this.

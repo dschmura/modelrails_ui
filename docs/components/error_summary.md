@@ -119,6 +119,16 @@ the key — or the whole file — degrades to the English default, never to
 - **You supply:** `items` — `[{message:, href:}]`; omit `href` for
   object-level (`:base`) errors.
 
+Every other list-emitting component in this library carries an explicit
+`role="list"`, because Tailwind's preflight sets `list-style: none` and
+Safari/VoiceOver then drop the implicit list role. **This component is the one
+exemption, deliberately:** its `<ul>` applies `list-disc list-inside`, which
+overrides preflight, so the marker is present and the implicit role survives on
+its own. Adding the role here would be redundant. Do not "fix" it in a future
+sweep — the exemption and its reason are pinned by
+`test/test_lists_carry_the_list_role.rb`, which fails if the component ever
+stops applying those utilities.
+
 ## Related
 
 - `form_field` — the per-field label/hint/error wrapper.

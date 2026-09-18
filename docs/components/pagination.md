@@ -35,3 +35,8 @@ match your design system.
 
 WCAG 2.2 AAA. Pagy's `series_nav` provides the ARIA contract; the design-system CSS provides
 the AAA-contrast styling in both themes (proven in the host app's CI `test` job).
+
+The page list carries an explicit `role="list"`. Tailwind's preflight sets
+`list-style: none`, and Safari/VoiceOver drop the implicit list role once the marker is
+gone — which on a pager removes how many pages there are and which one you are on. No axe
+rule covers this.

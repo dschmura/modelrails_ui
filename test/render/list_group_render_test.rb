@@ -23,6 +23,43 @@ class ListGroupRenderTest < ViewComponent::TestCase
     assert_selector "ul > li", text: "Settings"
   end
 
+  # --- list semantics (#190) ------------------------------------------------
+
+  # Tailwind's preflight sets `list-style: none` on `ul`, and Safari/VoiceOver
+  # drops the implicit list role when the marker is gone — so the role has to be
+  # explicit. axe has no rule for this, so a clean axe run proves nothing here.
+  def test_group_is_an_explicit_list
+    render_inline(UI::ListGroupComponent.new)
+
+    assert_selector "ul[role=list]"
+    assert_equal 1, role_attribute_count, "expected exactly one role attribute"
+  end
+
+  # A caller who means something other than a plain list (a navigation, say) must
+  # win — and must not end up with BOTH roles on the element.
+  def test_symbol_key_role_override_wins_and_is_emitted_once
+    render_inline(UI::ListGroupComponent.new(role: "navigation"))
+
+    assert_selector "ul[role=navigation]"
+    assert_no_selector "ul[role=list]"
+    assert_equal 1, role_attribute_count, "expected exactly one role attribute"
+  end
+
+  # The non-negotiable one. `content_tag` does NOT de-duplicate a symbol `:role`
+  # against a string `"role"` — it emits both, raises nothing, and the winner
+  # becomes browser-dependent. Presence assertions pass on that broken output,
+  # so this counts the attribute in the RAW string, before Nokogiri collapses it.
+  def test_string_key_role_override_wins_and_is_emitted_once
+    render_inline(UI::ListGroupComponent.new("role" => "navigation"))
+
+    assert_equal 1, role_attribute_count,
+      "duplicate role attribute in: #{rendered_content}"
+    assert_includes rendered_content, 'role="navigation"'
+    refute_includes rendered_content, 'role="list"'
+  end
+
+  def role_attribute_count = rendered_content.scan(/\srole=/).length
+
   def test_group_uses_aaa_surface_tokens
     render_inline(UI::ListGroupComponent.new)
 

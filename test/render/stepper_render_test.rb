@@ -87,4 +87,34 @@ class StepperRenderTest < ViewComponent::TestCase
 
     assert_selector "ol.mt-4.flex.items-start"
   end
+
+  # --- list semantics (#195) ------------------------------------------------
+
+  def test_stepper_is_an_explicit_list
+    render_inline(UI::StepperComponent.new(steps: THREE_STEPS))
+
+    assert_selector "ol[role=list]"
+  end
+
+  def test_string_key_role_override_wins_and_is_emitted_once
+    caller_attrs = {"role" => "presentation"}
+    render_inline(UI::StepperComponent.new(steps: THREE_STEPS, **caller_attrs))
+
+    assert_equal 1, list_tag.scan(/\srole=/).length, rendered_content
+    assert_includes rendered_content, 'role="presentation"'
+  end
+
+  # The same duplicate-attribute trap applied to the default aria-label, which a
+  # caller could previously only duplicate rather than replace.
+  def test_string_key_aria_label_override_is_emitted_once
+    caller_attrs = {"aria-label" => "Checkout"}
+    render_inline(UI::StepperComponent.new(steps: THREE_STEPS, **caller_attrs))
+
+    assert_equal 1, list_tag.scan(/\saria-label=/).length, rendered_content
+    assert_includes rendered_content, 'aria-label="Checkout"'
+  end
+
+  # The opening <ol> tag only — step items carry roles of their own, and a
+  # document-wide count would hide a duplicate on the list element itself.
+  def list_tag = rendered_content[/<ol[^>]*>/]
 end

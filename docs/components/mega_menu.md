@@ -74,4 +74,8 @@ named `<nav>` region of links.
   `<nav>` landmark (`aria-label` ← the trigger label); the AAA `focus-ring` on the
   trigger and every link; outside-click dismissal; the chevron is decorative
   (`aria-hidden`).
+  The `<ul>` carries an explicit `role="list"`: Tailwind's preflight sets
+  `list-style: none`, and Safari/VoiceOver drop the implicit list role once the
+  marker is gone — taking the item count and per-item set position with it. No
+  axe rule covers this.
 - **You supply:** a `label:` (trigger text) and one or more `with_column` blocks.

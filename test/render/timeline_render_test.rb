@@ -98,4 +98,28 @@ class TimelineRenderTest < ViewComponent::TestCase
     assert_selector "ol.max-w-md"
     assert_selector "li.pb-2"
   end
+
+  # --- list semantics (#195) ------------------------------------------------
+
+  # Preflight strips the marker; Safari/VoiceOver drop the implicit list role
+  # with it. No axe rule covers this, so the assertion is the only guard.
+  def test_timeline_is_an_explicit_list
+    render_inline(UI::TimelineComponent.new)
+
+    assert_selector "ol[role=list]"
+  end
+
+  # The list element takes **html_attrs, so a caller's role must win WITHOUT
+  # emitting a second role attribute (content_tag does not de-duplicate
+  # :role against "role").
+  def test_string_key_role_override_wins_and_is_emitted_once
+    render_inline(UI::TimelineComponent.new("role" => "presentation"))
+
+    assert_equal 1, list_tag.scan(/\srole=/).length, rendered_content
+    assert_includes rendered_content, 'role="presentation"'
+  end
+
+  # The opening <ol> tag only — step items carry roles of their own, and a
+  # document-wide count would hide a duplicate on the list element itself.
+  def list_tag = rendered_content[/<ol[^>]*>/]
 end
