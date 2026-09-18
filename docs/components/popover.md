@@ -97,7 +97,35 @@ instead.
 | `align` | Symbol | `:start` | `:start`, `:center`, or `:end` |
 | `side` | Symbol | `:bottom` | `:bottom`, `:top`, `:left`, or `:right` |
 | `trigger_class` | String | `"btn-secondary"` | CSS classes **added to** the trigger's accessibility floor (focus ring + 44px target size), which cannot be replaced |
+| `trigger_attrs` | Hash | `{}` | Attributes for the trigger `<button>` (see below) |
 | `**html_attrs` | Hash | — | Forwarded to the outer `<div>` |
+
+### `trigger_attrs:` vs `**html_attrs`
+
+`**html_attrs` go to the wrapper `<div>`; `trigger_attrs:` go to the trigger
+`<button>`. Use the latter when a popover stands in for one option of a control
+group and has to announce that it is the current choice, the way its sibling
+buttons do:
+
+```erb
+<%= ui :popover, label: "Date range", trigger_attrs: { "aria-current": "true" } do |p| %>
+  <% p.with_trigger { "Last 30 days" } %>
+<% end %>
+```
+
+They are merged **under** the component's own contract, so `type`,
+`aria-haspopup`, `aria-expanded`, `aria-controls` and the Stimulus wiring cannot
+be overwritten — a caller can mark the trigger current, but cannot lie about the
+expanded state the controller actually maintains.
+
+A `data:` hash is the one exception to a flat merge: it is merged one level
+deeper, so your own hooks survive next to the component's wiring rather than
+replacing it (or being silently dropped).
+
+```erb
+trigger_attrs: { data: { testid: "range-trigger" } }
+<%# → data-testid="range-trigger" data-floating-target="trigger" %>
+```
 
 | Slot | Required | Description |
 |------|----------|-------------|
