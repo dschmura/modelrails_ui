@@ -19,19 +19,88 @@ class DatePickerRenderTest < ViewComponent::TestCase
     assert_selector "div[data-controller='date-picker']", visible: :all
   end
 
-  # The visible caption is a real <label for> bound to the trigger button.
-  def test_caption_is_a_label_bound_to_the_trigger
+  # The caption binds to the TEXT INPUT, not the trigger. A <label for> may only
+  # name a labelable element; pointing it at a <button> named nothing and left the
+  # typeable control — the one a person actually uses — unlabelled.
+  def test_caption_is_a_label_bound_to_the_text_input
     render_picker
 
-    assert_selector "label[for='dp-trigger']", text: "Choose date", visible: :all
+    assert_selector "label[for='dp-input']", text: "Choose date", visible: :all
+    assert_selector "input#dp-input[type=text]", visible: :all
   end
 
-  def test_custom_label_names_caption_trigger_and_dialog
+  def test_custom_label_names_caption_input_and_dialog
     render_picker(label: "Due date")
 
-    assert_selector "label[for='dp-trigger']", text: "Due date", visible: :all
-    assert_selector "button#dp-trigger[aria-label='Due date']", visible: :all
+    assert_selector "label[for='dp-input']", text: "Due date", visible: :all
     assert_selector "div#dp-popover[role='dialog'][aria-label='Due date']", visible: :all
+  end
+
+  # --- the typed path (#199) ------------------------------------------------
+
+  # A known date should be typeable. Walking a calendar grid to reach a date you
+  # already know is slower for everyone and a real barrier with a screen reader
+  # or a switch.
+  def test_text_input_is_the_typed_path_and_carries_the_format
+    render_picker(format: :iso)
+
+    assert_selector "input#dp-input[type=text][data-date-picker-target='input']" \
+                    "[inputmode='numeric'][autocomplete='off']" \
+                    "[data-date-picker-format='iso']", visible: :all
+  end
+
+  # Parse on blur and on Enter — never per keystroke, which would rewrite the box
+  # under someone mid-type.
+  def test_text_input_parses_on_commit_not_per_keystroke
+    render_picker
+    input = page.find("input#dp-input", visible: :all)
+
+    assert_includes input["data-action"], "change->date-picker#commit"
+    assert_includes input["data-action"], "keydown->date-picker#commitOnEnter"
+    refute_includes input["data-action"], "input->"
+  end
+
+  def test_text_input_shows_the_formatted_value
+    render_picker(value: Date.new(2026, 9, 3), format: :iso)
+
+    assert_selector "input#dp-input[value='2026-09-03']", visible: :all
+  end
+
+  # min/max have to reach the typed path too, or a bound the calendar enforces is
+  # trivially bypassed by typing.
+  def test_bounds_reach_the_typed_path
+    render_picker(min: Date.new(2026, 1, 1), max: Date.new(2026, 12, 31))
+
+    assert_selector "input#dp-input[data-date-picker-min='2026-01-01']" \
+                    "[data-date-picker-max='2026-12-31']", visible: :all
+  end
+
+  # The box says what it could not parse, in a region that announces.
+  def test_error_region_is_present_and_empty_from_first_render
+    render_picker
+    error = page.find("#dp-error", visible: :all)
+
+    assert_equal "status", error["role"]
+    assert_equal "polite", error["aria-live"]
+    assert_empty error.text.strip
+  end
+
+  def test_input_is_described_by_both_the_hint_and_the_error_region
+    render_picker
+    described = page.find("input#dp-input", visible: :all)["aria-describedby"].split
+
+    assert_includes described, "dp-hint"
+    assert_includes described, "dp-error"
+  end
+
+  # The calendar becomes the SECONDARY affordance, so its trigger needs a name of
+  # its own — the caption now names the input.
+  def test_trigger_is_an_icon_button_with_its_own_name
+    render_picker(label: "Due date")
+    trigger = page.find("button#dp-trigger", visible: :all)
+
+    refute_equal "Due date", trigger["aria-label"]
+    refute_empty trigger["aria-label"].to_s
   end
 
   # The trigger is the disclosure control: real button, popup aria, synced expanded,
@@ -41,7 +110,6 @@ class DatePickerRenderTest < ViewComponent::TestCase
 
     assert_selector "button.focus-ring[type='button'][id='dp-trigger']" \
                     "[aria-haspopup='dialog'][aria-expanded='false'][aria-controls='dp-popover']" \
-                    "[aria-label='Choose date'][aria-describedby='dp-hint']" \
                     "[data-date-picker-target='trigger']" \
                     "[data-action~='click->date-picker#toggle']" \
                     "[data-action~='keydown->date-picker#triggerKeydown']", visible: :all
@@ -60,17 +128,18 @@ class DatePickerRenderTest < ViewComponent::TestCase
     assert_selector "span#dp-hint", text: "Date format: YYYY-MM-DD", visible: :all
   end
 
-  # The initial trigger label uses the chosen strftime when a value is given.
-  def test_initial_label_uses_the_format_strftime
+  # The value shows in the box a person types into, formatted by `format:` — it
+  # used to sit in a <span> inside the trigger, where it could not be edited.
+  def test_initial_value_uses_the_format_strftime
     render_picker(value: Date.new(2026, 3, 9), format: :short)
 
-    assert_selector "button#dp-trigger span[data-date-picker-target='label']", text: "3/9/2026", visible: :all
+    assert_selector "input#dp-input[value='3/9/2026']", visible: :all
   end
 
   def test_placeholder_shows_when_no_value
     render_picker
 
-    assert_selector "span[data-date-picker-target='label']", text: "Pick a date", visible: :all
+    assert_selector "input#dp-input[placeholder='Pick a date']", visible: :all
   end
 
   # The popover is a labelled dialog, hidden until open, with Escape→focus-return wired.

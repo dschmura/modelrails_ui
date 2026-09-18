@@ -49,6 +49,12 @@ en:
       label: "Choose date"
       placeholder: "Pick a date"
       hint: "Date format: %{pattern}"
+      # The calendar button is icon-only — the caption names the text input — so it
+      # needs a name that says what it DOES. %{name} is the field's own label.
+      open_calendar: "Open calendar for %{name}"
+      # Shown in the field's live region when a typed value cannot be used.
+      invalid: "Enter a date as %{pattern}."
+      out_of_range: "That date is outside the allowed range."
     error_summary:
       heading:
         one: "1 error prevented this from being saved"
