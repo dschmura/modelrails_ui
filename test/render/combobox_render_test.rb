@@ -174,4 +174,44 @@ class ComboboxRenderTest < ViewComponent::TestCase
 
     assert_selector "div.mt-4.relative"
   end
+
+  # --- the text input's own id (#202) --------------------------------------
+
+  # The caller's `id:` lands on the WRAPPER, so without an id of its own the text
+  # input has no locator `fill_in` or a `<label for>` can reach — only its
+  # aria-label, which Capybara ignores unless the host enables aria-label matching.
+  def test_text_input_id_is_derived_from_the_wrapper_id
+    render_basic(id: "country-cb")
+
+    assert_selector "input[role=combobox]#country-cb-input"
+  end
+
+  # Two comboboxes on one page must not collide: the derived id inherits the
+  # wrapper's per-instance uniqueness.
+  def test_text_input_ids_are_unique_across_two_instances
+    render_basic
+    first = page.find("input[role=combobox]")[:id]
+    render_basic
+    second = page.find("input[role=combobox]")[:id]
+
+    refute_empty first
+    refute_equal first, second
+  end
+
+  # A host that wires its own `<label for>` needs to name the input itself.
+  def test_caller_can_override_the_text_input_id
+    render_basic(id: "country-cb", input_id: "chosen-country")
+
+    assert_selector "input[role=combobox]#chosen-country"
+    assert_no_selector "input[role=combobox]#country-cb-input"
+  end
+
+  # The hidden input is what the form submits. The visible input stays nameless on
+  # purpose: a `name` there would post the typed LABEL alongside the real value.
+  def test_text_input_carries_no_name
+    render_basic(id: "country-cb")
+
+    assert_selector "input[type=hidden][name=country]"
+    assert_no_selector "input[role=combobox][name]"
+  end
 end

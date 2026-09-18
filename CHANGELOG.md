@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `combobox`: the visible text input carries an `id` derived from the wrapper's (`my-combobox` → `my-combobox-input`), overridable with `input_id:`, so a `<label for>` can target it and `fill_in` can reach it without aria-label matching. Closes #202.
+
+### Fixed
+
+- `combobox`: selecting an option dispatches a bubbling `change` event on the hidden input, so a form that submits on change hears the selection. Closes #203.
+
 ## [0.16.0] - 2026-09-17
 
 ### Changed
