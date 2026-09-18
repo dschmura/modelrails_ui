@@ -81,6 +81,10 @@ Each step requires a `status:` of `:complete`, `:current`, or `:pending`.
   status is named, not conveyed by the decorative glyph alone. The check icon
   and the `●`/`○` glyphs are decorative — the check `<svg>` is
   `aria-hidden="true"` and the glyph spans carry their own accessible name.
+  The `<ol>` carries an explicit `role="list"`: Tailwind's preflight sets
+  `list-style: none`, and Safari/VoiceOver drop the implicit list role once the
+  marker is gone — taking the item count and per-item set position with it. No
+  axe rule covers this.
 - **You supply:** a `label:` per step, and a `status:` of `:complete`,
   `:current`, or `:pending` (defaults to `:pending`).
 

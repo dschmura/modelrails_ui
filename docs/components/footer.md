@@ -71,6 +71,10 @@ Place any HTML inside the footer between the columns grid and the copyright row:
   heading + `<ul>`/`<li>`/`<a>`; links carry the `focus-ring` utility (a visible
   AAA focus outline); AAA-contrast text on `bg-surface-raised`. Pass `label:`
   (i18n) to name the landmark when a page has more than one footer.
+  The `<ul>` carries an explicit `role="list"`: Tailwind's preflight sets
+  `list-style: none`, and Safari/VoiceOver drop the implicit list role once the
+  marker is gone — taking the item count and per-item set position with it. No
+  axe rule covers this.
 - **You supply:** `columns:` (`[{ title:, links: [{ label:, href: }] }]`) and/or
   block content and/or `copyright:`. Every link needs a human-readable `label:`
   (its accessible name) and an `href:`.

@@ -115,4 +115,12 @@ class NavigationMenuRenderTest < ViewComponent::TestCase
 
     assert_selector "nav.mt-4[class*='max-w-max']"
   end
+
+  # --- list semantics (#195) ------------------------------------------------
+
+  def test_menu_list_is_an_explicit_list
+    render_basic
+
+    assert_selector "ul[role=list]"
+  end
 end

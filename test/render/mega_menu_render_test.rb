@@ -126,4 +126,12 @@ class MegaMenuRenderTest < ViewComponent::TestCase
 
     assert_selector "div.relative.mt-4[data-testid='mm']", visible: :all
   end
+
+  # --- list semantics (#195) ------------------------------------------------
+
+  def test_column_list_is_an_explicit_list
+    render_menu
+
+    assert_selector "ul[role=list]", visible: false
+  end
 end

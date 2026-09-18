@@ -36,4 +36,12 @@ class PaginationRenderTest < ViewComponent::TestCase
 
     assert_no_selector "nav"
   end
+
+  # --- list semantics (#195) ------------------------------------------------
+
+  def test_page_list_is_an_explicit_list
+    render_pages
+
+    assert_selector "ul[role=list]"
+  end
 end

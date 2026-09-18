@@ -7,7 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Every list-emitting component now carries an explicit `role="list"` on its `<ul>`/`<ol>`: `list_group`, `timeline`, `stepper`, `breadcrumb`, `pagination`, `navigation_menu`, `mega_menu`, `footer` and `file_input`. Tailwind's preflight sets `list-style: none`, and Safari/VoiceOver drop the implicit list role once the marker is gone — no item count, no per-item set position, no rotor entry. `error_summary` keeps its marker (`list-disc list-inside`) and is the one documented exemption. WCAG 2.2 1.3.1. Closes #190. Closes #195.
+- `list_group`, `timeline` and `stepper` normalize attribute keys before merging a caller's `**html_attrs`, so a `role:`/`"role"` override replaces the default instead of emitting a second `role` attribute (`content_tag` de-duplicates neither, and the winner is browser-dependent). For `stepper` this also applies to its default `aria-label`, which a caller could previously only duplicate.
+
 ### Added
+
+- `test/test_lists_carry_the_list_role.rb`: a guard that derives the set of list-emitting templates from the templates themselves, so a new component cannot reopen the gap by not being on a list. Exemptions must name the utility that restores the marker, and are re-checked against the markup.
 
 - `combobox`: the visible text input carries an `id` derived from the wrapper's (`my-combobox` → `my-combobox-input`), overridable with `input_id:`, so a `<label for>` can target it and `fill_in` can reach it without aria-label matching. Closes #202.
 

@@ -211,4 +211,14 @@ class FileInputRenderTest < ViewComponent::TestCase
     # a ring colour needs a ring width (gem issue #122, same class as #112).
     assert_selector "input[class*='aria-invalid:ring-2'][class*='aria-invalid:ring-danger']"
   end
+
+  # --- list semantics (#195) ------------------------------------------------
+
+  # The pill list only exists in the show_selection: branch, and starts hidden —
+  # so assert against the full DOM, not just visible nodes.
+  def test_selection_list_is_an_explicit_list
+    render_inline(UI::FileInputComponent.new(show_selection: true))
+
+    assert_selector "ul[role=list]", visible: false
+  end
 end

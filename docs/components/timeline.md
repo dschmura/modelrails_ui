@@ -85,6 +85,10 @@ Add any HTML via a block after the named options:
   (`aria-hidden`); event times are perceivable text, emitted as `<time>` with
   an optional machine-readable `datetime`; AAA-contrast tokens throughout; a
   valid item `variant` is required — an unknown one raises in development.
+  The `<ol>` carries an explicit `role="list"`: Tailwind's preflight sets
+  `list-style: none`, and Safari/VoiceOver drop the implicit list role once the
+  marker is gone — taking the item count and per-item set position with it. No
+  axe rule covers this.
 - **You supply:** the event `title:` (and optional `date:`/`datetime:`,
   `description:`, or block body) per item; titles are plain text, so the
   surrounding heading outline stays yours to control.
