@@ -71,6 +71,60 @@ the card instead of floating above and below it.
 The footer deliberately carries no top border of its own, so a pagination partial
 that draws one does not double it.
 
+## Turbo Frames
+
+This component owns no frame, deliberately. Put the `turbo_frame_tag` **around**
+it, in the page:
+
+```erb
+<%= render "filters" %>
+
+<p id="results_status" class="sr-only" role="status" aria-live="polite"></p>
+
+<%= turbo_frame_tag "results" do %>
+  <%= render "results" %>   <%# the ui :table lives in here %>
+<% end %>
+```
+
+Three things about that shape are load-bearing, and all three are why the frame
+cannot live inside the component:
+
+**The frame has to wrap the empty-state branch too.** Your results partial
+usually reads `if @rows.any? … else … end`, and a filter matching nothing must
+still return the frame — otherwise Turbo has nothing to swap into and renders
+"Content missing" instead of your empty state. A component-owned frame only
+exists when there is a table, which is exactly the wrong time.
+
+**Links inside the frame usually want `_top`.** A sort link or a pager link has
+to re-render the filter band with the new state, and a frame-local swap cannot
+reach outside the frame to do it:
+
+```erb
+<%= link_to "Next", path, data: { turbo_frame: "_top" } %>
+```
+
+Pagy's `series_nav` takes `anchor_string:` for the same reason:
+
+```erb
+<%== @pagy.series_nav(anchor_string: 'data-turbo-frame="_top"') %>
+```
+
+Getting this wrong is the most common way to break a framed table: a link that
+navigates to a page with no matching frame id renders "Content missing". Reserve
+the frame swap for control CHANGES (a filter form), where it keeps focus on the
+control the user just operated, and let navigation go to `_top`.
+
+**A live region belongs outside the frame.** A swap replaces everything inside
+the frame, and a live region replaced wholesale announces nothing. Keep the
+status node in the page, present and empty from first render, and update it from
+the frame response:
+
+```erb
+<% if turbo_frame_request? %>
+  <%= turbo_stream.update "results_status", "#{@pagy.count} results" %>
+<% end %>
+```
+
 ## Scrolling a wide table
 
 `scroll: :horizontal` wraps **only the `<table>`** in a focusable, named scroll
@@ -111,6 +165,26 @@ partials can key off it rather than taking a size argument of their own.
 
 A caller's own `data:` hash is merged rather than replacing it, so passing
 `data: { controller: "…" }` cannot silently drop `data-size`.
+
+## At scale
+
+The component renders exactly the rows you hand it, in one response. It adds no
+cap of its own, so the ceiling is yours to set — and worth setting, because the
+cost that bites first is usually the **page**, not the query: a few hundred rows
+each carrying a disclosure or a menu is a large DOM before it is a slow SELECT.
+
+Two habits keep a server-rendered table cheap as the table grows:
+
+- **Don't re-count on every page.** A plain `COUNT(*)` per pager click is the
+  usual first regression on a large table. Pagy's `countish` paginator counts
+  once and carries the count in the page token.
+- **Eager-load what a row renders.** Each row is your partial, so an association
+  touched there is an N+1 per row. `includes`/`preload` the row's associations in
+  the query, not in the view.
+
+Neither is something this component can do for you — both live in the controller,
+which is the point of the split: the component owns the card and the a11y
+contract, and stays out of your query.
 
 ## API
 
