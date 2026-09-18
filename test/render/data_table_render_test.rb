@@ -144,4 +144,24 @@ class DataTableRenderTest < ViewComponent::TestCase
 
     assert_no_selector "caption"
   end
+
+  # --- header scope (#200) --------------------------------------------------
+
+  # Without `scope`, assistive tech falls back to heuristics to associate a data
+  # cell with its header. The heuristic usually works, so axe passes either way —
+  # which is exactly why the contract has to be explicit here.
+  # COLUMNS covers both branches of th_cell: two sortable, one not.
+  def test_every_header_cell_declares_its_scope
+    render_default
+
+    assert_selector "th", count: 3, visible: :all
+    assert_selector "th[scope=col]", count: 3, visible: :all
+  end
+
+  def test_the_sortable_and_non_sortable_branches_both_carry_scope
+    render_default
+
+    assert_selector "th[scope=col][aria-sort]", count: 2, visible: :all
+    assert_selector "th[scope=col]:not([aria-sort])", count: 1, visible: :all
+  end
 end

@@ -7,7 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `popover`: a `trigger_attrs:` hash for attributes on the trigger button (`**html_attrs` go to the wrapper), so a popover standing in for one option of a control group can carry `aria-current`. Merged under the component's own contract, with `data:` merged one level deeper so a caller's hooks survive alongside the Stimulus wiring. Closes #204.
+
 ### Fixed
+
+- `data_table`: both branches of the header cell emit `scope="col"`, so a data cell's header association is stated rather than left to the browser's heuristic. Closes #200.
 
 - Every list-emitting component now carries an explicit `role="list"` on its `<ul>`/`<ol>`: `list_group`, `timeline`, `stepper`, `breadcrumb`, `pagination`, `navigation_menu`, `mega_menu`, `footer` and `file_input`. Tailwind's preflight sets `list-style: none`, and Safari/VoiceOver drop the implicit list role once the marker is gone — no item count, no per-item set position, no rotor entry. `error_summary` keeps its marker (`list-disc list-inside`) and is the one documented exemption. WCAG 2.2 1.3.1. Closes #190. Closes #195.
 - `list_group`, `timeline` and `stepper` normalize attribute keys before merging a caller's `**html_attrs`, so a `role:`/`"role"` override replaces the default instead of emitting a second `role` attribute (`content_tag` de-duplicates neither, and the winner is browser-dependent). For `stepper` this also applies to its default `aria-label`, which a caller could previously only duplicate.

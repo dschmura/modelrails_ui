@@ -86,7 +86,10 @@ Columns with `sortable: true` are clickable. Clicking the same column twice reve
   `th[aria-sort]` the controller flips to `ascending`/`descending`/`none`;
   a visually-hidden `role="status"` live region announces the result count
   after filtering; all controls (search, sort headers, pager) meet the AAA
-  44px target floor; and every user-facing string is localized.
+  44px target floor; every header cell declares `scope="col"`, so a data cell's
+  header association is stated rather than left to the browser's heuristic (axe
+  passes either way, because the heuristic usually works); and every user-facing
+  string is localized.
 - **You supply:** a `caption:` — a table without an accessible name leaves
   screen-reader users without context. Pass one whenever practical.
 
