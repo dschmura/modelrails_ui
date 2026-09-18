@@ -55,6 +55,19 @@ Creates `app/components/ui/combobox_component.rb`.
 
 The component renders a hidden `<input type="hidden">` (submitted with the form) and a visible text input for filtering. Selecting an option updates the hidden input's value and closes the dropdown. When no options match the search term, a "No results." message is displayed.
 
+## Form integration
+
+Selecting an option dispatches a bubbling `change` event **on the hidden input**, so a form that submits on change hears a combobox selection the same way it hears every other control:
+
+```erb
+<%= form_with url: filters_path, method: :get,
+              data: { controller: "search-form", action: "change->search-form#submit" } do %>
+  <%= ui :combobox, name: "workspace", options: @workspace_options %>
+<% end %>
+```
+
+The event has to be dispatched explicitly because the controller assigns the hidden input's value programmatically, and a programmatic assignment fires nothing on its own. Listen on the hidden input or on any ancestor — not on the visible text input, which only ever carries the typed filter text.
+
 ## API
 
 | Option | Type | Default | Description |
@@ -63,7 +76,23 @@ The component renders a hidden `<input type="hidden">` (submitted with the form)
 | `options` | Array | `[]` | Array of `{ value:, label: }` hashes |
 | `value` | String | `nil` | Currently selected value |
 | `placeholder` | String | `"Select..."` | Text shown when nothing is selected |
+| `input_id` | String | `"#{id}-input"` | Id of the visible text input (see below) |
 | `**html_attrs` | Hash | — | Forwarded to the outer `<div>` |
+
+### Addressing the text input
+
+`id:` names the outer `<div>`, not the text input — the input derives its own id
+from it (`my-combobox` → `my-combobox-input`), so it can be targeted by a
+`<label for>` and reached by Capybara's `fill_in` without enabling aria-label
+matching:
+
+```ruby
+fill_in "my-combobox-input", with: "can"
+```
+
+Pass `input_id:` to name it yourself. The visible input deliberately has **no
+`name`**: the hidden input carries the form value, and a name here would post
+the typed label text alongside it.
 
 ## When to use
 
@@ -84,7 +113,9 @@ The component renders a hidden `<input type="hidden">` (submitted with the form)
   the highlighted option via `aria-activedescendant` (DOM focus stays on the
   input — ↑/↓/Home/End move the active option, Enter selects it, Escape closes).
   The input and options carry the AAA `focus-ring`; the empty state is an i18n
-  live region.
+  live region. The text input carries a per-instance `id` derived from the
+  wrapper's, so a `<label for>` can point at the control a user actually types
+  into.
 - **You supply:** `name:` (hidden-field name), `options:` (array of
   `{ value:, label: }`), optional `value:` (pre-selected), `placeholder:`,
   `label:` (accessible name), and `size:`.

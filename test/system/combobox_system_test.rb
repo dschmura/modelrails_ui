@@ -118,6 +118,41 @@ class ComboboxSystemTest < BrowserTestCase
     assert_equal ids.uniq.length, ids.length, "duplicate option ids across instances: #{ids.inspect}"
   end
 
+  # --- form integration (#203) ---------------------------------------------
+
+  # Assigning `input.value` in JS fires nothing. A form that submits on `change`
+  # (the reference app's filter form) therefore never hears a combobox selection
+  # while every other control in the same form is heard. The listener sits on
+  # `document`, so this proves the event BUBBLES as well as that it fires.
+  def test_choosing_an_option_dispatches_change_from_the_hidden_input
+    visit_scenario("combobox/basic")
+    page.execute_script(<<~JS)
+      window.__changeTargets = []
+      document.addEventListener("change", (event) => {
+        window.__changeTargets.push(event.target.dataset.comboboxTarget)
+      })
+    JS
+    input.click
+    find("[role=option]", text: "Mexico").click
+
+    assert_equal ["hidden"], page.evaluate_script("window.__changeTargets")
+    assert_no_stimulus_errors
+  end
+
+  # --- the text input's own id (#202) --------------------------------------
+
+  # The point of the derived id: `fill_in` can address the input directly, so a
+  # host's specs stop reaching for `find("input[role=combobox][aria-label=…]")`.
+  def test_fill_in_reaches_the_text_input_by_its_id
+    visit_scenario("combobox/basic")
+    id = page.evaluate_script(%{document.querySelector("[data-combobox-target=input]").id})
+
+    refute_empty id.to_s, "the text input has no id for fill_in to address"
+    fill_in id, with: "can"
+
+    assert_selector "[role=option]", count: 1, text: "Canada"
+  end
+
   def test_open_combobox_passes_a_structural_axe_audit
     visit_scenario("combobox/basic")
     input.click
