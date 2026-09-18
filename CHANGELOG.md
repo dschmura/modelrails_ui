@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.17.0] - 2026-09-18
+
 ### Changed
 
 - `date_picker`: a typeable text input is now the primary control and the calendar is the secondary one — a date you already know no longer requires walking the month grid, which was slower for everyone and a barrier with a screen reader or a switch. Typing commits on blur or Enter (Enter does not submit the surrounding form), accepts ISO / `M/D/YYYY` / `September 3, 2026` whatever `format:` says, is bound-checked against `min:`/`max:`, and is written back in the display format. A rejected value sets `aria-invalid`, announces why in a live region present and empty from first render, and leaves the stored value untouched. **Breaking for callers who styled internals:** the caption's `<label for>` now points at the text input rather than the trigger (a `<label for>` may only name a labelable element), the trigger is icon-only with its own name, and the `data-date-picker-target="label"` span is gone — the value lives in the input. Closes #199.
