@@ -37,6 +37,11 @@ Gem::Specification.new do |spec|
   # controllers import. Behaviour that only exists once JS runs cannot be proven any
   # other way — the render lane asserts markup and is blind to it.
   spec.add_development_dependency "cuprite"
+  # The browser lane sets `Capybara.server = :webrick` (system_test_helper.rb).
+  # It arrived transitively via ferrum until ferrum dropped the dependency, at
+  # which point a fresh resolve produced a bundle the system lane could not boot.
+  # Something you require is something you declare.
+  spec.add_development_dependency "webrick"
   spec.add_development_dependency "stimulus-rails"
   spec.add_development_dependency "axe-core-capybara"
   spec.add_development_dependency "lefthook"
