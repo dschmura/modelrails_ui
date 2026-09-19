@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- `error_summary`: link items carry `inline-flex min-h-11 items-center`, so each one meets the 44px AAA target-size floor. Each link sits alone in its list item rather than inside running text, so it is a target in its own right; bare, it rendered 17px tall and failed target-size at AA (24px) too. Proven by a live audit in the reference app, which the gem's CI cannot run. Closes #187.
+
 ## [0.17.0] - 2026-09-18
 
 ### Changed

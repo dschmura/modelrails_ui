@@ -61,4 +61,38 @@ class ErrorSummaryRenderTest < ViewComponent::TestCase
 
     assert_selector "svg[aria-hidden='true']"
   end
+
+  # --- target size (#187) ----------------------------------------------------
+
+  # Each link sits alone in a list item rather than inside running text, so it is
+  # a target in its own right: a bare `underline focus-ring` anchor renders 17px
+  # tall and fails axe's target-size (24px AA) as well as the 44px AAA floor. The
+  # host app measured this with a live audit; the gem's CI cannot, so the floor is
+  # asserted in markup here.
+  def test_link_items_meet_the_target_size_floor
+    render_inline(UI::ErrorSummaryComponent.new(items: [{message: "Email is invalid", href: "#user_email"}]))
+    link = page.find("a[href='#user_email']", visible: :all)
+
+    assert_includes link[:class], "min-h-11"
+    assert_includes link[:class], "inline-flex"
+    assert_includes link[:class], "items-center"
+  end
+
+  # The floor must not cost the affordance: the link stays underlined and keeps
+  # the AAA offset outline.
+  def test_link_items_keep_their_underline_and_focus_ring
+    render_inline(UI::ErrorSummaryComponent.new(items: [{message: "Email is invalid", href: "#user_email"}]))
+    link = page.find("a[href='#user_email']", visible: :all)
+
+    assert_includes link[:class], "underline"
+    assert_includes link[:class], "focus-ring"
+  end
+
+  # The marker is why this component is the one documented exemption from the
+  # role="list" sweep, so it is pinned here rather than left implicit.
+  def test_the_list_keeps_its_marker
+    render_inline(UI::ErrorSummaryComponent.new(items: [{message: "Email is invalid", href: "#user_email"}]))
+
+    assert_selector "ul.list-disc.list-inside", visible: :all
+  end
 end
