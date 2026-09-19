@@ -52,7 +52,12 @@ module UI
     def list_item(item)
       content_tag(:li) do
         if item[:href]
-          content_tag(:a, item[:message], href: item[:href], class: "underline focus-ring")
+          # Each link sits alone in its list item rather than inside running text,
+          # so it is a target in its own right: bare, it renders 17px tall and
+          # fails target-size at AA (24px) as well as the AAA 44px floor. The host
+          # app measured this with a live audit — the gem's CI cannot.
+          content_tag(:a, item[:message], href: item[:href],
+            class: "inline-flex min-h-11 items-center underline focus-ring")
         else
           item[:message]
         end

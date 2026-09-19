@@ -119,6 +119,11 @@ the key — or the whole file — degrades to the English default, never to
 - **You supply:** `items` — `[{message:, href:}]`; omit `href` for
   object-level (`:base`) errors.
 
+Each link is a target in its own right — it sits alone in its list item rather
+than inside running text — so it carries `inline-flex min-h-11 items-center`.
+Bare, an anchor here renders 17px tall and fails target-size at AA (24px) as well
+as the AAA 44px floor.
+
 Every other list-emitting component in this library carries an explicit
 `role="list"`, because Tailwind's preflight sets `list-style: none` and
 Safari/VoiceOver then drop the implicit list role. **This component is the one
