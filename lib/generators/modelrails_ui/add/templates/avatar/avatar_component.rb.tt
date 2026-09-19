@@ -6,11 +6,11 @@ module UI
     # Usage, options and the accessibility contract: docs/components/avatar.md in the
     # modelrails_ui gem (`bundle show modelrails_ui`); live examples in Lookbook.
     SIZES = {
-      xs: {css: "w-6 h-6",   text: "text-xs"},
-      sm: {css: "w-8 h-8",   text: "text-xs"},
-      md: {css: "w-10 h-10", text: "text-sm"},
-      lg: {css: "w-16 h-16", text: "text-lg"},
-      xl: {css: "w-32 h-32", text: "text-3xl"}
+      xs: { css: "w-6 h-6",   text: "text-xs" },
+      sm: { css: "w-8 h-8",   text: "text-xs" },
+      md: { css: "w-10 h-10", text: "text-sm" },
+      lg: { css: "w-16 h-16", text: "text-lg" },
+      xl: { css: "w-32 h-32", text: "text-3xl" }
     }.freeze
 
     # src:        image URL (renders <img>); falls back to initials when nil. When a
@@ -70,7 +70,7 @@ module UI
     # both nodes are in the DOM. The --hue style IS mirrored: the recovered initials
     # must render in the caller's hue, not the default.
     def recoverable_image
-      content_tag(:span, class: "contents", data: {controller: "avatar"}) do
+      content_tag(:span, class: "contents", data: { controller: "avatar" }) do
         concat content_tag(:img, nil, **recoverable_image_attrs)
         concat content_tag(:span, @fallback,
           class: cn(config[:css], config[:text],
@@ -78,7 +78,7 @@ module UI
           hidden: true,
           style: (@hue ? "--hue: #{@hue}" : nil),
           **aria_attrs,
-          data: {avatar_target: "fallback"})
+          data: { avatar_target: "fallback" })
       end
     end
 
@@ -117,7 +117,7 @@ module UI
     end
 
     def aria_attrs
-      @aria_label ? {role: "img", "aria-label": @aria_label} : {"aria-hidden": "true"}
+      @aria_label ? { role: "img", "aria-label": @aria_label } : { "aria-hidden": "true" }
     end
   end
 end

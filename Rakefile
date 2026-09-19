@@ -31,4 +31,15 @@ task test: [:"test:structural", :"test:render", :"test:system"]
 require "rubocop/rake_task"
 RuboCop::RakeTask.new
 
-task default: %i[test rubocop]
+# The component templates are linted SEPARATELY, as Rails app code rather than
+# as gem code: the add generator copies them verbatim into a host's
+# app/components/ui/, and a host lints with rubocop-rails-omakase. Two configs
+# because the two styles genuinely disagree — see .rubocop-templates.yml.
+#
+# Without this task the templates are linted by nothing: `rubocop` skips `.tt`,
+# which is how 40 of 92 components came to fail a host's linter on arrival.
+RuboCop::RakeTask.new(:"rubocop:templates") do |t|
+  t.options = ["-c", ".rubocop-templates.yml"]
+end
+
+task default: %i[test rubocop rubocop:templates]

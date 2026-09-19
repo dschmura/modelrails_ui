@@ -41,7 +41,7 @@ module UI
     private
 
     def columns_grid
-      content_tag(:div, class: cn("mb-10 grid gap-8 sm:grid-cols-2", COLS[[@columns.size, 4].min])) do
+      content_tag(:div, class: cn("mb-10 grid gap-8 sm:grid-cols-2", COLS[[ @columns.size, 4 ].min])) do
         safe_join(@columns.map { |col| column(col) })
       end
     end

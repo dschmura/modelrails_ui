@@ -42,7 +42,7 @@ module UI
           return dialog_tag unless @wrapper
 
           content_tag(:div, **wrapper_attrs) do
-            safe_join([trigger_area, dialog_tag].compact)
+            safe_join([ trigger_area, dialog_tag ].compact)
           end
         end
       end
@@ -113,7 +113,7 @@ module UI
     end
 
     def body
-      content_tag(:div, safe_join([description_tag, content].compact),
+      content_tag(:div, safe_join([ description_tag, content ].compact),
         id: @body_id, data: { slot: "body" }, class: "px-6 py-4 overflow-y-auto flex-1")
     end
 

@@ -47,7 +47,7 @@ module UI
     def displayed
       return @items unless @max_items && @items.size > @max_items
 
-      [@items.first, :ellipsis, *@items.last(@max_items - 1)]
+      [ @items.first, :ellipsis, *@items.last(@max_items - 1) ]
     end
 
     def ordered_list
@@ -66,7 +66,7 @@ module UI
           content_tag(:span, "…",
             class: "select-none px-1 text-text-muted",
             "aria-hidden": "true",
-            data: {slot: "breadcrumb-ellipsis"}),
+            data: { slot: "breadcrumb-ellipsis" }),
           content_tag(:span, @separator, class: "select-none text-text-muted", "aria-hidden": "true")
         ])
       end

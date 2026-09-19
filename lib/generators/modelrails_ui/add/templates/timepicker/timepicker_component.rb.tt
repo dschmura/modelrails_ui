@@ -30,8 +30,8 @@ module UI
 
     # The human-readable format hint, keyed by `format:`.
     FORMATS = {
-      h24: {hint: "HH:MM (24-hour)"},
-      h12: {hint: "HH:MM AM/PM (12-hour)"}
+      h24: { hint: "HH:MM (24-hour)" },
+      h12: { hint: "HH:MM AM/PM (12-hour)" }
     }.freeze
 
     def initialize(value: nil, name: nil, label: nil, format: :h24, step: 1, **html_attrs)
@@ -82,7 +82,7 @@ module UI
     def hidden_input
       tag.input(type: "hidden", name: @name,
         value: @value,
-        data: {timepicker_target: "hidden"})
+        data: { timepicker_target: "hidden" })
     end
 
     def trigger_button
@@ -99,7 +99,7 @@ module UI
           action: "click->timepicker#toggle"
         }) do
         concat clock_icon
-        concat content_tag(:span, @value || @label, data: {timepicker_target: "label"})
+        concat content_tag(:span, @value || @label, data: { timepicker_target: "label" })
       end
     end
 
@@ -114,7 +114,7 @@ module UI
         "aria-label": @label,
         "aria-modal": "true",
         tabindex: "-1",
-        data: {timepicker_target: "popover"}) do
+        data: { timepicker_target: "popover" }) do
         content_tag(:div, class: SPINNER_WRAP) do
           concat hour_column(hour_val)
           concat content_tag(:span, ":", class: SEP_CLS, "aria-hidden": "true")
@@ -153,7 +153,7 @@ module UI
           "aria-label": I18n.t("modelrails_ui.timepicker.meridiem", default: "AM or PM"),
           "aria-valuetext": "AM",
           class: cn(NUM_CLS, "cursor-pointer select-none"),
-          data: {timepicker_target: "ampm", action: "click->timepicker#toggleAmPm keydown->timepicker#ampmKeydown"})
+          data: { timepicker_target: "ampm", action: "click->timepicker#toggleAmPm keydown->timepicker#ampmKeydown" })
         concat spin_btn("▼", "click->timepicker#toggleAmPm")
       end
     end
@@ -171,7 +171,7 @@ module UI
         "aria-valuemax": max,
         "aria-valuenow": val,
         "aria-valuetext": val.to_s.rjust(2, "0"),
-        data: {timepicker_target: target, action: action})
+        data: { timepicker_target: target, action: action })
     end
 
     # The ▲/▼ steppers are decorative: aria-hidden + tabindex=-1 so the spinbutton
@@ -179,7 +179,7 @@ module UI
     def spin_btn(label, action)
       content_tag(:button, label, type: "button",
         class: SPIN_BTN, "aria-hidden": "true",
-        tabindex: "-1", data: {action: action})
+        tabindex: "-1", data: { action: action })
     end
 
     def clock_icon

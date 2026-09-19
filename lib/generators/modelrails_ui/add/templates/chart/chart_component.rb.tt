@@ -41,7 +41,7 @@ module UI
 
     def call
       content_tag(:div, class: cn(WRAPPER_CLS, @extra_class)) do
-        safe_join([canvas_tag, data_table])
+        safe_join([ canvas_tag, data_table ])
       end
     end
 
@@ -81,14 +81,14 @@ module UI
     end
 
     def table_head
-      headers = [content_tag(:th, "", scope: "col")] +
+      headers = [ content_tag(:th, "", scope: "col") ] +
         @datasets.map { |d| content_tag(:th, d[:label].to_s, scope: "col") }
       content_tag(:thead, content_tag(:tr, safe_join(headers)))
     end
 
     def table_body
       rows = @labels.each_with_index.map do |label, row|
-        cells = [content_tag(:th, label.to_s, scope: "row")] +
+        cells = [ content_tag(:th, label.to_s, scope: "row") ] +
           @datasets.map { |d| content_tag(:td, Array(d[:data])[row].to_s) }
         content_tag(:tr, safe_join(cells))
       end
@@ -99,7 +99,7 @@ module UI
       ds = @datasets.each_with_index.map do |d, i|
         camelize_keys(with_default_color(d, i)).compact
       end
-      {labels: @labels, datasets: ds, options: @chart_options}.to_json
+      { labels: @labels, datasets: ds, options: @chart_options }.to_json
     end
 
     # Assign an AAA-tuned palette color when the caller didn't specify one, so a

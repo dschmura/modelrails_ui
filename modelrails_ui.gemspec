@@ -42,6 +42,9 @@ Gem::Specification.new do |spec|
   # which point a fresh resolve produced a bundle the system lane could not boot.
   # Something you require is something you declare.
   spec.add_development_dependency "webrick"
+  # The component templates are linted as what they become — Rails app code —
+  # rather than as gem code. See .rubocop-templates.yml.
+  spec.add_development_dependency "rubocop-rails-omakase"
   spec.add_development_dependency "stimulus-rails"
   spec.add_development_dependency "axe-core-capybara"
   spec.add_development_dependency "lefthook"

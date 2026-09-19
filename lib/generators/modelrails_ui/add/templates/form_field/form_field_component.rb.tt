@@ -28,7 +28,7 @@ module UI
       @error = error
       @required = required
       @id = html_attrs.key?(:id) ? html_attrs.delete(:id) : fallback_id
-      @describedby = @id && [("#{@id}-error" if @error.present?), ("#{@id}-hint" if @hint.present?)].compact.join(" ").presence
+      @describedby = @id && [ ("#{@id}-error" if @error.present?), ("#{@id}-hint" if @hint.present?) ].compact.join(" ").presence
       @extra_class = html_attrs.delete(:class)
       @html_attrs = html_attrs
     end
@@ -37,7 +37,7 @@ module UI
     # aria-describedby (hint/error ids) + invalid + required. Mirrors exactly what
     # the form builder (`UI::FormBuilder`) injects into the controls it renders itself.
     def input_attrs
-      {id: @id, describedby: @describedby, invalid: @error.present?, required: @required}
+      { id: @id, describedby: @describedby, invalid: @error.present?, required: @required }
     end
 
     # input_attrs translated to real HTML attributes, for native (non-ViewComponent)
@@ -57,7 +57,7 @@ module UI
       content_tag(:div, class: cn(WRAPPER, @extra_class), **@html_attrs) do
         safe_join([
           field_label,
-          content_tag(:div, content, data: {slot: "control"}),
+          content_tag(:div, content, data: { slot: "control" }),
           hint_tag,
           error_tag
         ].compact)
@@ -82,19 +82,19 @@ module UI
     def field_label
       return unless @label
 
-      render(UI::LabelComponent.new(@label, for: @id, required: @required, data: {slot: "label"}))
+      render(UI::LabelComponent.new(@label, for: @id, required: @required, data: { slot: "label" }))
     end
 
     def hint_tag
       return unless @hint.present?
 
-      content_tag(:p, @hint, id: @id && "#{@id}-hint", class: HINT_CLASSES, data: {slot: "description"})
+      content_tag(:p, @hint, id: @id && "#{@id}-hint", class: HINT_CLASSES, data: { slot: "description" })
     end
 
     def error_tag
       return unless @error.present?
 
-      content_tag(:p, @error, id: @id && "#{@id}-error", class: ERROR_CLASSES, data: {slot: "description"})
+      content_tag(:p, @error, id: @id && "#{@id}-error", class: ERROR_CLASSES, data: { slot: "description" })
     end
   end
 end

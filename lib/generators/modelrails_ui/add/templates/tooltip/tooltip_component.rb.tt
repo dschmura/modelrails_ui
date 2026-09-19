@@ -48,7 +48,7 @@ module UI
 
     def call
       content_tag(:span, **wrapper_attrs) do
-        safe_join([content, bubble])
+        safe_join([ content, bubble ])
       end
     end
 

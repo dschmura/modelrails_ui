@@ -62,8 +62,8 @@ module UI
 
     def normalized_options
       case @options
-      when Hash  then @options.map { |v, l| [v, l] }
-      when Array then @options.map { |o| o.is_a?(Array) ? o : [o, o] }
+      when Hash  then @options.map { |v, l| [ v, l ] }
+      when Array then @options.map { |o| o.is_a?(Array) ? o : [ o, o ] }
       else []
       end
     end

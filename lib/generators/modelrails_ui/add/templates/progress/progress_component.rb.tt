@@ -17,7 +17,7 @@ module UI
       @value = value
       @max = max
       @label = label
-      @pct = [[@value.to_f / @max * 100, 0].max, 100].min
+      @pct = [ [ @value.to_f / @max * 100, 0 ].max, 100 ].min
       @extra_class = html_attrs.delete(:class)
       @html_attrs = html_attrs
     end

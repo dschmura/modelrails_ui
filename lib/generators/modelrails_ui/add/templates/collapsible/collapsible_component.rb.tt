@@ -19,7 +19,7 @@ module UI
     end
 
     def call
-      attrs = {class: cn(@extra_class), **@html_attrs}
+      attrs = { class: cn(@extra_class), **@html_attrs }
       attrs[:open] = true if @open
 
       content_tag(:details, **attrs) do
@@ -31,7 +31,7 @@ module UI
     private
 
     def summary_attrs
-      return {class: SUMMARY_CLS} unless @disabled
+      return { class: SUMMARY_CLS } unless @disabled
 
       {
         class: cn(SUMMARY_CLS, "pointer-events-none opacity-60"),

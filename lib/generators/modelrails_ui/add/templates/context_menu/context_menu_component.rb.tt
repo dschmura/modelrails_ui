@@ -20,7 +20,7 @@ module UI
         role: "menuitem",
         tabindex: "-1",
         class: cn(ITEM, attrs.delete(:class)),
-        data: {menu_target: "item", action: "click->menu#activate"}.merge(caller_data)
+        data: { menu_target: "item", action: "click->menu#activate" }.merge(caller_data)
       }
       el[:href] = href if href
       el[:type] = "button" unless href
@@ -62,7 +62,7 @@ module UI
       raise ArgumentError, "UI::ContextMenuComponent requires a with_trigger slot" unless trigger?
 
       content_tag(:div, **wrapper_attrs) do
-        safe_join([trigger_region, menu_panel])
+        safe_join([ trigger_region, menu_panel ])
       end
     end
 
@@ -72,7 +72,7 @@ module UI
       caller_data = @html_attrs.delete(:data) || {}
       {
         class: cn("relative", @extra_class),
-        data: {controller: "menu", action: "click@document->menu#closeOnClickOutside"}.merge(caller_data)
+        data: { controller: "menu", action: "click@document->menu#closeOnClickOutside" }.merge(caller_data)
       }.merge(@html_attrs)
     end
 
@@ -89,7 +89,7 @@ module UI
         "aria-haspopup": "menu",
         "aria-expanded": "false",
         "aria-controls": @id,
-        data: {menu_target: "trigger", action: "contextmenu->menu#openAt keydown->menu#openContextKey keydown->menu#triggerKeydown"})
+        data: { menu_target: "trigger", action: "contextmenu->menu#openAt keydown->menu#openContextKey keydown->menu#triggerKeydown" })
     end
 
     def menu_panel
@@ -101,7 +101,7 @@ module UI
         tabindex: "-1",
         hidden: true,
         style: "top: 0; left: 0",
-        data: {menu_target: "menu", action: "keydown->menu#navigate"},
+        data: { menu_target: "menu", action: "keydown->menu#navigate" },
         class: PANEL)
     end
   end

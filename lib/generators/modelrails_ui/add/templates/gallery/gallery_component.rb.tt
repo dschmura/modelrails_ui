@@ -53,7 +53,7 @@ module UI
 
       content_tag(:div, **grid_attrs) do
         body = safe_join(images.each_with_index.map { |img, i| cell(img, i) })
-        @lightbox ? safe_join([body, render(LightboxComponent.new(count: images.size))]) : body
+        @lightbox ? safe_join([ body, render(LightboxComponent.new(count: images.size)) ]) : body
       end
     end
 
@@ -91,7 +91,7 @@ module UI
     end
 
     def caption_wrap(img)
-      inner = [img]
+      inner = [ img ]
       inner << content_tag(:figcaption, img.caption, class: CAP_CLS) if img.caption
       safe_join(inner)
     end

@@ -68,7 +68,7 @@ module UI
     end
 
     def panel
-      content_tag(:div, safe_join([header, body, footer_area].compact),
+      content_tag(:div, safe_join([ header, body, footer_area ].compact),
         data: { modal_target: "panel" },
         class: cn(PANEL_BASE, SIDES.fetch(@side)))
     end

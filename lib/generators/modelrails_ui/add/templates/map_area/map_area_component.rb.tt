@@ -22,7 +22,7 @@ module UI
 
     def call
       content_tag(:div, class: cn(WRAPPER_CLS, @extra_class), **@html_attrs) do
-        safe_join([img_tag, map_tag])
+        safe_join([ img_tag, map_tag ])
       end
     end
 

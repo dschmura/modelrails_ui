@@ -131,7 +131,7 @@ module UI
           "aria-expanded": "false",
           "aria-haspopup": "true",
           "aria-controls": @panel_id,
-          data: {navigation_menu_target: "trigger", state: "closed"},
+          data: { navigation_menu_target: "trigger", state: "closed" },
           **@html_attrs) do
           concat @label
           concat chevron

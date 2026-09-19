@@ -73,7 +73,7 @@ module UI
       raise ArgumentError, "UI::PopoverComponent requires a with_trigger slot" unless trigger?
 
       content_tag(:div, **wrapper_attrs) do
-        safe_join([trigger_button, panel])
+        safe_join([ trigger_button, panel ])
       end
     end
 
@@ -105,7 +105,7 @@ module UI
     def trigger_button_attrs
       attrs = {}
       @trigger_attrs.each { |key, value| attrs[key.to_s] = value }
-      caller_data = (attrs.delete("data") || {}).to_h { |key, value| [key.to_s, value] }
+      caller_data = (attrs.delete("data") || {}).to_h { |key, value| [ key.to_s, value ] }
 
       attrs.merge(
         "type" => "button",
@@ -125,7 +125,7 @@ module UI
         tabindex: "-1",
         hidden: true,
         style: "position-anchor: --#{@id}",
-        data: {floating_target: "panel"},
+        data: { floating_target: "panel" },
         class: cn(PANEL_BASE, PLACEMENTS.fetch(:"#{@side}_#{@align}")))
     end
 

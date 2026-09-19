@@ -26,7 +26,7 @@ module UI
 
     def call
       caller_data = @html_attrs.delete(:data) || {}
-      content_tag(:nav, safe_join([top_row, mobile_menu]),
+      content_tag(:nav, safe_join([ top_row, mobile_menu ]),
         "aria-label": nav_label,
         class: cn(NAV, @extra_class),
         data: {
@@ -44,7 +44,7 @@ module UI
     end
 
     def top_row
-      content_tag(:div, safe_join([brand_link, desktop_menu, spacer, action_area, hamburger]),
+      content_tag(:div, safe_join([ brand_link, desktop_menu, spacer, action_area, hamburger ]),
         class: "container mx-auto flex h-14 items-center gap-4 px-4")
     end
 
@@ -93,7 +93,7 @@ module UI
         "aria-expanded": "false",
         "aria-controls": @menu_id,
         class: HAMBURGER_CLASS,
-        data: {navbar_target: "toggle", action: "click->navbar#toggle"})
+        data: { navbar_target: "toggle", action: "click->navbar#toggle" })
     end
 
     def mobile_menu
@@ -103,7 +103,7 @@ module UI
         id: @menu_id,
         hidden: true,
         class: "space-y-1 border-t px-4 py-2 md:hidden",
-        data: {navbar_target: "menu"})
+        data: { navbar_target: "menu" })
     end
 
     def mobile_link(item)

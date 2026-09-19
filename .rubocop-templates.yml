@@ -1,0 +1,26 @@
+# The component templates are NOT gem code. The add generator copies them
+# verbatim into a Rails app's app/components/ui/, so they are app code in
+# waiting — and they should be linted as the thing they become.
+#
+# That is why this config exists separately from .rubocop.yml, which lints this
+# gem's own lib/ and test/ with `standard`. The two disagree (`{a: 1}` against
+# `{ a: 1 }`), and the templates land in codebases that use Rails' default.
+#
+# Before this file the templates were linted by NOTHING: `rubocop` inspected 256
+# files and not one of them was a .tt. 40 of 92 components failed a host app's
+# linter on arrival, and the resulting reformat-on-vendor made every vendored
+# copy differ from its template, so drift could not be spotted with a diff.
+inherit_gem: { rubocop-rails-omakase: rubocop.yml }
+
+AllCops:
+  NewCops: enable
+  SuggestExtensions: false
+  # `.tt` is not a Ruby extension rubocop knows, so the templates have to be
+  # named explicitly or they are silently skipped — which is how they went
+  # unlinted in the first place.
+  Include:
+    - "lib/generators/**/templates/**/*.rb.tt"
+
+# A template is a fragment destined for a host app, not a file this gem loads.
+Style/FrozenStringLiteralComment:
+  Enabled: false

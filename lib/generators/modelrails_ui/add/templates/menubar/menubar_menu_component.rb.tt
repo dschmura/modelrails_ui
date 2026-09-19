@@ -16,7 +16,7 @@ module UI
         role: "menuitem",
         tabindex: "-1",
         class: cn(ITEM, attrs.delete(:class)),
-        data: {menu_target: "item", action: "click->menu#activate"}.merge(caller_data)
+        data: { menu_target: "item", action: "click->menu#activate" }.merge(caller_data)
       }
       el[:href] = href if href
       el[:type] = "button" unless href
@@ -62,7 +62,7 @@ module UI
 
     def call
       caller_data = @html_attrs.delete(:data) || {}
-      content_tag(:div, safe_join([trigger_button, submenu_panel]),
+      content_tag(:div, safe_join([ trigger_button, submenu_panel ]),
         class: cn("relative", @extra_class),
         # closeOnClickOutside gives the band its mutual exclusion: clicking another bar item
         # is "outside" this wrapper, so this submenu closes as the other opens (matches
@@ -103,7 +103,7 @@ module UI
         tabindex: "-1",
         hidden: true,
         style: "position-anchor: --#{@id}",
-        data: {menu_target: "menu", action: "keydown->menu#navigate"},
+        data: { menu_target: "menu", action: "keydown->menu#navigate" },
         class: PANEL)
     end
   end

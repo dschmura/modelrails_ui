@@ -21,16 +21,16 @@ module UI
     # tokens are for, and `text-<level>` on `bg-<level>-surface` is AAA-proven on the
     # toast cards. (info/success on their tinted surfaces: CI-verify.)
     COMBOS = {
-      [:solid, :primary] => "bg-interactive text-text-on-interactive [a&]:hover:bg-interactive-hover",
-      [:soft, :primary] => "bg-interactive-subtle text-interactive [a&]:hover:bg-interactive-subtle",
-      [:soft, :info] => "bg-info-surface text-info border-info-border [a&]:hover:bg-info-hover",
-      [:soft, :success] => "bg-success-surface text-success border-success-border [a&]:hover:bg-success-hover",
-      [:soft, :warning] => "bg-warning-surface text-warning border-warning-border [a&]:hover:bg-warning-hover",
-      [:soft, :danger] => "bg-danger-surface text-danger border-danger-border [a&]:hover:bg-danger-hover",
-      [:soft, :neutral] => "bg-surface text-text-muted border-border [a&]:hover:bg-surface-sunken [a&]:hover:text-text-heading",
-      [:outline, :neutral] => "border-border text-text-heading [a&]:hover:bg-surface-sunken [a&]:hover:text-text-heading",
-      [:ghost, :neutral] => "[a&]:hover:bg-surface-sunken [a&]:hover:text-text-heading",
-      [:link, :primary] => "text-interactive underline-offset-4 [a&]:hover:underline"
+      [ :solid, :primary ] => "bg-interactive text-text-on-interactive [a&]:hover:bg-interactive-hover",
+      [ :soft, :primary ] => "bg-interactive-subtle text-interactive [a&]:hover:bg-interactive-subtle",
+      [ :soft, :info ] => "bg-info-surface text-info border-info-border [a&]:hover:bg-info-hover",
+      [ :soft, :success ] => "bg-success-surface text-success border-success-border [a&]:hover:bg-success-hover",
+      [ :soft, :warning ] => "bg-warning-surface text-warning border-warning-border [a&]:hover:bg-warning-hover",
+      [ :soft, :danger ] => "bg-danger-surface text-danger border-danger-border [a&]:hover:bg-danger-hover",
+      [ :soft, :neutral ] => "bg-surface text-text-muted border-border [a&]:hover:bg-surface-sunken [a&]:hover:text-text-heading",
+      [ :outline, :neutral ] => "border-border text-text-heading [a&]:hover:bg-surface-sunken [a&]:hover:text-text-heading",
+      [ :ghost, :neutral ] => "[a&]:hover:bg-surface-sunken [a&]:hover:text-text-heading",
+      [ :link, :primary ] => "text-interactive underline-offset-4 [a&]:hover:underline"
     }.freeze
 
     # Legacy flat `variant:` values → `[variant, tone]`. Per-component (badge `danger`
@@ -38,10 +38,10 @@ module UI
     # button). When a caller passes one of these in `variant:`, the shim wins and the
     # passed `tone:` is ignored.
     SHIM = {
-      default: [:solid, :primary], secondary: [:soft, :primary], info: [:soft, :info],
-      success: [:soft, :success], warning: [:soft, :warning], danger: [:soft, :danger],
-      destructive: [:soft, :danger], outline: [:outline, :neutral], ghost: [:ghost, :neutral],
-      link: [:link, :primary]
+      default: [ :solid, :primary ], secondary: [ :soft, :primary ], info: [ :soft, :info ],
+      success: [ :soft, :success ], warning: [ :soft, :warning ], danger: [ :soft, :danger ],
+      destructive: [ :soft, :danger ], outline: [ :outline, :neutral ], ghost: [ :ghost, :neutral ],
+      link: [ :link, :primary ]
     }.freeze
 
     # label   — positional or keyword shorthand for plain-text badges without a block.
@@ -58,13 +58,13 @@ module UI
       if href
         @html_attrs[:href] = href
         @tag ||= :a
-        @extra_class = [@extra_class, "min-h-11 focus-ring"].compact.join(" ")
+        @extra_class = [ @extra_class, "min-h-11 focus-ring" ].compact.join(" ")
       end
     end
 
     def call
       content_tag(@tag || :span, content.presence || @label,
-        class: cn(BASE, COMBOS.fetch([@variant, @tone], COMBOS[[:solid, :primary]]), @extra_class),
+        class: cn(BASE, COMBOS.fetch([ @variant, @tone ], COMBOS[[ :solid, :primary ]]), @extra_class),
         "data-variant": @variant, "data-tone": @tone,
         **@html_attrs)
     end
@@ -85,7 +85,7 @@ module UI
       else
         @variant, @tone = variant, tone.to_sym
       end
-      return if COMBOS.key?([@variant, @tone])
+      return if COMBOS.key?([ @variant, @tone ])
 
       unless defined?(Rails) && Rails.respond_to?(:env) && Rails.env.production?
         raise ArgumentError,

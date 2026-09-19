@@ -28,7 +28,7 @@ module UI
         class: cn(BASE, @extra_class),
         for: @for,
         **@html_attrs) do
-        safe_join([content.presence || @text, required_mark].compact)
+        safe_join([ content.presence || @text, required_mark ].compact)
       end
     end
 

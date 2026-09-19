@@ -20,7 +20,7 @@ module UI
     # The card's own top band — a summary, a filters-applied state, a Clear link —
     # so the table's context sits inside the border instead of floating above it.
     TOOLBAR = "flex flex-wrap items-center justify-between gap-3 border-b border-border px-4 py-3"
-    SIZES   = {default: "default", compact: "compact"}.freeze
+    SIZES   = { default: "default", compact: "compact" }.freeze
 
     renders_one :toolbar
     renders_one :header
@@ -49,15 +49,15 @@ module UI
       # Merge the size attribute into any caller `data:` so a passed-through
       # `data:` attr can't clobber `data-size` and silently break row partials
       # that key off it.
-      @data = {size: SIZES[@size]}.merge(html_attrs.delete(:data) || {})
+      @data = { size: SIZES[@size] }.merge(html_attrs.delete(:data) || {})
       @html_attrs = html_attrs
     end
 
     def call
       content_tag(:div, class: cn(WRAPPER, @extra_class), data: @data, **@html_attrs) do
-        concat content_tag(:div, toolbar, class: TOOLBAR, data: {slot: "toolbar"}) if toolbar?
+        concat content_tag(:div, toolbar, class: TOOLBAR, data: { slot: "toolbar" }) if toolbar?
         concat(@scroll ? scroll_region { table } : table)
-        concat content_tag(:div, footer, class: FOOTER, data: {slot: "footer"}) if footer?
+        concat content_tag(:div, footer, class: FOOTER, data: { slot: "footer" }) if footer?
       end
     end
 

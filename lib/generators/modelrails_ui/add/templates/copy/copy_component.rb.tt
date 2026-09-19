@@ -42,7 +42,7 @@ module UI
 
     def call
       content_tag(:div, **wrapper_attrs) do
-        safe_join([label_tag, row, regions])
+        safe_join([ label_tag, row, regions ])
       end
     end
 
@@ -67,7 +67,7 @@ module UI
     end
 
     def row
-      content_tag(:div, class: ROW) { safe_join([value_input, trigger]) }
+      content_tag(:div, class: ROW) { safe_join([ value_input, trigger ]) }
     end
 
     # No `name`: a readonly value must never be submitted if a caller nests this in a form.
@@ -86,7 +86,7 @@ module UI
       attrs[:autofocus] = true if @autofocus
 
       render(UI::ButtonComponent.new(variant: :outline, tone: :neutral, **attrs)) do
-        safe_join([copy_icon, success_icon, content_tag(:span, @copy_label)])
+        safe_join([ copy_icon, success_icon, content_tag(:span, @copy_label) ])
       end
     end
 

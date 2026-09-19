@@ -28,9 +28,9 @@ module UI
 
     # strftime patterns and the human-readable format hint, keyed by `format:`.
     FORMATS = {
-      long: {strftime: "%B %-d, %Y", hint: "MMMM D, YYYY"},
-      short: {strftime: "%-m/%-d/%Y", hint: "M/D/YYYY"},
-      iso: {strftime: "%Y-%m-%d", hint: "YYYY-MM-DD"}
+      long: { strftime: "%B %-d, %Y", hint: "MMMM D, YYYY" },
+      short: { strftime: "%-m/%-d/%Y", hint: "M/D/YYYY" },
+      iso: { strftime: "%Y-%m-%d", hint: "YYYY-MM-DD" }
     }.freeze
 
     def initialize(value: nil, name: nil, label: nil, placeholder: nil, format: :long, min: nil, max: nil,
@@ -62,7 +62,7 @@ module UI
         **@html_attrs) do
         concat caption
         concat hidden_input if @name
-        concat content_tag(:div, safe_join([text_input, trigger_button]), class: GROUP)
+        concat content_tag(:div, safe_join([ text_input, trigger_button ]), class: GROUP)
         concat hint
         concat error_region
         concat calendar_popover
@@ -123,13 +123,13 @@ module UI
     # its text is inserted-with-content, and assistive tech drops it.
     def error_region
       content_tag(:span, nil, id: error_id, class: ERROR_CLS, role: "status", "aria-live": "polite",
-        data: {date_picker_target: "error"})
+        data: { date_picker_target: "error" })
     end
 
     def hidden_input
       tag.input(type: "hidden", name: @name,
         value: @value&.iso8601,
-        data: {date_picker_target: "hidden"})
+        data: { date_picker_target: "hidden" })
     end
 
     # Icon-only now that the caption names the input, so it needs a name of its
