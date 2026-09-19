@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.18.0] - 2026-09-19
+
 ### Changed
 
 - **Breaking — `error_summary` DOM shape.** `role="alert"` moves off the focused container onto an inner block, and the container is marked `data-slot="error-summary"`. When the focused element and the alert are the same element a reader can announce the summary twice, once as the alert and again as the newly focused element; GOV.UK's error-summary pattern splits them for that reason, and the component's own docs already described the split as the better shape. **A host with CSS or a test selecting `[role=alert]` on the outer container will silently stop matching** — select `[data-slot=error-summary]` for the container, or `[data-slot=error-summary] [role=alert]` for the alert. Verified against VoiceOver/Safari in the reference app (no double announcement, no silence); NVDA/Firefox is unverified for either shape.
