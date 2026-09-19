@@ -42,7 +42,7 @@ module UI
       raise ArgumentError, "UI::HoverCardComponent requires a with_trigger slot" unless trigger?
 
       content_tag(:span, **wrapper_attrs) do
-        safe_join([trigger, card])
+        safe_join([ trigger, card ])
       end
     end
 

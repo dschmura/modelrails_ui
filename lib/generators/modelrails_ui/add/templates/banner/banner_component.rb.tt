@@ -49,7 +49,7 @@ module UI
     end
 
     def banner_body
-      safe_join([message_content, dismiss_button].compact)
+      safe_join([ message_content, dismiss_button ].compact)
     end
 
     def message_content

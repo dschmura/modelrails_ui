@@ -63,7 +63,7 @@ module UI
         file_input_many_value: @selection_labels[:many],
         file_input_none_value: @selection_labels[:none]
       }) do
-        safe_join([wired_input, selection_list, pill_template, status_region])
+        safe_join([ wired_input, selection_list, pill_template, status_region ])
       end
     end
 

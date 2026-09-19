@@ -27,7 +27,7 @@ module UI
       else
         (checkbox ? "menuitemcheckbox" : "menuitem")
       end
-      wiring = {menu_target: "item", action: "click->menu#activate"}
+      wiring = { menu_target: "item", action: "click->menu#activate" }
       wiring[:menu_radio_group] = radio if radio
       wiring[:menu_value] = value if value
       wiring[:tone] = tone if tone
@@ -111,7 +111,7 @@ module UI
           action: "mouseleave->submenu#scheduleClose menu:close->submenu#forceClose"
         },
         style: "anchor-name: --#{id}") do
-        safe_join([submenu_trigger(label, id, disabled, **attrs), submenu_panel(id, builder.items)])
+        safe_join([ submenu_trigger(label, id, disabled, **attrs), submenu_panel(id, builder.items) ])
       end
     end
 
@@ -131,7 +131,7 @@ module UI
         }
       }
       el[:"aria-disabled"] = "true" if disabled
-      content_tag(:button, safe_join([label, submenu_chevron]), **attrs, **el)
+      content_tag(:button, safe_join([ label, submenu_chevron ]), **attrs, **el)
     end
 
     def submenu_panel(id, items)
@@ -141,7 +141,7 @@ module UI
         tabindex: "-1",
         hidden: true,
         style: "position-anchor: --#{id}",
-        data: {submenu_target: "panel", action: "keydown->submenu#navigate"},
+        data: { submenu_target: "panel", action: "keydown->submenu#navigate" },
         class: cn(PANEL_BASE, SUBMENU_PLACEMENT))
     end
 
@@ -159,7 +159,7 @@ module UI
         role: "menuitem",
         tabindex: "-1",
         class: cn(ITEM, attrs.delete(:class)),
-        data: {submenu_target: "item", action: "click->submenu#activate"}
+        data: { submenu_target: "item", action: "click->submenu#activate" }
       }
       el[:href] = href if href
       el[:type] = "button" unless href
@@ -215,7 +215,7 @@ module UI
       raise ArgumentError, "UI::DropdownMenuComponent requires a with_trigger slot" unless trigger?
 
       content_tag(:div, **wrapper_attrs) do
-        safe_join([trigger_button, menu_panel])
+        safe_join([ trigger_button, menu_panel ])
       end
     end
 
@@ -226,8 +226,8 @@ module UI
       caller_style = @html_attrs.delete(:style)
       {
         class: cn("relative inline-block", @extra_class),
-        style: ["anchor-name: --#{@id}", caller_style].compact.join("; "),
-        data: {controller: "menu", action: "click@document->menu#closeOnClickOutside"}.merge(caller_data)
+        style: [ "anchor-name: --#{@id}", caller_style ].compact.join("; "),
+        data: { controller: "menu", action: "click@document->menu#closeOnClickOutside" }.merge(caller_data)
       }.merge(@html_attrs)
     end
 
@@ -239,7 +239,7 @@ module UI
         "aria-expanded": "false",
         "aria-controls": @id,
         "aria-label": @aria_label,
-        data: {menu_target: "trigger", action: "click->menu#toggle keydown->menu#triggerKeydown"},
+        data: { menu_target: "trigger", action: "click->menu#toggle keydown->menu#triggerKeydown" },
         class: cn(TRIGGER_BASE, @trigger_class))
     end
 
@@ -251,7 +251,7 @@ module UI
         tabindex: "-1",
         hidden: true,
         style: "position-anchor: --#{@id}",
-        data: {menu_target: "menu", action: "keydown->menu#navigate"},
+        data: { menu_target: "menu", action: "keydown->menu#navigate" },
         class: cn(PANEL_BASE, PLACEMENTS.fetch(:"#{@side}_#{@align}")))
     end
 

@@ -10,27 +10,27 @@ module UI
     # The proven (variant, tone) cells. Keys are [variant, tone]; values are the AAA
     # treatments (byte-identical to the former flat VARIANTS values).
     COMBOS = {
-      [:solid, :primary] => "btn-primary",
-      [:solid, :danger] => "btn-danger",
-      [:outline, :neutral] => "btn-secondary",
-      [:text, :primary] => "btn-touch-target btn-text btn-text-interactive",
-      [:text, :danger] => "btn-touch-target btn-text btn-text-danger"
+      [ :solid, :primary ] => "btn-primary",
+      [ :solid, :danger ] => "btn-danger",
+      [ :outline, :neutral ] => "btn-secondary",
+      [ :text, :primary ] => "btn-touch-target btn-text btn-text-interactive",
+      [ :text, :danger ] => "btn-touch-target btn-text btn-text-danger"
     }.freeze
 
     # Legacy flat `variant:` → [variant, tone]. Lets every existing call site keep
     # working unchanged (the new two-axis API is the canonical form).
     SHIM = {
-      primary: [:solid, :primary],
-      secondary: [:outline, :neutral],
-      danger: [:solid, :danger],
-      destructive: [:solid, :danger],
-      text: [:text, :primary],
-      text_interactive: [:text, :primary],
-      text_danger: [:text, :danger]
+      primary: [ :solid, :primary ],
+      secondary: [ :outline, :neutral ],
+      danger: [ :solid, :danger ],
+      destructive: [ :solid, :danger ],
+      text: [ :text, :primary ],
+      text_interactive: [ :text, :primary ],
+      text_danger: [ :text, :danger ]
     }.freeze
 
     # A8: :default keeps the standard horizontal padding; :icon is a 44×44 square.
-    SIZES = {default: "", icon: "px-0 min-w-[var(--form-input-height)]"}.freeze
+    SIZES = { default: "", icon: "px-0 min-w-[var(--form-input-height)]" }.freeze
 
     # label — positional or keyword shorthand for plain-text buttons without a block.
     # href  — renders an <a> tag; sets tag: :a automatically.
@@ -70,7 +70,7 @@ module UI
     def coerce_axes(variant, tone)
       variant = variant.to_sym
       @variant, @tone = variant, tone.to_sym
-      return if COMBOS.key?([@variant, @tone])
+      return if COMBOS.key?([ @variant, @tone ])
 
       if SHIM.key?(variant)
         @variant, @tone = SHIM[variant]
@@ -88,7 +88,7 @@ module UI
     end
 
     def component_classes
-      cn(COMBOS.fetch([@variant, @tone], COMBOS[[:solid, :primary]]), SIZES.fetch(@size, ""), @extra_class)
+      cn(COMBOS.fetch([ @variant, @tone ], COMBOS[[ :solid, :primary ]]), SIZES.fetch(@size, ""), @extra_class)
     end
   end
 end

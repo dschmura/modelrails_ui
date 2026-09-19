@@ -56,8 +56,8 @@ module UI
     end
 
     def panel
-      content_tag(:div, safe_join([drag_handle, header, body, footer_area].compact),
-        data: {modal_target: "panel", drawer_drag_target: "panel"},
+      content_tag(:div, safe_join([ drag_handle, header, body, footer_area ].compact),
+        data: { modal_target: "panel", drawer_drag_target: "panel" },
         class: PANEL)
     end
 
@@ -68,7 +68,7 @@ module UI
       content_tag(:div, content_tag(:div, nil, class: "h-1.5 w-12 rounded-full bg-surface-sunken"),
         class: "flex justify-center pt-3 pb-1 cursor-grab touch-none active:cursor-grabbing",
         "aria-hidden": "true",
-        data: {action: "pointerdown->drawer-drag#start"})
+        data: { action: "pointerdown->drawer-drag#start" })
     end
   end
 end

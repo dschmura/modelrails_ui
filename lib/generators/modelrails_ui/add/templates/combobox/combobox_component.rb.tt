@@ -74,7 +74,7 @@ module UI
     end
 
     def hidden_input
-      tag.input(type: "hidden", name: @name, value: @value, data: {combobox_target: "hidden"})
+      tag.input(type: "hidden", name: @name, value: @value, data: { combobox_target: "hidden" })
     end
 
     def text_input
@@ -102,7 +102,7 @@ module UI
     def list_id = "#{@id}-list"
 
     def dropdown
-      content_tag(:div, listbox, data: {combobox_target: "panel"}, hidden: true,
+      content_tag(:div, listbox, data: { combobox_target: "panel" }, hidden: true,
         style: "position-anchor: --#{@id}", class: PANEL)
     end
 
@@ -112,13 +112,13 @@ module UI
         role: "listbox",
         "aria-label": accessible_name,
         class: LIST,
-        data: {combobox_target: "list"}) do
+        data: { combobox_target: "list" }) do
         concat options_list
         concat content_tag(:div,
           I18n.t("modelrails_ui.combobox.empty", default: "No results found."),
           class: EMPTY,
           role: "status",
-          data: {combobox_target: "empty"},
+          data: { combobox_target: "empty" },
           hidden: true)
       end
     end

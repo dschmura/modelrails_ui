@@ -63,7 +63,7 @@ module UI
     end
 
     def call
-      content_tag(:div, safe_join([tone_icon, resolved_title, resolved_description].compact),
+      content_tag(:div, safe_join([ tone_icon, resolved_title, resolved_description ].compact),
         **@html_attrs,
         role: @role_override || ROLES.fetch(@tone),
         # role overrides (e.g. :note for persistent context) are NOT live regions

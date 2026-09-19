@@ -27,7 +27,7 @@ module UI
 
       content_tag(:nav, "aria-label": "Pagination", **@html_attrs) do
         content_tag(:ul, role: "list", class: cn("flex items-center gap-1", @extra_class)) do
-          safe_join([prev_item, *page_items, next_item])
+          safe_join([ prev_item, *page_items, next_item ])
         end
       end
     end
@@ -78,10 +78,10 @@ module UI
     def pages
       return (1..@total).to_a if @total <= (@window * 2 + 5)
 
-      left  = [@current - @window, 1].max
-      right = [@current + @window, @total].min
+      left  = [ @current - @window, 1 ].max
+      right = [ @current + @window, @total ].min
 
-      result = [1]
+      result = [ 1 ]
       result << :ellipsis if left > 2
       result.concat((left..right).to_a)
       result << :ellipsis if right < @total - 1

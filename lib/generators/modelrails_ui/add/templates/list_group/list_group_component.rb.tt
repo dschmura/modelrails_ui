@@ -27,7 +27,7 @@ module UI
     # naive spelling emits BOTH and lets the browser pick. The caller merges last
     # because a list that is really a navigation is the caller's call to make.
     def list_attrs
-      attrs = {"role" => "list", "class" => cn(BASE, @extra_class)}
+      attrs = { "role" => "list", "class" => cn(BASE, @extra_class) }
       @html_attrs.each { |key, value| attrs[key.to_s] = value }
       attrs
     end

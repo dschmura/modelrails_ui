@@ -36,7 +36,7 @@ module UI
     end
 
     def password_field(method, options = {})
-      options = {autocomplete: "new-password"}.merge(options)
+      options = { autocomplete: "new-password" }.merge(options)
       input_field(method, "password", options)
     end
 
@@ -61,7 +61,7 @@ module UI
     end
 
     def text_area(method, options = {})
-      options = {rows: 4}.merge(options)
+      options = { rows: 4 }.merge(options)
       wrapped_field(method, options) do |field, opts|
         name = opts.key?(:name) ? opts.delete(:name) : field_name(method)
         @template.render(UI::TextareaComponent.new(
@@ -164,7 +164,7 @@ module UI
     def collection_checkboxes(method, collection, value_method, text_method, options = {}, html_options = {}, &block)
       collection_group(method, collection, value_method, text_method, options, html_options) do |opts, html_opts|
         super(method, collection, value_method, text_method, opts, html_opts) do |b|
-          collection_row { @template.safe_join([b.checkbox, @template.content_tag(:span, b.text)]) }
+          collection_row { @template.safe_join([ b.checkbox, @template.content_tag(:span, b.text) ]) }
         end
       end
     end
@@ -173,7 +173,7 @@ module UI
     def collection_radio_buttons(method, collection, value_method, text_method, options = {}, html_options = {}, &block)
       collection_group(method, collection, value_method, text_method, options, html_options) do |opts, html_opts|
         super(method, collection, value_method, text_method, opts, html_opts) do |b|
-          collection_row { @template.safe_join([b.radio_button, @template.content_tag(:span, b.text)]) }
+          collection_row { @template.safe_join([ b.radio_button, @template.content_tag(:span, b.text) ]) }
         end
       end
     end
@@ -204,7 +204,7 @@ module UI
       items = object.errors.map do |error|
         skip = error.attribute == :base || unlinked.include?(error.attribute.to_sym)
         href = skip ? nil : "##{field_id(error.attribute)}"
-        {message: error.full_message, href: href}
+        { message: error.full_message, href: href }
       end
       @template.render(UI::ErrorSummaryComponent.new(items: items, **options))
     end
@@ -228,19 +228,19 @@ module UI
       error = error_for(method)
       base_id = field_id(method)
 
-      describedby = [("#{base_id}-error" if error), ("#{base_id}-hint" if hint)].compact.join(" ").presence
+      describedby = [ ("#{base_id}-error" if error), ("#{base_id}-hint" if hint) ].compact.join(" ").presence
       # Applies to both kinds — checkbox AND radio rows need CHECKBOX_CLASSES
       # (the shared 44px-target accent styling); a caller class is additive.
       html_options[:class] = merge_classes(CHECKBOX_CLASSES, html_options[:class])
       html_options["aria-invalid"] = "true" if error
 
-      fieldset_attrs = {class: "space-y-2"}
+      fieldset_attrs = { class: "space-y-2" }
       fieldset_attrs["aria-describedby"] = describedby if describedby
 
       @template.content_tag(:fieldset, **fieldset_attrs) do
         @template.safe_join([
           @template.content_tag(:legend, class: LEGEND_CLASSES) {
-            @template.safe_join([legend_text, (required_mark if required)].compact)
+            @template.safe_join([ legend_text, (required_mark if required) ].compact)
           },
           (hint_paragraph(hint, id: "#{base_id}-hint") if hint),
           @template.content_tag(:div, class: "space-y-2") { yield(options, html_options) },
@@ -255,11 +255,11 @@ module UI
 
     def hint_paragraph(text, id:)
       @template.content_tag(:p, text, id: id,
-        class: UI::FormFieldComponent::HINT_CLASSES, data: {slot: "description"})
+        class: UI::FormFieldComponent::HINT_CLASSES, data: { slot: "description" })
     end
 
     def required_mark
-      @template.content_tag(:span, "*", class: "text-danger", aria: {hidden: true})
+      @template.content_tag(:span, "*", class: "text-danger", aria: { hidden: true })
     end
 
     # The shared wrapped-field cycle: extract the wrapper's options, render
@@ -298,7 +298,7 @@ module UI
     # directly. Spread caller opts AFTER this so caller options win.
     def control_kwargs(field)
       attrs = field.input_attrs
-      kwargs = {id: attrs[:id], invalid: attrs[:invalid], describedby: attrs[:describedby], required: false}
+      kwargs = { id: attrs[:id], invalid: attrs[:invalid], describedby: attrs[:describedby], required: false }
       kwargs["aria-required"] = "true" if attrs[:required]
       kwargs
     end
@@ -354,7 +354,7 @@ module UI
       return if message.blank?
 
       @template.content_tag(:p, message, id: id && "#{id}-error",
-        class: UI::FormFieldComponent::ERROR_CLASSES, data: {slot: "description"})
+        class: UI::FormFieldComponent::ERROR_CLASSES, data: { slot: "description" })
     end
 
     # Joins space-separated token lists generally — CSS classes AND

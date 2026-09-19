@@ -68,15 +68,15 @@ module UI
         "aria-haspopup": "true",
         "aria-expanded": "false",
         "aria-controls": @panel_id,
-        data: {mega_menu_target: "trigger", state: "closed",
-                action: "click->mega-menu#toggle"}) do
+        data: { mega_menu_target: "trigger", state: "closed",
+                action: "click->mega-menu#toggle" }) do
         concat @label
         concat chevron
       end
     end
 
     def panel
-      col_count = @cols || [columns.size, 1].max
+      col_count = @cols || [ columns.size, 1 ].max
       grid_cls  = "grid-cols-#{col_count}"
 
       content_tag(:nav,
@@ -85,7 +85,7 @@ module UI
         hidden: true,
         class: PANEL_CLS,
         style: "position-anchor: --#{@id}",
-        data: {mega_menu_target: "panel"}) do
+        data: { mega_menu_target: "panel" }) do
         content_tag(:div, class: cn(INNER_CLS, grid_cls)) do
           safe_join(columns)
         end
@@ -102,7 +102,7 @@ module UI
         "stroke-width": "2",
         class: "size-3 transition-transform duration-200 data-[state=open]:rotate-180",
         "aria-hidden": "true",
-        data: {mega_menu_target: "chevron"})
+        data: { mega_menu_target: "chevron" })
     end
 
     # A single column inside the mega menu panel.

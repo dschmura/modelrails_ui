@@ -41,7 +41,7 @@ module UI
 
     def call
       caller_data = @html_attrs.delete(:data) || {}
-      content_tag(:div, safe_join([tablist, *panels]),
+      content_tag(:div, safe_join([ tablist, *panels ]),
         class: cn("w-full", @extra_class),
         data: {
           controller: "tabs",
@@ -97,7 +97,7 @@ module UI
           "aria-labelledby": tab_id(index),
           tabindex: "0",
           hidden: index != @selected,
-          data: {tabs_target: "panel"},
+          data: { tabs_target: "panel" },
           class: PANEL)
       end
     end

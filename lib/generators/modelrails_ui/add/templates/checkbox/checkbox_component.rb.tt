@@ -53,8 +53,8 @@ module UI
       if @indeterminate
         caller_data = attrs.delete(:data) || {}
         attrs[:data] = {
-          controller: [caller_data[:controller], "indeterminate"].compact.join(" "),
-          action: [caller_data[:action], "change->indeterminate#clear"].compact.join(" ")
+          controller: [ caller_data[:controller], "indeterminate" ].compact.join(" "),
+          action: [ caller_data[:action], "change->indeterminate#clear" ].compact.join(" ")
         }.merge(caller_data.except(:controller, :action))
       end
       attrs[:"aria-invalid"] = "true" if @invalid
