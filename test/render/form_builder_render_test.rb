@@ -458,7 +458,9 @@ class FormBuilderRenderTest < ViewComponent::TestCase
     article.errors.add(:base, "is a duplicate")
     page = page_for(builder(article).error_summary)
 
-    assert page.has_css?("div[role='alert'][tabindex='-1'][autofocus]")
+    # Split shape: a role-less focus target wrapping the alert. One selector
+    # covers both halves — the shape itself is pinned in the component's own test.
+    assert page.has_css?("div[data-slot='error-summary'][tabindex='-1'][autofocus] div[role='alert']")
     assert page.has_css?("li a[href='#b1_article_title']", text: "Title can't be blank")
     assert page.has_css?("li", text: "is a duplicate")
   end

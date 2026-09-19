@@ -16,13 +16,46 @@ class ErrorSummaryRenderTest < ViewComponent::TestCase
     assert_no_selector "div"
   end
 
-  def test_container_is_a_focusable_autofocused_alert
-    # tabindex=-1 makes the div programmatically focusable; autofocus is what
-    # actually moves focus — browsers honour it on load and Turbo Drive re-honours
-    # it after every render, including 422 form re-renders. Zero JS.
+  # The focus target and the alert are DIFFERENT nodes, deliberately (GOV.UK's
+  # error-summary shape). When one element is both, a reader can announce it
+  # twice — once as the alert, once as the newly focused element. Splitting them
+  # lets focus land on a role-less container that reads its contents once, while
+  # the alert inside keeps its semantics for readers that use it.
+  #
+  # tabindex=-1 makes the container programmatically focusable; autofocus is what
+  # actually moves focus — browsers honour it on load and Turbo Drive re-honours
+  # it after every render, including 422 form re-renders. Zero JS.
+  def test_focus_target_is_the_container_and_carries_no_role
     render_inline(UI::ErrorSummaryComponent.new(items: ITEMS))
 
-    assert_selector "div[role='alert'][tabindex='-1'][autofocus]"
+    assert_selector "div[data-slot='error-summary'][tabindex='-1'][autofocus]"
+    assert_no_selector "div[data-slot='error-summary'][role='alert']"
+  end
+
+  def test_the_alert_is_a_separate_node_inside_the_focus_target
+    render_inline(UI::ErrorSummaryComponent.new(items: ITEMS))
+
+    assert_selector "div[data-slot='error-summary'] div[role='alert']"
+  end
+
+  # The pair is what matters: exactly one alert, and it is never the focused node.
+  def test_there_is_exactly_one_alert_and_it_is_not_focusable
+    render_inline(UI::ErrorSummaryComponent.new(items: ITEMS))
+
+    assert_selector "[role='alert']", count: 1
+    assert_no_selector "[role='alert'][tabindex]"
+    assert_no_selector "[role='alert'][autofocus]"
+  end
+
+  # The heading and the items must sit INSIDE the alert, or the live region
+  # announces an empty container.
+  def test_the_alert_contains_the_heading_and_the_items
+    render_inline(UI::ErrorSummaryComponent.new(items: ITEMS))
+
+    within_alert = page.find("[role='alert']")
+
+    assert within_alert.has_css?("h2"), "heading is outside the alert"
+    assert within_alert.has_css?("li a[href='#article_title']"), "items are outside the alert"
   end
 
   def test_each_item_links_to_its_field
