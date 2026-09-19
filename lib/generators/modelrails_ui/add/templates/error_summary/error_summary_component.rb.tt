@@ -20,10 +20,19 @@ module UI
       @items.any?
     end
 
+    # The focus target and the alert are DIFFERENT nodes, deliberately — GOV.UK's
+    # error-summary shape. When one element is both, a reader can announce it
+    # twice: once as the alert, once as the newly focused element. Splitting them
+    # lets focus land on a role-less container that reads its contents once,
+    # while the alert inside keeps its semantics for readers that use it.
+    #
+    # tabindex=-1 makes the container focusable; `autofocus` is what moves focus,
+    # and Turbo Drive re-honours it on every render including the 422 re-render
+    # after a failed submit. Zero JavaScript.
     def call
-      content_tag(:div, role: "alert", tabindex: "-1", autofocus: true,
+      content_tag(:div, tabindex: "-1", autofocus: true, data: {slot: "error-summary"},
                        class: cn(BASE, @extra_class), **@html_attrs) do
-        content_tag(:div, class: "flex items-start gap-3") do
+        content_tag(:div, role: "alert", class: "flex items-start gap-3") do
           safe_join([icon, body])
         end
       end

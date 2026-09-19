@@ -27,13 +27,15 @@ page load, and **Turbo Drive re-honours it on every render** — including the
 422 re-render after a failed submit. The failed submit becomes an actual
 focus + announcement event, not a silent DOM swap.
 
-A further refinement separates the two roles: some hosts of this component
-put `role="alert"` on an inner element instead of the focused container
-itself (GOV.UK's shape) — when the focused element and the alert are the
-same element, a reader can announce it twice (the alert, then the focused
-element). Splitting them lets focus land on a role-less container that reads
-its contents once, while the alert inside keeps its semantics for readers
-that use it.
+The two roles are **separated**, which is GOV.UK's shape: `role="alert"` sits on
+an inner element, never on the focused container. When the focused element and
+the alert are the same element, a reader can announce it twice — once as the
+alert, then again as the newly focused element. Splitting them lets focus land
+on a role-less container that reads its contents once, while the alert inside
+keeps its semantics for readers that use it.
+
+The focus target is marked `data-slot="error-summary"`, so a host can style or
+select it without depending on the role placement.
 
 Each error additionally renders as a real link to `#<field_id>`, so the
 summary doubles as a working task list: activate an item, land on the field.
@@ -110,7 +112,9 @@ the key — or the whole file — degrades to the English default, never to
 
 ## Accessibility contract
 
-- **Guarantees:** a focusable, autofocused `role="alert"` container; a
+- **Guarantees:** a focusable, autofocused container (`data-slot="error-summary"`)
+  wrapping a separate `role="alert"` block — never the same node, so a reader
+  does not announce the summary twice; a
   count-pluralized heading at a configurable level (default h2 — pass
   `heading_level:` when the form sits under deeper headings, 1.3.1/2.4.10);
   items as real links to `#<field_id>` when `href` is given; a decorative
