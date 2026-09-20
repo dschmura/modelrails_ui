@@ -106,6 +106,15 @@ class ComboboxRenderTest < ViewComponent::TestCase
     assert_selector "div[role='status'][data-combobox-target='empty']", text: "No results found.", visible: false
   end
 
+  # Structure, so re-nesting it cannot pass unnoticed: role=listbox admits only
+  # options, and the message has to outlive the list being hidden at zero matches.
+  def test_empty_state_is_a_sibling_of_the_listbox_not_a_child
+    render_basic
+
+    assert_no_selector "[role='listbox'] [data-combobox-target='empty']"
+    assert_selector "[data-combobox-target='panel'] > [data-combobox-target='empty']"
+  end
+
   # --- focus-ring (AAA) ----------------------------------------------------
 
   def test_input_and_options_carry_the_focus_ring

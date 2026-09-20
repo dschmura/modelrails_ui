@@ -113,7 +113,10 @@ the typed label text alongside it.
   the highlighted option via `aria-activedescendant` (DOM focus stays on the
   input — ↑/↓/Home/End move the active option, Enter selects it, Escape closes).
   The input and options carry the AAA `focus-ring`; the empty state is an i18n
-  live region. The text input carries a per-instance `id` derived from the
+  live region sitting **beside** the listbox rather than inside it, so that at
+  zero matches the listbox is hidden outright — an empty `role="listbox"` would
+  advertise children it does not have — and the message is what a reader reaches.
+  The text input carries a per-instance `id` derived from the
   wrapper's, so a `<label for>` can point at the control a user actually types
   into.
 - **You supply:** `name:` (hidden-field name), `options:` (array of
