@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.19.0] - 2026-09-20
+
+Four breaking changes, all of them DOM shape or i18n keys rather than API. A host
+that selects into these components, or translates their strings, needs the
+migration notes below; a host that only renders them does not.
+
 ### Changed
 
 - **`combobox` DOM shape — the empty state moves out of the listbox.** `[data-combobox-target=empty]` was a child of `[role=listbox]`; it is now its sibling, directly under `[data-combobox-target=panel]`. It had to move before the listbox could be hidden at zero matches, since hiding a parent takes the message with it — and `role="listbox"` admits only options, so the nested `role="status"` was an `aria-required-children` violation the moment a zero-match filter revealed it. **A host with CSS or a test selecting the empty state as a descendant of the listbox will stop matching** — select it under the panel instead.
