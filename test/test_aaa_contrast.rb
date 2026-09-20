@@ -68,6 +68,26 @@ class TestAaaContrast < Minitest::Test
     assert_aaa WHITE, SKY_800, "light: text-on-interactive on interactive"
   end
 
+  # A KNOWN-BAD pair, pinned so it cannot be adopted by accident (#197).
+  # `text-interactive` (primary-800) on `bg-surface-sunken` (neutral-100) is the
+  # hover state of any list row containing a link, and it does not reach AAA. It
+  # is measured here rather than merely noted in a stylesheet comment: a token
+  # remap that changes the number fails this test and forces a fresh decision
+  # instead of silently moving a pair across the line in either direction.
+  #
+  # This is why hover is bound to interactivity in list_group_item rather than
+  # applied per colour variant — the combination is now unreachable from that
+  # component. Retuning the tokens themselves is a separate call with a much
+  # wider blast radius and is deliberately not attempted here.
+  def test_interactive_text_on_the_sunken_surface_does_not_reach_aaa
+    ratio = contrast(SKY_800, SLATE_100)
+
+    assert_in_delta 6.86, ratio, 0.05,
+      "light: text-interactive on surface-sunken measured #{ratio.round(3)}:1"
+    assert_operator ratio, :<, AAA,
+      "this pair is documented as below AAA; if it now passes, update the ruling in #197"
+  end
+
   def test_dark_mode_text_pairs_meet_aaa
     assert_aaa SLATE_100, SLATE_900, "dark: text-heading on surface"
     assert_aaa SLATE_100, SLATE_800, "dark: text-heading on surface-raised"

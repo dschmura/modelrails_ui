@@ -12,9 +12,21 @@ module UI
     LINK = "focus-ring transition-colors"
 
     VARIANTS = {
-      default: "text-text-heading hover:bg-surface-sunken",
+      default: "text-text-heading",
       active:  "bg-interactive text-text-on-interactive",
-      muted:   "text-text-muted hover:bg-surface-sunken"
+      muted:   "text-text-muted"
+    }.freeze
+
+    # Hover belongs to interactivity, not to colour variant, so it is applied only
+    # in link_row — a static <li> highlighting full-width promises a click target
+    # that does not exist (#191). Keyed by variant rather than folded into LINK
+    # because LINK also dresses ACTIVE rows: an active row hovering to
+    # bg-surface-sunken keeps text-text-on-interactive, which is white text on a
+    # near-white surface in the light theme. The empty cell is the point.
+    HOVER = {
+      default: "hover:bg-surface-sunken",
+      active:  "",
+      muted:   "hover:bg-surface-sunken"
     }.freeze
 
     def initialize(label = nil, href: nil, active: false, variant: :default, **html_attrs)
@@ -38,7 +50,7 @@ module UI
       content_tag(:li) do
         content_tag(:a, body,
           href: @href,
-          class: cn(BASE, LINK, VARIANTS.fetch(@variant), @extra_class),
+          class: cn(BASE, LINK, VARIANTS.fetch(@variant), HOVER.fetch(@variant), @extra_class),
           "aria-current": (@active ? "page" : nil),
           **@html_attrs)
       end
