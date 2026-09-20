@@ -70,9 +70,11 @@ Common steps are 5, 15, and 30 minutes:
   an i18n accessible name (`label:`) and a format hint wired via `aria-describedby`;
   the popover is a `role="dialog"` named by `label:`; the hour/minute/AM-PM fields
   are `role="spinbutton"` with `aria-valuemin`/`aria-valuemax`/`aria-valuenow`/
-  `aria-valuetext` and an i18n `aria-label` announcing which unit they edit; the ▲/▼
-  stepper buttons are decorative (`aria-hidden`, `tabindex=-1`) since the spinbutton
-  inputs are the keyboard target; every focusable control carries the offset
+  `aria-valuetext` and an i18n `aria-label` announcing which unit they edit; <kbd>↑</kbd>
+  and <kbd>↓</kbd> step hour and minute (honouring `step:`) and toggle AM/PM, which is
+  what `role="spinbutton"` promises; the ▲/▼ stepper buttons are decorative
+  (`aria-hidden`, `tabindex=-1`) since the spinbutton inputs are the keyboard target;
+  every focusable control carries the offset
   `focus-ring` (never a clipped box-shadow ring); the decorative clock icon is
   `aria-hidden`.
 - **You supply:** an optional `label:` (the field caption / popover name; defaults to
