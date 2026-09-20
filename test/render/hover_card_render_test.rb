@@ -67,4 +67,13 @@ class HoverCardRenderTest < ViewComponent::TestCase
   def test_fail_loud_on_unknown_side
     assert_raises(ArgumentError) { UI::HoverCardComponent.new(side: :diagonal) }
   end
+
+  # A caller's `data:` used to replace the wrapper's whole data hash, taking
+  # data-controller with it — the hover card silently stopped working.
+  def test_caller_data_does_not_displace_the_controller_wiring
+    render_card(data: {testid: "profile-card"})
+
+    assert_selector "[data-controller=floating][data-testid='profile-card']", visible: :all
+    assert_selector "[data-controller=floating][data-action*='floating#hoverOpen']", visible: :all
+  end
 end

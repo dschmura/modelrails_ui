@@ -17,6 +17,15 @@ class DialogRenderTest < ViewComponent::TestCase
     assert_selector "dialog[role='dialog'][aria-modal='true']", visible: :all
   end
 
+  # ModalChrome's wrapper used to lose its whole data hash to a caller's `data:`,
+  # taking data-controller="modal" with it — the dialog silently never opened.
+  # Covers sheet and drawer too, which share this wrapper.
+  def test_caller_data_does_not_displace_the_modal_controller
+    render_inline(UI::DialogComponent.new(title: "Edit profile", id: "d1", data: {testid: "edit-dialog"}))
+
+    assert_selector "[data-controller=modal][data-testid='edit-dialog']", visible: :all
+  end
+
   def test_title_is_the_accessible_name_via_aria_labelledby
     render_inline(UI::DialogComponent.new(title: "Edit profile", id: "m1"))
 

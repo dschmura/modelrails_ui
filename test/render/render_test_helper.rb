@@ -28,17 +28,15 @@ Rails.application.initialize! unless Rails.application.initialized?
 require "view_component/test_case"
 require "minitest/autorun"
 
-# Real ApplicationComponent — mirrors install/templates/application_component.rb.tt
-# exactly (cn is backed by tailwind_merge so the render tests exercise components
-# under real merge behavior: a per-thread Merger, class: overrides win conflicts).
-class ApplicationComponent < ViewComponent::Base
-  private
-
-  def cn(*classes)
-    joined = classes.flatten.compact.reject { |c| c.to_s.empty? }.join(" ")
-    (Thread.current[:modelrails_ui_tw_merge] ||= TailwindMerge::Merger.new).merge(joined)
-  end
-end
+# The REAL ApplicationComponent, eval'd from the install template rather than
+# copied here. It used to be a hand-written mirror annotated "mirrors … exactly",
+# and it drifted the moment the template gained a helper: components rendered fine
+# in the app and raised NoMethodError only in this lane. Loading the one file means
+# the harness cannot fall behind what hosts actually get.
+APPLICATION_COMPONENT_TEMPLATE = File.expand_path(
+  "../../lib/generators/modelrails_ui/install/templates/application_component.rb.tt", __dir__
+)
+eval(File.read(APPLICATION_COMPONENT_TEMPLATE), TOPLEVEL_BINDING, APPLICATION_COMPONENT_TEMPLATE) # rubocop:disable Security/Eval
 
 ADD_TEMPLATES = File.expand_path("../../lib/generators/modelrails_ui/add/templates", __dir__)
 

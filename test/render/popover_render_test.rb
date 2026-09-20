@@ -172,4 +172,39 @@ class PopoverRenderTest < ViewComponent::TestCase
     assert_selector "button[data-floating-target=trigger]", visible: :all
     assert_no_selector "button[aria-current]", visible: :all
   end
+
+  # --- where caller attributes land -----------------------------------------
+  #
+  # `id:` and `class:` target DIFFERENT elements, which is surprising enough to
+  # have been misread once: `id:` names the PANEL, because that is what
+  # `position-anchor` pairs with `anchor-name` and what `aria-controls` points
+  # at; `class:` dresses the WRAPPER, the element that owns layout. Nothing in
+  # the docs said so and no test pinned it.
+
+  def test_caller_id_names_the_panel_not_the_wrapper
+    render_popover(id: "range")
+
+    assert_selector "[role=dialog]#range", visible: :all
+    assert_no_selector "div#range[data-controller=floating]", visible: :all
+  end
+
+  def test_caller_class_dresses_the_wrapper_not_the_panel
+    render_popover(id: "range", class: "w-full")
+
+    assert_selector "[data-controller=floating].w-full", visible: :all
+    assert_no_selector "[role=dialog].w-full", visible: :all
+  end
+
+  # The wrapper keeps its own layout classes alongside the caller's.
+  def test_caller_class_merges_rather_than_replaces_on_the_wrapper
+    render_popover(class: "w-full")
+
+    assert_selector "[data-controller=floating].w-full.relative.inline-block", visible: :all
+  end
+
+  def test_other_caller_attributes_land_on_the_wrapper
+    render_popover(data: {testid: "range-popover"})
+
+    assert_selector "[data-controller=floating][data-testid='range-popover']", visible: :all
+  end
 end

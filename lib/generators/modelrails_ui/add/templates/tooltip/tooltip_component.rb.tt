@@ -55,7 +55,9 @@ module UI
     private
 
     def wrapper_attrs
-      {
+      # merge_html_attrs, not a flat merge: a caller's `data:` would otherwise
+      # replace this hash wholesale and take data-controller with it.
+      merge_html_attrs({
         class: cn("group/tooltip relative inline-flex min-h-11 items-center rounded-md focus-ring", @extra_class),
         style: "anchor-name: --#{@id}",
         tabindex: "0",
@@ -64,7 +66,7 @@ module UI
           controller: "floating",
           action: "keydown.esc->floating#dismiss mouseleave->floating#clearDismissed focusout->floating#clearDismissed"
         }
-      }.merge(@html_attrs)
+      }, @html_attrs)
     end
 
     def bubble
