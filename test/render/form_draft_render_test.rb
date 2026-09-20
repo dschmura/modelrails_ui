@@ -77,9 +77,21 @@ class FormDraftRenderTest < Minitest::Test
   end
 
   def test_all_copy_is_i18n_with_defaults
-    %w[form_draft.notice form_draft.recover form_draft.discard
-      form_draft.found form_draft.restored form_draft.discarded].each do |key|
+    # Each restore outcome is named in full: "form_draft.restored" alone would pass
+    # as a substring of any one of them and prove nothing about the other three.
+    %w[form_draft.notice form_draft.recover form_draft.discard form_draft.found
+      form_draft.restored_one form_draft.restored_other form_draft.restored_partial
+      form_draft.restored_none form_draft.discarded].each do |key|
       assert_includes partial_source, key
+    end
+  end
+
+  # The four outcomes reach the controller as data attributes; a missing one is an
+  # empty announcement, which is indistinguishable from a silent failure.
+  def test_every_restore_outcome_has_a_status_attribute
+    %w[data-restored-one-text data-restored-other-text
+      data-restored-partial-text data-restored-none-text].each do |attr|
+      assert_includes partial_source, attr
     end
   end
 end
