@@ -1019,10 +1019,19 @@ class TestListGroupComponents < Minitest::Test
     assert_equal "/", c.instance_variable_get(:@href)
   end
 
+  # active: marks the current page among NAVIGABLE rows, so it carries an href:.
   def test_list_group_item_active_flag
-    c = UI::ListGroupItemComponent.new("Active", active: true)
+    c = UI::ListGroupItemComponent.new("Active", href: "/active", active: true)
 
     assert_equal :active, c.instance_variable_get(:@variant)
+  end
+
+  def test_list_group_item_active_without_href_is_rejected
+    error = assert_raises(ArgumentError) do
+      UI::ListGroupItemComponent.new("Active", active: true)
+    end
+
+    assert_match(/href/, error.message)
   end
 
   def test_list_group_item_default_variant

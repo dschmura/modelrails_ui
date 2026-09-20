@@ -149,4 +149,49 @@ class ListGroupRenderTest < ViewComponent::TestCase
       render_inline(UI::ListGroupItemComponent.new("X", variant: :bogus))
     end
   end
+
+  # `active` marks the current page among navigable rows. Without `href:` the row
+  # is a plain <li> wearing the solid interactive fill — the strongest "this is the
+  # current, actionable thing" signal the system has — on something that cannot be
+  # focused or activated, and that `static_row` correctly refuses to give
+  # `aria-current`. So it looks current to sighted users and is silent to assistive
+  # technology. Detectable misuse, so it fails loud like an unknown variant (#196).
+  def test_active_without_href_fails_loud
+    error = assert_raises(ArgumentError) do
+      render_inline(UI::ListGroupItemComponent.new("Billing", active: true))
+    end
+
+    assert_match(/href/, error.message)
+  end
+
+  # The other half of the posture: a bad flag must not 500 a production page.
+  def test_active_without_href_degrades_instead_of_raising_in_production
+    with_production_rails_env do
+      render_inline(UI::ListGroupItemComponent.new("Billing", active: true))
+    end
+
+    assert_selector "li.text-text-heading", text: "Billing"
+    assert_no_selector "li.bg-interactive"
+  end
+
+  # Guard: the legitimate combination is untouched.
+  def test_active_with_href_is_still_the_current_page
+    render_inline(UI::ListGroupItemComponent.new("Profile", href: "/profile", active: true))
+
+    assert_selector "li > a.bg-interactive[aria-current='page']", text: "Profile"
+  end
+
+  private
+
+  # This harness is deliberately Rails-less — `rails/generators` defines Rails
+  # without `Rails.env` — so the production branch is unreachable unless Rails is
+  # given an env for the duration. Without this the degrade half is unproven.
+  def with_production_rails_env
+    env = Object.new
+    def env.production? = true
+    Rails.define_singleton_method(:env) { env }
+    yield
+  ensure
+    Rails.singleton_class.send(:remove_method, :env)
+  end
 end
