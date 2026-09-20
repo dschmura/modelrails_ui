@@ -141,7 +141,48 @@ class ListGroupRenderTest < ViewComponent::TestCase
   def test_merges_caller_classes
     render_inline(UI::ListGroupItemComponent.new("X", class: "mt-2"))
 
-    assert_selector "li.mt-2"
+    # Both halves: a merge that dropped BASE would still satisfy `li.mt-2`.
+    assert_selector "li.mt-2.flex.items-center"
+  end
+
+  # --- group passthrough (#194) ---------------------------------------------
+  #
+  # The container's entire stated API is `**html_attrs`, and none of it was
+  # covered: the class assertion above is on the ITEM, and test_components.rb
+  # asserts instance variables, which proves nothing about rendered attributes.
+  # The role branches are tested above; these are the rest of the surface.
+
+  def test_group_merges_caller_classes_without_dropping_the_base
+    render_inline(UI::ListGroupComponent.new(class: "mt-4"))
+
+    assert_selector "ul.mt-4"
+    assert_selector "ul.divide-y.rounded-lg.border.bg-surface-raised"
+  end
+
+  def test_group_passes_an_aria_label_through_to_the_ul
+    render_inline(UI::ListGroupComponent.new(aria: {label: "Recent activity"}))
+
+    assert_selector "ul[aria-label='Recent activity']"
+  end
+
+  # A string-keyed aria spelling reaches the element too — the same key-shape
+  # split that makes the role override a duplicate-attribute trap.
+  def test_group_passes_a_string_keyed_attribute_through_to_the_ul
+    render_inline(UI::ListGroupComponent.new("aria-label" => "Recent activity"))
+
+    assert_selector "ul[aria-label='Recent activity']"
+  end
+
+  def test_group_passes_an_arbitrary_data_attribute_through_to_the_ul
+    render_inline(UI::ListGroupComponent.new(data: {controller: "sortable"}))
+
+    assert_selector "ul[data-controller='sortable']"
+  end
+
+  def test_group_passes_an_id_through_to_the_ul
+    render_inline(UI::ListGroupComponent.new(id: "activity-list"))
+
+    assert_selector "ul#activity-list"
   end
 
   def test_unknown_variant_fails_loud
