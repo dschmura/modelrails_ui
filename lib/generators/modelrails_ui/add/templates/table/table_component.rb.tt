@@ -10,7 +10,7 @@ module UI
     # The gem's card surfaces disagree today (card is bg-surface-raised,
     # data_table is transparent) — that inconsistency is tracked separately, and
     # this component follows the list rather than adding a fourth answer.
-    WRAPPER = "rounded-lg border border-border bg-surface overflow-hidden"
+    WRAPPER = "rounded-lg border border-border bg-surface-raised overflow-hidden"
     TABLE   = "w-full text-sm"
     THEAD   = "bg-surface-sunken/40"
     # h-11 keeps a header row (and any sort link filling it) at the AAA 44px target floor.

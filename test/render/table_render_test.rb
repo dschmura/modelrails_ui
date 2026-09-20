@@ -170,12 +170,12 @@ class TableRenderTest < ViewComponent::TestCase
     assert_includes UI::TableComponent::TH, "text-left"
   end
 
-  # The port-time decision, pinned: a filled card on the list_group's surface,
-  # so a table and a list group sitting side by side read as the same kind of
-  # container. See docs/components/table.md.
-  def test_wrapper_is_a_filled_card_on_the_list_group_surface
-    assert_match(/\bbg-surface\b/, UI::TableComponent::WRAPPER)
-    refute_includes UI::TableComponent::WRAPPER, "bg-surface-raised"
+  # The port-time decision was to follow `list_group` onto `bg-surface`. That was
+  # overturned in #210: `bg-surface` is the PAGE, so both were painting containers
+  # the colour of the ground beneath them. The family rule is `bg-surface-raised`,
+  # enforced library-wide by test/test_container_surface.rb.
+  def test_wrapper_is_a_filled_card_on_the_raised_surface
+    assert_includes UI::TableComponent::WRAPPER, "bg-surface-raised"
   end
 
   def test_caller_class_merges_onto_the_card

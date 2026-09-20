@@ -5,7 +5,7 @@ module UI
   # Usage, options and the accessibility contract: docs/components/list_group.md in the
   # modelrails_ui gem (`bundle show modelrails_ui`); live examples in Lookbook.
   class ListGroupComponent < ApplicationComponent
-    BASE = "divide-y divide-border overflow-hidden rounded-lg border border-border bg-surface"
+    BASE = "divide-y divide-border overflow-hidden rounded-lg border border-border bg-surface-raised"
 
     def initialize(**html_attrs)
       @extra_class = html_attrs.delete(:class)
