@@ -53,6 +53,24 @@ class LabelRenderTest < ViewComponent::TestCase
     assert_no_selector "label span[aria-hidden='true']"
   end
 
+  # The label root is `flex items-center gap-2`, so a mark rendered as a SIBLING of
+  # the caption sat a full 8px away — "Email address  *" reads as a typo rather than
+  # a marker (#164). It belongs in the caption's own text run.
+  def test_required_mark_is_part_of_the_caption_not_a_sibling_flex_item
+    render_inline(UI::LabelComponent.new("Email address", required: true))
+
+    assert_no_selector "label > span[aria-hidden='true']"
+    assert_selector "label > span > span[aria-hidden='true']", text: "*"
+  end
+
+  # An unrequired label keeps exactly the DOM it had — no wrapper appears just
+  # because the component learned to group.
+  def test_an_unrequired_label_gains_no_wrapper
+    render_inline(UI::LabelComponent.new("Email address"))
+
+    assert_no_selector "label > span"
+  end
+
   # The visible label text is still present alongside the required marker.
   def test_required_keeps_the_label_text
     render_inline(UI::LabelComponent.new("Email address", required: true))
