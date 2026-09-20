@@ -51,6 +51,29 @@ class ComboboxSystemTest < BrowserTestCase
     assert_selector "[data-combobox-target=empty]"
   end
 
+  # A listbox with every option hidden is a container advertising children it does
+  # not have. It goes away entirely, leaving the status message as what a reader
+  # reaches — so the disappearance is asserted first, before what must remain (#218).
+  def test_no_match_hides_the_listbox_itself
+    visit_scenario("combobox/basic")
+    input.click
+    input.send_keys("zzzz")
+
+    assert_no_selector "[role=listbox]"
+    assert_selector "[data-combobox-target=empty]", text: "No results found."
+  end
+
+  # The zero-match state is its own tree, and the existing audit never sees it:
+  # it runs with all options visible and the status message hidden.
+  def test_the_zero_match_state_passes_a_structural_axe_audit
+    visit_scenario("combobox/basic")
+    input.click
+    input.send_keys("zzzz")
+
+    assert_selector "[data-combobox-target=empty]"
+    assert_axe_clean
+  end
+
   # Zero-match filter → Escape → ArrowUp must reopen, entering at the LAST
   # option. close() leaves the zero-match hidden states in place, so with the
   # reopen branch behind the empty-visible guard no key could ever reopen the

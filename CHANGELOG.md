@@ -7,8 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **`combobox` DOM shape — the empty state moves out of the listbox.** `[data-combobox-target=empty]` was a child of `[role=listbox]`; it is now its sibling, directly under `[data-combobox-target=panel]`. It had to move before the listbox could be hidden at zero matches, since hiding a parent takes the message with it — and `role="listbox"` admits only options, so the nested `role="status"` was an `aria-required-children` violation the moment a zero-match filter revealed it. **A host with CSS or a test selecting the empty state as a descendant of the listbox will stop matching** — select it under the panel instead.
+
 ### Fixed
 
+- `combobox`: at zero matches the listbox is hidden outright rather than left in the tree as a container promising `role="option"` children it does not have. The status message, now a sibling, is what a reader reaches. Adds a browser-lane axe audit of the zero-match state, which the existing audit never saw — it runs with every option visible and the message hidden. Closes #218.
 - `timepicker`: ↑/↓ step the hour and minute spinbuttons. Both fields already carried `role="spinbutton"` and the markup already wired `keydown->timepicker#hourKeydown`/`#minuteKeydown`, but the controller shipped neither method — so the component advertised the arrow contract on the two fields that ignored it, while AM/PM alone stepped. Routed through the existing up/down methods, so wrap-around, `step:` and the `aria-value*` sync cannot diverge from the ▲/▼ path. Closes #219.
 
 ## [0.18.0] - 2026-09-19
