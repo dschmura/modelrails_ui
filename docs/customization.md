@@ -10,39 +10,83 @@ There are three levels of customization, from lightest to deepest:
 
 All visual properties are driven by CSS variables defined in `app/assets/stylesheets/modelrails_ui.css` (exact path depends on your setup — see `rails g modelrails_ui:install`).
 
-The `:root` block sets the default light theme. Override any variable there to change it globally:
+Tokens come in **three layers**, and which one you override decides how far the
+change reaches:
+
+1. **Palette ramps** — `--primary-50` … `--primary-950`, and the same for
+   `--secondary-*` and `--neutral-*`. Raw colour with no meaning attached.
+2. **Semantic tokens** — `--color-interactive`, `--color-surface`,
+   `--color-text-body`, and friends. Each names a *role* and points at a ramp step.
+3. **Tailwind utilities** — the semantic layer is registered in `@theme inline`, so
+   `bg-surface-raised` and `text-text-body` resolve to it in your markup.
+
+**To rebrand, override the ramp.** The semantic layer re-points automatically, in
+both themes, and the AAA pairings stay intact:
 
 ```css
 /* app/assets/stylesheets/modelrails_ui.css */
 
 :root {
-  /* Brand color — all primary buttons, links, active states */
-  --primary: oklch(0.55 0.2 264);           /* indigo */
-  --primary-foreground: oklch(0.98 0 0);
-
-  /* Softer destructive */
-  --destructive: oklch(0.6 0.22 15);
-
-  /* More rounded corners */
-  --radius: 0.875rem;
+  --primary-800: oklch(0.44 0.11 286);  /* light-mode interactive */
+  --primary-300: oklch(0.82 0.11 286);  /* dark-mode interactive */
 }
 ```
 
-### Available tokens
+Override a **semantic** token when you want to move one role without touching the
+palette — a warmer page surface, say, but the same brand colour:
 
-| Token | Used by |
-|-------|---------|
-| `--primary` / `--primary-foreground` | Button default, Badge default, active states |
-| `--secondary` / `--secondary-foreground` | Button secondary, Badge secondary |
-| `--destructive` | Button destructive, Alert destructive, Badge destructive |
-| `--muted` / `--muted-foreground` | Skeleton, placeholder text, helper text |
-| `--accent` / `--accent-foreground` | Hover backgrounds on ghost/outline elements |
-| `--card` / `--card-foreground` | Card background and text |
-| `--background` / `--foreground` | Page background and default text |
-| `--border` | Borders on inputs, separators, cards |
-| `--input` | Input field border color |
-| `--ring` | Focus ring on interactive elements |
-| `--radius` | Base border radius (sm/md/lg/xl are derived from this) |
+```css
+:root {
+  --color-surface: oklch(0.98 0.01 90);
+}
+```
+
+### The tokens
+
+Which surface to use where is a rule, not a preference — see
+[design-tokens.md](design-tokens.md).
+
+| Surface | Role |
+|---|---|
+| `--color-surface` | The page |
+| `--color-surface-raised` | A container sitting on the page |
+| `--color-surface-overlay` | A container floating above it |
+| `--color-surface-sunken` | A well inside a container |
+
+| Text | Role |
+|---|---|
+| `--color-text-heading` | Headings and emphasis |
+| `--color-text-body` | Body copy |
+| `--color-text-muted` | De-emphasised copy — see the AAA note below |
+| `--color-text-on-interactive` | Text on a solid interactive fill |
+
+| Interactive | Role |
+|---|---|
+| `--color-interactive` | Links, primary buttons, active states |
+| `--color-interactive-hover` | Its hover state |
+| `--color-interactive-subtle` | Tinted interactive backgrounds |
+| `--color-interactive-focus` | The focus outline |
+| `--color-accent` | The secondary accent |
+
+Signals are canonical — `info`, `success`, `warning`, `danger` — and each has the
+same shape: `--color-info`, `--color-info-surface`, `--color-info-border`,
+`--color-info-icon`, and so on for the other three.
+
+| Border | Role |
+|---|---|
+| `--color-border` | Default borders |
+| `--color-border-strong` | Higher-contrast borders |
+| `--color-border-focus` | Focused control borders |
+
+### AAA is in the values, not on top of them
+
+Every text/surface pair here clears WCAG 2.2 **AAA** (7:1), and the values are
+chosen to make that true rather than to look a particular way.
+
+The consequence that catches people out: **`--color-text-muted` resolves to the
+same value as `--color-text-body`.** That is deliberate. A lighter grey would fall
+below 7:1, so de-emphasis comes from size and weight instead. "Fixing" muted to
+look lighter takes your app out of AAA silently — nothing will warn you.
 
 ### Sizing tokens
 
@@ -64,26 +108,40 @@ OKLCH gives perceptually uniform brightness. The format is `oklch(L C H)`:
 - **C** — chroma (saturation) `0` (grey) → `~0.3+` (vivid)
 - **H** — hue angle in degrees (`0` = red, `120` = green, `264` = indigo, `300` = purple)
 
-Quick brand color recipes:
+Quick brand hues for the ramp. Keep the lightness and chroma — those are what hold
+the AAA ratios — and move the hue angle only:
 
 ```css
-/* Blue */   --primary: oklch(0.55 0.22 250);
-/* Green */  --primary: oklch(0.55 0.18 145);
-/* Purple */ --primary: oklch(0.55 0.22 300);
-/* Orange */ --primary: oklch(0.65 0.18 50);
-/* Red */    --primary: oklch(0.55 0.22 15);
+/* Blue   */ --primary-800: oklch(0.44 0.11 250);
+/* Green  */ --primary-800: oklch(0.44 0.11 145);
+/* Purple */ --primary-800: oklch(0.44 0.11 300);
+/* Orange */ --primary-800: oklch(0.44 0.11 50);
+/* Red    */ --primary-800: oklch(0.44 0.11 15);
 ```
+
+Changing lightness is where AAA breaks: `--color-interactive` was moved from
+`--primary-700` to `--primary-800` precisely because 700 measured 5.93:1 against
+white and 800 reaches 7.56:1.
 
 ### Dark mode
 
-The `.dark` class overrides the same tokens for dark mode. Add `class="dark"` to `<html>` to activate it. Override the dark variants the same way:
+Dark mode is a class toggle, not a media query: `@custom-variant dark (&:where(.dark, .dark *))`.
+Add `class="dark"` to `<html>` to activate it.
+
+The `.dark` block re-points the **same semantic tokens** at different ramp steps —
+the token names never change, only what they resolve to:
 
 ```css
 .dark {
-  --primary: oklch(0.75 0.18 264);   /* lighter indigo for dark bg */
-  --background: oklch(0.12 0.01 264); /* slightly tinted dark bg */
+  --color-surface: oklch(0.2 0.02 286);      /* a tinted dark page */
+  --color-interactive: var(--primary-300);   /* lighter, for contrast on dark */
 }
 ```
+
+Note the direction: light mode uses `--primary-800` for interactive and dark mode
+uses `--primary-300`. Dark surfaces need a *lighter* interactive colour to stay at
+7:1, which is why overriding the ramp rather than the semantic token is usually the
+change you want — it keeps both ends consistent.
 
 ---
 
@@ -159,39 +217,54 @@ This works because all components pass `@extra_class` last through the `cn()` he
 
 ## Theming example — full brand override
 
-Suppose your brand is indigo with rounded corners and a warm dark mode:
+Suppose your brand is indigo with a warm dark mode. Move the **ramp**, not the
+semantic tokens — the whole system re-points, in both themes:
 
 ```css
 /* app/assets/stylesheets/modelrails_ui.css */
 
 :root {
-  --primary:            oklch(0.52 0.22 264);
-  --primary-foreground: oklch(0.98 0 0);
-  --accent:             oklch(0.93 0.04 264);
-  --accent-foreground:  oklch(0.3 0.1 264);
-  --ring:               oklch(0.6 0.18 264);
-  --radius:             0.75rem;
+  /* Only the hue moves; lightness and chroma hold the AAA ratios. */
+  --primary-300: oklch(0.82 0.11 286);
+  --primary-800: oklch(0.44 0.11 286);
 }
 
 .dark {
-  --primary:            oklch(0.72 0.18 264);
-  --primary-foreground: oklch(0.15 0.05 264);
-  --background:         oklch(0.14 0.02 264);
-  --card:               oklch(0.18 0.02 264);
-  --accent:             oklch(0.25 0.05 264);
+  /* A warmer dark page. The interactive colour already follows the ramp above. */
+  --color-surface:        oklch(0.21 0.02 286);
+  --color-surface-raised: oklch(0.28 0.02 286);
 }
 ```
 
-No component files need to change — the design tokens propagate everywhere automatically.
+No component files change — the semantic layer propagates the ramp everywhere
+automatically, and both themes stay at AAA because the lightness steps did not move.
 
 ---
 
 ## Keeping components up to date
 
-If a new version of ModelrailsUi ships improvements to a component, re-run the generator with `--force` to overwrite your local copy:
+If a new version ships improvements to a component, re-run the generator with
+`--force` to take them:
 
 ```bash
 rails g modelrails_ui:add button --force
 ```
 
-Any customizations you made to that file will be lost. The recommended workflow is to keep local changes minimal (prefer token overrides) or track them in git so you can re-apply them as a patch.
+**This overwrites the file wholesale.** Anything you edited in place is gone, with
+no merge and no warning — which sits in real tension with "you own the code" at the
+top of this page. Both are true, and the way to hold them together is to be
+deliberate about *where* a change lives:
+
+| Change | Where it belongs | Survives `--force`? |
+|---|---|---|
+| Brand colour, surfaces, spacing | A token override (Level 1) | Yes — different file |
+| One call site needs different utilities | `class:` on that call (Level 3) | Yes — your view |
+| A component needs different behaviour everywhere | A subclass in your app that inherits from `UI::…` and overrides the one method | Yes — your file |
+| Editing the generated file directly (Level 2) | — | **No** |
+
+Level 2 is still the right answer when you genuinely want to own a component and
+stop tracking upstream — just make that a decision rather than a surprise.
+
+Before regenerating, **check the CHANGELOG for that component**. A release can
+change a component's DOM shape or its i18n keys, and the entry will say so; the
+generator will not.
