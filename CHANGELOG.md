@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- `timepicker`: ↑/↓ step the hour and minute spinbuttons. Both fields already carried `role="spinbutton"` and the markup already wired `keydown->timepicker#hourKeydown`/`#minuteKeydown`, but the controller shipped neither method — so the component advertised the arrow contract on the two fields that ignored it, while AM/PM alone stepped. Routed through the existing up/down methods, so wrap-around, `step:` and the `aria-value*` sync cannot diverge from the ▲/▼ path. Closes #219.
+
 ## [0.18.0] - 2026-09-19
 
 ### Changed
