@@ -19,7 +19,7 @@ Creates `app/components/ui/drawer_component.rb`.
 <%= ui :drawer, title: "Share post" do |drawer| %>
   <% drawer.with_trigger { ui :button, "Share" } %>
 
-  <p class="text-sm text-muted-foreground">Choose how you want to share this post.</p>
+  <p class="text-sm text-text-muted">Choose how you want to share this post.</p>
 
   <% drawer.with_footer do %>
     <%= ui :button, "Copy link", class: "w-full" %>

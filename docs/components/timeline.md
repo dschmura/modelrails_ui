@@ -42,7 +42,7 @@ Add any HTML via a block after the named options:
 
 ```erb
 <% t.with_item(date: "May 2025", title: "Conference") do %>
-  <p class="text-sm text-muted-foreground mt-1">
+  <p class="text-sm text-text-muted mt-1">
     Presented at <%= link_to "RailsConf", "https://railsconf.com" %>.
   </p>
 <% end %>

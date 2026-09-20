@@ -20,10 +20,10 @@ Creates `app/components/ui/collapsible_component.rb`.
 <%= ui :collapsible do |c| %>
   <% c.with_trigger do %>
     <span class="text-sm font-medium">Show details</span>
-    <svg class="size-4 text-muted-foreground" ...></svg>
+    <svg class="size-4 text-text-muted" ...></svg>
   <% end %>
 
-  <p class="text-sm text-muted-foreground">
+  <p class="text-sm text-text-muted">
     This content is revealed when the trigger is clicked.
   </p>
 <% end %>
