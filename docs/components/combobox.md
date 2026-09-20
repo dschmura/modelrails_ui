@@ -112,6 +112,10 @@ the typed label text alongside it.
   each option is a `role="option"` with `aria-selected`. The controller tracks
   the highlighted option via `aria-activedescendant` (DOM focus stays on the
   input — ↑/↓/Home/End move the active option, Enter selects it, Escape closes).
+  Options are `tabindex="-1"`, so Tab leaves the widget rather than walking the
+  list, and focus leaving the widget by any route dismisses it; an option's
+  `mousedown` is cancelled so a pointer selection keeps focus on the input and
+  returns there once the panel closes.
   The input and options carry the AAA `focus-ring`; the empty state is an i18n
   live region sitting **beside** the listbox rather than inside it, so that at
   zero matches the listbox is hidden outright — an empty `role="listbox"` would

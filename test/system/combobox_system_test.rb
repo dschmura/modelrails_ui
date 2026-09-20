@@ -183,3 +183,70 @@ class ComboboxSystemTest < BrowserTestCase
     assert_axe_clean
   end
 end
+
+# A control after the widget, so "Tab left the combobox" and "focus went somewhere
+# outside" are positive assertions about where focus landed rather than assertions
+# that it is merely not on an option.
+BrowserHarness.scenario("combobox/in_a_form", controllers: %w[combobox],
+  modules: %w[overlays/top_layer keyboard/keyboard_nav]) do
+  view = ActionController::Base.new.view_context
+  UI::ComboboxComponent.new(name: "country", label: "Country", options: OPTIONS).render_in(view) +
+    view.tag.button("After", type: "button", id: "after")
+end
+
+# The APG combobox keeps DOM focus on the text input and points at the active option
+# with aria-activedescendant. Three behaviours enforce that, and they are one change:
+# dismissing on focus-out without the pointer guard would close the panel on the way
+# to a click (#217).
+class ComboboxFocusContractTest < BrowserTestCase
+  def input = find("[data-combobox-target=input]")
+  def active_id = page.evaluate_script("document.activeElement && document.activeElement.id")
+  def active_role = page.evaluate_script("document.activeElement && document.activeElement.getAttribute('role')")
+  def panel = "[data-combobox-target=panel]"
+
+  # Options ship as <button>, which is natively focusable: without tabindex=-1 Tab
+  # walks the whole list instead of leaving the widget.
+  def test_tab_from_the_input_leaves_the_widget
+    visit_scenario("combobox/in_a_form")
+    input.click
+    input.send_keys(:tab)
+
+    refute_equal "option", active_role, "Tab moved focus onto a listbox option"
+    assert_equal "after", active_id
+  end
+
+  def test_focus_leaving_the_widget_closes_the_panel
+    visit_scenario("combobox/in_a_form")
+    input.click
+
+    assert_selector panel
+    page.execute_script(%{document.getElementById("after").focus()})
+
+    assert_no_selector panel
+  end
+
+  # Focus staying inside the widget must NOT close it — the guard against a
+  # focus-out handler that fires on any internal focus move.
+  def test_focus_moving_within_the_widget_keeps_the_panel_open
+    visit_scenario("combobox/in_a_form")
+    input.click
+
+    assert_selector panel
+    page.execute_script(%{document.querySelector("[role=option]").focus()})
+
+    assert_selector panel
+  end
+
+  # Why the mousedown guard is load-bearing: without it the pointer moves focus onto
+  # the option button, select() then hides the panel, and focus falls to <body> — the
+  # user is returned nowhere. The selection itself is asserted first.
+  def test_a_pointer_selection_leaves_focus_on_the_input
+    visit_scenario("combobox/in_a_form")
+    input.click
+    find("[role=option]", text: "Canada").click
+
+    assert_equal "Canada", page.evaluate_script(%{document.querySelector("[data-combobox-target=input]").value})
+    assert_equal page.evaluate_script(%{document.querySelector("[data-combobox-target=input]").id}), active_id,
+      "focus did not return to the combobox input after a pointer selection"
+  end
+end

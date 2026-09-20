@@ -48,7 +48,7 @@ module UI
       # `data:` attr can't clobber `data-controller` and silently break Stimulus.
       @data = {
         controller: "combobox",
-        action: "click@document->combobox#closeOnClickOutside"
+        action: "click@document->combobox#closeOnClickOutside focusout->combobox#closeOnFocusOut"
       }.merge(html_attrs.delete(:data) || {})
       @html_attrs = html_attrs
     end
@@ -132,16 +132,22 @@ module UI
 
     def options_list
       safe_join(@options.map { |opt|
+        # tabindex=-1: a <button> is natively focusable, so without it Tab walks the
+        # listbox instead of leaving the widget — options are reached through
+        # aria-activedescendant. mousedown is cancelled so a pointer selection never
+        # blurs the input, which would strand focus on <body> once select() hides
+        # the panel (#217).
         content_tag(:button, opt[:label],
           type: "button",
           role: "option",
+          tabindex: "-1",
           "aria-selected": (opt[:value].to_s == @value).to_s,
           class: OPTION,
           data: {
             combobox_target: "option",
             combobox_value: opt[:value],
             combobox_label: opt[:label],
-            action: "click->combobox#select"
+            action: "mousedown->combobox#keepFocus click->combobox#select"
           })
       })
     end

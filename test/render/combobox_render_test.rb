@@ -61,6 +61,24 @@ class ComboboxRenderTest < ViewComponent::TestCase
     assert_selector "button[role='option'][aria-selected='false']", text: "Canada"
   end
 
+  # A <button> is natively focusable, so this is what keeps Tab from walking the
+  # listbox; options are reached through aria-activedescendant instead.
+  def test_options_are_not_tab_stops
+    render_basic
+
+    assert_selector "button[role='option'][tabindex='-1']", count: 3
+    assert_no_selector "button[role='option']:not([tabindex='-1'])"
+  end
+
+  # The focus-out dismissal and the pointer guard are one contract: the guard is what
+  # stops a click being read as focus leaving the widget.
+  def test_the_focus_contract_is_wired_on_the_root_and_the_options
+    render_basic
+
+    assert_selector "[data-controller='combobox'][data-action*='focusout->combobox#closeOnFocusOut']"
+    assert_selector "button[role='option'][data-action*='mousedown->combobox#keepFocus']", count: 3
+  end
+
   def test_preselected_value_marks_its_option_selected
     render_basic(value: "ca")
 
