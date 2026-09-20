@@ -50,9 +50,21 @@ Pass `href:` to render each item as an `<a>` tag:
 
 | Variant | Description |
 |---------|-------------|
-| `default` | Normal item with hover background |
-| `active` | Filled with `--primary` colour — also set via `active: true` |
+| `default` | Normal item |
+| `active` | Filled with `bg-interactive` — also set via `active: true` |
 | `muted` | Muted text colour |
+
+**Hover follows interactivity, not variant.** A row highlights on hover only when
+it has an `href:`. A static row is a plain, non-focusable `<li>`, so a full-width
+highlight on it would promise a click target that does not exist — including the
+common shape where the row is static and only a small child (a button, a link) is
+actionable.
+
+An **active** link row does not highlight either: it already carries the solid
+`bg-interactive` fill, and hovering it to `bg-surface-sunken` while it keeps
+`text-text-on-interactive` would put white text on a near-white surface in the
+light theme. That empty cell in the hover map is deliberate — see
+`ListGroupItemComponent::HOVER`.
 
 ## API — ListGroupComponent
 

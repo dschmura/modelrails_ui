@@ -80,6 +80,39 @@ class ListGroupRenderTest < ViewComponent::TestCase
     assert_selector "li.text-text-muted", text: "Help"
   end
 
+  # Hover is bound to interactivity, not to colour variant (#191/#197). A static
+  # row is a plain <li> the docblock calls "never focusable"; a full-width
+  # highlight on it promises a click target that does not exist.
+  def test_a_static_row_does_not_highlight_on_hover
+    render_inline(UI::ListGroupItemComponent.new("Billing"))
+
+    assert_no_selector 'li[class~="hover:bg-surface-sunken"]'
+  end
+
+  def test_a_static_muted_row_does_not_highlight_on_hover
+    render_inline(UI::ListGroupItemComponent.new("Help", variant: :muted))
+
+    assert_no_selector 'li[class~="hover:bg-surface-sunken"]'
+  end
+
+  # The other half of the same rule: a row that IS interactive still highlights,
+  # so the fix cannot be "delete the hover".
+  def test_a_link_row_does_highlight_on_hover
+    render_inline(UI::ListGroupItemComponent.new("Home", href: "/"))
+
+    assert_selector 'a[class~="hover:bg-surface-sunken"]'
+  end
+
+  # Regression guard, in the shape ToggleComponent already uses: hover must NOT
+  # be hoisted into LINK wholesale. LINK applies to active rows too, and an
+  # active row hovering to bg-surface-sunken keeps text-text-on-interactive —
+  # white text on a near-white surface in the light theme.
+  def test_an_active_link_row_never_hovers_to_the_sunken_surface
+    render_inline(UI::ListGroupItemComponent.new("Profile", href: "/profile", active: true))
+
+    assert_no_selector 'a[class~="hover:bg-surface-sunken"]'
+  end
+
   def test_link_item_is_an_anchor_inside_an_li_with_focus_ring
     render_inline(UI::ListGroupItemComponent.new("Home", href: "/"))
 
