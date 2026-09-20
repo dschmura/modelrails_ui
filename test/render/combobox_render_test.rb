@@ -118,10 +118,30 @@ class ComboboxRenderTest < ViewComponent::TestCase
     assert_selector "div[data-combobox-target='list']"
   end
 
-  def test_empty_state_is_an_i18n_live_region
+  # The visible message is an i18n affordance, not the announcer — status_region is.
+  # A live role here too would speak the same text twice.
+  def test_empty_state_is_i18n_and_not_itself_a_live_region
     render_basic
 
-    assert_selector "div[role='status'][data-combobox-target='empty']", text: "No results found.", visible: false
+    assert_selector "div[data-combobox-target='empty']", text: "No results found.", visible: false
+    assert_no_selector "[data-combobox-target='empty'][role='status']", visible: :all
+    assert_no_selector "[data-combobox-target='empty'][aria-live]", visible: :all
+  end
+
+  # A live region has to be in the accessibility tree before the text arrives, so it
+  # renders empty and — crucially — OUTSIDE the panel, which ships hidden.
+  def test_status_region_is_an_empty_live_region_outside_the_hidden_panel
+    render_basic
+
+    assert_selector "[data-combobox-target='status'][role='status'][aria-live='polite']", text: "", visible: :all
+    assert_no_selector "[data-combobox-target='panel'] [data-combobox-target='status']", visible: :all
+  end
+
+  def test_status_region_carries_i18n_count_strings_for_the_controller
+    render_basic
+
+    assert_selector "[data-combobox-target='status'][data-results-one-text][data-results-other-text][data-empty-text]",
+      visible: :all
   end
 
   # Structure, so re-nesting it cannot pass unnoticed: role=listbox admits only

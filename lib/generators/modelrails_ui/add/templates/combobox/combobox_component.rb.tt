@@ -59,6 +59,7 @@ module UI
         concat hidden_input
         concat text_input
         concat dropdown
+        concat status_region
       end
     end
 
@@ -120,14 +121,30 @@ module UI
 
     # A SIBLING of the listbox, not a child: role=listbox admits only options
     # (aria-required-children), and the message has to outlive the list being
-    # hidden at zero matches (#218).
+    # hidden at zero matches (#218). Purely visual — status_region is what
+    # announces, so a live role here would speak the same text twice (#166).
     def empty_state
       content_tag(:div,
         I18n.t("modelrails_ui.combobox.empty", default: "No results found."),
         class: EMPTY,
-        role: "status",
         data: { combobox_target: "empty" },
         hidden: true)
+    end
+
+    # Outside the panel, which is hidden until the widget opens: a live region has to
+    # be in the tree BEFORE the text arrives, or it is inserted-with-content and
+    # assistive tech drops it. Empty at render; the controller writes the count (#166).
+    def status_region
+      content_tag(:div, "",
+        class: "sr-only",
+        role: "status",
+        "aria-live": "polite",
+        data: {
+          combobox_target: "status",
+          results_one_text: I18n.t("modelrails_ui.combobox.results_one", default: "1 result available."),
+          results_other_text: I18n.t("modelrails_ui.combobox.results_other", default: "%{count} results available."),
+          empty_text: I18n.t("modelrails_ui.combobox.empty", default: "No results found.")
+        })
     end
 
     def options_list
