@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`combobox` DOM shape — the empty state moves out of the listbox.** `[data-combobox-target=empty]` was a child of `[role=listbox]`; it is now its sibling, directly under `[data-combobox-target=panel]`. It had to move before the listbox could be hidden at zero matches, since hiding a parent takes the message with it — and `role="listbox"` admits only options, so the nested `role="status"` was an `aria-required-children` violation the moment a zero-match filter revealed it. **A host with CSS or a test selecting the empty state as a descendant of the listbox will stop matching** — select it under the panel instead.
 - **`form_draft` restore copy — one i18n key becomes four.** `form_draft.restored` is replaced by `form_draft.restored_one`, `restored_other`, `restored_partial` and `restored_none`, carried on the notice partial as `data-restored-one-text` and siblings. **A host that translated `form_draft.restored` must translate the four new keys**; the old key is no longer read, and an untranslated outcome announces an empty string.
 
+### Added
+
+- `combobox`: filtering announces how many results remain. A visually hidden `role="status"` region renders on the wrapper — outside the panel, so it is registered in the accessibility tree before any text arrives rather than being revealed with content already in it — and the controller writes the count on each filter pass. Three new i18n keys: `modelrails_ui.combobox.results_one`, `results_other`, and the existing `combobox.empty` reused for zero matches. Closes #166.
+
 ### Fixed
 
 - `combobox`: the APG focus contract, three behaviours that only work together. Options are `tabindex="-1"` — they ship as `<button>`, which is natively focusable, so Tab used to walk the whole listbox instead of leaving the widget. Focus leaving the widget now dismisses it. And an option's `mousedown` is cancelled, so a pointer selection keeps focus on the input: without it the click moved focus to the option button, `select()` hid the panel underneath it, and focus fell to `<body>`. Closes #217.

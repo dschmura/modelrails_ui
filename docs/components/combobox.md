@@ -116,10 +116,15 @@ the typed label text alongside it.
   list, and focus leaving the widget by any route dismisses it; an option's
   `mousedown` is cancelled so a pointer selection keeps focus on the input and
   returns there once the panel closes.
-  The input and options carry the AAA `focus-ring`; the empty state is an i18n
-  live region sitting **beside** the listbox rather than inside it, so that at
-  zero matches the listbox is hidden outright — an empty `role="listbox"` would
-  advertise children it does not have — and the message is what a reader reaches.
+  The input and options carry the AAA `focus-ring`. Filtering is announced: a
+  visually hidden `role="status"` region sits on the wrapper — **outside** the
+  panel, so it is in the accessibility tree from first render rather than being
+  revealed with its text already in it — and the controller writes the remaining
+  result count into it on every filter pass, or the empty message at zero matches.
+  The visible empty state sits **beside** the listbox rather than inside it, so
+  that at zero matches the listbox is hidden outright — an empty `role="listbox"`
+  would advertise children it does not have. It is a visual affordance only; the
+  status region is the single announcer, so nothing is spoken twice.
   The text input carries a per-instance `id` derived from the
   wrapper's, so a `<label for>` can point at the control a user actually types
   into.

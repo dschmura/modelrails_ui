@@ -194,6 +194,81 @@ BrowserHarness.scenario("combobox/in_a_form", controllers: %w[combobox],
     view.tag.button("After", type: "button", id: "after")
 end
 
+# Filtering changes what is on offer, and nothing said so: narrowing 40 options to 3
+# announced only the newly active option. The count has to come from a live region
+# that was registered BEFORE the change — a region revealed together with its text is
+# inserted-with-content, and assistive tech drops it (#166).
+class ComboboxResultsAnnouncementTest < BrowserTestCase
+  def input = find("[data-combobox-target=input]")
+  def status = "[data-combobox-target=status]"
+  def status_text = page.evaluate_script(%{document.querySelector("[data-combobox-target=status]").textContent.trim()})
+
+  # The panel is hidden until the widget opens, so a status region inside it would be
+  # out of the tree at render — exactly the bug. It lives on the wrapper.
+  def test_the_status_region_is_present_and_empty_before_any_interaction
+    visit_scenario("combobox/basic")
+
+    assert_selector status, visible: :all
+    assert_equal "", status_text
+    assert_equal "false", page.evaluate_script(
+      %{String(document.querySelector("[data-combobox-target=status]").closest("[data-combobox-target=panel]") !== null)}
+    ), "the status region sits inside the panel, which is hidden at render"
+  end
+
+  def test_narrowing_the_options_announces_how_many_remain
+    visit_scenario("combobox/basic")
+    input.click
+    input.send_keys("can")
+
+    assert_selector "[role=option]", count: 1, text: "Canada"
+    assert_equal "1 result available.", status_text
+  end
+
+  # Opening filters against an empty query, so the full set is what is on offer.
+  def test_opening_announces_the_full_count
+    visit_scenario("combobox/basic")
+    input.click
+
+    assert_equal "3 results available.", status_text
+  end
+
+  # "a" matches United States and Canada but not Mexico — a real 3 → 2 narrowing,
+  # which is the plural path rather than the singular one above.
+  def test_narrowing_to_several_announces_the_plural_count
+    visit_scenario("combobox/basic")
+    input.click
+    input.send_keys("a")
+
+    assert_selector "[role=option]", count: 2
+    assert_equal "2 results available.", status_text
+  end
+
+  def test_zero_matches_are_announced_in_the_status_region
+    visit_scenario("combobox/basic")
+    input.click
+    input.send_keys("zzzz")
+
+    assert_equal "No results found.", status_text
+  end
+
+  # One announcer, not two. The visible message is a visual affordance; if it were
+  # also a live region the same text would be spoken twice.
+  def test_the_visible_empty_message_is_not_a_second_live_region
+    visit_scenario("combobox/basic")
+
+    assert_no_selector "[data-combobox-target=empty][role=status]", visible: :all
+    assert_no_selector "[data-combobox-target=empty][aria-live]", visible: :all
+  end
+
+  def test_the_announcing_combobox_passes_a_structural_axe_audit
+    visit_scenario("combobox/basic")
+    input.click
+    input.send_keys("can")
+
+    assert_axe_clean
+  end
+end
+
 # The APG combobox keeps DOM focus on the text input and points at the active option
 # with aria-activedescendant. Three behaviours enforce that, and they are one change:
 # dismissing on focus-out without the pointer guard would close the panel on the way
