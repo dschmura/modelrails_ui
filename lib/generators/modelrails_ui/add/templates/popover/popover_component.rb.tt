@@ -79,15 +79,18 @@ module UI
 
     private
 
+    # merge_html_attrs, not a flat merge: a caller's `data:` would otherwise replace
+    # this hash wholesale and take data-controller with it, so the popover would
+    # silently never open. Same bug #204 fixed for `trigger_attrs:`, one site over.
     def wrapper_attrs
-      {
+      merge_html_attrs({
         class: cn("relative inline-block", @extra_class),
         style: "anchor-name: --#{@id}",
         data: {
           controller: "floating",
           action: "keydown.esc->floating#close click@document->floating#closeOnClickOutside"
         }
-      }.merge(@html_attrs)
+      }, @html_attrs)
     end
 
     def trigger_button

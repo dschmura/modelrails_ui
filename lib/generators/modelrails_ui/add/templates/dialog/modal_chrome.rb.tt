@@ -79,10 +79,13 @@ module UI
       @html_attrs = html_attrs
     end
 
+    # merge_html_attrs, not a flat merge: a caller's `data:` would otherwise replace
+    # this hash wholesale and take data-controller with it, so the dialog would
+    # silently never open.
     def wrapper_attrs
       data = { controller: "modal" }
       data[:modal_open_value] = "true" if @open
-      { data: data, class: cn("inline", @extra_class) }.merge(@html_attrs)
+      merge_html_attrs({ data: data, class: cn("inline", @extra_class) }, @html_attrs)
     end
 
     def trigger_area

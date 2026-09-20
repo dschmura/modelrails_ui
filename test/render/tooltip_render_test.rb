@@ -68,4 +68,14 @@ class TooltipRenderTest < ViewComponent::TestCase
     error = assert_raises(ArgumentError) { UI::TooltipComponent.new(text: "x", side: :sideways) }
     assert_match(/unknown side/, error.message)
   end
+
+  # A caller's `data:` used to replace the wrapper's whole data hash, taking
+  # data-controller with it — the tooltip silently stopped working, with no error
+  # and nothing to explain it. Both halves must survive.
+  def test_caller_data_does_not_displace_the_controller_wiring
+    render_inline(UI::TooltipComponent.new(text: "Saved", data: {testid: "status-tip"})) { "Status" }
+
+    assert_selector "[data-controller=floating][data-testid='status-tip']", visible: :all
+    assert_selector "[data-controller=floating][data-action*='floating#dismiss']", visible: :all
+  end
 end

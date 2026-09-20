@@ -98,6 +98,25 @@ instead.
 | `side` | Symbol | `:bottom` | `:bottom`, `:top`, `:left`, or `:right` |
 | `trigger_class` | String | `"btn-secondary"` | CSS classes **added to** the trigger's accessibility floor (focus ring + 44px target size), which cannot be replaced |
 | `trigger_attrs` | Hash | `{}` | Attributes for the trigger `<button>` (see below) |
+
+### Where caller attributes land
+
+`id:` and `class:` target **different elements**, which is worth knowing before you
+reach for either:
+
+| You pass | It lands on | Why |
+|---|---|---|
+| `id:` | the **panel** | `position-anchor` pairs with the wrapper's `anchor-name`, and the trigger's `aria-controls` points here |
+| `class:` | the **wrapper** | the wrapper owns layout; the panel owns its own floating chrome |
+| anything else (`data:`, `aria-*`, …) | the **wrapper** | ordinary passthrough |
+
+The same split applies to `dropdown_menu`, `tooltip` and `hover_card`, which share
+this wrapper-plus-panel shape.
+
+A caller's `data:` is merged **one level deep**, so your hooks sit alongside the
+component's Stimulus wiring rather than replacing it. The component's own `data`
+keys win inside that merge — they are what makes the popover work, and a caller
+overwriting them would break it silently.
 | `**html_attrs` | Hash | — | Forwarded to the outer `<div>` |
 
 ### `trigger_attrs:` vs `**html_attrs`

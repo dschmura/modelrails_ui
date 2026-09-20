@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **Passing `data:` to `popover`, `tooltip`, `hover_card`, `dialog`, `sheet` or `drawer` no longer breaks the component.** The wrapper merged a caller's `**html_attrs` flat over its own `data:`, so any caller `data:` replaced the whole hash and took `data-controller` with it — the component silently stopped working, with no error and nothing to explain it. #204 fixed exactly this for popover's `trigger_attrs:` and left the wrapper, one merge site over, in six components. A caller's `data` is now merged one level deeper via a shared `merge_html_attrs` helper; the component's own keys win inside that merge, because they are its wiring rather than styling. `dropdown_menu` and `context_menu` already did this correctly and are unchanged.
+- The render harness now loads the real `ApplicationComponent` from its install template instead of a hand-written copy annotated "mirrors … exactly". It had drifted: components rendered correctly in an app and raised `NoMethodError` only in that lane.
+
 ## [0.19.0] - 2026-09-20
 
 Four breaking changes, all of them DOM shape or i18n keys rather than API. A host
