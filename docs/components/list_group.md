@@ -17,7 +17,7 @@ Creates:
 ```erb
 <%= ui :list_group do %>
   <%= ui :list_group_item, "Dashboard" %>
-  <%= ui :list_group_item, "Settings", active: true %>
+  <%= ui :list_group_item, "Settings" %>
   <%= ui :list_group_item, "Billing" %>
   <%= ui :list_group_item, "Help", variant: :muted %>
 <% end %>
@@ -51,8 +51,16 @@ Pass `href:` to render each item as an `<a>` tag:
 | Variant | Description |
 |---------|-------------|
 | `default` | Normal item |
-| `active` | Filled with `bg-interactive` — also set via `active: true` |
+| `active` | Filled with `bg-interactive` — also set via `active: true`, which **requires `href:`** |
 | `muted` | Muted text colour |
+
+**`active: true` needs an `href:`.** It marks the current page among navigable
+rows, so it needs somewhere to navigate. On a static row it would paint the solid
+interactive fill — the strongest "this is the current, actionable thing" signal in
+the system — on an element that cannot be focused or activated, and that correctly
+declines `aria-current`: current to the eye, silent to assistive technology. The
+component raises in development and test, and falls back to `default` in production
+rather than 500ing a page.
 
 **Hover follows interactivity, not variant.** A row highlights on hover only when
 it has an `href:`. A static row is a plain, non-focusable `<li>`, so a full-width
