@@ -41,7 +41,7 @@ Pass `href:` to render each item as an `<a>` tag:
 <%= ui :list_group do %>
   <%= ui :list_group_item do %>
     <span class="font-medium">Alice</span>
-    <span class="text-muted-foreground text-xs">Online</span>
+    <span class="text-text-muted text-xs">Online</span>
   <% end %>
 <% end %>
 ```
@@ -52,7 +52,29 @@ Pass `href:` to render each item as an `<a>` tag:
 |---------|-------------|
 | `default` | Normal item |
 | `active` | Filled with `bg-interactive` — also set via `active: true`, which **requires `href:`** |
-| `muted` | Muted text colour |
+| `muted` | De-emphasised row — see the note below on what `muted` does *not* change |
+
+## Static vs. link rows
+
+A row with an `href:` renders as an `<a>` inside its `<li>`: focusable, in the tab
+order, with the AAA focus ring and `aria-current="page"` when active.
+
+**A row without an `href:` is a plain, non-interactive `<li>`.** It is never
+focusable and never highlights. That is the right choice when the row *contains*
+its own controls — a button, a link, a menu — rather than being one. Making such a
+row interactive as well would nest a control inside a control and give the user two
+overlapping targets with different behaviour.
+
+Pick the static row when the row is a container for actions, and the link row when
+the row itself is the action.
+
+### What `muted` does not do
+
+`muted` swaps `text-text-heading` for `text-text-muted`, but in an AAA-calibrated
+theme `--color-text-muted` resolves to the **same value** as `--color-text-body` —
+both are ≥7:1 against the surface by design. De-emphasis comes from size and weight,
+not from lightness. So expect a semantic distinction, not a lighter grey; a row that
+looks unchanged is the tokens working, not a bug to "fix".
 
 **`active: true` needs an `href:`.** It marks the current page among navigable
 rows, so it needs somewhere to navigate. On a static row it would paint the solid

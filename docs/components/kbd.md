@@ -28,7 +28,7 @@ Creates `app/components/ui/kbd_component.rb`.
 Render multiple `KbdComponent`s inline with separator text:
 
 ```erb
-<span class="text-sm text-muted-foreground">
+<span class="text-sm text-text-muted">
   Press <%= ui :kbd, "⌘" %> + <%= ui :kbd, "K" %> to open search.
 </span>
 ```
