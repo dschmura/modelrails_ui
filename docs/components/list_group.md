@@ -78,7 +78,7 @@ attribute.
 ## Accessibility contract
 
 - **Guarantees:** a semantic `<ul>` carrying an explicit `role="list"`, on a
-  token surface (`bg-surface`, `border-border`, `divide-border` between rows).
+  token surface (`bg-surface-raised`, `border-border`, `divide-border` between rows).
   The explicit role is load-bearing: Tailwind's preflight sets
   `list-style: none`, and Safari/VoiceOver drop the implicit list role once the
   marker is gone — taking "list, N items", per-row set position, and the rotor
@@ -91,7 +91,7 @@ attribute.
 ## List group item: Accessibility contract
 
 - **Guarantees:** AAA-contrast tokens (`text-text-heading`/`text-text-muted` on
-  `bg-surface`; the active row is a solid `bg-interactive` fill with adaptive
+  `bg-surface-raised`; the active row is a solid `bg-interactive` fill with adaptive
   `text-text-on-interactive`). Semantics follow interactivity: a static row is
   a plain `<li>`; a navigable row is an `<a>` wrapped in its `<li>` (an `<a>`
   is not a valid direct child of `<ul>`). Link rows are real `<a>` elements

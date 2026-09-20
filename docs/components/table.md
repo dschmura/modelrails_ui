@@ -233,15 +233,15 @@ drifting. It carries the AAA 44px row height (`h-11`).
 
 ## A note on the card surface
 
-The wrapper is `bg-surface`, the same filled surface as
-[`list_group`](list_group.md), so a table and a list sitting side by side read as
-the same kind of container.
+The wrapper is `bg-surface-raised`, the same as [`card`](card.md),
+[`list_group`](list_group.md) and [`data_table`](data_table.md): a container that
+sits on the page. See [design-tokens.md](../design-tokens.md) for the rule and why
+`bg-surface` is never a container surface.
 
-The gem's card surfaces do not currently agree — `card` is `bg-surface-raised`
-and `data_table` has no background at all — and unifying them is a visual change
-for every host app, out of scope here. This component follows the list rather
-than adding a fourth answer. Override with `class:` if your page background calls
-for something else; `cn` resolves the conflict in your favour.
+This component originally shipped on `bg-surface` to match `list_group`, which was
+itself the outlier. Issue #210 settled the family on `bg-surface-raised` and both
+moved. Override with `class:` if your page calls for something else; `cn` resolves
+the conflict in your favour.
 
 ## Related
 

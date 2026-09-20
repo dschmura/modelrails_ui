@@ -63,7 +63,7 @@ class ListGroupRenderTest < ViewComponent::TestCase
   def test_group_uses_aaa_surface_tokens
     render_inline(UI::ListGroupComponent.new)
 
-    assert_selector "ul.bg-surface.border-border"
+    assert_selector "ul.bg-surface-raised.border-border"
     assert_selector "ul.divide-border"
   end
 
