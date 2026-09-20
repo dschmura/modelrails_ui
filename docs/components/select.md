@@ -24,7 +24,30 @@ Creates `app/components/ui/select_component.rb`.
 <%# Hash (value => label) %>
 <%= ui :select, name: "country",
        options: { "us" => "United States", "ca" => "Canada", "mx" => "Mexico" } %>
+
+<%# Optgroups — a hash whose VALUES are arrays %>
+<%= ui :select, name: "country",
+       options: {
+         "Americas" => [["us", "United States"], ["ca", "Canada"]],
+         "Europe"   => [["fr", "France"], ["de", "Germany"]]
+       } %>
 ```
+
+### Grouped options
+
+A hash maps to `<optgroup>` when its **values are arrays**; a hash of scalars stays
+the flat `{ value => label }` shape. The two cannot be confused, so adding groups
+never changes how an existing flat hash renders.
+
+Inside a group, members take the same shorthand as the flat array shape — bare
+strings become both value and label, and pairs are `[value, label]`.
+
+> Note the pair order. Rails' `grouped_options_for_select` takes `[label, value]`;
+> this component keeps `[value, label]` throughout, so a caller who groups options
+> they already wrote does not have to flip them.
+
+`include_blank:` belongs to the select, so the blank option is rendered before the
+first group rather than inside it.
 
 ## Pre-selected value
 
@@ -46,7 +69,7 @@ Creates `app/components/ui/select_component.rb`.
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `options` | Array or Hash | `[]` | Strings, `[value, label]` pairs, or `{ value => label }` hash |
+| `options` | Array or Hash | `[]` | Strings, `[value, label]` pairs, `{ value => label }` hash, or `{ "Group" => [[value, label], …] }` for optgroups |
 | `selected` | String | `nil` | Value of the pre-selected option |
 | `include_blank` | Boolean | `false` | Prepends an empty `<option>` |
 | `**html_attrs` | Hash | — | Forwarded to the `<select>` element |
