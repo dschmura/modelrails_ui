@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- `navigation_menu`'s flyout `PANEL_LINK` meets the 44px target floor. A link inside a flyout panel is a **navigation link**, not the interior of a `role="menuitem"` widget, so WCAG 2.5.5 applies to it exactly as it does to the bar's own `TRIGGER` and `LINK_CLS` — both of which already carried `h-11`. `p-2` plus one line of `text-sm` landed well under it. The fix is `min-h-11` rather than a fixed height, because this link stacks a title over an optional description and has to be able to grow, plus `justify-center` — the **main** axis here, since the container is `flex-col`; `items-center` would pull a two-line link off its left edge. **This makes single-line flyout links taller in every host that has vendored the component.** Proven in the reference app, whose copy had diverged to carry the fix locally; that divergence now retires. Closes #246.
+
 ## [0.21.0] - 2026-09-21
 
 Two fixes and one API addition, all additive — nothing here is breaking. Each of
