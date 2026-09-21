@@ -38,7 +38,7 @@ module UI
     # Anchor positioning tethers the fixed bubble back to its item. Pre-Baseline browsers
     # take the `absolute` fallback and lose the hint to that clip — the accessible name is
     # unaffected, so this degrades a nicety, not the semantics.
-    RAIL_TOOLTIP = "pointer-events-none z-50 w-max max-w-48 rounded-md px-2 py-1 " \
+    RAIL_TOOLTIP = "pointer-events-none z-50 w-max max-w-[min(12rem,calc(100vw-2rem))] rounded-md px-2 py-1 " \
                    "bg-text-heading text-surface-raised text-xs whitespace-nowrap " \
                    "opacity-0 transition-opacity duration-150 " \
                    "group-hover/item:opacity-100 group-focus-within/item:opacity-100 " \
