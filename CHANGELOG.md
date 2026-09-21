@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.20.0] - 2026-09-20
+
+Two new components and two API additions, all additive — nothing here is breaking.
+The one behaviour change is a fix: passing `data:` to a floating component no
+longer deletes its Stimulus wiring.
+
 ### Added
 
 - **`chip_group`** — a multi-select group of chips backed by real `<input type="checkbox">`, so the selection posts with the form natively and there is no client-side state that can disagree with what will be submitted. Resolves #169's design fork toward option B, on the evidence that the reference app had already built B by hand. Distinct from `toggle_group`, which is `aria-pressed` buttons and client state by design: if the choice survives a page reload it belongs here. Includes the empty sentinel by default, so unchecking every chip still submits the key rather than reading as "no change" server-side. Two corrections to the markup it was modelled on: chips sit on `bg-surface-raised` rather than `bg-surface` (the page colour), and focus is an offset outline rather than a ring. Closes #169.
