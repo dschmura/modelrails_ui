@@ -106,4 +106,57 @@ class RadioGroupRenderTest < ViewComponent::TestCase
 
     assert_selector "input.focus-ring"
   end
+
+  # --- per-item descriptions (#137) ------------------------------------------
+  #
+  # A choice often needs a line of explanation per option. Without it, callers
+  # hand-roll the radios and lose the group's whole accessibility contract.
+
+  DESCRIBED_ITEMS = [
+    {value: "open", label: "Open", description: "Anyone with the link can join."},
+    {value: "invite", label: "Invite only", description: "An admin must invite each member."}
+  ].freeze
+
+  def render_described
+    render_inline(UI::RadioGroupComponent.new(name: "policy", label: "Join policy", items: DESCRIBED_ITEMS))
+  end
+
+  def test_a_description_is_linked_to_its_own_input
+    render_described
+
+    assert_selector "input#policy_open[aria-describedby='policy_open_description']"
+    assert_selector "#policy_open_description", text: "Anyone with the link can join."
+  end
+
+  # Each item points at its OWN description, never a shared or reused id.
+  def test_each_item_gets_a_distinct_description_id
+    render_described
+
+    assert_selector "input#policy_invite[aria-describedby='policy_invite_description']"
+    assert_selector "#policy_invite_description", text: "An admin must invite each member."
+  end
+
+  # The description must be a SIBLING of the label, not inside it: inside, it
+  # becomes part of the radio's accessible name and is read as the option itself.
+  def test_the_description_is_not_part_of_the_accessible_name
+    render_described
+
+    assert_no_selector "label #policy_open_description"
+    assert_selector "label[for='policy_open']", text: "Open", exact_text: true
+  end
+
+  # An item with no description is untouched — no dangling aria-describedby.
+  def test_an_item_without_a_description_gets_no_aria_describedby
+    render_inline(UI::RadioGroupComponent.new(name: "plan", label: "Billing plan", items: PLAN_ITEMS))
+
+    assert_no_selector "input[aria-describedby]"
+  end
+
+  # The label stays the click target and keeps its 44px floor even when stacked
+  # above a description.
+  def test_a_described_items_label_keeps_the_44px_target_floor
+    render_described
+
+    assert_selector "label[for='policy_open'].min-h-11"
+  end
 end
