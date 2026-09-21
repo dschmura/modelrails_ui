@@ -20,6 +20,9 @@ class TestGeneratorComponents < Minitest::Test
   ].freeze
   PHASE8 = %w[timeline toaster chart wysiwyg].freeze
   PHASE9 = %w[image figure picture video audio iframe map_area embed].freeze
+  # Post-phase additions: components added on evidence of repeated hand-rolling
+  # rather than as part of a planned roster.
+  LATER = %w[empty_state].freeze
 
   # Partial-only generator utilities — NOT a phase roster of ViewComponent-backed
   # components like PHASE1-9 above. They ship a partial + JS controller but no
@@ -36,7 +39,8 @@ class TestGeneratorComponents < Minitest::Test
   # somewhere in this file, per test_supported_has_no_extra_directories) stays complete.
   NON_COMPONENT_TEMPLATES = %w[form_builder].freeze
 
-  ALL_COMPONENTS = (PHASE1 + PHASE2 + PHASE3 + PHASE4 + PHASE5 + PHASE6 + PHASE7 + PHASE8 + PHASE9 + PARTIAL_ONLY + NON_COMPONENT_TEMPLATES).freeze
+  ALL_COMPONENTS = (PHASE1 + PHASE2 + PHASE3 + PHASE4 + PHASE5 + PHASE6 + PHASE7 + PHASE8 + PHASE9 +
+    LATER + PARTIAL_ONLY + NON_COMPONENT_TEMPLATES).freeze
 
   TEMPLATE_ROOT = File.expand_path("../lib/generators/modelrails_ui/add/templates", __dir__)
 
