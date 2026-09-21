@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `radio_group` items take a `description:` — a supporting line for that option, rendered beside the label and linked to the input with `aria-describedby`. Placement is the point: inside the `<label>` it would become part of the radio's accessible name and be announced *as* the option; as a sibling it is read after the name. Without this, a choice needing per-option explanation had to be hand-rolled, losing the group's whole accessibility contract. An undescribed row renders exactly as before, and the label keeps its 44px target floor. Partly closes #137 — the FormBuilder's `collection_radio_buttons` still lacks the equivalent; see below.
 - `select` takes optgroups: `options: { "Group" => [[value, label], …] }`. A hash whose **values are arrays** renders `<optgroup>`; a hash of scalars stays the flat `{ value => label }` shape, so the two cannot be confused and no existing call site changes. Group members take the same shorthand as the flat array shape, `include_blank:` stays outside every group, and pair order remains `[value, label]` throughout — Rails' `grouped_options_for_select` uses `[label, value]`, but a caller grouping options they already wrote should not have to flip them. Closes #162.
 
 ### Fixed
