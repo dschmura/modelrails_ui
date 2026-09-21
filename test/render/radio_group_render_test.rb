@@ -28,6 +28,49 @@ class RadioGroupRenderTest < ViewComponent::TestCase
     end
   end
 
+  # A Rails field name is the ordinary case for this component, and it is full of
+  # brackets. They are legal in an HTML5 id and `label[for]` resolves them, so the
+  # page works — but `#workspace[join_policy]_invite` does not parse as a CSS id
+  # selector (it reads as `#workspace` plus an attribute condition), so every
+  # stylesheet rule, querySelector and test has to know to escape it.
+  #
+  # chip_group already collapses the brackets out of its ids. This keeps the two
+  # siblings answering the same question the same way. (#247)
+  def test_a_rails_field_name_yields_a_selector_safe_id
+    render_inline(UI::RadioGroupComponent.new(
+      name: "workspace[join_policy]",
+      label: "Join policy",
+      items: [{value: "invite", label: "Invitation only", description: "Admins invite each member."}]
+    ))
+
+    assert_selector "input[type='radio'][id='workspace_join_policy_invite']", visible: :all
+    assert_selector "label[for='workspace_join_policy_invite']", text: "Invitation only"
+  end
+
+  # The description id is derived from the input's, so it inherits the fix rather
+  # than needing its own — which is the reason to sanitise at the source.
+  def test_a_sanitised_id_carries_into_the_description_wiring
+    render_inline(UI::RadioGroupComponent.new(
+      name: "workspace[join_policy]",
+      label: "Join policy",
+      items: [{value: "invite", label: "Invitation only", description: "Admins invite each member."}]
+    ))
+
+    assert_selector "input[aria-describedby='workspace_join_policy_invite_description']", visible: :all
+    assert_selector "p#workspace_join_policy_invite_description"
+  end
+
+  # The posted NAME is untouched — only the id is sanitised. Rails needs the
+  # brackets to parse the params, so collapsing them there would break the form.
+  def test_sanitising_the_id_leaves_the_posted_name_alone
+    render_inline(UI::RadioGroupComponent.new(
+      name: "workspace[join_policy]", label: "Join policy",
+      items: [{value: "invite", label: "Invitation only"}]
+    ))
+
+    assert_selector "input[name='workspace[join_policy]']", visible: :all
+  end
+
   def test_a_checked_item_marks_only_that_input
     items = [
       {value: "free", label: "Free"},
