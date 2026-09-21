@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `collection_radio_buttons` takes a `description_method:` — the name of a method on each collection item supplying that option's supporting line. This is the collection-helper spelling of the per-item `description:` `radio_group` gained in 0.20.0, and it finishes #137: both surfaces can now explain an option without the call site hand-rolling radios and losing the group's accessibility contract. The line renders under the label, never inside it, for the same reason as the component's — inside, it joins the radio's accessible name and is announced *as* the option. The label keeps wrapping input + caption, so the row is still one ≥44px target (WCAG 2.5.5). Purely additive: an item whose method returns blank renders as an undescribed row, and passing the option when nothing describes an option produces byte-identical output to omitting it. Closes #137.
 ### Fixed
 
 - `empty_state` spaces a slotted icon from the title. Tailwind preflight makes an `<svg>` a block, so with nothing between them the icon sat flush on the text — `BASE` centred, sized and tinted the slot but never gave it a gap. The margin goes on the svg rather than the title because it belongs to the **optional** element: on the title it would indent an icon-less empty state and still leave an icon + description pair flush. Callers that added their own `mb-*` to work around this can drop it. Closes #241.

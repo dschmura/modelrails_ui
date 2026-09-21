@@ -114,6 +114,28 @@ hook doesn't silently drop the accent color or focus ring).
 entirely: no `aria-describedby`, and the hint/error paragraphs render with
 no `id` rather than a degenerate `"-error"`/`"-hint"` nothing points at.
 
+### Per-option descriptions
+
+`collection_radio_buttons` takes a `description_method:` — the name of a
+method on each collection item supplying that option's supporting line. It is
+the collection-helper spelling of `UI::RadioGroup`'s per-item `description:`.
+
+```erb
+<%= f.collection_radio_buttons :join_policy, JoinPolicy.all, :value, :label,
+      description_method: :blurb %>
+```
+
+The line renders **under the label, never inside it**: inside, it would
+become part of the radio's accessible name and be announced *as* the option.
+As a sibling linked by `aria-describedby` it is read after the name, which is
+what a supporting line is for. The label keeps wrapping input + caption, so
+the row is still one ≥44px target.
+
+The option is additive: an item whose method returns blank renders exactly as
+an undescribed row, and passing `description_method:` when nothing describes
+an option produces byte-identical output to omitting it. `help:` is unrelated
+and still available — that describes the **group**, this describes one option.
+
 ## `submit`
 
 ```erb
