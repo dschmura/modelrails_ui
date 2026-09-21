@@ -10,6 +10,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Anchored panels cannot overflow the screen. `popover`, `hover_card`, `dropdown_menu`, `menubar`, `navigation_menu`, `date_picker` and `timepicker` gain `max-w-[calc(100vw-2rem)]`; `tooltip` and `sidebar`'s rail tooltip fold their existing ceiling into it with `min()`, since two `max-w-*` utilities on one element is a cascade race rather than a smaller-wins. `position-try-fallbacks` could never cover this case — flipping needs room on the other side, and a panel wider than the viewport has none. `combobox` and `mega_menu` are deliberately exempt: they size their panel with `anchor-size(width)`, so it is already bounded by the trigger, and capping it would make the panel narrower than the trigger it lines up with. Stated in `docs/anchored-panels.md` and enforced by `test/test_anchored_panel_viewport_cap.rb`, which derives the set from the placement machinery so a new anchored component cannot ship unbounded. Partly addresses #211 — the inline-axis fallback half was dropped on measurement, see the issue.
+### Added
+
+- `collection_radio_buttons` takes a `description_method:` — the name of a method on each collection item supplying that option's supporting line. This is the collection-helper spelling of the per-item `description:` `radio_group` gained in 0.20.0, and it finishes #137: both surfaces can now explain an option without the call site hand-rolling radios and losing the group's accessibility contract. The line renders under the label, never inside it, for the same reason as the component's — inside, it joins the radio's accessible name and is announced *as* the option. The label keeps wrapping input + caption, so the row is still one ≥44px target (WCAG 2.5.5). Purely additive: an item whose method returns blank renders as an undescribed row, and passing the option when nothing describes an option produces byte-identical output to omitting it. Closes #137.
+### Fixed
+
+- `empty_state` spaces a slotted icon from the title. Tailwind preflight makes an `<svg>` a block, so with nothing between them the icon sat flush on the text — `BASE` centred, sized and tinted the slot but never gave it a gap. The margin goes on the svg rather than the title because it belongs to the **optional** element: on the title it would indent an icon-less empty state and still leave an icon + description pair flush. Callers that added their own `mb-*` to work around this can drop it. Closes #241.
 
 ## [0.20.0] - 2026-09-20
 

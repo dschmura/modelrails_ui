@@ -83,6 +83,18 @@ class EmptyStateRenderTest < ViewComponent::TestCase
     assert_selector "div[class*='[&>svg]:text-text-muted']"
   end
 
+  # Tailwind preflight sets svg{display:block}, so a slotted icon is its own block
+  # and sits flush on the title without an explicit gap. The margin belongs to the
+  # OPTIONAL element: moved to the title it would add a spurious top gap to an
+  # icon-less empty state, and give none at all to an icon + description pair.
+  def test_icon_slot_is_spaced_from_the_text_below_it
+    render_inline(UI::EmptyStateComponent.new(title: "No projects yet")) do |c|
+      c.with_icon { "<svg aria-hidden='true'></svg>".html_safe }
+    end
+
+    assert_selector "div[class*='[&>svg]:mb-3']"
+  end
+
   def test_action_slot_renders_inside_its_own_region
     render_inline(UI::EmptyStateComponent.new(title: "No projects yet")) do |c|
       c.with_action { "<a href='/projects/new'>New project</a>".html_safe }
