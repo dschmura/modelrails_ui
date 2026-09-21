@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `collection_radio_buttons` takes a `description_method:` — the name of a method on each collection item supplying that option's supporting line. This is the collection-helper spelling of the per-item `description:` `radio_group` gained in 0.20.0, and it finishes #137: both surfaces can now explain an option without the call site hand-rolling radios and losing the group's accessibility contract. The line renders under the label, never inside it, for the same reason as the component's — inside, it joins the radio's accessible name and is announced *as* the option. The label keeps wrapping input + caption, so the row is still one ≥44px target (WCAG 2.5.5). Purely additive: an item whose method returns blank renders as an undescribed row, and passing the option when nothing describes an option produces byte-identical output to omitting it. Closes #137.
+
 ## [0.20.0] - 2026-09-20
 
 Two new components and two API additions, all additive — nothing here is breaking.

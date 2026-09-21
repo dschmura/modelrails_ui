@@ -422,6 +422,67 @@ class FormBuilderRenderTest < ViewComponent::TestCase
     assert page.has_css?("legend span[aria-hidden='true']", text: "*")
   end
 
+  # -- per-item descriptions (#137) ---------------------------------------
+  #
+  # The collection-helper spelling of UI::RadioGroup's per-item `description:`.
+  # A Struct rather than the [value, label] pairs above: the collection needs a
+  # third readable attribute, and naming it makes the option's role obvious.
+  RoleOption = Struct.new(:id, :name, :blurb)
+  DESCRIBED_ROLES = [
+    RoleOption.new("1", "Admin", "Can change billing and remove members."),
+    RoleOption.new("2", "Editor", nil)
+  ].freeze
+  UNDESCRIBED_ROLES = [RoleOption.new("1", "Admin", nil), RoleOption.new("2", "Editor", nil)].freeze
+
+  def described_group
+    page_for(builder.collection_radio_buttons(:title, DESCRIBED_ROLES, :id, :name,
+      description_method: :blurb))
+  end
+
+  def test_a_per_item_description_is_linked_to_its_own_input
+    page = described_group
+
+    described_by = page.find("input[type='radio'][value='1']")["aria-describedby"]
+
+    refute_nil described_by, "a described option must point at its supporting line"
+    assert page.has_css?("p##{described_by}", text: "Can change billing and remove members.")
+  end
+
+  # Inside the <label> the supporting line would become part of the radio's
+  # accessible name and be announced AS the option; as a sibling linked by
+  # aria-describedby it is read after the name. Same ruling as RadioGroup's.
+  def test_a_per_item_description_is_never_inside_the_label
+    page = described_group
+
+    refute page.has_css?("label p"), "the description must sit outside the label"
+    assert page.has_css?("label", text: "Admin")
+  end
+
+  # The 44px row target (WCAG 2.5.5) is the label wrapping input + caption;
+  # adding a description must not shrink it back to the input alone.
+  def test_a_described_row_keeps_its_44px_label_target
+    page = described_group
+
+    assert_equal 2, page.all("label.min-h-11 input[type='radio']").size
+  end
+
+  def test_an_item_with_no_description_gets_no_supporting_line
+    page = described_group
+
+    assert_nil page.find("input[type='radio'][value='2']")["aria-describedby"]
+    assert_equal 1, page.all("fieldset p").size
+  end
+
+  # The strongest statement that this is additive: when nothing describes an
+  # option, passing description_method changes no byte of the output.
+  def test_description_method_with_no_descriptions_is_byte_identical_to_omitting_it
+    described = builder.collection_radio_buttons(:title, UNDESCRIBED_ROLES, :id, :name,
+      description_method: :blurb).to_s
+    plain = builder.collection_radio_buttons(:title, UNDESCRIBED_ROLES, :id, :name).to_s
+
+    assert_equal plain, described
+  end
+
   # -- submit -------------------------------------------------------------
 
   def test_submit_defaults_to_btn_primary
