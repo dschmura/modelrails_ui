@@ -36,6 +36,7 @@ ledger is human judgment (Tier + Notes) only.
 | form_field | proven | Convention pass B1 (gem #32 + app #255): repaired the broken standalone field — binds `<label for>`, hint/error ids, yields `input_attrs` (id+describedby+invalid+required) to the slotted control; data-slot adjacency spacing |
 | kbd | proven | Wave 3 display-primitive exemplar (doc + 0a + template-backed preview + 0b). text-text-muted is AAA here (same neutral as body) — no contrast change |
 | separator | proven | Wave 3 (aria-orientation only when semantic; role none/separator) |
+| empty_state | proven | Added on evidence: 7 hand-rolled instances in the reference app (#135). Title is a `<p>`, never a heading, so it cannot inject one into a page outline |
 | skeleton | proven | Wave 3 (aria-hidden decorative placeholder; motion-reduce:animate-none) |
 | spinner | proven | Wave 3 (i18n sr-only loading text via t default; role=status; sizes) |
 | progress | proven | Wave 3 (optional label: → aria-label accessible name; clamp; valuenow/min/max) |
@@ -102,7 +103,7 @@ ledger is human judgment (Tier + Notes) only.
 | error_summary | gem-0a-proven / app-0b-pending | focusable autofocused error summary (v0.10.0, B1 sibling); unlinked: opt-out + anchor contract (#121/#126). 0a render test; app 0b pending. |
 | copy | hardened | Copy-to-clipboard field (2026-09-01): readonly `input` value with a real label, `[:outline, :neutral]` trigger, polite (copied) + assertive (failed) regions present from first render, honest failure without `execCommand`, `data-state` + `copy:copied`/`copy:failed` hooks. 0a + browser lane; app 0b lands with adoption. |
 
-**Hardening program COMPLETE** — all 86 components are `proven` (0a + app 0b/AAA), `hardened` (gem 0a; `wysiwyg`/`toaster` are superseded in this host and adopt no app 0b), or `gem-0a-proven / app-0b-pending` (form_draft, form_builder, error_summary). No `experimental` components remain. (86 counts the `menubar_menu` sub-component row; the generator catalog itself is 85.)
+**Hardening program COMPLETE** — all 87 components are `proven` (0a + app 0b/AAA), `hardened` (gem 0a; `wysiwyg`/`toaster` are superseded in this host and adopt no app 0b), or `gem-0a-proven / app-0b-pending` (form_draft, form_builder, error_summary). No `experimental` components remain. (87 counts the `menubar_menu` sub-component row; the generator catalog itself is 86.)
 
 **Sibling templates to copy:** `alert` is the canonical Wave 1 reference. Copy its render test
 (`test/render/alert_render_test.rb`), template-backed preview, and — for 0b — its preview-host

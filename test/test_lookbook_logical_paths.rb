@@ -36,6 +36,9 @@ class TestLookbookLogicalPaths < Minitest::Test
     "navigation_menu" => "Navigation", "footer" => "Navigation", "pagination" => "Navigation",
     "alert" => "Feedback & Status", "banner" => "Feedback & Status", "badge" => "Feedback & Status",
     "progress" => "Feedback & Status", "spinner" => "Feedback & Status", "skeleton" => "Feedback & Status",
+    # empty_state sits beside skeleton: both say what is happening rather than
+    # displaying data — "nothing here" and "not here yet" are the same axis.
+    "empty_state" => "Feedback & Status",
     "indicator" => "Feedback & Status", "stepper" => "Feedback & Status", "toaster" => "Feedback & Status",
     "card" => "Data Display", "list_group" => "Data Display", "data_table" => "Data Display", "table" => "Data Display",
     "timeline" => "Data Display", "accordion" => "Data Display", "collapsible" => "Data Display",
