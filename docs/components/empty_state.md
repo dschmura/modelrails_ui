@@ -22,7 +22,7 @@ With a supporting line and a call to action:
 <%= ui :empty_state,
        title: "No projects yet",
        description: "Create your first project to get started." do |c| %>
-  <% c.with_icon { icon(:folder_plus, class: "size-8") } %>
+  <% c.with_icon { icon(:folder_plus) } %>
   <% c.with_action { link_to "New project", new_project_path, class: "btn-primary" } %>
 <% end %>
 ```
@@ -60,7 +60,7 @@ component to guess a level.
 | `title` | String | `nil` | The primary message |
 | `description` | String | `nil` | A supporting line below the title |
 | `variant` | Symbol | `:dashed` | `:dashed`, `:outlined`, or `:plain` |
-| `icon` | Slot | — | Your SVG; the container centres it and applies the muted token |
+| `icon` | Slot | — | Your SVG, passed bare: the container centres it, sizes it, applies the muted token, and spaces it from the title |
 | `action` | Slot | — | A link or button, rendered in its own region below the text |
 
 Any other attribute passes through to the container, so a caller can attach a
