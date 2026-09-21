@@ -136,4 +136,38 @@ class TestTargetSize < Minitest::Test
     assert_includes src, "UI::ButtonComponent.new(variant: :outline, tone: :neutral",
       "copy TRIGGER must be the outline/neutral button cell"
   end
+
+  # A link inside a navigation_menu flyout is a NAVIGATION LINK, not the interior
+  # of a `role="menuitem"` widget, so 2.5.5 applies to it exactly as it does to
+  # the bar's own TRIGGER and LINK_CLS — both of which already carry `h-11`.
+  #
+  # PANEL_LINK cannot use that fixed height: it stacks a title over an optional
+  # description, so the row has to be able to grow. `min-h-11` sets the floor
+  # without capping it, and `justify-center` centres single-line content as the
+  # row grows to meet it — `items-center` would be the CROSS axis here, since the
+  # container is `flex-col`, and would pull a two-line link off its left edge.
+  #
+  # Scoped to the constant, not the file: asserting the template merely contains
+  # "min-h-11" would pass on a floor added to some other element entirely.
+  def test_navigation_menu_panel_link_meets_target_size
+    src = constant_value(template("navigation_menu/navigation_menu_component.rb.tt"), "PANEL_LINK")
+
+    assert_includes src, "min-h-11", "navigation_menu PANEL_LINK must carry min-h-11 (2.5.5)"
+    assert_includes src, "justify-center",
+      "PANEL_LINK is flex-col, so justify-center is what centres a single-line link"
+  end
+
+  private
+
+  # The full right-hand side of a constant assignment, following Ruby's `\`
+  # line continuations so a multi-line class string is read whole.
+  def constant_value(src, name)
+    lines = src.lines
+    start = lines.index { |l| l.match?(/^\s*#{name}\s*=/) }
+    raise ArgumentError, "#{name} not found" if start.nil?
+
+    taken = [lines[start]]
+    taken << lines[start + taken.size] while taken.last.rstrip.end_with?("\\")
+    taken.join
+  end
 end
