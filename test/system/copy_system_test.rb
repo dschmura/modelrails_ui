@@ -47,7 +47,11 @@ class CopySystemTest < BrowserTestCase
 
   STUB_REJECT = <<~JS
     window.__events = []
-    window.addEventListener("copy:failed", (e) => window.__events.push(["failed", e.detail.value]))
+    window.__errors = []
+    window.addEventListener("copy:failed", (e) => {
+      window.__events.push(["failed", e.detail.value])
+      window.__errors.push(e.detail.error && e.detail.error.name)
+    })
     Object.defineProperty(navigator, "clipboard", {
       value: { writeText: () => Promise.reject(new DOMException("denied", "NotAllowedError")) },
       configurable: true
@@ -55,6 +59,24 @@ class CopySystemTest < BrowserTestCase
   JS
 
   STUB_ABSENT = %(Object.defineProperty(navigator, "clipboard", { value: undefined, configurable: true }))
+
+  # Rejects the first write, resolves every one after. The only way to prove a later
+  # success CLEARS the error region rather than leaving both messages on screen.
+  STUB_REJECT_THEN_OK = <<~JS
+    window.__copied = []
+    let firstWrite = true
+    Object.defineProperty(navigator, "clipboard", {
+      value: { writeText: (text) => {
+        if (firstWrite) {
+          firstWrite = false
+          return Promise.reject(new DOMException("denied", "NotAllowedError"))
+        }
+        window.__copied.push(text)
+        return Promise.resolve()
+      } },
+      configurable: true
+    })
+  JS
 
   COPIED = "Copied Invitation link to the clipboard"
   FAILED = "Couldn't copy automatically. Invitation link is selected — use your browser or device copy command."
@@ -163,6 +185,56 @@ class CopySystemTest < BrowserTestCase
                return i.selectionStart === 0 && i.selectionEnd === i.value.length })()
     JS
     assert_equal "Copy", trigger.text.strip
+  end
+
+  # --- what the failure path was NOT asserting (#185 item 2) -----------------
+
+  # The failure message names the LABEL ("Invitation link is selected"), never the
+  # value. A message that echoed the value would put a copied secret on screen for
+  # anyone shoulder-surfing, and into any screenshot of the error.
+  def test_the_failure_message_does_not_echo_the_value
+    open_scenario(stub: STUB_REJECT)
+    trigger.click
+
+    assert_selector "[data-controller=copy][data-state=failed]"
+    refute_includes error_text, COPY_URL
+  end
+
+  # The docs promise focus MOVES to the input, not merely that the text is selected:
+  # a selection the user cannot act on with their keyboard is not a fallback.
+  def test_a_rejected_write_moves_focus_to_the_value_input
+    open_scenario(stub: STUB_REJECT)
+    trigger.click
+
+    assert_selector "[data-controller=copy][data-state=failed]"
+    assert page.evaluate_script(<<~JS), "focus should be on the value input, not left on the trigger"
+      document.activeElement === document.querySelector("[data-copy-target=source]")
+    JS
+  end
+
+  # copy:failed carries { value, error }. The value half was asserted; the error half
+  # is what a caller needs to tell "denied" from "no clipboard here".
+  def test_the_failed_event_carries_the_underlying_error
+    open_scenario(stub: STUB_REJECT)
+    trigger.click
+
+    assert_selector "[data-controller=copy][data-state=failed]"
+    assert_equal ["NotAllowedError"], page.evaluate_script("window.__errors")
+  end
+
+  # A success after a failure must EMPTY the error region. Leaving it would show a
+  # stale "couldn't copy" beside a fresh "copied", and an alert region that still
+  # holds text is one an assistive technology may re-announce.
+  def test_a_later_success_clears_the_error_region
+    open_scenario("default_short", stub: STUB_REJECT_THEN_OK)
+    trigger.click
+
+    assert_equal FAILED, error_text
+    assert_selector "[data-controller=copy][data-state=idle]", wait: 4
+    trigger.click
+
+    assert_selector "[data-controller=copy][data-state=copied]"
+    assert_equal "", error_text
   end
 
   # Over a LAN IP navigator.clipboard is undefined (secure-context only): same honest path.
