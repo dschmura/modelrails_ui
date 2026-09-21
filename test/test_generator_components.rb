@@ -22,7 +22,7 @@ class TestGeneratorComponents < Minitest::Test
   PHASE9 = %w[image figure picture video audio iframe map_area embed].freeze
   # Post-phase additions: components added on evidence of repeated hand-rolling
   # rather than as part of a planned roster.
-  LATER = %w[empty_state].freeze
+  LATER = %w[empty_state chip_group].freeze
 
   # Partial-only generator utilities — NOT a phase roster of ViewComponent-backed
   # components like PHASE1-9 above. They ship a partial + JS controller but no
