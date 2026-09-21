@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `select` takes optgroups: `options: { "Group" => [[value, label], …] }`. A hash whose **values are arrays** renders `<optgroup>`; a hash of scalars stays the flat `{ value => label }` shape, so the two cannot be confused and no existing call site changes. Group members take the same shorthand as the flat array shape, `include_blank:` stays outside every group, and pair order remains `[value, label]` throughout — Rails' `grouped_options_for_select` uses `[label, value]`, but a caller grouping options they already wrote should not have to flip them. Closes #162.
+
 ### Fixed
 
 - **Passing `data:` to `popover`, `tooltip`, `hover_card`, `dialog`, `sheet` or `drawer` no longer breaks the component.** The wrapper merged a caller's `**html_attrs` flat over its own `data:`, so any caller `data:` replaced the whole hash and took `data-controller` with it — the component silently stopped working, with no error and nothing to explain it. #204 fixed exactly this for popover's `trigger_attrs:` and left the wrapper, one merge site over, in six components. A caller's `data` is now merged one level deeper via a shared `merge_html_attrs` helper; the component's own keys win inside that merge, because they are its wiring rather than styling. `dropdown_menu` and `context_menu` already did this correctly and are unchanged.
