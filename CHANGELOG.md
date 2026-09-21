@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- `empty_state` spaces a slotted icon from the title. Tailwind preflight makes an `<svg>` a block, so with nothing between them the icon sat flush on the text — `BASE` centred, sized and tinted the slot but never gave it a gap. The margin goes on the svg rather than the title because it belongs to the **optional** element: on the title it would indent an icon-less empty state and still leave an icon + description pair flush. Callers that added their own `mb-*` to work around this can drop it. Closes #241.
+
 ## [0.20.0] - 2026-09-20
 
 Two new components and two API additions, all additive — nothing here is breaking.
