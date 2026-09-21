@@ -19,7 +19,8 @@ class TestLookbookLogicalPaths < Minitest::Test
   EXPECTED = {
     "input" => "Forms & Inputs", "textarea" => "Forms & Inputs", "select" => "Forms & Inputs",
     "checkbox" => "Forms & Inputs", "radio_group" => "Forms & Inputs", "switch" => "Forms & Inputs",
-    "toggle" => "Forms & Inputs", "toggle_group" => "Forms & Inputs", "range" => "Forms & Inputs",
+    "toggle" => "Forms & Inputs", "toggle_group" => "Forms & Inputs",
+    "chip_group" => "Forms & Inputs", "range" => "Forms & Inputs",
     "number_input" => "Forms & Inputs", "search_input" => "Forms & Inputs",
     "file_input" => "Forms & Inputs", "input_otp" => "Forms & Inputs", "combobox" => "Forms & Inputs",
     "date_picker" => "Forms & Inputs", "timepicker" => "Forms & Inputs", "calendar" => "Forms & Inputs",
