@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Anchored panels cannot overflow the screen. `popover`, `hover_card`, `dropdown_menu`, `menubar`, `navigation_menu`, `date_picker` and `timepicker` gain `max-w-[calc(100vw-2rem)]`; `tooltip` and `sidebar`'s rail tooltip fold their existing ceiling into it with `min()`, since two `max-w-*` utilities on one element is a cascade race rather than a smaller-wins. `position-try-fallbacks` could never cover this case — flipping needs room on the other side, and a panel wider than the viewport has none. `combobox` and `mega_menu` are deliberately exempt: they size their panel with `anchor-size(width)`, so it is already bounded by the trigger, and capping it would make the panel narrower than the trigger it lines up with. Stated in `docs/anchored-panels.md` and enforced by `test/test_anchored_panel_viewport_cap.rb`, which derives the set from the placement machinery so a new anchored component cannot ship unbounded. Partly addresses #211 — the inline-axis fallback half was dropped on measurement, see the issue.
+
 ## [0.20.0] - 2026-09-20
 
 Two new components and two API additions, all additive — nothing here is breaking.
