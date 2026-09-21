@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- `radio_group` sanitises the `name:` into its generated ids, not just the item's value. A Rails field name is the ordinary case for this component and it is full of brackets, so `name: "workspace[join_policy]"` produced `id="workspace[join_policy]_invite"`. Brackets are legal in an HTML5 id and `label[for]` resolves them, so the rendered page was never broken — but `#workspace[join_policy]_invite` does not parse as a CSS id selector (it reads as `#workspace` plus an attribute condition), so every stylesheet rule, `querySelector` and test had to know to escape it. It surfaced as a Nokogiri **parse error** rather than an assertion failure, which is a confusing way to meet it. `chip_group` already collapsed brackets this way; the two siblings now answer the same question the same way, and the description id inherits the fix because it is derived from the input's. **The posted `name` is untouched** — Rails needs the brackets to parse the params. A host selecting the old bracketed ids must update, though such a selector could only ever have worked via escaping or an `[id='…']` attribute match, and the latter keeps working. Closes #247.
+
 ## [0.21.0] - 2026-09-21
 
 Two fixes and one API addition, all additive — nothing here is breaking. Each of
