@@ -22,7 +22,7 @@ module UI
   #   label, error message, and ARIA associations come for free.
   #
   # ## Accessibility contract
-  # - **Guarantees:** AAA border and focus-ring tokens, `min-h-[var(--form-input-height)]`
+  # - **Guarantees:** AAA border and focus-ring tokens, `min-h-input`
   #   44 px touch target, `aria-invalid="true"` when `invalid: true`, and
   #   `aria-describedby` wired when `describedby:` is supplied. These ARIA attributes
   #   were absent on the legacy plain `file_field` — this component fills that gap.

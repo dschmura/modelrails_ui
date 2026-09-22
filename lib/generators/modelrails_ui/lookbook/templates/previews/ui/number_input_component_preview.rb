@@ -22,7 +22,7 @@ module UI
   # - You need a slider with a visible range — use `ui :range`.
   #
   # ## Accessibility contract
-  # - **Guarantees:** AAA border and focus-ring tokens, a `min-h-[var(--form-input-height)]`
+  # - **Guarantees:** AAA border and focus-ring tokens, a `min-h-input`
   #   44 px touch target (no sub-44px custom buttons — the field is the only target),
   #   an `id` always emitted, `aria-invalid="true"` when `invalid: true`,
   #   `aria-describedby` wired when `describedby:` is supplied, and
