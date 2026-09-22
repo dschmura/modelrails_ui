@@ -138,6 +138,15 @@ sweep — the exemption and its reason are pinned by
 `test/test_lists_carry_the_list_role.rb`, which fails if the component ever
 stops applying those utilities.
 
+**Observed 2026-09-08, VoiceOver + Safari (macOS):** the summary announces once
+and the list reads as a list, with each item spoken as a link — no double
+announcement and no silence. That pairing is worth stating because the component
+deliberately puts an `autofocus`, `tabindex="-1"` container (role-less) around a
+child carrying `role="alert"`: an assertive live region beside a focus move is
+the arrangement that makes some readers announce twice, and on this reader it
+does not. NVDA/Firefox has not been run, so this is evidence for one reader
+rather than a general claim.
+
 ## Related
 
 - `form_field` — the per-field label/hint/error wrapper.
