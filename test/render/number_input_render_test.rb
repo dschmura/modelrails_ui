@@ -29,7 +29,7 @@ class NumberInputRenderTest < ViewComponent::TestCase
   def test_input_meets_44px_touch_target
     render_inline(UI::NumberInputComponent.new(name: "qty"))
 
-    assert_selector "input.min-h-\\[var\\(--form-input-height\\)\\]"
+    assert_selector "input.min-h-input"
   end
 
   # id-fallback: an id is always emitted so an external <label for=...> can target it.

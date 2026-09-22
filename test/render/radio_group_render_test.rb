@@ -200,6 +200,6 @@ class RadioGroupRenderTest < ViewComponent::TestCase
   def test_a_described_items_label_keeps_the_44px_target_floor
     render_described
 
-    assert_selector "label[for='policy_open'].min-h-11"
+    assert_selector "label[for='policy_open'].min-h-input"
   end
 end

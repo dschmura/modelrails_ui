@@ -106,7 +106,7 @@ class ErrorSummaryRenderTest < ViewComponent::TestCase
     render_inline(UI::ErrorSummaryComponent.new(items: [{message: "Email is invalid", href: "#user_email"}]))
     link = page.find("a[href='#user_email']", visible: :all)
 
-    assert_includes link[:class], "min-h-11"
+    assert_includes link[:class], "min-h-input"
     assert_includes link[:class], "inline-flex"
     assert_includes link[:class], "items-center"
   end

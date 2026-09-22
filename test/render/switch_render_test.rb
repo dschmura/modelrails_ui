@@ -55,7 +55,7 @@ class SwitchRenderTest < ViewComponent::TestCase
   def test_clickable_track_label_meets_44px_target
     render_inline(UI::SwitchComponent.new(id: "notify_switch"))
 
-    assert_selector "label.min-h-11.min-w-11"
+    assert_selector "label.min-h-input.min-w-11"
   end
 
   def test_invalid_sets_aria_invalid_on_the_input

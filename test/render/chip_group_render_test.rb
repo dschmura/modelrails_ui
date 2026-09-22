@@ -80,7 +80,7 @@ class ChipGroupRenderTest < ViewComponent::TestCase
   def test_the_chip_meets_the_44px_target_floor
     render_days
 
-    assert_selector "label.min-h-11.min-w-11"
+    assert_selector "label.min-h-input.min-w-11"
   end
 
   # Focus is an offset outline, never a ring: a ring is clipped by an

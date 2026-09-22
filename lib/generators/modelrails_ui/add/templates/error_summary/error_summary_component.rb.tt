@@ -66,7 +66,7 @@ module UI
           # fails target-size at AA (24px) as well as the AAA 44px floor. The host
           # app measured this with a live audit — the gem's CI cannot.
           content_tag(:a, item[:message], href: item[:href],
-            class: "inline-flex min-h-11 items-center underline focus-ring")
+            class: "inline-flex min-h-input items-center underline focus-ring")
         else
           item[:message]
         end
