@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.23.0] - 2026-09-22
+
+Two fixes that change nothing a user sees and quite a lot about what a consuming
+app's test suite does. Both were found by running the suite in the reference app
+rather than by reading this library.
+
+### Fixed
+
+- Previews render their fixtures locally instead of fetching from four third parties. Six previews loaded a real Vimeo video, a real OpenStreetMap embed, a live QR generator and a live avatar service — and the generator vendors those into every consuming app, where a system spec audits each preview for accessibility. So every suite run in every downstream app, and every fork of it, reached out to four third-party hosts. Nothing declared that, and the suite could not run offline. Downstream it also made the iframe spec intermittently red, at **one failure in three runs** on an idle machine and every run under load. The mechanism is narrower than "the network is flaky": the fetch succeeds, and the consuming app's CSP is not involved (Lookbook previews do not carry it), but computing *visibility* across a loaded cross-origin document can error — so Capybara reports a node that matched the selector and not the visibility filter. The replacements are `data:` URIs: same document, no network, no cross-origin boundary. What each preview demonstrates is unchanged. **`EmbedComponent` is deliberately untouched** — it builds `player.vimeo.com` URLs from a caller-supplied id, which is the component doing its job, and its `?dnt=1` shows tracking was already considered. Closes #253.
+- The library's own templates adopt `min-h-input`. `#142` registered the token, and the CSS shipped here says to prefer it over `min-h-11` and `min-h-[var(--form-input-height)]` "so the invariant has ONE spelling" — but the templates never followed: **32 sites across 26 files**, with adoption at zero. This is not tidying. `--form-input-height` is the documented retune knob, so a consumer who sets it to 48px moves every `min-h-input` and leaves every `min-h-11` at 44px, splitting the page into two control heights — the exact failure the token exists to prevent, on the one knob the docs invite people to turn. **Nothing renders differently today**: `--spacing` is not overridden, so all three spellings compute to 44px. A host re-vendoring will see class names change in its copies and no pixels move. Two comments keep the old spellings on purpose — the CSS token docblock and `test_shipped_stylesheet_completeness.rb` both name them as what *not* to write. Closes #252.
+
 ## [0.22.0] - 2026-09-21
 
 Two fixes, neither breaking an API — but **both change what a host renders**, so
