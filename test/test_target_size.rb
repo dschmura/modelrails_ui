@@ -19,8 +19,8 @@ class TestTargetSize < Minitest::Test
   end
 
   def test_tabs_trigger_meets_target_size
-    assert_includes template("tabs/tabs_component.rb.tt"), "min-h-11",
-      "tabs TRIGGER must carry min-h-11"
+    assert_includes template("tabs/tabs_component.rb.tt"), "min-h-input",
+      "tabs TRIGGER must carry min-h-input"
   end
 
   def test_modal_panels_drop_scale_95_rest_class
@@ -76,14 +76,14 @@ class TestTargetSize < Minitest::Test
     checkbox = template("checkbox/checkbox_component.rb.tt")
 
     refute_includes checkbox, "leading-none", "checkbox label must drop leading-none"
-    assert_includes checkbox, "min-h-11", "checkbox label must carry min-h-11"
-    assert_includes template("radio_group/radio_group_component.rb.tt"), "min-h-11",
-      "radio_group label must carry min-h-11"
+    assert_includes checkbox, "min-h-input", "checkbox label must carry min-h-input"
+    assert_includes template("radio_group/radio_group_component.rb.tt"), "min-h-input",
+      "radio_group label must carry min-h-input"
   end
 
   def test_breadcrumb_and_tooltip_targets
-    assert_includes template("breadcrumb/breadcrumb_component.rb.tt"), "min-h-11"
-    assert_includes template("tooltip/tooltip_component.rb.tt"), "min-h-11"
+    assert_includes template("breadcrumb/breadcrumb_component.rb.tt"), "min-h-input"
+    assert_includes template("tooltip/tooltip_component.rb.tt"), "min-h-input"
   end
 
   def test_navigation_and_mega_menu_row_height
@@ -113,8 +113,8 @@ class TestTargetSize < Minitest::Test
   end
 
   def test_badge_link_and_banner_dismiss_targets
-    assert_includes template("badge/badge_component.rb.tt"), "min-h-11",
-      "badge link variant must add min-h-11"
+    assert_includes template("badge/badge_component.rb.tt"), "min-h-input",
+      "badge link variant must add min-h-input"
     assert_includes template("banner/banner_component.rb.tt"), "min-w-11",
       "banner dismiss button must be 44px"
   end
@@ -127,7 +127,7 @@ class TestTargetSize < Minitest::Test
   end
 
   # copy composes the 44px cells rather than hand-rolling either control: the value
-  # is UI::InputComponent (BASE carries min-h-[var(--form-input-height)]) and the
+  # is UI::InputComponent (BASE carries min-h-input) and the
   # trigger is the button cell [:outline, :neutral] (btn-secondary carries the same).
   def test_copy_composes_the_44px_input_and_button_cells
     src = template("copy/copy_component.rb.tt")
@@ -142,17 +142,17 @@ class TestTargetSize < Minitest::Test
   # the bar's own TRIGGER and LINK_CLS — both of which already carry `h-11`.
   #
   # PANEL_LINK cannot use that fixed height: it stacks a title over an optional
-  # description, so the row has to be able to grow. `min-h-11` sets the floor
+  # description, so the row has to be able to grow. `min-h-input` sets the floor
   # without capping it, and `justify-center` centres single-line content as the
   # row grows to meet it — `items-center` would be the CROSS axis here, since the
   # container is `flex-col`, and would pull a two-line link off its left edge.
   #
   # Scoped to the constant, not the file: asserting the template merely contains
-  # "min-h-11" would pass on a floor added to some other element entirely.
+  # "min-h-input" would pass on a floor added to some other element entirely.
   def test_navigation_menu_panel_link_meets_target_size
     src = constant_value(template("navigation_menu/navigation_menu_component.rb.tt"), "PANEL_LINK")
 
-    assert_includes src, "min-h-11", "navigation_menu PANEL_LINK must carry min-h-11 (2.5.5)"
+    assert_includes src, "min-h-input", "navigation_menu PANEL_LINK must carry min-h-input (2.5.5)"
     assert_includes src, "justify-center",
       "PANEL_LINK is flex-col, so justify-center is what centres a single-line link"
   end

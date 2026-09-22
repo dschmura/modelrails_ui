@@ -36,7 +36,7 @@ class RatingInputRenderTest < ViewComponent::TestCase
     render_inline(UI::RatingInputComponent.new(value: 0, max: 5))
 
     # AAA 2.5.5: each star is a >=44px hit target even though the visual star is 24px.
-    assert_selector "button[type='button'].min-h-11.min-w-11", count: 5
+    assert_selector "button[type='button'].min-h-input.min-w-11", count: 5
   end
 
   def test_filled_stars_use_the_semantic_warning_token

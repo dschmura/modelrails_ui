@@ -279,8 +279,8 @@ class FormBuilderRenderTest < ViewComponent::TestCase
   def test_checkbox_row_is_one_44px_label_target_wrapping_input_and_caption
     page = page_for(builder.checkbox(:terms, label: "I accept the terms"))
 
-    assert page.has_css?("label.min-h-11 input[type='checkbox']#b1_article_terms")
-    assert page.has_css?("label.min-h-11", text: "I accept the terms")
+    assert page.has_css?("label.min-h-input input[type='checkbox']#b1_article_terms")
+    assert page.has_css?("label.min-h-input", text: "I accept the terms")
   end
 
   def test_checkbox_gains_the_error_path_base_never_had
@@ -385,7 +385,7 @@ class FormBuilderRenderTest < ViewComponent::TestCase
   def test_collection_rows_are_44px_label_targets
     page = page_for(builder.collection_checkboxes(:title, ROLES, :first, :last))
 
-    assert_equal 2, page.all("fieldset label.min-h-11 input[type='checkbox']").size
+    assert_equal 2, page.all("fieldset label.min-h-input input[type='checkbox']").size
   end
 
   def test_collection_check_boxes_legacy_name_produces_identical_output
@@ -399,7 +399,7 @@ class FormBuilderRenderTest < ViewComponent::TestCase
     page = page_for(builder(article).collection_radio_buttons(:title, ROLES, :first, :last))
 
     assert page.has_css?("fieldset[aria-describedby='b1_article_title-error']")
-    assert_equal 2, page.all("fieldset label.min-h-11 input[type='radio'][aria-invalid='true']").size
+    assert_equal 2, page.all("fieldset label.min-h-input input[type='radio'][aria-invalid='true']").size
   end
 
   def test_collection_radio_buttons_keeps_checkbox_classes_when_caller_passes_a_class
@@ -463,7 +463,7 @@ class FormBuilderRenderTest < ViewComponent::TestCase
   def test_a_described_row_keeps_its_44px_label_target
     page = described_group
 
-    assert_equal 2, page.all("label.min-h-11 input[type='radio']").size
+    assert_equal 2, page.all("label.min-h-input input[type='radio']").size
   end
 
   def test_an_item_with_no_description_gets_no_supporting_line

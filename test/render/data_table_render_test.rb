@@ -82,7 +82,7 @@ class DataTableRenderTest < ViewComponent::TestCase
     render_default
 
     # The header button fills the (>=44px) cell height.
-    assert_selector "th button.min-h-11"
+    assert_selector "th button.min-h-input"
   end
 
   # --- AAA semantic tokens, not raw Tailwind ---------------------------------

@@ -129,11 +129,11 @@ class BadgeRenderTest < ViewComponent::TestCase
   end
 
   # Link badges (href:) ARE focusable, so they keep focus-ring explicitly via
-  # the href branch's @extra_class, alongside the existing min-h-11 target size.
+  # the href branch's @extra_class, alongside the existing min-h-input target size.
   def test_link_badge_carries_focus_ring
     render_inline(UI::BadgeComponent.new("Docs", variant: :soft, tone: :success, href: "/docs"))
 
-    assert_selector "a.focus-ring.min-h-11"
+    assert_selector "a.focus-ring.min-h-input"
   end
 
   # Contract hooks (#149): every badge emits data-variant/data-tone reflecting the

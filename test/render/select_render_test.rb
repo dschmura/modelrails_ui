@@ -89,7 +89,7 @@ class SelectRenderTest < ViewComponent::TestCase
   def test_meets_44px_target_floor
     render_inline(UI::SelectComponent.new(options: %w[A B]))
 
-    assert_selector "select.min-h-\\[var\\(--form-input-height\\)\\]"
+    assert_selector "select.min-h-input"
   end
 
   # invalid: drives a visible danger ring/border, not just aria-invalid.

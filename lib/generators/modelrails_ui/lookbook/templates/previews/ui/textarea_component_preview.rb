@@ -21,7 +21,7 @@ module UI
   # - A single line is enough — use `f.text_field` / `ui :input`.
   #
   # ## Accessibility contract
-  # - **Guarantees:** AAA border and focus-ring tokens, `min-h-[var(--form-input-height)]`
+  # - **Guarantees:** AAA border and focus-ring tokens, `min-h-input`
   #   touch target, `aria-invalid="true"` when `invalid: true`, and
   #   `aria-describedby` wired when `describedby:` is supplied.
   # - **You supply (when standalone):** a visible `<label>` associated via `for:/id:`,

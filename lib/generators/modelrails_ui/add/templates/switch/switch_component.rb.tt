@@ -10,7 +10,7 @@ module UI
     # enlarging the graphic. The `for` association toggles the input regardless of DOM
     # nesting. has-[:disabled]: is a cosmetic cursor nicety (the label is an ancestor,
     # not a peer, so peer-* can't reach it — the real peer-disabled: hooks live on TRACK).
-    TARGET  = "relative inline-flex min-h-11 min-w-11 shrink-0 cursor-pointer items-center justify-center " \
+    TARGET  = "relative inline-flex min-h-input min-w-11 shrink-0 cursor-pointer items-center justify-center " \
               "has-[:disabled]:cursor-not-allowed"
     # WRAPPER keeps the original switch size; the input + TRACK + THUMB are siblings
     # inside it so the input is the `peer` and TRACK/THUMB are its LATER SIBLINGS —
