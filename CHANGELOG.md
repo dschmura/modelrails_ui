@@ -9,12 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.23.0] - 2026-09-22
 
-Three fixes, all found by running the suite in the reference app rather than by
-reading this library. Two change nothing a user sees; the third changes every
-form control's invalid state, because it was invisible to the people who most
-need it.
+Four fixes, all found by running the suite in the reference app rather than by
+reading this library. Two change nothing a user sees; the other two change how
+every form control's invalid state and every signal chip's edge are drawn,
+because neither was perceivable to the people who most need it.
 
 ### Fixed
+
+- **Signal chip borders carry the chip's edge.** A tinted chip — alert, banner, toast, badge, error summary — has a fill measuring **~1.06:1 against the page**, so the border is the only thing giving it a boundary. It measured **1.40&ndash;1.92:1** in light and **2.12&ndash;2.71:1** in dark, against a 3:1 non-text floor, in all four tones and both themes. The fill cannot rescue it: the darkest tint that still holds its text at 7:1 reaches only **1.09&ndash;1.29:1** against the page, so AAA text and a visible fill are mutually exclusive on a chip and the edge does it or nobody does. All eight `-border` values move — hue and chroma unchanged, lightness repositioned — each solved against the **worst ground in its theme** (`surface` in light, `surface-raised` in dark), landing at 3.10&ndash;3.12:1. Chips look outlined now rather than almost-borderless; nothing else moves, because #258 had already taken every load-bearing use of `-border` off it. `test_signal_border_contrast.rb` reads the values out of the shipped stylesheet and computes the ratios, because nothing else can see this: axe measures text only, and the render tests assert class names rather than values. Closes #257.
 
 - **The invalid state survives forced-colors mode.** It was carried by `aria-invalid:ring-2 ring-danger` — a box-shadow, which is not painted in forced-colors/High-Contrast. This library already rules that way for FOCUS ("an offset outline, never a box-shadow ring … vanishes in forced-colors mode"); validity was never held to it. **`range` and `switch` showed no invalid state at all there**, and nine more degraded to `danger-border`, a ~red-300 edge measuring **1.92:1 on white** against a 3:1 non-text floor. Three components — `input`, `input_otp`, `textarea` — already did it right with `border-danger`, so the fix was an internal precedent, not a new idea. Every invalid state is now a **border width change** (`border-2 border-danger`). The width is the half that matters: forced-colors repaints every border, so a colour swap alone leaves valid and invalid identical there — which is why this is not simply "darken the token". `range` puts its edge on the track (its own box is transparent) and `switch` thickens the track's existing border. `test_invalid_ring_width.rb` is **replaced** by `test_invalid_state_survives_forced_colors.rb`: the old gate pinned that every invalid ring colour had a ring width — a real bug twice (#112, #122) — and can no longer fail now that no invalid state uses a ring. The new gate pins both that no ring carries the state and that something structural changes, and pins its own population so a component cannot pass by dropping its invalid styling instead of fixing it. Closes #258.
 
