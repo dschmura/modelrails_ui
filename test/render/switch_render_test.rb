@@ -30,6 +30,21 @@ class SwitchRenderTest < ViewComponent::TestCase
     assert_selector "input[role='switch'][type='checkbox'] ~ span"
   end
 
+  # The track's disabled fade is a CLASS on the emitted attribute, and it was
+  # silently lost: a find/replace remnant ("peer-peer-") sat immediately before
+  # it with no trailing space, so Ruby's literal concatenation welded the two
+  # into one token and `peer-disabled:opacity-50` stopped existing (#263). The
+  # structural tests above could not see it, because they assert what IS there
+  # rather than that each class is whole.
+  def test_track_keeps_its_disabled_fade_as_its_own_class
+    render_inline(UI::SwitchComponent.new(name: "notifications"))
+
+    track = page.find("input[role='switch'] ~ span", match: :first)
+
+    assert_includes track[:class].split(/\s+/), "peer-disabled:opacity-50",
+      "the track's disabled fade must be a whole class of its own, not welded to a neighbour"
+  end
+
   def test_checked_sets_native_checked_on_the_input
     render_inline(UI::SwitchComponent.new(name: "notifications", checked: true))
 

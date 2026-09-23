@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.23.1] - 2026-09-23
+
+Two fixes, both found by adopting v0.23.0 in the reference app. One of them is
+a regression v0.23.0 introduced.
+
+### Fixed
+
+- **A disabled switch fades again.** #259 replaced the track's old invalid ring by stripping the two class names out of that line and leaving the line itself behind, so the constant carried `"peer-peer-"`. Ruby concatenates adjacent string literals and the remnant had no trailing space, so the rendered attribute contained a single token — `peer-peer-peer-disabled:opacity-50` — and `peer-disabled:opacity-50` stopped existing. **v0.23.0 ships a switch with no disabled fade.** Verified by evaluating the constant rather than reading it. Nothing caught it: the forced-colors gate asks whether something structural changes on invalid, which the new border satisfies, and the render tests assert that expected classes are present, never that nothing nonsensical is — and a phantom class generates no CSS, so it is silent. Two guards now close that: a render test pinning the fade as a whole class of its own, and `test_no_truncated_class_tokens.rb`, which fails on any class token ending in a separator. That rule is deliberately narrow rather than a full utility grammar — it is exactly the shape a find/replace remnant leaves, which keeps it free of false positives across ~90 templates. Closes #263.
+
+- **The draft serializer stops counting another control's internals.** `serializeForm` walked `form.querySelectorAll("[name]")`, which reaches *inside* other named controls — so a rich-text editor's own toolbar (Lexxy's code-language `<select>`) was saved as if it were one of the host form's fields. The restored-field count then read high: a user who filled two fields was told "3 fields updated" in the live region they rely on to know whether their work came back. A named control inside another named control now belongs to that control. In ordinary Rails markup the rule cannot fire — `input` is void and `select` contains `option`s, which carry no name. **The behavioural proof lives downstream**, as with every JS change here: this repo has no JavaScript harness, and modelrails_base drives this controller against a real Lexxy editor. Closes #262.
+
 ## [0.23.0] - 2026-09-22
 
 Five fixes, all found by running the suite in the reference app rather than by
