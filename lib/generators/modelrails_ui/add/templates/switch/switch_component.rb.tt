@@ -31,7 +31,6 @@ module UI
               "peer-aria-invalid:border-2 peer-aria-invalid:border-danger " \
               "transition-all bg-surface-sunken peer-checked:bg-interactive peer-checked:border-transparent " \
               "peer-focus-visible:[outline:2px_solid_var(--color-interactive-focus)] peer-focus-visible:[outline-offset:2px] " \
-              "peer-peer-" \
               "peer-disabled:opacity-50"
     # shadow-sm: the thumb is the card's own surface color, so without an
     # edge it vanishes against the unchecked track in both themes.
