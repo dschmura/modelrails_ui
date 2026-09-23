@@ -9,12 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.23.0] - 2026-09-22
 
-Four fixes, all found by running the suite in the reference app rather than by
-reading this library. Two change nothing a user sees; the other two change how
-every form control's invalid state and every signal chip's edge are drawn,
-because neither was perceivable to the people who most need it.
+Five fixes, all found by running the suite in the reference app rather than by
+reading this library. Two change nothing a user sees; the rest change how every
+form control's invalid state, every signal chip's edge and every dismiss
+control are drawn, because none of them was doing the job it looked like it was
+doing.
 
 ### Fixed
+
+- **Dismiss controls tint on hover instead of fading.** The banner's and the toaster's close buttons used `hover:opacity-80`. Unlike the host-side controls this came from, these are **icon-only**, so they answer to the 3:1 non-text floor and never failed AAA — the honest distinction, and the reason this is the gem's half of the same report rather than the same bug. What applies is the rule already written beside `.btn-text-icon`: an opacity fade reads as **disabled**, which is the opposite of what a dismiss control does, and on a tinted chip it drags the icon toward the surface behind it — the one direction that loses contrast, on the control most likely to be clicked in a hurry. The hover is now a surface tint keyed by variant (banner) and severity (toaster), because the ground differs per tone. `test_dismiss_controls_tint.rb` pins that no template dims a control on hover and that the toaster's **two copies** — the server-rendered component and the client-built one — agree on the mapping, since they render the same control and have drifted before. Closes #256.
 
 - **Signal chip borders carry the chip's edge.** A tinted chip — alert, banner, toast, badge, error summary — has a fill measuring **~1.06:1 against the page**, so the border is the only thing giving it a boundary. It measured **1.40&ndash;1.92:1** in light and **2.12&ndash;2.71:1** in dark, against a 3:1 non-text floor, in all four tones and both themes. The fill cannot rescue it: the darkest tint that still holds its text at 7:1 reaches only **1.09&ndash;1.29:1** against the page, so AAA text and a visible fill are mutually exclusive on a chip and the edge does it or nobody does. All eight `-border` values move — hue and chroma unchanged, lightness repositioned — each solved against the **worst ground in its theme** (`surface` in light, `surface-raised` in dark), landing at 3.10&ndash;3.12:1. Chips look outlined now rather than almost-borderless; nothing else moves, because #258 had already taken every load-bearing use of `-border` off it. `test_signal_border_contrast.rb` reads the values out of the shipped stylesheet and computes the ratios, because nothing else can see this: axe measures text only, and the render tests assert class names rather than values. Closes #257.
 
