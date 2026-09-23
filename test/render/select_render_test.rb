@@ -92,11 +92,12 @@ class SelectRenderTest < ViewComponent::TestCase
     assert_selector "select.min-h-input"
   end
 
-  # invalid: drives a visible danger ring/border, not just aria-invalid.
-  def test_invalid_carries_a_danger_ring_token
+  # invalid: drives a visible danger BORDER, not just aria-invalid. A border,
+  # not a ring, because a box-shadow is not painted in forced-colors (#258).
+  def test_invalid_carries_a_danger_border_token
     render_inline(UI::SelectComponent.new(options: %w[A B]))
 
-    assert_selector "select.aria-invalid\\:ring-danger"
+    assert_selector "select.aria-invalid\\:border-danger"
   end
 
   def test_selected_marks_the_right_option
@@ -151,8 +152,9 @@ class SelectRenderTest < ViewComponent::TestCase
   def test_invalid_ring_has_a_width_not_just_a_color
     render_inline(UI::SelectComponent.new(options: %w[a], invalid: true))
 
-    # aria-invalid:ring-danger without aria-invalid:ring-2 paints nothing —
-    # a ring colour needs a ring width (gem issue #112).
-    assert_selector "select[class*='aria-invalid:ring-2'][class*='aria-invalid:ring-danger']"
+    # The width is the half that survives forced-colors: the system repaints
+    # every border, so a colour swap alone leaves valid and invalid identical
+    # there. #112 asked the same question of a ring's width.
+    assert_selector "select[class*='aria-invalid:border-2'][class*='aria-invalid:border-danger']"
   end
 end

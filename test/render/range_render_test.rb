@@ -40,11 +40,15 @@ class RangeRenderTest < ViewComponent::TestCase
     assert_includes rendered_content, "slider-runnable-track]:bg-surface-sunken"
   end
 
-  # invalid: drives a visible danger ring on the slider, not just aria-invalid.
-  def test_carries_a_danger_ring_token_for_invalid
+  # invalid: drives a visible danger border on the TRACK — the slider's own box
+  # is transparent, so the track is the thing a user sees (#258).
+  def test_carries_a_danger_border_token_for_invalid
     render_inline(UI::RangeComponent.new)
 
-    assert_selector "input.aria-invalid\\:ring-danger"
+    classes = page.find("input")[:class]
+
+    assert_includes classes, "aria-invalid:[&::-webkit-slider-runnable-track]:border-danger"
+    assert_includes classes, "aria-invalid:[&::-webkit-slider-runnable-track]:border-2"
   end
 
   def test_invalid_sets_aria_invalid

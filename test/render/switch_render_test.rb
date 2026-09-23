@@ -72,10 +72,10 @@ class SwitchRenderTest < ViewComponent::TestCase
 
   # The TRACK carries a peer-aria-invalid danger ring so an invalid switch is
   # visible (the peer input gets aria-invalid; the later-sibling track reacts).
-  def test_track_carries_a_peer_aria_invalid_danger_ring
+  def test_track_carries_a_peer_aria_invalid_danger_border
     render_inline(UI::SwitchComponent.new(name: "notifications"))
 
-    assert_selector "span.peer-aria-invalid\\:ring-danger"
+    assert_selector "span.peer-aria-invalid\\:border-danger"
   end
 
   def test_describedby_sets_aria_describedby_on_the_input

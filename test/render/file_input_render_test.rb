@@ -32,11 +32,11 @@ class FileInputRenderTest < ViewComponent::TestCase
     assert_selector "input.disabled\\:cursor-not-allowed.disabled\\:opacity-50"
   end
 
-  # invalid: drives a visible danger ring, not just aria-invalid.
-  def test_carries_a_danger_ring_token_for_invalid
+  # invalid: drives a visible danger BORDER, not just aria-invalid (#258).
+  def test_carries_a_danger_border_token_for_invalid
     render_inline(UI::FileInputComponent.new)
 
-    assert_selector "input.aria-invalid\\:ring-danger"
+    assert_selector "input.aria-invalid\\:border-danger"
   end
 
   def test_accept_passes_through
@@ -207,9 +207,8 @@ class FileInputRenderTest < ViewComponent::TestCase
   def test_invalid_ring_has_a_width_not_just_a_color
     render_inline(UI::FileInputComponent.new(invalid: true))
 
-    # aria-invalid:ring-danger without aria-invalid:ring-2 paints nothing —
-    # a ring colour needs a ring width (gem issue #122, same class as #112).
-    assert_selector "input[class*='aria-invalid:ring-2'][class*='aria-invalid:ring-danger']"
+    # The width is what forced-colors keeps; the colour is repainted (#258).
+    assert_selector "input[class*='aria-invalid:border-2'][class*='aria-invalid:border-danger']"
   end
 
   # --- list semantics (#195) ------------------------------------------------
