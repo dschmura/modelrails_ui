@@ -1,7 +1,8 @@
 # modelrails_ui
 
-A WCAG 2.2 **AAA**, OKLCH-themed Rails component library — the design system for
-**modelrails_base**, built on [ViewComponent](https://viewcomponent.org).
+An OKLCH-themed Rails component library, built to WCAG 2.2 AA and held to **AAA wherever a
+component library controls the outcome**. It is the design system for **modelrails_base**,
+built on [ViewComponent](https://viewcomponent.org).
 
 > **Lineage & acknowledgements** — `modelrails_ui` is a hardened fork of
 > [alec-c4/view_primitives](https://github.com/alec-c4/view_primitives), which is itself
@@ -19,11 +20,15 @@ which you commit. **Production carries no runtime dependency on `modelrails_ui`*
 
 ## What makes this fork different
 
-- **WCAG 2.2 AAA, proven.** `test/test_aaa_contrast.rb` computes OKLCH→luminance contrast for
-  the core token pairs and asserts ≥ 7:1 in light **and** dark. A token change that breaks AAA
-  fails the build.
-- **Ships an AAA OKLCH design system.** The install generator emits the full token system
-  (primitives → semantic tokens, `@theme inline`, class-based dark mode, `.btn-*`/`bg-hue-*`).
+- **AAA where a component library can deliver it, and tested.** Enhanced contrast (7:1 text,
+  computed from the shipped tokens in light **and** dark), focus appearance, reduced motion and
+  44px targets each have a test that fails the build if they regress. Most of the rest of AAA
+  is content your pages own, such as reading level or captions.
+  **[docs/accessibility.md](docs/accessibility.md)** goes through all 31 AAA criteria: what
+  checks each one, what is yours, and the known gaps.
+- **Ships an OKLCH design system tuned for AAA contrast.** The install generator emits the
+  full token system (primitives → semantic tokens, `@theme inline`, class-based dark mode,
+  `.btn-*`/`bg-hue-*`).
 - **Self-contained app.** The generated `ApplicationComponent` inlines the `cn` helper and an
   inflection initializer is written into your app, so nothing references the gem at runtime.
 - **Integrates with Rails.** Form components accept first-class a11y params
@@ -105,8 +110,10 @@ the rules; your house-rules edits are preserved.
 
 ## Testing & accessibility
 
-The gem's suite (`rake test`) runs three lanes — see **[docs/testing.md](docs/testing.md)**
-for what each one can and, importantly, cannot prove:
+Which WCAG criteria the gem holds, and how each is checked, is in
+**[docs/accessibility.md](docs/accessibility.md)**. The gem's suite (`rake test`) runs three
+lanes — see **[docs/testing.md](docs/testing.md)** for what each one can and, importantly,
+cannot prove:
 
 - **`test:structural`** — fast, no Rails: reads the `.rb.tt` templates as text and asserts
   structure (`test/test_components.rb` and friends).
