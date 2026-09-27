@@ -14,7 +14,8 @@ class SkeletonRenderTest < ViewComponent::TestCase
   def test_pulses_and_respects_reduced_motion
     render_inline(UI::SkeletonComponent.new)
 
-    assert_selector "div.animate-pulse.motion-reduce\\:animate-none", visible: :all
+    assert_selector "div.motion-safe\\:animate-pulse", visible: :all
+    assert_no_selector "div.animate-pulse", visible: :all
   end
 
   def test_renders_with_aaa_surface_token

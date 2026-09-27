@@ -99,7 +99,7 @@ module UI
 
       TOAST_CLS = "pointer-events-auto flex items-start gap-3 rounded-lg border " \
                   "px-4 py-3 shadow-lg " \
-                  "transition-all duration-300 translate-y-2 opacity-0 " \
+                  "transition-opacity motion-safe:transition-all duration-300 translate-y-2 opacity-0 " \
                   "data-[open=true]:translate-y-0 data-[open=true]:opacity-100"
 
       # The dismiss control is a 44px-min focusable <button> with an i18n accessible
@@ -109,7 +109,7 @@ module UI
       # toast, drags the icon toward its own surface. The per-severity hover
       # lands beside each severity above; the icon is non-text, so 3:1 (#256).
       CLOSE_CLS = "ml-auto -mr-2 -mt-1.5 shrink-0 inline-flex size-11 items-center justify-center " \
-                  "rounded-md text-current focus-ring transition"
+                  "rounded-md text-current focus-ring motion-safe:transition"
 
       # message:  toast body (required)
       # title:    optional bold heading

@@ -48,6 +48,6 @@ Creates `app/components/ui/skeleton_component.rb`.
 ## Accessibility contract
 
 - **Guarantees:** `aria-hidden="true"` (no empty-box announcements) and
-  `motion-reduce:animate-none` (the pulse is suppressed for reduced-motion users).
+  `motion-safe:animate-pulse` (the pulse never starts for reduced-motion users).
 - **You supply:** an `aria-busy` / live region on the surrounding container so AT
   users know content is loading; the size/shape via `class:`.
