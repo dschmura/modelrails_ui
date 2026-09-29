@@ -59,3 +59,14 @@ Creates `app/components/ui/carousel_component.rb`.
 | `autoplay` | Integer | `0` | Auto-advance interval in milliseconds; `0` disables autoplay |
 | `label` | String | `nil` | Accessible name for the carousel region (i18n default "Carousel") |
 | `**html_attrs` | Hash | — | Forwarded to the outer `<div>` |
+
+## When to use
+
+- The slides are peers and showing one at a time is acceptable: a product tour,
+  a set of testimonials.
+
+## When not to use
+
+- The reader should see the set together, or enlarge one — use `gallery`.
+- A slide holds something the reader must not miss — everything past the first
+  slide is off screen until they page to it.

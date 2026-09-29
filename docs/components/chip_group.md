@@ -74,6 +74,16 @@ Any other attribute passes through to the group, but `role` and the `aria-*`
 attributes above are applied last and cannot be overridden — they are the
 component's contract, not styling.
 
+## When to use
+
+- The user picks any number of options from a short set, and the selection is
+  data the server stores.
+
+## When not to use
+
+- The selection changes the view and is never submitted — use `toggle_group`.
+- Only one option can be chosen — use `radio_group`.
+
 ## Accessibility contract
 
 - **Guarantees:** a `role="group"` with an accessible name; every chip is a real

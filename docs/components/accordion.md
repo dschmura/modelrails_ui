@@ -125,6 +125,17 @@ Each item renders a `<details>` element with `class="group"`. The chevron SVG us
 | `title` | String | required | Text shown in the summary bar |
 | `open` | Boolean | `false` | Whether the item is expanded on page load |
 
+## When to use
+
+- Several related sections share one column and the reader opens the ones they
+  need: an FAQ, a settings group, a long reference page.
+- Only one section should be open at a time — pass `exclusive: true`.
+
+## When not to use
+
+- There is one section to reveal — use `collapsible`.
+- One panel is always showing and the reader switches between peers — use `tabs`.
+
 ## Accordion item: Accessibility contract
 
 - Native <details>/<summary> carries the disclosure semantics — the summary is

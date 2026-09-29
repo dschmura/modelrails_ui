@@ -52,3 +52,16 @@ Pass any valid `<input>` type via the `type:` option:
 |--------|------|---------|-------------|
 | `type` | String | `"text"` | HTML input type |
 | `**html_attrs` | Hash | — | Forwarded to the `<input>` element |
+
+## When to use
+
+- You need a single-line text control outside a model-backed form, or as the
+  control inside a `form_field` you are composing by hand.
+
+## When not to use
+
+- You are inside a `form_with` — `f.text_field`, `f.email_field` and their
+  siblings render this component with the label and error wired.
+- The text runs to several lines — use `textarea`.
+- The field is a search box, a one-time code or a file upload — `search_input`,
+  `input_otp` and `file_input` add what a bare input lacks.

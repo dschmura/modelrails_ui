@@ -164,3 +164,12 @@ document.addEventListener("gallery:navigated", (event) => {
 |--------|------|---------|-------------|
 | `count` | Integer | — | Total image count; nav/counter render only when `count > 1` |
 | `label` | String | `nil` | Optional `aria-label` on the `<dialog>` |
+
+## When to use
+
+- A set of images should be seen together, with the option to enlarge one.
+
+## When not to use
+
+- There is one image — use `image`, or `figure` when it carries a caption.
+- The images are a sequence to page through — use `carousel`.

@@ -76,3 +76,13 @@ Autoplay automatically sets `muted: true` regardless of the `muted:` option valu
 | `label` | String | `nil` | Human-readable track name |
 | `srclang` | String | `nil` | BCP 47 language tag, e.g. `"en"` |
 | `default` | Boolean | `false` | Activate this track by default |
+
+## When to use
+
+- You host the video file and want the browser's own player, with captions and a
+  poster image.
+
+## When not to use
+
+- The video lives on YouTube, Vimeo or Loom — use `embed`.
+- The media has no picture — use `audio`.

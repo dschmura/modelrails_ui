@@ -70,6 +70,16 @@ Pass a block with `data-*` attributes instead of `href:` for JavaScript-triggere
 | `href` | String | No | Renders `<a>` when present; otherwise renders `<button>` |
 | `**html_attrs` | Hash | — | Forwarded to the `<a>` or `<button>` |
 
+## When to use
+
+- A screen has one floating primary action that fans out into a few related ones.
+
+## When not to use
+
+- There is one action — use `button`.
+- The actions belong to a row or a control rather than to the screen — use
+  `dropdown_menu`.
+
 ## Accessibility contract
 
 - The FAB is a **disclosure trigger**: it carries `aria-expanded` (synced to the

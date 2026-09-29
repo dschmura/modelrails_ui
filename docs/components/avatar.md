@@ -57,3 +57,14 @@ swaps the initials in on failure. It **removes** the failed `<img>` rather than 
 a hidden-but-present image keeps announcing a picture that never arrived.
 
 A `src` with no `fallback` renders a bare `<img>`, unchanged.
+
+## When to use
+
+- You are representing a person or an account: a picture when there is one,
+  initials when there is not.
+
+## When not to use
+
+- You hold a model rather than a URL — call the app's `avatar_for` helper, which
+  resolves the source and renders this component.
+- The picture is content, not identity — use `image`.

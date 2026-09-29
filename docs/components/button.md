@@ -113,3 +113,15 @@ Any extra keyword arguments are forwarded to the element:
 | `tag` | Symbol | `:button` | Override HTML element |
 | `type` | String | `"button"` | Set automatically for `<button>`; pass `type: "submit"` for form submit |
 | `**html_attrs` | Hash | — | Forwarded to the element |
+
+## When to use
+
+- The user triggers an action: save, open, send, delete.
+- A link should carry the weight of an action — pass `href:` and it renders an `<a>`.
+
+## When not to use
+
+- The element classifies or labels and does nothing when clicked — use `badge`.
+- The control holds an on/off state — use `toggle`, or `switch` for a setting.
+- You are submitting a form built with the form builder — `f.submit` carries the
+  same `btn-*` styling.

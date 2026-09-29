@@ -85,6 +85,13 @@ FormField works with any input component:
   the form builder (`UI::FormBuilder`) doesn't cover). For model-backed forms,
   prefer the builder — it already does this wiring.
 
+## When not to use
+
+- The form is model-backed — the form builder wraps every field in this
+  component already.
+- The control renders its own `<label>`, as `checkbox` and `radio_group` do — a
+  second label names the control twice.
+
 ## Accessibility contract
 
 - **Guarantees:** a `<label for=id>` bound to the control; hint/error rendered with

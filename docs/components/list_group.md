@@ -117,6 +117,19 @@ attribute.
 | `variant` | Symbol | `:default` | `:default`, `:active`, `:muted` |
 | `**html_attrs` | Hash | — | Forwarded to the rendered element |
 
+## When to use
+
+- The rows have no columns: workspaces, members, a set of settings links.
+- Each row is either a destination (pass `href:`) or a container for its own
+  controls (omit it) — see [Static vs. link rows](#static-vs-link-rows).
+
+## When not to use
+
+- The rows have columns — use `table`, or `data_table` when every row is already
+  on the page.
+- The rows are a dated sequence — use `timeline`.
+- There are no rows — render `empty_state` in the list's place.
+
 ## Accessibility contract
 
 - **Guarantees:** a semantic `<ul>` carrying an explicit `role="list"`, on a

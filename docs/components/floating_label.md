@@ -52,3 +52,14 @@ If you omit `id:`, the component derives one from the `name:` attribute. Supply 
 | `type` | String | `"text"` | HTML input type |
 | `id` | String | `nil` | Explicit input ID; derived from `name:` when omitted |
 | `**html_attrs` | Hash | — | Forwarded to the `<input>` element |
+
+## When to use
+
+- Vertical space is tight and a short field can carry its label inside the
+  control: a sign-in form, a compact filter.
+
+## When not to use
+
+- The field needs a hint or an error message — use `form_field` with `input`,
+  which has a place for both.
+- The control is a `textarea` or a `select` — this component renders an `<input>`.

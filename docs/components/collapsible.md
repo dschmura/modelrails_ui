@@ -58,6 +58,16 @@ this is the ARIA equivalent — still no JS.
 An already-open disclosure **stays open**: disabling blocks the control, it does not
 collapse content out from under someone reading it.
 
+## When to use
+
+- One block of secondary content should stay out of the way until it is asked for:
+  advanced options, a long explanation.
+
+## When not to use
+
+- Several sections stack — use `accordion`.
+- The content should float over the page instead of pushing it down — use `popover`.
+
 ## Accessibility contract
 
 - Native <details>/<summary> carries the disclosure semantics — the summary is

@@ -80,3 +80,13 @@ The sidebar collapses to a 16px rail showing only icons. Clicking the chevron in
 | `href` | String | `"#"` | Link destination |
 | `active` | Boolean | `false` | Highlights the item as the current page |
 | `icon` | Symbol | `nil` | One of the built-in icon names |
+
+## When to use
+
+- An application has many destinations, grouped, and they should stay in view
+  while the user works.
+
+## When not to use
+
+- There are only a few top-level links — use `navbar`.
+- The panel is temporary: filters, a secondary form — use `sheet`.

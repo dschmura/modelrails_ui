@@ -45,6 +45,17 @@ Pass `active: true` on one item. It receives `text-primary` styling and `aria-cu
 | `active` | Boolean | No | Marks the current page |
 | `icon` | String | No | Raw HTML/SVG string displayed above the label |
 
+## When to use
+
+- A mobile layout has up to five top-level destinations that should stay on screen.
+
+## When not to use
+
+- There are more than five destinations, or they are grouped — use `sidebar`.
+- The layout is desktop-width — use `navbar`.
+- The items are actions rather than destinations — every item here is a link.
+  Use `speed_dial`.
+
 ## Accessibility contract
 
 - **Guarantees:** a named `<nav>` landmark (i18n default "Bottom navigation",

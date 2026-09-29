@@ -48,3 +48,14 @@ The individual `ButtonComponent` variants are preserved — only the shape is af
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
 | `**html_attrs` | Hash | — | Forwarded to the wrapper `<div role="group">` |
+
+## When to use
+
+- Several buttons act on the same thing and read better as one joined control:
+  previous and next, a primary action beside its alternatives.
+
+## When not to use
+
+- The group holds a selection — this component owns no state. Use `toggle_group`
+  when the selection changes the view, and `chip_group` or `radio_group` when it
+  posts with a form.

@@ -90,6 +90,16 @@ semantics.
 | `selection_labels` | Hash | `{}` | Selection strings merged over the English defaults (i18n; defaults to `one: "1 file selected: %{names}"`, `many: "%{count} files selected: %{names}"`, `none: "No files selected"`) |
 | `**html_attrs` | Hash | — | Forwarded to the `<input type="file">` element |
 
+## When to use
+
+- The user uploads one or more files and you are composing the field by hand,
+  usually inside `form_field`.
+
+## When not to use
+
+- You are inside a model-backed `form_with` — call `f.file_field`, which wires the
+  label, hint and error for you.
+
 ## Accessibility
 
 The selection pill list (`show_selection: true`) carries an explicit `role="list"`.
