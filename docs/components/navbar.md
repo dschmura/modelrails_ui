@@ -41,6 +41,18 @@ hamburger that discloses a stacked menu.
 | `Escape` | Close the mobile menu, return focus to the hamburger |
 | click outside | Close the mobile menu |
 
+## When to use
+
+- The site has a brand and a few top-level destinations that fit across the top
+  of the page.
+
+## When not to use
+
+- The destinations are many, or grouped — use `sidebar`.
+- Entries open flyout panels — use `navigation_menu`, or `mega_menu` for one
+  large panel.
+- A mobile layout wants its destinations along the bottom — use `bottom_nav`.
+
 ## Accessibility
 
 WCAG 2.2 AAA. Proven by `spec/system/ui/navbar_component_spec.rb` in the host app (at a

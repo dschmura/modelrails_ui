@@ -67,6 +67,16 @@ the links don't honour and remove them from the link/landmark trees. So: a real
 `<button>` disclosure (`aria-expanded` + `aria-haspopup` + `aria-controls`) reveals a
 named `<nav>` region of links.
 
+## When to use
+
+- One navigation entry opens onto many destinations, grouped under titled columns.
+
+## When not to use
+
+- The panel lists commands rather than links — use `dropdown_menu`.
+- The bar has several entries, each with a small flyout — use `navigation_menu`.
+- There are only a few links — put them in the `navbar` itself.
+
 ## Accessibility contract
 
 - **Guarantees:** a real `<button>` trigger with `aria-haspopup`, synced

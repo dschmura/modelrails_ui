@@ -39,3 +39,14 @@ Creates `app/components/ui/textarea_component.rb`.
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
 | `**html_attrs` | Hash | — | Forwarded to the `<textarea>` element |
+
+## When to use
+
+- The user writes more than a line of plain text, outside a model-backed form or
+  inside a `form_field` you are composing by hand.
+
+## When not to use
+
+- You are inside a `form_with` — `f.text_area` renders this component.
+- The text needs formatting — use `wysiwyg`, or the editor your app already has.
+- The text fits on one line — use `input`.

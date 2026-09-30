@@ -49,6 +49,15 @@ The collapsed crumbs are dropped for **everyone** — there is no visually-hidde
 trail that reads as four levels to a screen reader and two on screen describes a structure
 neither audience can act on, so the rendered trail stays truthful to both.
 
+## When to use
+
+- The page sits inside a hierarchy and the reader needs the way back up it.
+
+## When not to use
+
+- The page has one parent — a single back link says the same thing.
+- You are showing progress through a sequence — use `stepper`.
+
 ## Accessibility
 
 WCAG 2.2 AAA. Proven by `spec/system/ui/breadcrumb_component_spec.rb` in the host app.

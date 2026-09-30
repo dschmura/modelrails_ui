@@ -338,3 +338,14 @@ would fight the wrapper's own built-in rhythm instead of composing with it.
 - `checkbox` — the standalone component with the same visual language as the
   builder's checkbox-family markup; the builder does **not** render it (its
   own `CHECKBOX_CLASSES` constant duplicates the styling, not the component).
+
+## When to use
+
+- The form is backed by a model, and each field should arrive with its label,
+  hint and error already wired.
+
+## When not to use
+
+- There is no model behind the control: a search box, a filter. Use the
+  primitive — `search_input`, `input`.
+- The builder does not wrap the control you need — compose it with `form_field`.

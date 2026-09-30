@@ -157,3 +157,8 @@ rather than a general claim.
 
 - Rendering `ActiveModel::Errors` at the top of a form. The form builder's
   `error_summary` shim builds `items` (with per-field anchors) for you.
+
+## When not to use
+
+- The message is about one field — `form_field` renders it beside the control.
+- The message is not a form error — use `alert`.

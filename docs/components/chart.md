@@ -95,6 +95,16 @@ Pass any Chart.js `options` hash to override defaults:
 Series with no explicit color are auto-assigned from an AAA-tuned
 OKLCH palette (DEFAULT_SERIES) — never a raw hex.
 
+## When to use
+
+- A trend, a comparison or a proportion is easier to see than to read, and Chart.js
+  is pinned in your importmap.
+
+## When not to use
+
+- The exact figures are the point — use `table`.
+- There is one value against a maximum — use `progress`.
+
 ## Accessibility contract
 
 A `<canvas>` is an opaque bitmap — pixels carry no semantics, so a chart drawn

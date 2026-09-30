@@ -59,6 +59,16 @@ map, this component enforces the accessibility contract that makes one usable.
 - Provide meaningful `alt` text on each area with a `href` — screen readers announce it as link text.
 - Combine with the **Aspect Ratio** component to keep the image responsive while preserving proportions.
 
+## When to use
+
+- You have to ship an `<area>`-based image map: a floor plan or a diagram whose
+  regions already exist as coordinates.
+
+## When not to use
+
+- You control the artwork — overlay links or buttons on it, or use an inline SVG
+  with `<a>` regions.
+
 ## Accessibility contract
 
 - **Guarantees:** the base `<img>` carries `alt:` and a `usemap` wired to the

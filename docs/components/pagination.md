@@ -31,6 +31,16 @@ by default**. The host app styles them to the design-system tokens (AAA in both 
 in `modelrails_base`, proven by `spec/system/ui/pagination_a11y_spec.rb`). Copy that block to
 match your design system.
 
+## When to use
+
+- A server-rendered collection runs past one page — render `@pagy.series_nav`.
+
+## When not to use
+
+- Every row is already on the page — `data_table` pages in the browser.
+- You are about to write a pager of your own — Pagy's windowing already covers
+  it. Style `.pagy.series-nav` instead.
+
 ## Accessibility
 
 WCAG 2.2 AAA. Pagy's `series_nav` provides the ARIA contract; the design-system CSS provides

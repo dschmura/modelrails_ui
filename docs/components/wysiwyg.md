@@ -99,3 +99,13 @@ trix-toolbar { /* toolbar customisation */ }
 ## Form integration
 
 Both adapters submit a plain HTML string via the hidden input. For ActionText's `rich_text_area`, use Rails' own helper instead — this component is for cases where you need a standalone `name:`-based field without the ActionText storage layer.
+
+## When to use
+
+- The user writes formatted text, and your app uses Trix or Quill.
+
+## When not to use
+
+- Plain text is enough — use `textarea`.
+- Your app already composes another editor. The reference app uses Lexxy and
+  does not adopt this component.

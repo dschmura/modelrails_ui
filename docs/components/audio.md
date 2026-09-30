@@ -55,3 +55,13 @@ Creates `app/components/ui/audio_component.rb`.
 |--------|------|----------|-------------|
 | `src` | String | Yes | Audio file URL |
 | `type` | String | Yes | MIME type, e.g. `"audio/mpeg"` |
+
+## When to use
+
+- You host the audio file and want the browser's own player, with more than one
+  source format offered.
+
+## When not to use
+
+- The audio lives on Spotify or SoundCloud — use `embed`.
+- The media has a picture — use `video`.

@@ -74,6 +74,16 @@ Creates `app/components/ui/resizable_component.rb`.
 | `max` | Integer | `90` | Maximum panel size as a percentage |
 | `default` | Integer | `nil` | Initial size as a percentage; unset panels share remaining space equally |
 
+## When to use
+
+- Panels share a region and the user decides the split: a list beside a detail
+  view, an editor beside a preview.
+
+## When not to use
+
+- The side panel is navigation that collapses to icons — use `sidebar`.
+- The second panel comes and goes — use `sheet`.
+
 ## Accessibility contract
 
 - **Guarantees (WCAG 2.1.1 keyboard):** every handle is a focusable

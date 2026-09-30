@@ -78,3 +78,13 @@ Embeds third-party content. Pass `url:` — the provider is detected automatical
 - Google Maps: if the share URL contains `output=embed` or `/maps/embed`, it is used as-is. Otherwise the component appends `output=embed` automatically. For complex encoded URLs (e.g. copied from the Maps "Embed" tab), pass as-is — they work directly.
 - Yandex Maps: share URL (`yandex.ru/maps/...`) is converted to widget URL (`yandex.ru/map-widget/v1/...`) automatically.
 - **X and Telegram** use official JS widgets — sizing is handled natively by the provider. No fixed height needed.
+
+## When to use
+
+- The content lives with one of the supported providers and you have its URL.
+
+## When not to use
+
+- The provider is not in the table above — the component renders an
+  "unsupported embed" message in its place. Use `iframe`.
+- You host the file — use `video` or `audio`.
