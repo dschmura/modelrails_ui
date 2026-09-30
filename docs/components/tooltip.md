@@ -48,18 +48,14 @@ Unknown values for `side:` raise `ArgumentError` (fail-loud).
 
 ## Placement
 
-Placement uses CSS anchor positioning: the bubble is `position: fixed` (viewport as
-containing block) and tethered to the trigger via inline `anchor-name`/`position-anchor`
-attributes; `position-area` sets the requested side and `position-try-fallbacks` keeps
-it on-screen near viewport edges. Note that at an extreme edge Chromium clamps the
-element on-screen rather than performing a full flip, because the bubble is nested inside
-its trigger element. On browsers without anchor positioning (pre-Baseline 2026) the
-component falls back to `absolute` offsets relative to the wrapper.
-
-Placement uses CSS anchor positioning: the bubble is `position: fixed` (so its
-containing block is the viewport, letting it float free of the wrapper) and tethered
-to the wrapper via `anchor-name`/`position-anchor`; `position-area` places it and
-`position-try-fallbacks` auto-flips it on viewport overflow — no JS.
+Placement uses CSS anchor positioning, with no JS: the bubble is `position: fixed` (so its
+containing block is the viewport, letting it float free of the wrapper) and tethered to
+the wrapper via inline `anchor-name`/`position-anchor` attributes; `position-area` sets
+the requested side and `position-try-fallbacks` keeps it on-screen near viewport edges.
+At an extreme edge Chromium clamps the bubble on-screen rather than performing a full
+flip, because the bubble is nested inside the wrapper it anchors to. On browsers without
+anchor positioning (pre-Baseline 2026) the component falls back to `absolute` offsets
+relative to the wrapper.
 
 ## Dismiss on Escape
 
