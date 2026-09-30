@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.24.0] - 2026-09-30
+
+Reduce Motion now reaches the components, and the accessibility claim now says
+what it covers. Only the first changes what anyone sees, and only for people who
+have asked their OS to reduce motion.
+
+### Changed
+
+- **Reduce Motion stops the components moving.** The stylesheet has always said its transitions run under `motion-safe:` so that users with `prefers-reduced-motion` get instant state changes. Almost none did: twenty-six class strings across sixteen components carried a transition covering transform with no guard. Among them were rotating chevrons, the switch thumb, the floating label, rising toasts and the progress bar, which is what WCAG 2.3.3 Animation from Interactions (AAA) is about. Every utility that can move something (bare `transition`, `transition-all`, `transition-transform` and every `animate-*`) is now written `motion-safe:`. Colour, opacity and shadow fades stay bare, because they are not motion. Carousel, gallery and skeleton move from the `motion-reduce:*-none` pairing to `motion-safe:`, so there is one convention and it can be checked token by token. The toast keeps a bare `transition-opacity` under `motion-safe:transition-all`, so under Reduce Motion it fades in place and `transitionend` still fires to remove it. The spinner is exempt: its spin is the busy signal. Enforced by `test/test_motion_respects_reduced_motion.rb`. Nothing changes for anyone without Reduce Motion set. (#266)
+- **The accessibility claim says what it covers.** The README said "WCAG 2.2 AAA, proven", but what was proven was contrast. It now says the library is built to WCAG 2.2 AA and held to AAA wherever a component library controls the outcome. `docs/accessibility.md` gives each of the 31 AAA criteria a status: Checked (naming the test), Held, Your app, or Gap. The gaps it records are that the toaster's 4-second auto-dismiss with no pause fails 2.2.3 No Timing, that `data_table`'s search field and the `pagination` template still draw focus with a box-shadow ring, and that 2.4.12 Focus Not Obscured (Enhanced) has no check. (#267)
+- **Every component doc says when to reach for it.** Thirty-one docs lacked "When to use" and "When not to use" sections, `button`, `input`, `avatar` and `list_group` among them. All 86 now have both, and each "use X instead" names a component that has a doc. `test/test_component_docs_say_when_to_use.rb` fails on a missing or empty section, or on a `UI::…Component` the gem does not ship. (#269)
+
+### Added
+
+- **The focus ring proves it can be seen.** `focus-ring` is pinned against WCAG 2.4.13 Focus Appearance (AAA): a solid outline of at least 2px in `--color-interactive-focus` with a positive offset, clearing 3:1 against every surface in both themes. Values resolve through the primitive layer, so a palette remap is measured rather than assumed. Today's floor is 6.86:1, so this is a guard rather than a fix. (#265)
+
+### Fixed
+
+- The tooltip doc's two contradictory "Placement" paragraphs are now one. The Wave 5 floating-overlays design notes that the anchor positioning it rejected shipped in Wave 5b (#21) behind a `supports-[position-area]` check with an `absolute` fallback. (#271)
+
 ## [0.23.1] - 2026-09-23
 
 Two fixes, both found by adopting v0.23.0 in the reference app. One of them is
