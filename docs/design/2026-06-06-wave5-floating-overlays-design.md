@@ -34,7 +34,10 @@ behavior CSS structurally cannot.
   *requires* CSS anchor positioning to place it — and anchor positioning is
   Chromium-only as of 2026-06. CI runs Playwright-Chromium only, so the
   Firefox/Safari gap would be invisible to our test gate. Unacceptable for an
-  AAA-everywhere library.
+  AAA-everywhere library. *Superseded in part by Wave 5b (#21):* the Popover API
+  stays rejected, but anchor positioning shipped behind a `supports-[position-area]`
+  gate with an `absolute` fallback, which closes the gap described above. See
+  `docs/anchored-panels.md`.
 - **Floating UI (`@floating-ui/dom`).** Best-in-class flip/shift in all
   browsers. Rejected: a new runtime JS dependency. The dialog band shipped zero
   positioning libraries; the project favors native / built-in. The actual
