@@ -68,6 +68,17 @@ class MegaMenuRenderTest < ViewComponent::TestCase
     assert_selector "p", text: "Resources", visible: :all
   end
 
+  # The label style is the playbook's: no uppercase labels (standards/frontend/components.md).
+  def test_column_heading_reads_as_a_sentence_at_body_size
+    render_menu
+
+    heading = page.find("p", text: "Platform", visible: :all)
+
+    assert_includes heading[:class].split, "text-sm"
+    assert_includes heading[:class].split, "font-medium"
+    refute_match(/\b(uppercase|tracking-\w+|text-xs)\b/, heading[:class])
+  end
+
   def test_columns_render_link_items
     render_menu
 
