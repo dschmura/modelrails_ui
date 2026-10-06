@@ -14,6 +14,16 @@ class StepperRenderTest < ViewComponent::TestCase
     {label: "Confirm", status: :pending}
   ].freeze
 
+  # Reading copy never drops to text-xs (playbook standards/frontend/css.md, reading defaults).
+  def test_step_description_reads_at_body_size
+    render_inline(UI::StepperComponent.new(orientation: :vertical, steps: [{label: "Account", description: "Your sign-in details", status: :current}]))
+
+    description = page.find("p", text: "Your sign-in details")
+
+    assert_includes description[:class].split, "text-sm"
+    refute_includes description[:class].split, "text-xs"
+  end
+
   def test_renders_an_ordered_list_with_the_i18n_progress_label
     render_inline(UI::StepperComponent.new(steps: THREE_STEPS))
 

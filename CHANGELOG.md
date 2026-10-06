@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **Step descriptions read at body size.** A vertical stepper's step description was `text-xs`, 12px reading copy. It is `text-sm` now, with the step label above it still set apart by `font-medium`. Pinned by a render test. A host that already installed the stepper keeps its copy until it applies the change.
+
 ## [0.24.0] - 2026-09-30
 
 Reduce Motion now reaches the components, and the accessibility claim now says
