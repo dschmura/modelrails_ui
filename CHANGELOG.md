@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **The sidebar stops sliding under Reduce Motion.** Its rail animated `transition-[width]` and its labels `transition-[opacity,width]` with no guard, because the motion test only knew Tailwind's named transition utilities. The test now reads arbitrary `transition-[…]` lists and counts one as motion unless every property in it only repaints (colour, opacity, shadow), so an unknown property fails safe. It went red on exactly those two strings. The rail's width transition is now `motion-safe:`, and the labels keep their fade under Reduce Motion (`motion-reduce:transition-opacity`) without the width animation. Nothing changes for anyone without Reduce Motion set.
 ### Changed
 
 - **Group labels read as sentences.** The sidebar's group labels and the mega menu's column headings were `text-xs uppercase tracking-wide`: 12px, with the word shapes that let a reader take a label in at a glance removed by the capitals. They are now `text-sm font-medium` in sentence case, the label style the ModelRails playbook settled on (`standards/frontend/components.md`). Write the label in sentence case in your call site (`with_group(label: "Recent projects")`); nothing transforms it. A host that already installed either component keeps its copy until it applies the change. Pinned by a render test on each component.

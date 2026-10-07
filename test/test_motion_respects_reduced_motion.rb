@@ -11,7 +11,9 @@ require "test_helper"
 # opacity fade is not motion, so `transition-colors`, `transition-opacity` and
 # `transition-shadow` stay bare. The utilities guarded here are the ones whose
 # property list includes transform, translate, scale or rotate: bare `transition`,
-# `transition-all`, `transition-transform`, and every `animate-*` keyframe.
+# `transition-all`, `transition-transform`, and every `animate-*` keyframe. An
+# arbitrary `transition-[…]` list counts too when it names anything beyond a repaint
+# (a `width` slides content across the screen just as a translate does).
 #
 # One convention rather than two: the `x motion-reduce:x-none` pairing works too,
 # but it can only be checked by knowing which class string the counterpart sits in,
@@ -23,6 +25,9 @@ require "test_helper"
 class TestMotionRespectsReducedMotion < Minitest::Test
   TEMPLATES = File.expand_path("../lib/generators/modelrails_ui/add/templates", __dir__)
   MOTION = /(?<=["'`\s])(transition|transition-all|transition-transform|animate-[a-z0-9-]+)(?=["'`\s]|\z)/
+  ARBITRARY_TRANSITION = /(?<=["'`\s])transition-\[([^\]]+)\](?=["'`\s]|\z)/
+  # A transition-[…] list moves something unless every property in it only repaints.
+  REPAINT_PROPERTIES = %w[color background-color border-color outline-color text-decoration-color fill stroke opacity box-shadow].freeze
   COMMENT_LINE = %r{\A\s*(#|//|\*|/\*|<%#)}
 
   # The criterion exempts motion that is essential to what is conveyed. Each entry
@@ -31,6 +36,11 @@ class TestMotionRespectsReducedMotion < Minitest::Test
     "spinner/spinner_component.rb.tt animate-spin" =>
       "the spin IS the busy signal; a still spinner conveys nothing (docs/components/spinner.md)"
   }.freeze
+
+  def motion_tokens(line)
+    arbitrary = line.scan(ARBITRARY_TRANSITION).flatten.reject { |list| (list.split(",") - REPAINT_PROPERTIES).empty? }
+    line.scan(MOTION).flatten + arbitrary.map { |list| "transition-[#{list}]" }
+  end
 
   def template_files
     Dir.glob(File.join(TEMPLATES, "**/*.{tt,js,erb}"))
@@ -42,7 +52,7 @@ class TestMotionRespectsReducedMotion < Minitest::Test
     File.readlines(path).each_with_index.flat_map do |line, index|
       next [] if line.match?(COMMENT_LINE)
 
-      line.scan(MOTION).flatten.map { |token| ["#{relative} #{token}", "#{relative}:#{index + 1} #{token}"] }
+      motion_tokens(line).map { |token| ["#{relative} #{token}", "#{relative}:#{index + 1} #{token}"] }
     end
   end
 
@@ -52,8 +62,9 @@ class TestMotionRespectsReducedMotion < Minitest::Test
   # bare motion token, or an empty result below means nothing.
   def test_the_scan_reads_the_templates_and_recognises_bare_motion
     assert_operator template_files.size, :>, 50, "expected the add-generator templates under #{TEMPLATES}"
-    assert_equal %w[transition-all animate-spin transition],
-      %(class: "p-2 transition-all animate-spin motion-safe:transition-transform transition").scan(MOTION).flatten
+    assert_equal %w[transition-all animate-spin transition transition-[width]],
+      motion_tokens(%(class: "p-2 transition-all animate-spin motion-safe:transition-transform transition ) +
+                    %(transition-[width] transition-[color,box-shadow] motion-safe:transition-[height]"))
   end
 
   def test_no_template_moves_anything_outside_motion_safe
