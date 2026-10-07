@@ -17,6 +17,16 @@ class DialogRenderTest < ViewComponent::TestCase
     assert_selector "dialog[role='dialog'][aria-modal='true']", visible: :all
   end
 
+  # 100vh counts the mobile browser bars, which would put a tall panel's footer behind them.
+  def test_caps_its_height_by_the_visible_viewport
+    render_inline(UI::DialogComponent.new(title: "Edit profile", id: "d-dvh"))
+
+    panel = page.find("dialog > [class*='max-h-']", visible: :all)
+
+    assert_includes panel[:class], "100dvh"
+    refute_match(/\b100vh\b/, panel[:class])
+  end
+
   # ModalChrome's wrapper used to lose its whole data hash to a caller's `data:`,
   # taking data-controller="modal" with it — the dialog silently never opened.
   # Covers sheet and drawer too, which share this wrapper.

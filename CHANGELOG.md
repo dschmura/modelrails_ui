@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **Panels fit the visible viewport.** The dialog and drawer capped their height at `calc(100vh - 3rem)`, the sheet at `60vh` and the gallery's lightbox image at `90vh`. `vh` counts the browser bars a phone shows and hides, so a tall panel's footer and its actions could sit behind them. All four use `dvh` now. `test/test_templates_size_by_the_visible_viewport.rb` fails on any `vh` or `h-screen` in a template, and a render test on the dialog and drawer pins the cap. A host that already installed these components keeps its copies until it applies the change.
+
 ## [0.24.0] - 2026-09-30
 
 Reduce Motion now reaches the components, and the accessibility claim now says
