@@ -53,7 +53,7 @@ By default the panel uses as many columns as slots. Override with `cols:`:
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `heading` | String | `nil` | Optional column heading shown in small uppercase text |
+| `heading` | String | `nil` | Optional column heading, `text-sm font-medium` in sentence case |
 | `items` | Array | `[]` | Array of `{ title:, description:, href: }` hashes |
 
 ## Menu-vs-nav semantics (deliberate)

@@ -75,6 +75,19 @@ class SidebarRenderTest < ViewComponent::TestCase
     assert_selector "nav a[href='/']", text: "Dashboard"
   end
 
+  # The label style is the playbook's: no uppercase labels (standards/frontend/components.md).
+  def test_group_label_reads_as_a_sentence_at_body_size
+    render_inline(UI::SidebarComponent.new) do |s|
+      s.with_group(label: "Main") { |g| g.with_item(label: "Dashboard", href: "/") }
+    end
+
+    label = page.find("p", text: "Main")
+
+    assert_includes label[:class].split, "text-sm"
+    assert_includes label[:class].split, "font-medium"
+    refute_match(/\b(uppercase|tracking-\w+|text-xs)\b/, label[:class])
+  end
+
   # data-collapsed drives the CSS and is invisible to assistive tech; aria-expanded is
   # the only representation of collapse state a screen reader can perceive.
   def test_toggle_reports_expanded_state

@@ -20,7 +20,7 @@ module UI
 
     INNER_CLS = "container mx-auto grid gap-6 p-6"
 
-    COLUMN_HEADING = "mb-2 text-xs font-semibold uppercase tracking-wide text-text-muted"
+    COLUMN_HEADING = "mb-2 text-sm font-medium text-text-muted"
 
     ITEM_CLS = "focus-ring group flex items-start gap-3 rounded-sm p-2 text-sm transition-colors " \
                "hover:bg-surface-sunken hover:text-text-heading"
