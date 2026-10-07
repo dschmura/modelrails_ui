@@ -17,6 +17,16 @@ class DrawerRenderTest < ViewComponent::TestCase
     assert_selector "dialog[role='dialog'][aria-modal='true']", visible: :all
   end
 
+  # 100vh counts the mobile browser bars, which would put a tall panel's footer behind them.
+  def test_caps_its_height_by_the_visible_viewport
+    render_inline(UI::DrawerComponent.new(title: "Share item", id: "d-dvh"))
+
+    panel = page.find("dialog > [class*='max-h-']", visible: :all)
+
+    assert_includes panel[:class], "100dvh"
+    refute_match(/\b100vh\b/, panel[:class])
+  end
+
   def test_title_is_the_accessible_name_via_aria_labelledby
     render_inline(UI::DrawerComponent.new(title: "Share item", id: "d1"))
 
