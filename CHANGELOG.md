@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **The sidebar stops sliding under Reduce Motion.** Its rail animated `transition-[width]` and its labels `transition-[opacity,width]` with no guard, because the motion test only knew Tailwind's named transition utilities. The test now reads arbitrary `transition-[…]` lists and counts one as motion unless every property in it only repaints (colour, opacity, shadow), so an unknown property fails safe. It went red on exactly those two strings. The rail's width transition is now `motion-safe:`, and the labels keep their fade under Reduce Motion (`motion-reduce:transition-opacity`) without the width animation. Nothing changes for anyone without Reduce Motion set.
+
 ## [0.24.0] - 2026-09-30
 
 Reduce Motion now reaches the components, and the accessibility claim now says
