@@ -10,5 +10,6 @@ gem "rubocop-minitest", require: false
 gem "rubocop-performance", require: false
 gem "lefthook", require: false
 gem "rails", "~> 8.0.0"
+gem "json", "< 3"
 
 gemspec path: "../"
