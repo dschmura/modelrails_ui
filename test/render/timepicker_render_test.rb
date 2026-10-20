@@ -97,6 +97,14 @@ class TimepickerRenderTest < ViewComponent::TestCase
     assert_selector "span[data-timepicker-target='label']", text: "14:45", visible: :all
   end
 
+  # WCAG 2.5.3 Label in Name: a trigger showing a time is named with that time.
+  def test_a_set_value_is_part_of_the_trigger_name
+    render_timepicker(label: "Meeting time", value: "14:45")
+
+    assert_selector "button[aria-label='Meeting time, 14:45']", text: "14:45", visible: :all
+    assert_selector "div[role='dialog'][aria-label='Meeting time']", visible: :all
+  end
+
   # --- Format hint wired to the trigger ---
 
   def test_hint_describes_the_format_and_is_referenced_by_the_trigger
