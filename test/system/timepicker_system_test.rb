@@ -120,6 +120,16 @@ class TimepickerSystemTest < BrowserTestCase
     assert_equal "09:31", hidden_value
   end
 
+  # WCAG 2.5.3 Label in Name: the trigger shows the time, so its name must carry the time it now shows.
+  def test_a_committed_time_renames_the_trigger
+    visit_scenario("timepicker/h24")
+    open_picker
+    minute.send_keys(:up)
+
+    assert_equal "Start, 09:31",
+      page.evaluate_script(%{document.querySelector("[data-timepicker-target=trigger]").getAttribute("aria-label")})
+  end
+
   # step: is the minute stepper's increment; the key path must honour it rather than
   # hard-coding 1, which is what routing both through the existing methods buys.
   def test_the_minute_key_step_honours_the_step_value

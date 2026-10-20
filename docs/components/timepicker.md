@@ -67,7 +67,9 @@ Common steps are 5, 15, and 30 minutes:
 
 - **Guarantees:** a real `<button>` trigger with `aria-haspopup="dialog"`,
   `aria-expanded` (kept in sync by the controller), `aria-controls` → the popover id,
-  an i18n accessible name (`label:`) and a format hint wired via `aria-describedby`;
+  an i18n accessible name (`label:`, followed by the shown time once one is set, e.g.
+  "Meeting time, 14:45", so the name holds the visible text — WCAG 2.5.3) and a format
+  hint wired via `aria-describedby`;
   the popover is a `role="dialog"` named by `label:`; the hour/minute/AM-PM fields
   are `role="spinbutton"` with `aria-valuemin`/`aria-valuemax`/`aria-valuenow`/
   `aria-valuetext` and an i18n `aria-label` announcing which unit they edit; <kbd>↑</kbd>

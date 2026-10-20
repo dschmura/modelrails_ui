@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **A time picker showing a time is named with that time.** The trigger showed "14:45" but was named only "Meeting time", which axe-core 4.14's `label-content-name-mismatch` (WCAG 2.5.3 Label in Name) now fails, and which leaves a speech-control user nothing to say. The name is now "Meeting time, 14:45", rendered and renewed by the controller on each commit. Vendored copies: re-copy `timepicker_component.rb` and `timepicker_controller.js`.
 - **The sidebar stops sliding under Reduce Motion.** Its rail animated `transition-[width]` and its labels `transition-[opacity,width]` with no guard, because the motion test only knew Tailwind's named transition utilities. The test now reads arbitrary `transition-[…]` lists and counts one as motion unless every property in it only repaints (colour, opacity, shadow), so an unknown property fails safe. It went red on exactly those two strings. The rail's width transition is now `motion-safe:`, and the labels keep their fade under Reduce Motion (`motion-reduce:transition-opacity`) without the width animation. Nothing changes for anyone without Reduce Motion set.
 ### Changed
 
