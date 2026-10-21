@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.25.0] - 2026-10-20
+
 ### Fixed
 
 - **A time picker showing a time is named with that time.** The trigger showed "14:45" but was named only "Meeting time", which axe-core 4.14's `label-content-name-mismatch` (WCAG 2.5.3 Label in Name) now fails, and which leaves a speech-control user nothing to say. The name is now "Meeting time, 14:45", rendered and renewed by the controller on each commit. Vendored copies: re-copy `timepicker_component.rb` and `timepicker_controller.js`.

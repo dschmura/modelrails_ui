@@ -2,5 +2,5 @@
 
 module ModelrailsUi
   # modelrails_ui's own SemVer line (forked from view_primitives 0.1.0). See MODELRAILS_STATUS.md.
-  VERSION = "0.24.0"
+  VERSION = "0.25.0"
 end
