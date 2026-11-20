@@ -40,7 +40,7 @@ broken / kept-app-native) and **`CHANGELOG.md`** for the fork changes.
 
 ## Requirements
 
-- Ruby >= 3.2 · Rails >= 8.0 · [ViewComponent](https://viewcomponent.org) >= 4.0 · Tailwind CSS 4
+- Ruby >= 3.3 · Rails >= 8.0 · [ViewComponent](https://viewcomponent.org) >= 4.0 · Tailwind CSS 4
 
 ## Installation (dev-only)
 

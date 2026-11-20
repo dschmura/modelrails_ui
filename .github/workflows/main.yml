@@ -18,7 +18,6 @@ jobs:
       fail-fast: false
       matrix:
         ruby:
-          - "3.2"
           - "3.3"
           - "3.4"
           - "4.0"
@@ -52,7 +51,7 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: "4.0.5"
+          ruby-version: "4.0"
           bundler-cache: true
       - name: Install appraisal bundle
         run: bundle exec appraisal ${{ matrix.appraisal }} bundle install

@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- **Ruby 3.2 is no longer supported.** It reached end of life on 2026-04-01 and gets no more security fixes. The gem now requires Ruby 3.3 or later (`required_ruby_version >= 3.3.0`), CI tests 3.3, 3.4 and 4.0, and RuboCop targets 3.3. An app still on Ruby 3.2 should stay on 0.25.x until it upgrades Ruby.
+
+### Changed
+
+- **Development and CI run on Ruby 4.0.10, the newest 4.0 patch release.** `.ruby-version` and `mise.toml` move from 4.0.5 to 4.0.10. The Appraisal CI jobs now ask for `"4.0"` rather than an exact version, so like the main matrix they pick up each new patch release without an edit here.
+
 ## [0.25.0] - 2026-10-20
 
 ### Fixed
