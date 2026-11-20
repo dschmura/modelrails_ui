@@ -14,6 +14,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - **Development and CI run on Ruby 4.0.10, the newest 4.0 patch release.** `.ruby-version` and `mise.toml` move from 4.0.5 to 4.0.10. The Appraisal CI jobs now ask for `"4.0"` rather than an exact version, so like the main matrix they pick up each new patch release without an edit here.
+- **The gem requires ViewComponent 4.14 or later.** Earlier 4.x releases can leak slot and `with_content` state between reused component instances (GHSA-8qw7-6phv-7q6p, an incomplete fix for CVE-2026-54497), and every component here renders through ViewComponent. The runtime dependency moves from `>= 4.0` to `>= 4.14`, so Bundler will not resolve this gem alongside an affected version. An app on an older ViewComponent upgrades it when it updates this gem.
+
+### Security
+
+- **The development lockfile clears every known advisory.** `bundle audit` reported advisories against Rails 8.1.3.1 (one critical, in Active Storage), Rack 3.2.6, Nokogiri, Loofah, rails-html-sanitizer, Addressable, Crass and ViewComponent 4.12.0. Each moves to its patched release, Rails to 8.1.4.1. These versions only affect the gem's own development and CI. An app that uses the gem resolves its own versions and should run `bundle audit` itself.
 
 ## [0.25.0] - 2026-10-20
 

@@ -27,7 +27,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "railties", ">= 8.0"
-  spec.add_dependency "view_component", ">= 4.0"
+  spec.add_dependency "view_component", ">= 4.14"
 
   spec.add_development_dependency "rails", ">= 8.0"
   spec.add_development_dependency "simplecov", "~> 0.21"
