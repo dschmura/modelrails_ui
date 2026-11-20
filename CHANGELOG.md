@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.26.0] - 2026-11-20
+
+A security release. No component changes how it looks or behaves, but two
+requirements tighten: the gem needs Ruby 3.3 or later and ViewComponent 4.14 or
+later. An app on Ruby 3.2 or an older ViewComponent upgrades those first.
+
 ### Removed
 
 - **Ruby 3.2 is no longer supported.** It reached end of life on 2026-04-01 and gets no more security fixes. The gem now requires Ruby 3.3 or later (`required_ruby_version >= 3.3.0`), CI tests 3.3, 3.4 and 4.0, and RuboCop targets 3.3. An app still on Ruby 3.2 should stay on 0.25.x until it upgrades Ruby.
